@@ -1,0 +1,158 @@
+<ng-container *ngIf="state$ | async as state">
+  <ng-container *ngIf="state.profile as profile">
+    <ion-header>
+      <ion-toolbar>
+        <ion-buttons slot="start">
+          <ion-menu-button></ion-menu-button>
+        </ion-buttons>
+        <ion-title>Budget</ion-title>
+      </ion-toolbar>
+    </ion-header>
+
+    <ion-content>
+      <im-tabs>
+        <im-tab label="Monthly Budget">
+          <div class="im-cont">
+            <im-error *ngIf="!state.profile!.budget" [useAsBanner]="true" class="error-banner">
+              Your Storefront will not be listed until your budget is set.
+            </im-error>
+
+            <div class="budget-cont" (click)="focus()">
+              <div class="set-budget" [style.cursor]="'pointer'">
+                <div class="budget-text-cont">
+                  <span>Your monthly budget is:</span>
+                  <span
+                    class="budget"
+                    [style.grid-template-columns]="budget.value.toFixed(2).length + 'ch auto'"
+                  >
+                    <input #budgetInp currencyMask [formControl]="budget" />
+                    <ion-icon *ngIf="!state.saving" src="/assets/icons/cc.svg"></ion-icon>
+                    <ion-spinner
+                      *ngIf="state.saving === 'saving'"
+                      [style.color]="'var(--ion-color-primary)'"
+                      name="crescent"
+                    ></ion-spinner>
+                    <ion-icon
+                      *ngIf="state.saving === 'saved'"
+                      [style.color]="'var(--ion-color-primary)'"
+                      name="cloud-done"
+                    ></ion-icon>
+                  </span>
+                </div>
+                <div class="tap-edit">Tap to edit your budget.</div>
+              </div>
+
+              <div class="dates">
+                <div class="date">
+                  <span class="pop-text">Start Date:</span>
+                  <span>{{ subOneMonth(state.profile!.budgetEndDate) | date: 'M/dd/yy' }}</span>
+                </div>
+                <div class="date end-date">
+                  <span class="pop-text">End Date:</span>
+                  <span>{{ state.profile!.budgetEndDate | date: 'M/dd/yy' }}</span>
+                </div>
+              </div>
+
+              <div class="bar">
+                <svg
+                  viewBox="0 0 120 20"
+                  [style.height]="'100%'"
+                  [style.width]="'90vw'"
+                  [style.max-width]="'500px'"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <line
+                    [attr.x1]="10"
+                    [attr.y1]="10"
+                    [attr.x2]="110"
+                    [attr.y2]="10"
+                    stroke-linecap="round"
+                    [style.stroke]="'#bcc1cb'"
+                    [style.stroke-width]="'6'"
+                  />
+                  <line
+                    *ngIf="state.profile!.budget"
+                    [attr.x1]="10"
+                    [attr.y1]="10"
+                    [attr.x2]="
+                      state.profile!.budget
+                        ? (state.profile!.view.receivedThisMonth / state.profile!.budget) * 100 + 10
+                        : 10
+                    "
+                    [attr.y2]="10"
+                    stroke-linecap="round"
+                    [style.stroke]="'var(--ion-color-primary)'"
+                    [style.stroke-width]="'6'"
+                  />
+                  <image
+                    href="/assets/icons/cc.svg"
+                    [attr.x]="
+                      state.profile!.budget
+                        ? (state.profile!.view.receivedThisMonth / state.profile!.budget) * 100 + 10
+                        : 10
+                    "
+                    y="10"
+                    height="10px"
+                    width="10px"
+                    transform="translate(-5,-5)"
+                  />
+                </svg>
+              </div>
+
+              <div class="r-r-b">
+                <div class="tc-math">
+                  <div class="pop-text">Received</div>
+                  <div class="amount">
+                    <span>
+                      {{ state.profile!.view.receivedThisMonth / 100 | currency: '':'' }}
+                    </span>
+                    <ion-icon src="/assets/icons/cc.svg"></ion-icon>
+                  </div>
+                </div>
+                <div class="tc-math">
+                  <div class="pop-text">Remaining</div>
+                  <div class="amount" *ngIf="!profile!.budget">
+                    <span>?</span>
+                    <ion-icon src="/assets/icons/cc.svg"></ion-icon>
+                  </div>
+                  <div class="amount" *ngIf="profile!.budget">
+                    <span>
+                      {{
+                        (state.profile!.budget - state.profile!.view.receivedThisMonth) / 100
+                          | currency: '':''
+                      }}
+                    </span>
+                    <ion-icon src="/assets/icons/cc.svg"></ion-icon>
+                  </div>
+                </div>
+                <div class="tc-math">
+                  <div class="pop-text">Budget</div>
+                  <div class="amount" *ngIf="!profile!.budget">
+                    <span>?</span>
+                    <ion-icon src="/assets/icons/cc.svg"></ion-icon>
+                  </div>
+                  <div class="amount" *ngIf="profile!.budget as budget">
+                    <span>{{ budget / 100 | currency: '':'' }}</span>
+                    <ion-icon src="/assets/icons/cc.svg"></ion-icon>
+                  </div>
+                </div>
+              </div>
+              <p [style.text-align]="'center'" [style.max-width]="'600px'">
+                Increasing your
+                <span class="pop-text">Monthly Budget</span>
+                will allow you to accept more CommunityCredits from patrons. Lowering your Budget will lessen
+                the amount. Changing your Budget will affect your
+                <span class="pop-text">Depletion Rate.</span>
+              </p>
+            </div>
+          </div>
+        </im-tab>
+        <im-tab label="Depletion Rate">
+          <div class="im-cont">
+            <div [style.padding]="'var(--im-padding)'"><i>Feature coming soon.</i></div>
+          </div>
+        </im-tab>
+      </im-tabs>
+    </ion-content>
+  </ng-container>
+</ng-container>

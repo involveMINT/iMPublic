@@ -1,0 +1,84 @@
+<ng-container *ngIf="state$ | async as state">
+  <ion-header [class.ion-no-border]="!state.loaded">
+    <ion-toolbar>
+      <ion-buttons slot="start">
+        <ion-menu-button></ion-menu-button>
+      </ion-buttons>
+      <ion-title>Vouchers</ion-title>
+      <ion-buttons slot="end">
+        <ion-button (click)="refresh()">
+          <ion-icon slot="icon-only" name="refresh"></ion-icon>
+        </ion-button>
+      </ion-buttons>
+    </ion-toolbar>
+  </ion-header>
+
+  <ion-content>
+    <im-tabs>
+      <im-tab label="Active">
+        <div class="im-cont">
+          <div *ngIf="state.active.length === 0" style="padding: 1em">
+            <i>You have no active vouchers.</i>
+          </div>
+          <im-code-item
+            *ngFor="let voucher of state.active"
+            [code]="voucher.code"
+            [price]="voucher.amount"
+            [active]="voucherIsActive(voucher)"
+            (click)="viewVoucher(voucher)"
+          >
+            <b>@{{ getVoucherOwnerHandle(voucher) }}</b>
+          </im-code-item>
+        </div>
+      </im-tab>
+      <im-tab label="Redeemed">
+        <div class="im-cont">
+          <div *ngIf="state.redeemed.length === 0" style="padding: 1em">
+            <i>You have no redeemed vouchers.</i>
+          </div>
+          <im-code-item
+            *ngFor="let voucher of state.redeemed"
+            [code]="voucher.code"
+            [price]="voucher.amount"
+            [active]="voucherIsActive(voucher)"
+            (click)="viewVoucher(voucher)"
+          >
+            <b>@{{ getVoucherOwnerHandle(voucher) }}</b>
+          </im-code-item>
+        </div>
+      </im-tab>
+      <im-tab label="Refunded">
+        <div class="im-cont">
+          <div *ngIf="state.refunded.length === 0" style="padding: 1em">
+            <i>You have no refunded vouchers.</i>
+          </div>
+          <im-code-item
+            *ngFor="let voucher of state.refunded"
+            [code]="voucher.code"
+            [price]="voucher.amount"
+            [active]="voucherIsActive(voucher)"
+            (click)="viewVoucher(voucher)"
+          >
+            <b>@{{ getVoucherOwnerHandle(voucher) }}</b>
+          </im-code-item>
+        </div>
+      </im-tab>
+      <im-tab label="Archived">
+        <div class="im-cont">
+          <div *ngIf="state.archived.length === 0" style="padding: 1em">
+            <i>You have no archived vouchers.</i>
+          </div>
+          <im-code-item
+            *ngFor="let voucher of state.archived"
+            [code]="voucher.code"
+            [price]="voucher.amount"
+            [active]="voucherIsActive(voucher)"
+            (click)="viewVoucher(voucher)"
+          >
+            <b>@{{ getVoucherOwnerHandle(voucher) }}</b>
+          </im-code-item>
+        </div>
+      </im-tab>
+    </im-tabs>
+  </ion-content>
+</ng-container>

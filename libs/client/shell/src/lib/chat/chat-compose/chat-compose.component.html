@@ -1,0 +1,68 @@
+<ng-container *ngIf="state$ | async as state">
+  <ion-header>
+    <ion-toolbar>
+      <ion-buttons slot="start">
+        <ion-button (click)="close()">
+          <ion-icon name="close" color="primary"></ion-icon>
+        </ion-button>
+      </ion-buttons>
+      <ion-title>Compose Message</ion-title>
+    </ion-toolbar>
+    <ion-toolbar>
+      <ion-searchbar
+        mode="ios"
+        placeholder="Add recipients by handles"
+        (ionChange)="search($event)"
+      ></ion-searchbar>
+    </ion-toolbar>
+  </ion-header>
+  <ion-header>
+    <ion-toolbar>
+      <div class="header">
+        <span>To:&nbsp;</span>
+        <div>
+          <ion-chip *ngFor="let member of state.members" (click)="removeMember(member)">
+            <ion-label>@{{ member.handleId }}</ion-label>
+            <ion-icon name="close-circle"></ion-icon>
+          </ion-chip>
+        </div>
+        <ion-button slot="end" expand="block" fill="clear" (click)="submit()">
+          <ion-icon slot="icon-only" name="arrow-forward"></ion-icon>
+        </ion-button>
+      </div>
+    </ion-toolbar>
+  </ion-header>
+
+  <ion-content>
+    <div class="im-cont">
+      <div class="im-centered" *ngIf="state.status === 'searching'">
+        <ion-spinner name="crescent"></ion-spinner>
+      </div>
+      <div *ngIf="state.handles.length < 1 && state.status === 'found'" class="im-centered">
+        No matches found.
+      </div>
+      <div class="im-block-cont" *ngIf="state.status === 'found'">
+        <im-block *ngFor="let handle of state.handles" (click)="select(handle.id)">
+          <div
+            body
+            class="im-primary-text"
+            [class]="
+              handle.changeMaker
+                ? 'im-cm'
+                : handle.exchangePartner
+                ? 'im-ep'
+                : handle.servePartner
+                ? 'im-sp'
+                : ''
+            "
+          >
+            <im-handle [handle]="handle.id"></im-handle>
+          </div>
+          <div end>
+            <ion-checkbox [checked]="memberIncluded(handle.id)"></ion-checkbox>
+          </div>
+        </im-block>
+      </div>
+    </div>
+  </ion-content>
+</ng-container>

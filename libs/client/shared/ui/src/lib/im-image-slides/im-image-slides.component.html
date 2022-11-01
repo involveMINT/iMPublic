@@ -1,0 +1,9 @@
+<ion-slides [options]="slidesOptions" imRemoveWrapper>
+  <ion-slide *ngFor="let url of photoUrls; index as i">
+    <div
+      (click)="clickedImage(i, photoUrls)"
+      class="project-image"
+      [ngStyle]="{ 'background-image': 'url(' + url + ')' }"
+    ></div>
+  </ion-slide>
+</ion-slides>

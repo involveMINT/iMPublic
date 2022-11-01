@@ -1,0 +1,16 @@
+im-block {
+  cursor: pointer;
+}
+
+.delete {
+  position: absolute;
+  height: 22px;
+  width: 22px;
+  margin-top: -11px;
+  margin-left: -11px;
+  color: red;
+  z-index: 2;
+  border-radius: 100px;
+  background: white;
+  cursor: pointer;
+}

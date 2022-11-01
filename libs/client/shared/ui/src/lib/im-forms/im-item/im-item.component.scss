@@ -1,0 +1,121 @@
+:host {
+  display: block;
+}
+
+ion-item,
+[generic] {
+  min-height: 45px;
+  border: 1px solid var(--im-border-color);
+  border-radius: var(--im-border-radius);
+  overflow: hidden;
+  background-color: var(--im-input-background);
+}
+
+::ng-deep input {
+  background: var(--im-input-background);
+}
+
+::ng-deep textarea {
+  background: var(--im-input-background);
+}
+
+.help {
+  color: var(--ion-text-color);
+  display: grid;
+  place-content: center;
+  font-size: 1.2em;
+  cursor: pointer;
+}
+
+ion-item {
+  --border-color: transparent !important;
+  --highlight-height: 0;
+  --padding-start: 10px;
+  box-sizing: border-box;
+  transition: box-shadow 200ms, border 200ms;
+  --background: var(--im-input-background);
+
+  &:focus-within {
+    border: 1px solid var(--ion-color-primary);
+    box-shadow: 0 0 0 1px var(--ion-color-primary);
+  }
+
+  ::ng-deep textarea,
+  ::ng-deep textarea:focus {
+    border: none;
+    outline: none;
+    font-size: 14px;
+    width: 100%;
+    line-height: 22px;
+    margin: 5px 0px;
+    margin-left: -2px;
+    min-height: 2em;
+  }
+
+  ::ng-deep input,
+  ::ng-deep input:focus {
+    border: none;
+    outline: none;
+    font-size: 14px;
+    width: 100%;
+  }
+
+  ::ng-deep im-checkbox,
+  ::ng-deep im-checkbox:focus {
+    // make checkbox under the im-item so that when you click on the checkbox, it doesn't
+    // change state twice. Once for the checkbox and again for the im-item click callback
+    z-index: -1;
+  }
+
+  ::ng-deep ion-select {
+    padding: 3px;
+  }
+
+  ::ng-deep [slot='start'] {
+    margin: 0px 5px 0px 0px;
+  }
+
+  ::ng-deep ion-thumbnail[slot='start'] {
+    margin: 0px 10px 0px -10px;
+
+    img {
+      border-radius: 0;
+    }
+  }
+
+  ::ng-deep [slot='end'] {
+    margin: 0px 0px 0px 10px;
+  }
+
+  ::ng-deep ion-thumbnail {
+    margin: 5px;
+  }
+}
+
+.end {
+  margin: 0px 0px 0px 2px;
+}
+
+[generic] {
+  padding: var(--im-padding);
+}
+
+.label {
+  margin: 0 2px 2px 1px;
+  display: grid;
+  grid-auto-flow: column;
+  place-content: start;
+  font-family: 'Manrope', sans-serif;
+  font-weight: 700;
+  font-size: 16px;
+  color: var(--ion-color-primary);
+}
+
+.divider {
+  height: 10px;
+}
+
+.error {
+  border: 1px solid var(--ion-color-danger);
+  box-shadow: 0 0 0 1px var(--ion-color-danger);
+}

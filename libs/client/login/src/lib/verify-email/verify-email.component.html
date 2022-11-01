@@ -1,0 +1,25 @@
+<ng-container *ngIf="state$ | async as state">
+  <ion-header>
+    <ion-toolbar>
+      <ion-buttons slot="start">
+        <ion-menu-button></ion-menu-button>
+      </ion-buttons>
+      <ion-title>Verify Email</ion-title>
+    </ion-toolbar>
+  </ion-header>
+
+  <ion-content>
+    <div class="centered" *ngIf="!state.verified && !state.error">
+      <ion-spinner name="crescent"></ion-spinner>
+      <div>Verifying email...</div>
+    </div>
+    <div class="centered" *ngIf="state.verified && !state.error">
+      <div>Success!</div>
+      <ion-button (click)="login()">Click here to Log In</ion-button>
+    </div>
+    <div class="centered" *ngIf="state.error">
+      Error: {{ state.error }}
+      <ion-button (click)="login()">OK</ion-button>
+    </div>
+  </ion-content>
+</ng-container>

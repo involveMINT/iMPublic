@@ -1,0 +1,44 @@
+<ng-container *ngIf="state$ | async as state">
+  <ion-header>
+    <ion-toolbar>
+      <ion-buttons slot="start">
+        <ion-button (click)="close()">
+          <ion-icon slot="icon-only" name="close"></ion-icon>
+        </ion-button>
+      </ion-buttons>
+      <ion-title>{{ title }}</ion-title>
+      <ion-buttons slot="end">
+        <ion-button [disabled]="!state.selectedProfile" (click)="select()">
+          <ion-icon slot="icon-only" name="arrow-forward"></ion-icon>
+        </ion-button>
+      </ion-buttons>
+    </ion-toolbar>
+  </ion-header>
+
+  <ion-content>
+    <div class="im-cont">
+      <div [style.text-align]="'center'" *ngIf="header">{{ header }}</div>
+      <div *ngIf="state.myProfiles.length < 1" class="im-centered">You have not created any profiles.</div>
+      <im-block
+        *ngFor="let profile of state.myProfiles"
+        (click)="selectProfile(profile)"
+        [class]="
+          profile.type === 'cm'
+            ? 'im-cm'
+            : profile.type === 'ep'
+            ? 'im-ep'
+            : profile.type === 'sp'
+            ? 'im-sp'
+            : ''
+        "
+      >
+        <div body class="im-primary-text">
+          <im-handle [handle]="profile.handle.id"></im-handle>
+        </div>
+        <div end>
+          <ion-checkbox [checked]="state.selectedProfile?.id === profile.id"></ion-checkbox>
+        </div>
+      </im-block>
+    </div>
+  </ion-content>
+</ng-container>

@@ -1,0 +1,26 @@
+<div class="cont">
+  <div class="item-cont">
+    <div class="selection" (click)="tlClick.emit()">
+      <ng-content select="[slot=tl-icon]"></ng-content>
+      <ng-content select="[slot=tl-text]"></ng-content>
+    </div>
+  </div>
+  <div class="item-cont">
+    <div class="selection" (click)="trClick.emit()">
+      <ng-content select="[slot=tr-icon]"></ng-content>
+      <ng-content select="[slot=tr-text]"></ng-content>
+    </div>
+  </div>
+  <div class="item-cont">
+    <div class="selection" (click)="blClick.emit()">
+      <ng-content select="[slot=bl-icon]"></ng-content>
+      <ng-content select="[slot=bl-text]"></ng-content>
+    </div>
+  </div>
+  <div class="item-cont">
+    <div class="selection" (click)="brClick.emit()">
+      <ng-content select="[slot=br-icon]"></ng-content>
+      <ng-content select="[slot=br-text]"></ng-content>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,29 @@
+:host {
+  --ion-color-primary: var(--im-green);
+  --ion-color-primary-tint: var(--im-green-tint);
+  --ion-color-primary-shade: var(--im-green-shade);
+  --ion-color-primary-contract: var(--im-green-contract);
+}
+
+.preamble {
+  display: grid;
+  place-content: center;
+  text-align: center;
+}
+
+im-block {
+  cursor: pointer;
+}
+
+.footer {
+  display: flex;
+  gap: var(--im-padding);
+  justify-content: space-between;
+  align-self: end;
+  align-items: center;
+}
+
+.card-body {
+  display: grid;
+  gap: calc(var(--im-padding) / 2);
+}

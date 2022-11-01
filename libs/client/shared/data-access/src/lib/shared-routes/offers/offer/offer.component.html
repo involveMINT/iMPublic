@@ -1,0 +1,90 @@
+<ng-container *ngIf="state$ | async as state">
+  <ion-header [class.ion-no-border]="true">
+    <ion-toolbar>
+      <ion-buttons slot="start">
+        <ion-button class="no-padding" (click)="back()">
+          <ion-icon name="chevron-back" color="primary"></ion-icon>
+        </ion-button>
+      </ion-buttons>
+      <ion-title>{{ state.offer?.name || 'Offer Editor' }}</ion-title>
+      <ion-buttons slot="end">
+        <ion-button (click)="refresh()">
+          <ion-icon slot="icon-only" name="refresh"></ion-icon>
+        </ion-button>
+      </ion-buttons>
+    </ion-toolbar>
+    <ion-progress-bar type="indeterminate" [class.hide]="state.loaded"></ion-progress-bar>
+  </ion-header>
+
+  <ion-content>
+    <div class="im-centered" *ngIf="!state.offer && state.loaded">Offer not found.</div>
+    <div class="im-cont" *ngIf="state.offer">
+      <div>
+        <div class="im-primary-text">Images:</div>
+        <div class="im-images-cont">
+          <im-image
+            *ngFor="let _ of maxImagesPerItem; index as i"
+            [imgUrl]="state.offer!.imagesFilePaths[i] | imStorageUrl | async"
+            [disable]="state.offer!.imagesFilePaths.length < i"
+            (imgClick)="viewImages(state.offer!.imagesFilePaths, i)"
+            (uploadImg)="uploadImage(state.offer, $event)"
+            (deleteImg)="deleteImage(state.offer, i)"
+          >
+            <div *ngIf="i > 0" class="cover" (click)="makeCoverImage(state.offer, i)">Make Cover</div>
+          </im-image>
+        </div>
+      </div>
+
+      <div [formGroup]="offerForm" class="form">
+        <im-item [touched]="true" label="Listing" [required]="true">
+          <ion-select (ionChange)="listingStatusChanged($event)" [value]="offerForm.value.listingStatus">
+            <ion-select-option *ngFor="let list of listingOptions" [value]="list">
+              {{ list | titlecase }}
+            </ion-select-option>
+          </ion-select>
+          <im-error *ngIf="!offerForm.controls.listingStatus.valid">
+            Please enter a valid listing status.
+          </im-error>
+          <div end [ngSwitch]="state.offer!.listingStatus">
+            <div *ngSwitchCase="'public'">
+              This offer is public and is listed
+              <a [href]="deepLink" target="_blank">here.</a>
+            </div>
+            <div *ngSwitchCase="'private'">This offer is private and cannot be seen.</div>
+            <div *ngSwitchCase="'unlisted'">
+              This offer is unlisted and only can be viewed with
+              <a [href]="deepLink" target="_blank">this link.</a>
+            </div>
+            <i *ngIf="state.savingState === 'changed'">Requires saving.</i>
+          </div>
+        </im-item>
+
+        <im-item [touched]="true" label="Name">
+          <input formControlName="name" />
+          <im-error *ngIf="!offerForm.controls.name.valid">Please enter a name.</im-error>
+        </im-item>
+
+        <im-item [touched]="true" label="Description">
+          <textarea formControlName="description"></textarea>
+          <im-error *ngIf="!offerForm.controls.description.valid">Please enter a description.</im-error>
+        </im-item>
+
+        <im-item [touched]="true" label="Price" [required]="true">
+          <input formControlName="price" currencyMask />
+          <im-error *ngIf="!offerForm.controls.price.valid">Please enter a valid price.</im-error>
+        </im-item>
+      </div>
+
+      <div class="im-buttons">
+        <ion-button color="danger" (click)="delete(state.offer)">Delete Offer</ion-button>
+        <div class="save-button" [ngSwitch]="state.savingState">
+          <ion-button [disabled]="true" *ngSwitchCase="'unchanged'">Saved</ion-button>
+          <ion-button [disabled]="true" *ngSwitchCase="'saving'">Saving...</ion-button>
+          <ion-button *ngSwitchCase="'changed'" (click)="save(state.offer)" [disabled]="offerForm.invalid">
+            Save
+          </ion-button>
+        </div>
+      </div>
+    </div>
+  </ion-content>
+</ng-container>

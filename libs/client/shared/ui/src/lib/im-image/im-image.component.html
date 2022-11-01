@@ -1,0 +1,17 @@
+<label class="empty-cont" *ngIf="!imgUrl" [ngStyle]="{ cursor: cursor }">
+  <input *ngIf="!disabled" type="file" (change)="uploadImg.emit($event)" />
+  <div class="circ"><ion-icon slot="icon-only" name="add"></ion-icon></div>
+  <div class="add-image">Add Image</div>
+</label>
+
+<div class="img-cont" *ngIf="imgUrl">
+  <ion-icon name="close-circle" class="delete" (click)="deleteImg.emit()"></ion-icon>
+  <div
+    (click)="imgClick.emit(imgUrl)"
+    class="img"
+    [ngStyle]="{
+      'background-image': 'url(' + (imgUrl || '') + ')'
+    }"
+  ></div>
+  <ng-content></ng-content>
+</div>

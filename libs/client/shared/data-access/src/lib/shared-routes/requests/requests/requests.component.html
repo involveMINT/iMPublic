@@ -1,0 +1,65 @@
+<ng-container *ngIf="state$ | async as state">
+  <ion-header [class.ion-no-border]="!state.loaded" *ngIf="!epStorefrontView">
+    <ion-toolbar>
+      <ion-buttons slot="start">
+        <ion-button class="no-padding" (click)="back()">
+          <ion-icon name="chevron-back" color="primary"></ion-icon>
+        </ion-button>
+      </ion-buttons>
+      <ion-title>Requests</ion-title>
+      <ion-buttons slot="end">
+        <ion-button (click)="refresh()">
+          <ion-icon slot="icon-only" name="refresh"></ion-icon>
+        </ion-button>
+      </ion-buttons>
+    </ion-toolbar>
+    <ion-progress-bar type="indeterminate" [class.hide]="state.loaded"></ion-progress-bar>
+  </ion-header>
+
+  <ion-content>
+    <div class="im-cont" *ngIf="state.loaded">
+      <div class="im-buttons">
+        <span class="im-p-c">Requests and Needs</span>
+        <ion-button (click)="createRequest()" [disabled]="!state.loaded">
+          <ion-icon name="add"></ion-icon>
+          New Request
+        </ion-button>
+      </div>
+      <div class="im-centered" *ngIf="state.requests.length < 1 && state.loaded">
+        <div [style.display]="'grid'" [style.gap]="'0.1rem'">You have no requests.</div>
+      </div>
+
+      <im-block
+        *ngFor="let request of state.requests"
+        [images]="request.imagesFilePaths"
+        (click)="viewRequest(request)"
+        imageSlot="left"
+      >
+        <ion-icon
+          top
+          name="close-circle"
+          class="delete"
+          (click)="delete(request); $event.stopPropagation()"
+        ></ion-icon>
+        <div header class="im-primary-text">{{ request.name }}</div>
+        <div body>
+          <div [style.font-size]="'16px'">{{ request.description }}</div>
+          <div>
+            <span [style.font-weight]="'600'">
+              <span *ngIf="request.listingStatus === 'public'" [style.color]="'var(--im-green)'">Public</span>
+              <span *ngIf="request.listingStatus === 'private'" [style.color]="'var(--im-red)'">Private</span>
+              <span *ngIf="request.listingStatus === 'unlisted'" [style.color]="'var(--im-yellow)'">
+                Unlisted
+              </span>
+            </span>
+          </div>
+          <div [style.color]="'#888'">{{ formatDistanceToNow(request.dateUpdated) }} ago</div>
+        </div>
+        <div end class="im-primary-text">
+          {{ request.price / 100 | currency: '':'' }}
+          <ion-icon src="/assets/icons/cc.svg"></ion-icon>
+        </div>
+      </im-block>
+    </div>
+  </ion-content>
+</ng-container>

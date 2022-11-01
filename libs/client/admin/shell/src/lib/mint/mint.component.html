@@ -1,0 +1,38 @@
+<ng-container *ngIf="state$ | async as state">
+  <ion-header [class.ion-no-border]="true">
+    <ion-toolbar>
+      <ion-buttons slot="start">
+        <ion-menu-button></ion-menu-button>
+      </ion-buttons>
+      <ion-title>Mint CC</ion-title>
+    </ion-toolbar>
+  </ion-header>
+
+  <ion-content>
+    <div class="im-cont">
+      <im-block>
+        <div body>
+          <im-item [touched]="true" (click)="openProfileSearchModal()">
+            <ion-icon slot="start" name="person"></ion-icon>
+            <input
+              readonly
+              [disabled]="true"
+              [value]="state.user?.id ? '@' + state.user?.id : ''"
+              placeholder="Select recipient"
+            />
+          </im-item>
+          <im-item [touched]="true">
+            <ion-icon slot="start" src="/assets/icons/cc-menu.svg"></ion-icon>
+            <input [formControl]="amount" currencyMask />
+            <im-error *ngIf="!amount.valid">Please enter a valid amount.</im-error>
+          </im-item>
+        </div>
+        <div footer class="im-buttons">
+          <ion-button [disabled]="!state.user || amount.value <= 0" (click)="mint()" color="success">
+            Mint
+          </ion-button>
+        </div>
+      </im-block>
+    </div>
+  </ion-content>
+</ng-container>

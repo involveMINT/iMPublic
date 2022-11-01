@@ -1,0 +1,47 @@
+<ng-container *ngIf="state$ | async as state">
+  <ion-header [class.ion-no-border]="!state.loaded">
+    <ion-toolbar>
+      <ion-buttons slot="start">
+        <ion-menu-button></ion-menu-button>
+      </ion-buttons>
+      <ion-title>Administrators</ion-title>
+      <ion-buttons slot="end">
+        <ion-button (click)="refresh()">
+          <ion-icon slot="icon-only" name="refresh"></ion-icon>
+        </ion-button>
+      </ion-buttons>
+    </ion-toolbar>
+    <ion-progress-bar type="indeterminate" [class.hide]="state.loaded"></ion-progress-bar>
+  </ion-header>
+
+  <ion-content>
+    <div class="im-cont">
+      <div class="im-buttons">
+        <ion-button (click)="addAdmin()" [disabled]="!state.loaded">
+          <ion-icon name="add"></ion-icon>
+          Add Admin
+        </ion-button>
+      </div>
+      <im-block
+        *ngFor="let admin of state.epAdmins"
+        [icon]="admin.user.changeMaker?.profilePicFilePath | imStorageUrl | async"
+      >
+        <div header class="im-primary-text">{{ admin.user.id }}</div>
+        <i body *ngIf="admin.superAdmin">SuperAdmin</i>
+        <div body *ngIf="admin.user.changeMaker as cm">
+          <div>{{ cm.firstName }} {{ cm.lastName }}</div>
+          <im-handle [handle]="cm.handle.id"></im-handle>
+        </div>
+        <i body *ngIf="!admin.user.changeMaker">
+          No ChangeMaker Profile associated with user email {{ admin.user.id }}.
+        </i>
+        <div footer class="im-buttons">
+          <ion-button (click)="removeAdmin(admin)" color="danger">
+            <ion-icon slot="start" name="close"></ion-icon>
+            Revoke
+          </ion-button>
+        </div>
+      </im-block>
+    </div>
+  </ion-content>
+</ng-container>

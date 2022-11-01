@@ -1,0 +1,30 @@
+<div class="label" *ngIf="label" #connectedTo>
+  {{ label }}
+  <span style="color: red">{{ required ? '*' : '' }}</span>
+  <div *ngIf="info" [imInfoPopup]="infoTemplate" [connectedTo]="connectedTo" class="help">
+    <span>
+      &nbsp;
+      <ion-icon name="help-circle"></ion-icon>
+    </span>
+  </div>
+</div>
+<ion-item [ngClass]="hasError ? 'error' : ''" (click)="clicked()" *ngIf="!generic">
+  <ng-container *ngTemplateOutlet="tempOutlet"></ng-container>
+</ion-item>
+<div generic *ngIf="generic">
+  <ng-container *ngTemplateOutlet="tempOutlet"></ng-container>
+</div>
+<ng-template #tempOutlet>
+  <ng-content></ng-content>
+</ng-template>
+<ng-content select="im-error"></ng-content>
+<div class="end">
+  <ng-content select="[end]"></ng-content>
+</div>
+<div class="divider"></div>
+
+<ng-template #infoTemplate>
+  <div class="im-info-pop-up">
+    {{ info }}
+  </div>
+</ng-template>

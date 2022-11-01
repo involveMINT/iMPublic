@@ -1,0 +1,129 @@
+:host {
+  --ion-color-primary: var(--im-orange);
+  --ion-color-primary-tint: var(--im-orange-tint);
+  --ion-color-primary-shade: var(--im-orange-shade);
+  --ion-color-primary-contract: var(--im-orange-contract);
+}
+
+.title {
+  text-align: center;
+}
+
+.info-disp {
+  display: grid;
+  gap: calc(var(--im-padding) / 2);
+  width: 100%;
+
+  .cash {
+    display: grid;
+    grid-template-columns: auto auto;
+    place-content: start;
+    place-items: center;
+    gap: 0.1em;
+  }
+
+  .b-item {
+    display: grid;
+    align-items: center;
+    grid-template-columns: 1fr auto;
+    align-items: start;
+  }
+}
+
+.pics {
+  height: 100%;
+  width: 100%;
+  min-height: 300px;
+}
+
+.button-two {
+  place-self: stretch;
+  display: grid;
+  grid-template-columns: auto auto;
+  gap: 0.5em;
+}
+
+.body {
+  display: grid;
+  gap: calc(var(--im-padding) / 2);
+}
+
+.no-image {
+  grid-area: d;
+  padding: calc(var(--im-padding) / 2);
+  place-self: center;
+}
+
+.offers {
+  display: grid;
+  align-items: center;
+  justify-items: start;
+  gap: 0 calc(var(--im-padding) / 2);
+  grid-template:
+    'd a a' auto
+    'e e c' 1fr
+    / auto 1fr auto;
+
+  .chip {
+    grid-area: a;
+  }
+
+  .thumbnail {
+    grid-area: d;
+    justify-self: center;
+    height: 80px;
+    width: 80px;
+    border-radius: var(--im-border-radius);
+    margin: 10px;
+    box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.2);
+
+    img {
+      border-radius: var(--im-border-radius);
+    }
+  }
+
+  ion-chip {
+    display: grid;
+    grid-template-columns: auto auto;
+    gap: 0.3em;
+    height: auto;
+    color: var(--ion-text-color);
+    background-color: var(--im-content-background);
+    border: 1px solid var(--im-orange);
+
+    &.selected {
+      color: white;
+      background-color: var(--im-orange);
+    }
+
+    .chip-price {
+      display: grid;
+      grid-template-columns: auto auto;
+      font-weight: bold;
+      font-size: 16px;
+    }
+  }
+
+  .price-changer {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    place-items: center;
+    gap: 0.1em;
+    grid-area: c;
+  }
+
+  .offer-description {
+    padding: 0 0.5em;
+    grid-area: e;
+  }
+}
+
+.address-item {
+  display: grid;
+  align-items: center;
+  grid-template-columns: 1fr auto;
+  align-items: start;
+  text-align: right;
+  text-indent: 10%;
+  box-sizing: content-box;
+}

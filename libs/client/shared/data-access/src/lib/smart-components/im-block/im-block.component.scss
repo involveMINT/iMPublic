@@ -1,0 +1,137 @@
+:host {
+  border: 1px solid var(--im-border-color);
+  border-radius: var(--im-border-radius);
+  background-color: var(--im-block-background);
+  display: grid;
+  position: relative;
+  // align-content: end;
+  user-select: text;
+
+  .collapsible {
+    font-size: 2em;
+    display: grid;
+    justify-content: end;
+    align-self: start;
+  }
+
+  .header {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    cursor: pointer;
+  }
+
+  .coll {
+    overflow: auto;
+  }
+
+  .image {
+    position: relative;
+    background-size: cover;
+    background-position: center center;
+    background-repeat: no-repeat;
+    border-radius: calc(var(--im-border-radius) - 1px) calc(var(--im-border-radius) - 1px) 0 0;
+    background-color: var(--im-content-background);
+
+    ion-button {
+      position: absolute;
+      bottom: 0;
+      right: 0;
+    }
+
+    .img-button {
+      filter: drop-shadow(0px 0px 3px black);
+    }
+  }
+
+  &.image-left {
+    display: flex;
+
+    .image {
+      border-radius: calc(var(--im-border-radius) - 1px) 0 0 calc(var(--im-border-radius) - 1px);
+    }
+  }
+
+  .img-icon {
+    color: var(--ion-color-primary);
+  }
+
+  .icon {
+    font-size: 30px;
+    width: 32px;
+    margin-right: calc(var(--im-padding) / 2);
+  }
+
+  ::ng-deep [end] {
+    margin-left: var(--im-padding);
+  }
+
+  .content {
+    display: grid;
+    gap: calc(var(--im-padding) / 2);
+    padding: var(--im-padding);
+    align-content: end;
+    width: 100%;
+
+    &.img-border:not(:first-child) {
+      border-top: 1px solid var(--im-border-color);
+    }
+  }
+
+  .block {
+    display: flex;
+    align-items: center;
+
+    & > *:last-child {
+      grid-column: span 100;
+    }
+
+    .container {
+      flex-grow: 1;
+      display: grid;
+      gap: calc(var(--im-padding) / 2);
+    }
+
+    .body {
+      width: 100%;
+      overflow: hidden;
+      padding: 1px;
+    }
+  }
+
+  ::ng-deep [end] {
+    justify-self: end;
+  }
+
+  &:only-child {
+    margin-bottom: 0;
+  }
+
+  &.join:first-child:not(:only-child) {
+    border-radius: var(--im-border-radius) var(--im-border-radius) 0 0;
+    border-bottom: 0;
+    margin-bottom: 0;
+  }
+
+  &.join:not(:first-child):not(:last-child):not(:only-child) {
+    border-radius: 0;
+    border-bottom: 0;
+    margin-bottom: 0;
+  }
+
+  &.join:last-child:not(:only-child) {
+    border-radius: 0 0 var(--im-border-radius) var(--im-border-radius);
+    margin-bottom: 0;
+  }
+}
+
+:host:after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: -1;
+  box-shadow: var(--im-border-color) 0px 0px 10px 0px;
+  border-radius: var(--im-border-radius);
+}

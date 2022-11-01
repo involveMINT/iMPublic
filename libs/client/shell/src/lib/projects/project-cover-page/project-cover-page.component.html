@@ -1,0 +1,172 @@
+<ng-container *ngIf="state$ | async as state">
+  <ion-header [class.ion-no-border]="!state.project">
+    <ion-toolbar>
+      <ion-buttons slot="start">
+        <ion-button class="no-padding" (click)="back()">
+          <ion-icon slot="start" name="chevron-back" color="primary"></ion-icon>
+          Projects
+        </ion-button>
+      </ion-buttons>
+      <ion-buttons slot="end">
+        <ion-button class="no-padding" (click)="viewServePartnerInfo(state.project!)">
+          ServePartner
+          <ion-icon slot="end" color="primary" name="information-circle-outline"></ion-icon>
+        </ion-button>
+      </ion-buttons>
+    </ion-toolbar>
+    <ion-progress-bar type="indeterminate" [class.hide]="state.project"></ion-progress-bar>
+  </ion-header>
+
+  <ion-content>
+    <ng-container *ngIf="state.project">
+      <div class="im-cont" *ngIf="state.project as project">
+        <div [style.min-width]="'0px'">
+          <im-block [join]="true" [images]="project.imagesFilePaths">
+            <div header class="im-primary-text">{{ project.title }}</div>
+            <div body class="card-body">
+              <div>
+                <div [style.font-size]="'16px'">{{ project.servePartner.name }}</div>
+                <div>{{ project.address.city }}, {{ project.address.state }}</div>
+              </div>
+              <div>{{ project.description }}</div>
+            </div>
+          </im-block>
+          <im-block [join]="true" icon="/assets/icons/cc-menu.svg">
+            <div header class="manrope">Maximum CommunityCredits Earned Per Day</div>
+            <div body>{{ project.creditsEarned / 100 | currency: '':'' }}</div>
+          </im-block>
+
+          <im-block [join]="true" icon="/assets/icons/proof-of-impact.svg">
+            <div header class="manrope">Requirements</div>
+            <ng-container body>
+              <ol>
+                <li>Record your time {{ project.requireLocation ? 'and location' : '' }} in app</li>
+                <li *ngFor="let question of project.questions; index as i">Answer Question {{ i + 1 }}</li>
+                <li *ngIf="project.requireImages">Upload images of impact</li>
+              </ol>
+            </ng-container>
+          </im-block>
+
+          <im-block [join]="true" icon="globe" [style.--ion-color-primary]="'var(--ion-text-color)'">
+            <div header class="manrope">Clearances</div>
+            <ng-container body>
+              <i *ngIf="project.projectDocuments.length < 1">No Clearances required.</i>
+              <ol *ngIf="project.projectDocuments.length > 0">
+                <li *ngFor="let doc of project.projectDocuments">{{ doc.title }} - {{ doc.description }}</li>
+              </ol>
+            </ng-container>
+          </im-block>
+
+          <im-block [join]="true" icon="people">
+            <div header class="manrope">Enrollment Slots Remaining</div>
+            <div body>
+              {{ project.maxChangeMakers - calculateEnrolledEnrollments(project) }} remaining of
+              {{ project.maxChangeMakers }} total.
+            </div>
+          </im-block>
+
+          <im-block [join]="true" icon="/assets/icons/timer.svg">
+            <div header class="manrope">Preferred Schedule of Work</div>
+            <div body>{{ project.preferredScheduleOfWork }}</div>
+          </im-block>
+
+          <!-- <im-block [join]="true" icon="/assets/icons/skills.svg">
+            <div header class="manrope">Skills You Will Learn</div>
+            <ng-container body>
+              <div>Skill 1</div>
+              <div>Skill 2</div>
+              <div>Skill 3</div>
+            </ng-container>
+          </im-block> -->
+
+          <im-block [join]="true" icon="/assets/icons/calendar.svg">
+            <div header class="manrope">Start {{ project.endDate ? '& End' : '' }} Date</div>
+            <div body>
+              {{ project.startDate | date: 'MMMM d, y' }}
+              {{ project.endDate ? '-' : '' }}
+              {{ project.endDate | date: 'MMMM d, y' }}
+            </div>
+          </im-block>
+
+          <im-block [join]="true" icon="/assets/icons/calendar.svg">
+            <div header class="manrope">Project Status</div>
+            <div body>
+              {{
+                state.projectState === ProjectStatus.open ? 'Open for enrollment' : 'Closed for enrollment'
+              }}
+            </div>
+          </im-block>
+
+          <im-block [join]="true" icon="/assets/icons/pin.svg">
+            <div header class="manrope">Location</div>
+            <div class="im-link" body (click)="gotoGoogleMapsLink(project.address)">
+              <div>{{ project.address.address1 }}</div>
+              <div>{{ project.address.address2 }}</div>
+              <div>
+                {{ project.address.city }}, {{ project.address.state }}
+                {{ project.address.zip }}
+              </div>
+            </div>
+          </im-block>
+        </div>
+        <div class="im-buttons">
+          <ion-button fill="outline" (click)="back()">Go Back</ion-button>
+          <ion-button *ngIf="!state.authenticated" (click)="login()">Login To Join</ion-button>
+          <ng-container *ngIf="state.authenticated">
+            <ion-button *ngIf="state.buttonState === 'loading'" [disabled]="true">
+              <ion-spinner name="crescent"></ion-spinner>
+            </ion-button>
+            <ion-button
+              *ngIf="state.buttonState === 'notApplied'"
+              [disabled]="state.projectState === ProjectStatus.closed"
+              (click)="startApplication(state.project)"
+            >
+              {{ state.projectState === ProjectStatus.open ? 'Join' : 'Closed' }}
+            </ion-button>
+            <ion-button *ngIf="state.buttonState === 'createCmProfile'" (click)="createCmProfile()">
+              Create ChangeMaker Profile to Join
+            </ion-button>
+            <ng-container *ngIf="state.enrollment as enrollment">
+              <ng-container *ngIf="state.buttonState === EnrollmentStatus.started">
+                <ion-button
+                  *imLoadingRoute="this.route.rawRoutes.path.cm.enrollments.ROOT"
+                  (click)="viewEnrollment(enrollment)"
+                >
+                  Finish Application
+                </ion-button>
+              </ng-container>
+              <ng-container *ngIf="state.buttonState === EnrollmentStatus.pending">
+                <ion-button
+                  *imLoadingRoute="this.route.rawRoutes.path.cm.enrollments.ROOT"
+                  (click)="viewEnrollment(enrollment)"
+                >
+                  View Enrollment
+                </ion-button>
+              </ng-container>
+              <ng-container *ngIf="state.buttonState === EnrollmentStatus.enrolled">
+                <ion-button
+                  *imLoadingRoute="this.route.rawRoutes.path.cm.enrollments.ROOT"
+                  (click)="createPOI(enrollment)"
+                >
+                  Earn Credits
+                </ion-button>
+              </ng-container>
+              <ion-button
+                *ngIf="state.buttonState === EnrollmentStatus.denied"
+                (click)="startApplication(state.project)"
+              >
+                Rejoin
+              </ion-button>
+              <ion-button
+                *ngIf="state.buttonState === EnrollmentStatus.retired"
+                (click)="startApplication(state.project)"
+              >
+                Rejoin
+              </ion-button>
+            </ng-container>
+          </ng-container>
+        </div>
+      </div>
+    </ng-container>
+  </ion-content>
+</ng-container>

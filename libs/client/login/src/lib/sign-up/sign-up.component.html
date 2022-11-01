@@ -1,0 +1,68 @@
+<ng-container *ngIf="state$ | async as state">
+  <ion-header>
+    <ion-toolbar>
+      <ion-title>Sign Up</ion-title>
+    </ion-toolbar>
+  </ion-header>
+
+  <ion-content>
+    <div class="cont">
+      <div class="error-msg" *ngIf="state.errorStatus === ''"></div>
+      <div class="error-msg active" *ngIf="state.errorStatus !== ''" test-attr="login-error">
+        {{ state.errorStatus }}
+      </div>
+      <ion-icon src="/assets/involvemint.svg" class="logo"></ion-icon>
+      <!-- <ion-button style="width: 100%;" color="light" (click)="doGoogleLogin()">
+      <ion-img slot="start" [src]="'/assets/images/google.png'" style="width: 22px;"></ion-img>
+      &nbsp;&nbsp; Google Sign In
+      </ion-button> -->
+      <form [formGroup]="signUpForm" (submit)="submit()" novalidate>
+        <im-item [touched]="true">
+          <ion-icon slot="start" name="mail"></ion-icon>
+          <input formControlName="email" placeholder="Email" name="email" type="email" />
+          <im-error *ngIf="!signUpForm.controls.email.valid && signUpForm.controls.email.touched">
+            Please enter a valid email address.
+          </im-error>
+        </im-item>
+        <im-item [touched]="true">
+          <ion-icon slot="start" name="lock-closed"></ion-icon>
+          <input formControlName="password" placeholder="Password" name="password" type="password" />
+          <im-error *ngIf="!signUpForm.controls.password.valid && signUpForm.controls.password.touched">
+            {{ pwdValidationText }}
+          </im-error>
+        </im-item>
+        <im-item [touched]="true">
+          <ion-icon slot="start" name="lock-closed"></ion-icon>
+          <input
+            formControlName="confirmPassword"
+            placeholder="Confirm Password"
+            name="password"
+            type="password"
+          />
+          <im-error *ngIf="signUpForm.controls.password.touched && signUpForm.getError('notSame')">
+            Your passwords do not match.
+          </im-error>
+        </im-item>
+        <im-item style="cursor: pointer">
+          <im-checkbox controlName="acceptTC" slot="start"></im-checkbox>
+          <ion-label text-wrap>I agree to the Terms of Service</ion-label>
+        </im-item>
+        <a (click)="legal('terms')">Read the Terms of Service</a>
+        <!-- Implicit button for form when pressing enter button -->
+        <button style="display: none" [disabled]="!signUpForm.valid"></button>
+      </form>
+      <ion-button
+        [style.margin-top]="'var(--im-padding)'"
+        [disabled]="!signUpForm.valid"
+        test-attr="sign-up-submit-button"
+        (click)="submit()"
+      >
+        Sign Up
+      </ion-button>
+      <span [style.margin-top]="'var(--im-padding)'">
+        Already have an account?
+        <a (click)="backToLoginPage()">Log In</a>
+      </span>
+    </div>
+  </ion-content>
+</ng-container>

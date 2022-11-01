@@ -1,0 +1,332 @@
+/**
+ * Shared across all platforms and apps
+ * You may define a set of global variables accessible across entire workspace here
+ */
+
+/** Ionic CSS Variables **/
+:root {
+  /*
+    _                 _           __  __ ___ _   _ _____
+   (_)_ ____   _____ | |_   _____|  \/  |_ _| \ | |_   _|
+   | | '_ \ \ / / _ \| \ \ / / _ \ |\/| || ||  \| | | |
+   | | | | \ V / (_) | |\ V /  __/ |  | || || |\  | | |
+   |_|_|_|_|\_/ \___/|_| \_/ \___|_|  |_|___|_| \_| |_|
+    / ___|   _ ___| |_ ___  _ __ ___
+   | |  | | | / __| __/ _ \| '_ ` _ \
+   | |__| |_| \__ \ || (_) | | | | | |
+    \____\__,_|___/\__\___/|_| |_| |_|
+     ____ ____ ____
+    / ___/ ___/ ___|
+   | |   \___ \___ \
+   | |___ ___) |__) |
+    \____|____/____/
+  */
+
+  --im-green-tint: #38aa2c;
+  --im-green: #127127;
+  --im-green-rgb: 189, 50, 146;
+  --im-green-shade: #015413;
+  --im-green-contrast: #ffffff;
+  --im-green-gradient-tint: #32a52f;
+  --im-green-gradient-shade: #127127;
+
+  --im-orange-tint: #f7841a;
+  --im-orange-rgb: 246, 118, 0;
+  --im-orange: #f67600;
+  --im-orange-shade: #984900;
+  --im-orange-contrast: #ffffff;
+  --im-orange-gradient-tint: #f69400;
+  --im-orange-gradient-shade: #f67600;
+
+  --im-purple-tint: #c4479d;
+  --im-purple: #bd3292;
+  --im-purple-rgb: 189, 50, 146;
+  --im-purple-shade: #880661;
+  --im-purple-contrast: #ffffff;
+  --im-purple-gradient-tint: #bd3292;
+  --im-purple-gradient-shade: #9132bd;
+
+  --im-blue-tint: #2182f0;
+  --im-blue: #0366d6;
+  --im-blue-rgb: 18, 113, 39;
+  --im-blue-shade: #023a79;
+  --im-blue-contrast: #ffffff;
+
+  --im-yellow-tint: #ffbe36;
+  --im-yellow: #f8a800;
+  --im-yellow-rgb: 248, 168, 0;
+  --im-yellow-shade: #c28400;
+  --im-yellow-contrast: #ffffff;
+
+  --im-red-tint: #f66a66;
+  --im-red: #da423e;
+  --im-red-rgb: 218, 66, 62;
+  --im-red-shade: #ba221e;
+  --im-red-contrast: #ffffff;
+
+  --im-border-color: #cccccc;
+  --im-border-color: #cccccc;
+  --im-border-radius: 10px;
+  --im-bottom-padding: 30px;
+
+  --st-base-color-active: rgba(255, 255, 255, 0.99);
+  --st-base-color-inactive: rgba(255, 255, 255, 0.6);
+  --super-tabs-toolbar-background: var(--ion-color-dark);
+  --st-indicator-color: var(--ion-color-primary);
+
+  --im-primary-font-size: 18px;
+  --im-secondary-font-size: 14px;
+
+  --im-padding: 0.75rem;
+
+  --im-primary-font: 'Manrope', sans-serif;
+
+  --im-router-padding: 0em;
+
+  --max-content-width: 947px;
+  --im-content-background: #fff;
+
+  --im-menu: #ffffff;
+  --im-menu-expanded: #f2f4f8;
+  --im-menu-item-icon: #9a9ea7;
+  --im-menu-item-hover: #dae2ea;
+  --im-menu-item-active: #dae2ea;
+  --im-menu-border: #cccccc;
+
+  --im-input-background: #fff;
+
+  --im-block-background: #ffffff;
+  --im-header-background: #ffffff;
+
+  --im-logo-text-color: #505050;
+
+  --im-poi-denied: var(--im-red);
+  --im-poi-approved: var(--im-green);
+  --im-poi-submitted: var(--im-orange);
+  --im-poi-stopped: var(--ion-text-color);
+  --im-poi-paused: var(--ion-text-color);
+  --im-poi-started: var(--im-green);
+  --im-poi-created: var(--ion-text-color);
+
+  --im-enrollment-retired: var(--ion-text-color);
+  --im-enrollment-denied: var(--im-red);
+  --im-enrollment-approved: var(--im-green);
+  --im-enrollment-submitted: var(--im-blue);
+  --im-enrollment-applied: var(--ion-text-color);
+
+  --im-voucher-active: var(--ion-text-color);
+  --im-voucher-expired: var(--ion-text-color);
+  --im-voucher-refunded: var(--im-red);
+  --im-voucher-redeemed: var(--im-green);
+
+  /*
+      ___          _       ___     _            
+     |_ _|___ _ _ (_)__   / __|___| |___ _ _ ___
+      | |/ _ \ ' \| / _| | (__/ _ \ / _ \ '_(_-<
+     |___\___/_||_|_\__|  \___\___/_\___/_| /__/
+                                                
+  */
+  --ion-color-primary: var(--im-green);
+  --ion-color-primary-rgb: var(--im-green-rgb);
+  --ion-color-primary-contrast: var(--im-green-contrast);
+  --ion-color-primary-contrast-rgb: 255, 255, 255;
+  --ion-color-primary-shade: var(--im-green-shade);
+  --ion-color-primary-tint: var(--im-green-tint);
+  --ion-color-primary-gradient-shade: var(--im-green-gradient-shade);
+  --ion-color-primary-gradient-tint: var(--im-green-gradient-tint);
+
+  --ion-color-secondary: #3dc2ff;
+  --ion-color-secondary-rgb: 61, 194, 255;
+  --ion-color-secondary-contrast: #ffffff;
+  --ion-color-secondary-contrast-rgb: 255, 255, 255;
+  --ion-color-secondary-shade: #36abe0;
+  --ion-color-secondary-tint: #50c8ff;
+
+  --ion-color-tertiary: #5260ff;
+  --ion-color-tertiary-rgb: 82, 96, 255;
+  --ion-color-tertiary-contrast: #ffffff;
+  --ion-color-tertiary-contrast-rgb: 255, 255, 255;
+  --ion-color-tertiary-shade: #4854e0;
+  --ion-color-tertiary-tint: #6370ff;
+
+  --ion-color-success: #39a10d;
+  --ion-color-success-rgb: 45, 211, 111;
+  --ion-color-success-contrast: #ffffff;
+  --ion-color-success-contrast-rgb: 255, 255, 255;
+  --ion-color-success-shade: #278400;
+  --ion-color-success-tint: #53c224;
+
+  --ion-color-warning: #ffc409;
+  --ion-color-warning-rgb: 255, 196, 9;
+  --ion-color-warning-contrast: #000000;
+  --ion-color-warning-contrast-rgb: 0, 0, 0;
+  --ion-color-warning-shade: #e0ac08;
+  --ion-color-warning-tint: #ffca22;
+
+  --ion-color-danger: var(--im-red);
+  --ion-color-danger-rgb: var(--im-red-rgb);
+  --ion-color-danger-contrast: var(--im-red-contrast);
+  --ion-color-danger-contrast-rgb: 255, 255, 255;
+  --ion-color-danger-shade: var(--im-red-shade);
+  --ion-color-danger-tint: var(--im-red-tint);
+
+  --ion-color-dark: #152b2b;
+  --ion-color-dark-rgb: 21, 43, 43;
+  --ion-color-dark-contrast: #ffffff;
+  --ion-color-dark-contrast-rgb: 255, 255, 255;
+  --ion-color-dark-shade: #041818;
+  --ion-color-dark-tint: #243434;
+
+  --ion-color-medium: #92949c;
+  --ion-color-medium-rgb: 146, 148, 156;
+  --ion-color-medium-contrast: #ffffff;
+  --ion-color-medium-contrast-rgb: 255, 255, 255;
+  --ion-color-medium-shade: #808289;
+  --ion-color-medium-tint: #9d9fa6;
+
+  --ion-color-light: #fafbfc;
+  --ion-color-light-rgb: 250, 251, 252;
+  --ion-color-light-contrast: #000000;
+  --ion-color-light-contrast-rgb: 0, 0, 0;
+  --ion-color-light-shade: #eff1f3;
+  --ion-color-light-tint: #ffffff;
+
+  --ion-text-color: var(--ion-color-dark);
+  --ion-toolbar-color: var(--ion-text-color);
+  --ion-background-color: #ffffff;
+  --border-radius: var(--im-border-radius);
+  --ion-toolbar-background: white;
+
+  --ion-text-color: #000000;
+
+  --ion-font-family: 'Inter', sans-serif;
+}
+
+/*
+    ___           _     __  __         _     
+   |   \ __ _ _ _| |__ |  \/  |___  __| |___ 
+   | |) / _` | '_| / / | |\/| / _ \/ _` / -_)
+   |___/\__,_|_| |_\_\ |_|  |_\___/\__,_\___|
+                                             
+*/
+
+[data-theme='dark'] {
+  /*
+      ___ __  __  __   __           
+     |_ _|  \/  | \ \ / /_ _ _ _ ___
+      | || |\/| |  \ V / _` | '_(_-<
+     |___|_|  |_|   \_/\__,_|_| /__/
+                                    
+  */
+
+  --im-green-tint: #56bf4b;
+  --im-green: #38aa2c;
+  --im-green-rgb: 56, 170, 44;
+  --im-green-shade: #127127;
+  --im-green-contrast: #fff;
+
+  --im-blue-tint: #5da1ed;
+  --im-blue: #388be8;
+  --im-blue-rgb: 56, 139, 232;
+  --im-blue-shade: #1273e0;
+  --im-blue-contrast: #ffffff;
+
+  --im-red-tint: #f66a66;
+  --im-red: #da423e;
+  --im-red-rgb: 218, 66, 62;
+  --im-red-shade: #bc201c;
+  --im-red-contrast: #ffffff;
+
+  --im-border-color: #34393f;
+
+  --im-tabs-indicator-bg: #555;
+
+  --im-content-background: #1a1d21;
+
+  --im-input-background: #222529;
+
+  --im-menu: #1a1d21;
+  --im-menu-expanded: #262a30;
+  --im-menu-item-hover: #30353c;
+  --im-menu-item-active: #30353c;
+  --im-menu-item-icon: #bcc1cb;
+  --im-menu-border: var(--im-border-color);
+
+  --im-block-background: #222529;
+
+  --im-logo-text-color: #ffffff;
+
+  ion-button.button-solid {
+    --background: linear-gradient(
+      0deg,
+      var(--ion-color-primary-gradient-shade) 0%,
+      var(--ion-color-primary-gradient-tint) 100%
+    );
+
+    &[color='danger'] {
+      --background: linear-gradient(0deg, var(--ion-color-danger-shade) 0%, var(--ion-color-danger) 100%);
+    }
+  }
+
+  /*
+      ___          _     __   __           
+     |_ _|___ _ _ (_)__  \ \ / /_ _ _ _ ___
+      | |/ _ \ ' \| / _|  \ V / _` | '_(_-<
+     |___\___/_||_|_\__|   \_/\__,_|_| /__/
+                                           
+  */
+
+  --ion-text-color: #ffffff;
+
+  --ion-toolbar-background: var(--im-block-background);
+
+  .loading-wrapper,
+  .alert-wrapper {
+    background: #222529;
+    border: 1px solid var(--im-border-color);
+  }
+
+  .swiper-pagination-bullet {
+    background: white;
+  }
+}
+
+.im-green {
+  --ion-color-primary: var(--im-green);
+  --ion-color-primary-rgb: var(--im-green-rgb);
+  --ion-color-primary-contrast: var(--im-green-contrast);
+  --ion-color-primary-shade: var(--im-green-shade);
+  --ion-color-primary-tint: var(--im-green-tint);
+  --ion-color-primary-gradient-shade: var(--im-green-gradient-shade);
+  --ion-color-primary-gradient-tint: var(--im-green-gradient-tint);
+}
+
+.im-cm {
+  --ion-color-primary: var(--im-green);
+  --ion-color-primary-rgb: var(--im-green-rgb);
+  --ion-color-primary-contrast: var(--im-green-contrast);
+  --ion-color-primary-shade: var(--im-green-shade);
+  --ion-color-primary-tint: var(--im-green-tint);
+  --ion-color-primary-gradient-shade: var(--im-green-gradient-shade);
+  --ion-color-primary-gradient-tint: var(--im-green-gradient-tint);
+}
+
+.im-ep {
+  --ion-color-primary: var(--im-orange);
+  --ion-color-primary-rgb: var(--im-orange-rgb);
+  --ion-color-primary-contrast: var(--im-orange-contrast);
+  --ion-color-primary-shade: var(--im-orange-shade);
+  --ion-color-primary-tint: var(--im-orange-tint);
+  --ion-color-primary-gradient-shade: var(--im-orange-gradient-shade);
+  --ion-color-primary-gradient-tint: var(--im-orange-gradient-tint);
+}
+
+.im-sp {
+  --ion-color-primary: var(--im-purple);
+  --ion-color-primary-rgb: var(--im-purple-rgb);
+  --ion-color-primary-contrast: var(--im-purple-contrast);
+  --ion-color-primary-shade: var(--im-purple-shade);
+  --ion-color-primary-tint: var(--im-purple-tint);
+  --ion-color-primary-gradient-shade: var(--im-purple-gradient-shade);
+  --ion-color-primary-gradient-tint: var(--im-purple-gradient-tint);
+}

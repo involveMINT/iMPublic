@@ -1,0 +1,55 @@
+<ng-container *ngIf="state$ | async as state">
+  <ion-header [class.ion-no-border]="!state.loaded">
+    <ion-toolbar>
+      <ion-buttons slot="start">
+        <ion-menu-button></ion-menu-button>
+      </ion-buttons>
+      <ion-title>Your Projects</ion-title>
+      <ion-buttons slot="end">
+        <ion-button (click)="refresh()">
+          <ion-icon slot="icon-only" name="refresh"></ion-icon>
+        </ion-button>
+      </ion-buttons>
+    </ion-toolbar>
+    <ion-progress-bar type="indeterminate" [class.hide]="state.loaded"></ion-progress-bar>
+  </ion-header>
+
+  <ion-content>
+    <div class="im-cont">
+      <ng-container>
+        <div class="im-buttons">
+          <ion-button (click)="createProject()" [disabled]="!state.loaded">
+            <ion-icon name="add"></ion-icon>
+            New Project
+          </ion-button>
+        </div>
+        <div *ngIf="state.projects.length === 0 && state.loaded" class="im-centered">
+          <span>You have no projects.</span>
+        </div>
+        <div class="im-block-cont">
+          <im-block
+            *ngFor="let project of state.projects; trackBy: projectTrack"
+            [images]="project.imagesFilePaths"
+            (click)="editProject(project)"
+          >
+            <div header class="im-primary-text" header (click)="editProject(project)">
+              <span *ngIf="project.title">{{ project.title }}</span>
+              <i *ngIf="!project.title">(Empty Project)</i>
+            </div>
+            <div body [style.font-weight]="'600'">
+              <span *ngIf="project.listingStatus === 'public'" [style.color]="'var(--im-green)'">Public</span>
+              <span *ngIf="project.listingStatus === 'private'" [style.color]="'var(--im-red)'">Private</span>
+              <span *ngIf="project.listingStatus === 'unlisted'" [style.color]="'var(--im-yellow)'">
+                Unlisted
+              </span>
+            </div>
+            <div footer>
+              Posted:
+              <span class="im-p-c">{{ project.dateCreated | date: 'MMMM d, y, h:mm a' }}</span>
+            </div>
+          </im-block>
+        </div>
+      </ng-container>
+    </div>
+  </ion-content>
+</ng-container>

@@ -1,0 +1,51 @@
+<div *ngIf="state$ | async as state" class="cont {{ color }}">
+  <div class="sending">
+    <span>{{ state.amount / 100 | currency: '':'' }}</span>
+    <ion-icon src="/assets/icons/cc.svg"></ion-icon>
+  </div>
+  <div class="equiv">
+    <span>Valued at: {{ state.amount / 100 | currency }} USD</span>
+  </div>
+  <div class="total">
+    <div class="balance" *ngIf="state.mode === 'transaction'">
+      <span>Remaining balance: {{ state.afterAmount / 100 | currency: '':'' }}</span>
+      <ion-icon src="/assets/icons/cc.svg"></ion-icon>
+    </div>
+    <div class="balance" *ngIf="state.mode === 'pricePicker'">
+      <span>Maximum Amount: {{ maxCreditTransactionAmount / 100 | currency: '':'' }}</span>
+      <ion-icon src="/assets/icons/cc.svg"></ion-icon>
+    </div>
+  </div>
+  <div class="number-pad">
+    <div class="number-row">
+      <ion-button (click)="setVal('1')"><span>1</span></ion-button>
+      <ion-button (click)="setVal('2')"><span>2</span></ion-button>
+      <ion-button (click)="setVal('3')"><span>3</span></ion-button>
+    </div>
+    <div class="number-row">
+      <ion-button (click)="setVal('4')"><span>4</span></ion-button>
+      <ion-button (click)="setVal('5')"><span>5</span></ion-button>
+      <ion-button (click)="setVal('6')"><span>6</span></ion-button>
+    </div>
+    <div class="number-row">
+      <ion-button (click)="setVal('7')"><span>7</span></ion-button>
+      <ion-button (click)="setVal('8')"><span>8</span></ion-button>
+      <ion-button (click)="setVal('9')"><span>9</span></ion-button>
+    </div>
+    <div class="number-row">
+      <ion-button [disabled]="true"><span></span></ion-button>
+      <ion-button (click)="setVal('0')"><span>0</span></ion-button>
+      <ion-button (click)="delete()"><span><</span></ion-button>
+    </div>
+  </div>
+  <div class="buttons">
+    <ion-button fill="outline" (click)="action.emit()">Cancel</ion-button>
+    <ion-button
+      test-attr="amount-confirm"
+      (click)="action.emit(state.amount)"
+      [disabled]="state.overspendOrZero && state.mode !== 'budgetSetter'"
+    >
+      Confirm
+    </ion-button>
+  </div>
+</div>

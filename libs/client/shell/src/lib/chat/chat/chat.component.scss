@@ -1,0 +1,87 @@
+.cont {
+  .message {
+    padding: 10px;
+    border-radius: 10px;
+    white-space: pre-wrap;
+    display: grid;
+    gap: 5px;
+    box-shadow: 2px 3px 9px -7px #555;
+
+    .member-handle {
+      font-size: 1.1em;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: calc(var(--im-padding) / 2);
+    }
+
+    .im-profile-pic,
+    .im-profile-pic-none {
+      height: 40px;
+      width: 40px;
+    }
+
+    .time {
+      justify-self: end;
+      font-size: 0.9em;
+      padding-top: 10px;
+    }
+  }
+
+  .other-message {
+    background: var(--ion-color-primary);
+    color: var(--ion-color-primary-contrast);
+    margin-right: 20%;
+    box-shadow: var(--ion-color-primary) 0px 0px 7px -2px;
+  }
+
+  .my-message {
+    box-shadow: var(--im-border-color) 0px 0px 7px -2px;
+    border: 1px solid var(--im-border-color);
+    margin-left: 20%;
+    background-color: var(--im-block-background);
+  }
+}
+
+.message-input {
+  width: 100%;
+  box-shadow: var(--im-border-color) 0px 0px 7px -2px;
+  border: 1px solid var(--im-border-color);
+  border-radius: 10px;
+  resize: none;
+  color: var(--ion-text-color);
+  background: var(--im-input-background);
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+.msg-btn {
+  --padding-start: 0.5em;
+  --padding-end: 0.5em;
+}
+
+ion-footer {
+  border-top: 1px solid var(--im-border-color);
+}
+
+.send-cont {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  place-items: center;
+}
+
+.info {
+  font-size: 1.3em;
+  margin-bottom: -4px;
+  cursor: pointer;
+
+  &:hover {
+    filter: contrast(0.3);
+  }
+}
+
+.name {
+  font-size: 0.85em;
+  filter: contrast(0.5);
+  text-align: center;
+}

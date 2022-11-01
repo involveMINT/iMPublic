@@ -1,0 +1,119 @@
+<ng-container *ngIf="state$ | async as state">
+  <ion-header>
+    <ion-toolbar>
+      <ion-buttons slot="start">
+        <ion-menu-button></ion-menu-button>
+      </ion-buttons>
+      <ion-title>Preferences</ion-title>
+      <ion-buttons slot="end">
+        <ion-button (click)="logout()">
+          <ion-icon slot="start" name="log-out"></ion-icon>
+          Log Out
+        </ion-button>
+      </ion-buttons>
+    </ion-toolbar>
+  </ion-header>
+
+  <ion-content>
+    <div class="im-cont">
+      <im-block>
+        <div header class="im-primary-text">Dark Mode</div>
+        <div body class="item">
+          <div>Burning retinas? Try dark mode.</div>
+          <ion-toggle [ngModel]="state.darkMode" (ngModelChange)="onDarkModeChange()"></ion-toggle>
+          Dark mode is {{ state.darkMode ? 'on' : 'off' }}.
+        </div>
+      </im-block>
+      <im-block>
+        <div header class="im-primary-text">Nav Tabs</div>
+        <div body class="item">
+          <div>Toggle the navigation tabs at the bottom of the screen. Best for mobile views.</div>
+          <ion-toggle [ngModel]="state.navTabs" (ngModelChange)="onNavTabChange()"></ion-toggle>
+          Nav Tabs is {{ state.navTabs ? 'on' : 'off' }}.
+        </div>
+      </im-block>
+      <im-block>
+        <div header class="im-primary-text">Side Menu Behavior</div>
+        <div body class="item">
+          <div>Tweak the behavior of the main menu.</div>
+          <ion-toggle
+            [checked]="state.sideMenuBehavior === 'responsive'"
+            (ionChange)="sideMenuBehavior()"
+          ></ion-toggle>
+          {{
+            state.sideMenuBehavior === 'hidden'
+              ? 'Side menu is always hidden.'
+              : 'Side menu is responsive to screen size.'
+          }}
+        </div>
+      </im-block>
+
+      <ng-container *ngIf="state.authenticated && !state.isAdmin">
+        <im-block>
+          <div header class="im-primary-text">Change Password</div>
+          <div body [formGroup]="changePasswordForm">
+            <im-item [touched]="true">
+              <ion-icon slot="start" name="lock-closed"></ion-icon>
+              <input
+                formControlName="currentPassword"
+                placeholder="Current Password"
+                name="password"
+                type="password"
+              />
+              <im-error
+                *ngIf="
+                  !changePasswordForm.controls.currentPassword.valid &&
+                  changePasswordForm.controls.currentPassword.touched
+                "
+              >
+                Please enter your current password.
+              </im-error>
+            </im-item>
+            <im-item [touched]="true">
+              <ion-icon slot="start" name="lock-closed"></ion-icon>
+              <input
+                formControlName="newPassword"
+                placeholder="New Password"
+                name="password"
+                type="password"
+              />
+              <im-error
+                *ngIf="
+                  !changePasswordForm.controls.newPassword.valid &&
+                  changePasswordForm.controls.newPassword.touched
+                "
+              >
+                {{ pwdValidationText }}
+              </im-error>
+            </im-item>
+            <im-item [touched]="true">
+              <ion-icon slot="start" name="lock-closed"></ion-icon>
+              <input
+                formControlName="confirmPassword"
+                placeholder="Confirm New Password"
+                name="password"
+                type="password"
+              />
+              <im-error
+                *ngIf="
+                  changePasswordForm.controls.confirmPassword.touched &&
+                  changePasswordForm.getError('notSame')
+                "
+              >
+                Your passwords do not match.
+              </im-error>
+            </im-item>
+          </div>
+          <div footer class="im-buttons">
+            <ion-button
+              (click)="changePassword()"
+              [disabled]="changePasswordForm.invalid || !changePasswordForm.dirty"
+            >
+              Change
+            </ion-button>
+          </div>
+        </im-block>
+      </ng-container>
+    </div>
+  </ion-content>
+</ng-container>

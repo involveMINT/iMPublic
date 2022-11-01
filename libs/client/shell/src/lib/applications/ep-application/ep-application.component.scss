@@ -1,0 +1,10 @@
+.apply-for-buttons {
+  padding: var(--im-padding) var(--im-padding) 0;
+}
+
+ion-segment-button {
+  --indicator-color: var(--ion-color-primary);
+  --color-checked: white;
+  --margin-top: 0.3rem;
+  --margin-bottom: 0.3rem;
+}

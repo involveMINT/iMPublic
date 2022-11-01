@@ -1,0 +1,17 @@
+.images-cont {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(123px, 1fr)); // image width
+  grid-auto-rows: 123px; // image height
+  gap: var(--im-padding);
+  margin: var(--im-padding) 0 var(--im-padding) 0;
+
+  .cover {
+    display: grid;
+    place-content: center;
+    font-weight: bold;
+    cursor: pointer;
+    text-decoration: underline;
+    padding: 0.5em;
+    color: black;
+  }
+}

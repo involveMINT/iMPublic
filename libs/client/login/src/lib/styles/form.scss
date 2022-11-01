@@ -1,0 +1,53 @@
+.cont {
+  display: grid;
+  grid-template-rows: auto auto auto 1fr auto;
+  align-items: center;
+  width: 320px;
+  margin-left: calc((100% - 320px) / 2);
+  max-height: 600px;
+  padding: 1em;
+  text-align: center;
+}
+
+a {
+  color: var(--im-green);
+  cursor: pointer;
+  font-weight: bold;
+  text-decoration: underline;
+}
+
+form {
+  display: grid;
+  align-self: start;
+}
+
+.logo {
+  padding: 0 10px;
+  width: 272px;
+  height: 53px;
+}
+
+.error-msg {
+  border-radius: var(--im-border-radius);
+  color: white;
+  text-align: center;
+  padding: 0.5em 1em;
+  margin-bottom: 1em;
+
+  &.active {
+    background-color: red;
+  }
+}
+
+ion-button {
+  align-self: start;
+}
+
+form {
+  margin-top: 1em;
+}
+
+.link:hover {
+  cursor: pointer;
+  text-decoration: underline;
+}

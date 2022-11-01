@@ -1,0 +1,54 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button (click)="close()">
+        <ion-icon slot="icon-only" name="close"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title>Welcome</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div class="im-cont">
+    <div [style.text-align]="'center'">
+      Welcome to involveMINT! What user class would you like to sign up as?
+    </div>
+    <im-block class="im-cm">
+      <div body class="body">
+        <div class="img-cont">
+          <img src="/assets/onboard/earn.svg" />
+        </div>
+        <div class="text">
+          <div class="im-primary-text">Become a ChangeMaker</div>
+          <div>Enhance your community while earning CommunityCredits to purchase goods.</div>
+        </div>
+        <ion-button (click)="cm()">Become a ChangeMaker</ion-button>
+      </div>
+    </im-block>
+    <im-block class="im-ep">
+      <div body class="body">
+        <div class="img-cont">
+          <img src="/assets/onboard/spend.svg" />
+        </div>
+        <div class="text">
+          <div class="im-primary-text">Become an ExchangePartner</div>
+          <div>Sell your goods and services to users by using CommunityCredits as currency.</div>
+        </div>
+        <ion-button (click)="ep()">Become an ExchangePartner</ion-button>
+      </div>
+    </im-block>
+    <im-block class="im-sp">
+      <div body class="body">
+        <div class="img-cont">
+          <img src="/assets/onboard/serve.svg" />
+        </div>
+        <div class="text">
+          <div class="im-primary-text">Become a ServePartner</div>
+          <div>Create Projects then hire talent to help you complete your projects.</div>
+        </div>
+        <ion-button (click)="sp()">Become a ServePartner</ion-button>
+      </div>
+    </im-block>
+  </div>
+</ion-content>

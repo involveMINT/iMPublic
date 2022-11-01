@@ -1,0 +1,21 @@
+:host {
+  display: inline-block;
+}
+
+.cont {
+  display: flex;
+  align-items: center;
+  color: inherit;
+}
+
+ion-icon {
+  margin-top: 2px;
+  margin-left: 3px;
+  font-size: 1.2em;
+  cursor: pointer;
+  color: var(--ion-text-color);
+
+  &:hover {
+    filter: contrast(0.3);
+  }
+}

@@ -1,0 +1,172 @@
+<ng-container *ngIf="state$ | async as state">
+  <ion-header>
+    <ion-toolbar>
+      <ion-buttons slot="start">
+        <ion-menu-button></ion-menu-button>
+      </ion-buttons>
+      <ion-title>ChangeMaker Profile</ion-title>
+    </ion-toolbar>
+  </ion-header>
+
+  <ion-content>
+    <div class="cont" [formGroup]="createProfileForm">
+      <span class="im-primary-text" [style.padding]="'var(--im-padding)'">Sign Up</span>
+      <ion-slides [pager]="true" #slides>
+        <ion-slide class="slide">
+          <div class="im-cont small">
+            <div class="info">
+              <ion-icon name="person-circle-outline" class="header-icon"></ion-icon>
+              <div class="im-primary-text">What's your name?</div>
+              <span class="description">
+                Providing your name allows ServePartners and Nonprofits to verify your identity.
+              </span>
+            </div>
+            <im-block>
+              <ng-container body>
+                <im-item [touched]="true">
+                  <ion-icon slot="start" name="person"></ion-icon>
+                  <input formControlName="firstName" placeholder="First Name" />
+                  <im-error
+                    *ngIf="
+                      !createProfileForm.controls.firstName.valid &&
+                      createProfileForm.controls.firstName.touched
+                    "
+                  >
+                    Please enter a valid first name.
+                  </im-error>
+                </im-item>
+
+                <im-item [touched]="true">
+                  <ion-icon slot="start" name="person"></ion-icon>
+                  <input formControlName="lastName" placeholder="Last Name" />
+                  <im-error
+                    *ngIf="
+                      !createProfileForm.controls.lastName.valid &&
+                      createProfileForm.controls.lastName.touched
+                    "
+                  >
+                    Please enter a valid last name.
+                  </im-error>
+                </im-item>
+              </ng-container>
+              <div class="im-buttons" footer>
+                <ion-button
+                  (click)="next()"
+                  [disabled]="
+                    createProfileForm.controls.firstName.invalid ||
+                    createProfileForm.controls.lastName.invalid
+                  "
+                >
+                  Next
+                </ion-button>
+              </div>
+            </im-block>
+          </div>
+        </ion-slide>
+        <ion-slide class="slide">
+          <div class="im-cont small">
+            <div class="info">
+              <ion-icon name="phone-portrait-outline" class="header-icon"></ion-icon>
+              <div class="im-primary-text">What is your Mobile Phone Number?</div>
+              <span class="description">
+                Your phone number allows Nonprofits and ServePartners to reliably contact you. You can
+                customize your phone number's visibility. By default, your phone number will only be visible
+                to ServePartners and nonprofits with whom you sign up to be a ChangeMaker. We will also send
+                you important notifications via text messages.
+              </span>
+            </div>
+            <im-block>
+              <ng-container body>
+                <im-item [touched]="true">
+                  <ion-icon slot="start" name="phone-portrait-outline"></ion-icon>
+                  <input
+                    imPhoneMask
+                    formControlName="phone"
+                    placeholder="Mobile Phone Number"
+                    type="tel"
+                    (change)="setPhoneVal($event)"
+                  />
+                  <im-error
+                    *ngIf="
+                      !createProfileForm.controls.phone.valid && createProfileForm.controls.phone.touched
+                    "
+                  >
+                    Please enter a valid phone number.
+                  </im-error>
+                </im-item>
+              </ng-container>
+              <div footer class="im-buttons">
+                <ion-button fill="outline" (click)="prev()">Back</ion-button>
+                <ion-button (click)="next()" [disabled]="createProfileForm.controls.phone.invalid">
+                  Next
+                </ion-button>
+              </div>
+            </im-block>
+          </div>
+        </ion-slide>
+        <ion-slide class="slide">
+          <div class="im-cont small">
+            <div class="info">
+              <ion-icon src="/assets/icons/@.svg" class="header-icon"></ion-icon>
+              <div class="im-primary-text">Create a @handle.</div>
+              <span class="description">
+                A @handle lets users search for your account and exchange CommunityCredits.
+              </span>
+            </div>
+            <im-block>
+              <ng-container body>
+                <im-item [touched]="true">
+                  <ion-icon slot="start" src="/assets/icons/@.svg"></ion-icon>
+                  <input formControlName="handle" placeholder="handle" />
+                  <ion-spinner
+                    slot="end"
+                    name="crescent"
+                    *ngIf="state.verifyingHandle && createProfileForm.controls.handle.valid"
+                  ></ion-spinner>
+                  <ion-icon
+                    slot="end"
+                    *ngIf="
+                      !state.verifyingHandle &&
+                      createProfileForm.controls.handle.valid &&
+                      !createProfileForm.controls.handle.errors?.notUnique
+                    "
+                    color="success"
+                    name="checkmark"
+                  ></ion-icon>
+                  <ion-icon
+                    slot="end"
+                    *ngIf="
+                      !state.verifyingHandle &&
+                      !createProfileForm.controls.handle.valid &&
+                      createProfileForm.controls.handle.errors?.notUnique
+                    "
+                    color="danger"
+                    name="close"
+                  ></ion-icon>
+                  <im-error *ngIf="createProfileForm.controls.handle.errors?.notUnique">
+                    That handle already exists.
+                  </im-error>
+                  <im-error
+                    *ngIf="
+                      !createProfileForm.controls.handle.errors?.notUnique &&
+                      !createProfileForm.controls.handle.valid &&
+                      createProfileForm.controls.handle.touched
+                    "
+                  >
+                    Please enter a valid @handle.
+                  </im-error>
+                </im-item>
+              </ng-container>
+              <div footer class="im-buttons">
+                <ion-button fill="outline" (click)="prev()">Back</ion-button>
+                <ion-button (click)="submit()" [disabled]="!createProfileForm.valid || state.verifyingHandle">
+                  Submit
+                </ion-button>
+              </div>
+            </im-block>
+          </div>
+        </ion-slide>
+      </ion-slides>
+    </div>
+  </ion-content>
+</ng-container>

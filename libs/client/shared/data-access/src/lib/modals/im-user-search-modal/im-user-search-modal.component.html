@@ -1,0 +1,49 @@
+<ng-container *ngIf="state$ | async as state">
+  <ion-header>
+    <ion-toolbar>
+      <ion-buttons slot="start">
+        <ion-button (click)="close()">
+          <ion-icon slot="icon-only" name="close"></ion-icon>
+        </ion-button>
+      </ion-buttons>
+      <ion-title>{{ title }}</ion-title>
+    </ion-toolbar>
+    <ion-toolbar>
+      <ion-searchbar
+        test-attr="send-to-input"
+        mode="ios"
+        placeholder="User Email Address"
+        [formControl]="search"
+      ></ion-searchbar>
+    </ion-toolbar>
+  </ion-header>
+
+  <ion-content>
+    <div class="im-cont">
+      <div [style.text-align]="'center'" *ngIf="header">{{ header }}</div>
+      <div class="im-centered" *ngIf="state.status === 'loading'">
+        <ion-spinner name="crescent"></ion-spinner>
+      </div>
+      <div *ngIf="state.users.length < 1 && state.status === 'done'" class="im-centered">
+        No matches found.
+      </div>
+      <div class="im-block-cont" *ngIf="state.status === 'done'">
+        <im-block *ngFor="let user of state.users" (click)="select(user)">
+          <div body>
+            <div class="im-primary-text">{{ user.id }}</div>
+            <div *ngIf="user.changeMaker as cm; else noCm">
+              Associated ChangeMaker profile:
+              <br />
+              <im-handle [handle]="cm.handle.id"></im-handle>
+              <br />
+              {{ cm.firstName }} {{ cm.lastName }}
+            </div>
+            <ng-template #noCm>
+              <i>No associated ChangeMaker profile.</i>
+            </ng-template>
+          </div>
+        </im-block>
+      </div>
+    </div>
+  </ion-content>
+</ng-container>

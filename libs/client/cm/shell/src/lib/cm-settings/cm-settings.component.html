@@ -1,0 +1,122 @@
+<ng-container *ngIf="state$ | async as state">
+  <ng-container *ngIf="state.profile as profile">
+    <ion-header>
+      <ion-toolbar>
+        <ion-buttons slot="start">
+          <ion-menu-button></ion-menu-button>
+        </ion-buttons>
+        <ion-title>Settings</ion-title>
+      </ion-toolbar>
+    </ion-header>
+
+    <ion-content>
+      <div class="im-cont">
+        <im-block>
+          <div header class="im-primary-text">Profile Picture</div>
+          <div body>
+            <input type="file" (change)="changeProfilePic($event)" #profilePicInp />
+            <div
+              class="im-profile-pic"
+              *ngIf="profile!.profilePicFilePath | imStorageUrl | async as url"
+              [style.background-image]="'url(' + url + ')'"
+            ></div>
+            <ion-icon
+              *ngIf="!profile!.profilePicFilePath"
+              class="im-profile-pic-none"
+              name="person-circle"
+            ></ion-icon>
+          </div>
+          <div footer class="im-buttons">
+            <ion-button
+              color="danger"
+              (click)="deleteProfilePic()"
+              fill="clear"
+              *ngIf="profile!.profilePicFilePath"
+            >
+              <ion-icon slot="icon-only" name="trash"></ion-icon>
+            </ion-button>
+            <ion-button (click)="changeProfilePicButtonClick()">
+              <ion-icon
+                slot="start"
+                [name]="state.profile!.profilePicFilePath ? 'swap-horizontal' : 'cloud-upload'"
+              ></ion-icon>
+              {{ state.profile!.profilePicFilePath ? 'Replace Logo' : 'Upload Logo' }}
+            </ion-button>
+          </div>
+        </im-block>
+        <div [formGroup]="form">
+          <im-item [touched]="true" formGroupName="handle" label="Handle">
+            <ion-icon slot="start" src="/assets/icons/@.svg"></ion-icon>
+            <input formControlName="id" placeholder="handle" />
+            <ion-spinner
+              slot="end"
+              name="crescent"
+              *ngIf="state.verifyingHandle && form.controls.handle.valid"
+            ></ion-spinner>
+            <ion-icon
+              slot="end"
+              *ngIf="
+                !state.verifyingHandle &&
+                form.controls.handle.valid &&
+                !form.controls.handle.errors?.notUnique
+              "
+              color="success"
+              name="checkmark"
+            ></ion-icon>
+            <ion-icon
+              slot="end"
+              *ngIf="
+                !state.verifyingHandle &&
+                !form.controls.handle.valid &&
+                form.controls.handle.errors?.notUnique
+              "
+              color="danger"
+              name="close"
+            ></ion-icon>
+            <im-error *ngIf="form.controls.handle.errors?.notUnique">That handle already exists.</im-error>
+            <im-error
+              *ngIf="
+                !form.controls.handle.errors?.notUnique &&
+                !form.controls.handle.valid &&
+                form.controls.handle.touched
+              "
+            >
+              Please enter a valid @handle.
+            </im-error>
+          </im-item>
+
+          <im-item [touched]="true" label="First Name">
+            <ion-icon slot="start" name="person"></ion-icon>
+            <input formControlName="firstName" placeholder="First Name" />
+            <im-error *ngIf="form.controls.firstName.invalid">Please enter a valid first name.</im-error>
+          </im-item>
+          <im-item [touched]="true" label="Last Name">
+            <ion-icon slot="start" name="person"></ion-icon>
+            <input formControlName="lastName" placeholder="Last Name" />
+            <im-error *ngIf="form.controls.lastName.invalid">Please enter a valid last name.</im-error>
+          </im-item>
+          <im-item body [touched]="true" label="Bio">
+            <ion-icon slot="start" name="person"></ion-icon>
+            <textarea formControlName="bio" placeholder="Bio"></textarea>
+            <im-error *ngIf="form.controls.bio.invalid">Please enter a valid bio.</im-error>
+          </im-item>
+          <im-item [touched]="true" label="Phone Number">
+            <ion-icon slot="start" name="phone-portrait-outline"></ion-icon>
+            <input imPhoneMask formControlName="phone" placeholder="Phone Number" />
+            <im-error *ngIf="form.controls.phone.invalid">Please enter a valid phone number.</im-error>
+          </im-item>
+        </div>
+        <div end class="im-buttons">
+          <ion-button (click)="save()" [disabled]="form.invalid || form.pristine || state.verifyingHandle">
+            <ion-icon
+              *ngIf="!state.saving"
+              [name]="form.dirty ? 'save' : 'cloud-done'"
+              slot="icon-only"
+            ></ion-icon>
+            <ion-spinner *ngIf="state.saving" name="crescent"></ion-spinner>
+          </ion-button>
+        </div>
+      </div>
+    </ion-content>
+  </ng-container>
+</ng-container>

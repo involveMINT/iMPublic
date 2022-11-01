@@ -1,0 +1,20 @@
+.preview {
+  border: 1px solid var(--im-border-color);
+  margin: 0 auto;
+  max-width: 400px;
+
+  iframe {
+    height: 500px;
+    width: 100%;
+  }
+}
+
+ol {
+  padding: 0 0 0 calc(var(--im-padding) / 2);
+}
+
+.el-body {
+  display: grid;
+  gap: calc(var(--im-padding) / 2);
+  margin-bottom: 4px;
+}

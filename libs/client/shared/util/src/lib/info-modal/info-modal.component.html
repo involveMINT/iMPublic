@@ -1,0 +1,24 @@
+<div class="icon-cont">
+  <div class="icon" *ngIf="useBackground">
+    <ng-container [ngSwitch]="icon.source">
+      <ion-icon *ngSwitchCase="'src'" [src]="icon.name"></ion-icon>
+      <ion-icon *ngSwitchCase="'ionicon'" [name]="icon.name"></ion-icon>
+    </ng-container>
+  </div>
+  <div *ngIf="!useBackground" style="font-size: 180px">
+    <ng-container [ngSwitch]="icon.source">
+      <ion-icon *ngSwitchCase="'src'" [src]="icon.name"></ion-icon>
+      <ion-icon *ngSwitchCase="'ionicon'" [name]="icon.name"></ion-icon>
+    </ng-container>
+  </div>
+</div>
+<h1>{{ title }}</h1>
+<p>{{ description }}</p>
+<ion-button test-attr="info-modal-button" (click)="dismiss(true)">{{ buttonText }}</ion-button>
+<div *ngIf="backText" class="back-cont" (click)="dismiss(false)" [style.cursor]="'pointer'">
+  <ion-icon class="back-text" name="arrow-back"></ion-icon>
+  <span>
+    <span class="back-text">Go Back</span>
+    {{ backText }}
+  </span>
+</div>

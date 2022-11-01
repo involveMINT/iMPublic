@@ -1,0 +1,97 @@
+.manrope {
+  font-family: 'Manrope', sans-serif;
+  font-weight: 600;
+  font-size: 16px;
+}
+
+.header {
+  display: grid;
+  place-items: center;
+  gap: var(--im-padding);
+  margin-bottom: calc(var(--im-padding) / 2);
+  text-align: center;
+}
+
+.cm-header {
+  display: grid;
+  grid-auto-flow: column;
+  justify-content: start;
+  align-items: center;
+  padding: var(--im-padding);
+  grid-gap: 10%;
+  gap: var(--im-padding);
+
+  .handle {
+    cursor: pointer;
+  }
+
+  .info {
+    display: grid;
+
+    gap: var(--im-padding);
+  }
+
+  .bio {
+    color: var(--ion-text-color);
+  }
+}
+
+.title {
+  text-align: center;
+  padding: 0 var(--im-padding) var(--im-padding) var(--im-padding);
+}
+
+.impact-cont {
+  place-content: center;
+  height: 100%;
+  gap: calc(var(--im-padding) * 2);
+  text-align: center;
+  margin-top: 0;
+  margin-bottom: 0;
+
+  .impact-row {
+    display: grid;
+    grid-auto-flow: column;
+    gap: calc(var(--im-padding) * 2);
+
+    & > * {
+      display: grid;
+      place-items: center;
+    }
+  }
+
+  .main-text {
+    font-family: Manrope;
+    font-size: 30px;
+    font-weight: 800;
+    color: var(--im-green);
+  }
+}
+
+.timeline-details {
+  display: grid;
+  gap: calc(var(--im-padding) / 2);
+}
+
+.timeline-detail-item {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  gap: 0.4em;
+
+  ion-icon {
+    font-size: 1.5em;
+  }
+}
+
+.mail-btn {
+  margin-bottom: -4px;
+  margin-left: 3px;
+  font-size: 1.2em;
+}
+
+.name {
+  font-size: 18px;
+  color: var(--im-green);
+  font-weight: 600;
+}

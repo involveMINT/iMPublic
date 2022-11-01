@@ -1,0 +1,199 @@
+<ng-container *ngIf="state$ | async as state">
+  <ion-header>
+    <ion-toolbar>
+      <ion-buttons slot="start">
+        <ion-menu-button></ion-menu-button>
+      </ion-buttons>
+      <ion-title>ExchangePartner Application</ion-title>
+    </ion-toolbar>
+  </ion-header>
+
+  <ion-content>
+    <div class="apply-for-buttons" *ngIf="baAdmin">
+      <ion-segment value="business" (ionChange)="toggleApplyFor($event)">
+        <ion-segment-button color="primary" value="business">
+          <ion-label>Apply for Business</ion-label>
+        </ion-segment-button>
+        <ion-segment-button color="primary" value="yourself">
+          <ion-label>Apply for Yourself</ion-label>
+        </ion-segment-button>
+      </ion-segment>
+    </div>
+    <div class="im-cont" [formGroup]="epForm">
+      <div>
+        <im-item *ngIf="baAdmin && applyFor === 'business'" [touched]="true" label="User Email">
+          <ion-icon slot="start" name="mail"></ion-icon>
+          <input formControlName="email" placeholder="User Email" />
+          <ion-spinner
+            slot="end"
+            name="crescent"
+            *ngIf="state.verifyingUserEmail && epForm!.controls.email.valid"
+          ></ion-spinner>
+          <ion-icon
+            slot="end"
+            *ngIf="
+              !state.verifyingUserEmail &&
+              epForm!.controls.email.valid &&
+              !epForm!.controls.email.errors?.notUnique
+            "
+            color="success"
+            name="checkmark"
+          ></ion-icon>
+          <ion-icon
+            slot="end"
+            *ngIf="
+              !state.verifyingUserEmail &&
+              !epForm!.controls.email.valid &&
+              epForm!.controls.email.errors?.notUnique
+            "
+            color="danger"
+            name="close"
+          ></ion-icon>
+          <im-error *ngIf="epForm!.controls.email.errors?.notUnique">email already exists.</im-error>
+          <im-error
+            *ngIf="
+              !epForm!.controls.email.errors?.notUnique &&
+              !epForm!.controls.email.valid &&
+              epForm!.controls.email.touched
+            "
+          >
+            Please enter a valid email.
+          </im-error>
+        </im-item>
+
+        <im-item [touched]="true" label="@handle">
+          <ion-icon slot="start" src="/assets/icons/@.svg"></ion-icon>
+          <input formControlName="handle" placeholder="handle" />
+          <ion-spinner
+            slot="end"
+            name="crescent"
+            *ngIf="state.verifyingHandle && epForm!.controls.handle.valid"
+          ></ion-spinner>
+          <ion-icon
+            slot="end"
+            *ngIf="
+              !state.verifyingHandle &&
+              epForm!.controls.handle.valid &&
+              !epForm!.controls.handle.errors?.notUnique
+            "
+            color="success"
+            name="checkmark"
+          ></ion-icon>
+          <ion-icon
+            slot="end"
+            *ngIf="
+              !state.verifyingHandle &&
+              !epForm!.controls.handle.valid &&
+              epForm!.controls.handle.errors?.notUnique
+            "
+            color="danger"
+            name="close"
+          ></ion-icon>
+          <im-error *ngIf="epForm!.controls.handle.errors?.notUnique">@handle already exists.</im-error>
+          <im-error
+            *ngIf="
+              !epForm!.controls.handle.errors?.notUnique &&
+              !epForm!.controls.handle.valid &&
+              epForm!.controls.handle.touched
+            "
+          >
+            Please enter a valid @handle.
+          </im-error>
+        </im-item>
+
+        <im-item [touched]="true" label="Business Name">
+          <ion-icon slot="start" name="information" class="header-icon"></ion-icon>
+          <input formControlName="name" placeholder="Business Name" />
+          <im-error *ngIf="!epForm.controls.name.valid && epForm.controls.name.touched">
+            Please enter a valid business name.
+          </im-error>
+        </im-item>
+
+        <im-item *ngIf="!baAdmin || applyFor === 'yourself'" [touched]="true" label="Business Email">
+          <ion-icon slot="start" name="mail"></ion-icon>
+          <input formControlName="email" placeholder="Business Email" />
+          <im-error *ngIf="!epForm.controls.email.valid && epForm.controls.email.touched">
+            Please enter a valid email.
+          </im-error>
+        </im-item>
+
+        <im-item [touched]="true" label="Address">
+          <ion-icon slot="start" name="home" class="header-icon"></ion-icon>
+          <input formControlName="address1" placeholder="Address" />
+          <im-error *ngIf="!epForm.controls.address1.valid && epForm.controls.address1.touched">
+            Please enter a valid address.
+          </im-error>
+        </im-item>
+
+        <im-item [touched]="true" label="Address 2">
+          <ion-icon slot="start" name="home" class="header-icon"></ion-icon>
+          <input formControlName="address2" placeholder="Address 2" />
+          <im-error *ngIf="!epForm.controls.address2.valid && epForm.controls.address2.touched">
+            Please enter a valid address.
+          </im-error>
+        </im-item>
+
+        <im-item [touched]="true" label="City">
+          <ion-icon slot="start" name="home" class="header-icon"></ion-icon>
+          <input formControlName="city" placeholder="City" />
+          <im-error *ngIf="!epForm.controls.city.valid && epForm.controls.city.touched">
+            Please enter a valid city.
+          </im-error>
+        </im-item>
+
+        <im-item
+          label="State"
+          [required]="true"
+          [hasError]="!epForm.controls.state.valid && epForm.controls.state.touched"
+        >
+          <ion-select (ionChange)="USStateChange($event)" [value]="selectedUSState">
+            <ion-select-option *ngFor="let state of USStates" [value]="state">
+              {{ state }}
+            </ion-select-option>
+          </ion-select>
+          <im-error *ngIf="!epForm.controls.state.valid && epForm.controls.state.touched">
+            Please select a state.
+          </im-error>
+        </im-item>
+
+        <im-item [touched]="true" label="Zip Code">
+          <ion-icon slot="start" name="home" class="header-icon"></ion-icon>
+          <input formControlName="zip" placeholder="Zip Code" />
+          <im-error *ngIf="!epForm.controls.zip.valid && epForm.controls.zip.touched">
+            Please enter a valid zip code.
+          </im-error>
+        </im-item>
+
+        <im-item [touched]="true" label="Phone Number">
+          <ion-icon slot="start" name="phone-portrait-outline" class="header-icon"></ion-icon>
+          <input imPhoneMask formControlName="phone" placeholder="Phone Number" />
+          <im-error *ngIf="!epForm.controls.phone.valid && epForm.controls.phone.touched">
+            Please enter a valid phone number.
+          </im-error>
+        </im-item>
+
+        <im-item [touched]="true" label="Website">
+          <ion-icon slot="start" name="link" class="header-icon"></ion-icon>
+          <input formControlName="website" placeholder="Website" />
+          <im-error *ngIf="!epForm.controls.website.valid && epForm.controls.website.touched">
+            Please enter a valid website.
+          </im-error>
+        </im-item>
+
+        <im-item [touched]="true" label="EIN">
+          <ion-icon slot="start" name="information" class="header-icon"></ion-icon>
+          <input formControlName="ein" placeholder="EIN" />
+          <im-error *ngIf="!epForm.controls.ein.valid && epForm.controls.ein.touched">
+            Please enter a valid EIN.
+          </im-error>
+        </im-item>
+      </div>
+
+      <div class="im-buttons">
+        <ion-button color="primary" [disabled]="!epForm.valid || state.verifyingHandle" (click)="submit()">
+          {{ baAdmin ? (applyFor === 'business' ? 'Submit for Business' : 'Submit for Yourself') : 'Submit' }}
+        </ion-button>
+      </div>
+    </div>
+  </ion-content>
+</ng-container>

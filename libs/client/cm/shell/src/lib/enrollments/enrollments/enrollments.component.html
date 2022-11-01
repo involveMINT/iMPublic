@@ -1,0 +1,65 @@
+<ng-container *ngIf="state$ | async as state">
+  <ion-header [class.ion-no-border]="!state.loaded">
+    <ion-toolbar>
+      <ion-buttons slot="start">
+        <ion-menu-button></ion-menu-button>
+      </ion-buttons>
+      <ion-title>Projects</ion-title>
+      <ion-buttons slot="end">
+        <ion-button (click)="refresh()">
+          <ion-icon slot="icon-only" name="refresh"></ion-icon>
+        </ion-button>
+      </ion-buttons>
+    </ion-toolbar>
+    <ion-progress-bar type="indeterminate" [class.hide]="state.loaded"></ion-progress-bar>
+  </ion-header>
+
+  <ion-content>
+    <im-tabs #tabs>
+      <im-tab label="Available">
+        <involvemint-browse-projects-page [inline]="true"></involvemint-browse-projects-page>
+      </im-tab>
+      <im-tab label="Enrollments">
+        <div class="im-cont" *ngIf="state.loaded">
+          <div class="im-centered" *ngIf="state.enrollments.length < 1 && state.loaded">
+            <div>You have not enrolled in any Projects.</div>
+            <div>Want to get involved?</div>
+            <ion-button (click)="projects()">Browse Projects</ion-button>
+          </div>
+          <im-block
+            imageSlot="left"
+            *ngFor="let enrollment of state.enrollments"
+            [images]="enrollment.project.imagesFilePaths"
+            (click)="viewEnrollment(enrollment)"
+          >
+            <span header class="im-primary-text" (click)="viewEnrollment(enrollment)">
+              {{ enrollment.project.title }}
+            </span>
+            <div body>
+              <div [ngSwitch]="getEnrollmentStatus(enrollment)">
+                Status:
+                <b [style.color]="'var(--im-green)'" *ngSwitchCase="EnrollmentStatus.started">
+                  Application Started
+                </b>
+                <b [style.color]="'var(--im-yellow)'" *ngSwitchCase="EnrollmentStatus.pending">
+                  Application Pending
+                </b>
+                <b [style.color]="'var(--im-blue)'" *ngSwitchCase="EnrollmentStatus.enrolled">Enrolled</b>
+                <b [style.color]="'var(--im-red)'" *ngSwitchCase="EnrollmentStatus.denied">Denied</b>
+                <b [style.color]="''" *ngSwitchCase="EnrollmentStatus.retired">Retired</b>
+              </div>
+              <im-progress
+                [percent]="
+                  (enrollment.enrollmentDocuments.length +
+                    (getEnrollmentStatus(enrollment) === EnrollmentStatus.started ? 1 : 2)) /
+                  (enrollment.project.projectDocuments.length + 2)
+                "
+                [checkMarks]="enrollment.project.projectDocuments.length + 2"
+              ></im-progress>
+            </div>
+          </im-block>
+        </div>
+      </im-tab>
+    </im-tabs>
+  </ion-content>
+</ng-container>

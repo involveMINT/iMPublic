@@ -1,0 +1,43 @@
+<ng-container *ngIf="state$ | async as state">
+  <ion-header [class.ion-no-border]="true">
+    <ion-toolbar>
+      <ion-buttons slot="start">
+        <ion-menu-button></ion-menu-button>
+      </ion-buttons>
+      <ion-title>Profile Selection</ion-title>
+      <ion-buttons slot="end">
+        <ion-button [disabled]="!state.loaded" (click)="add()">
+          <ion-icon slot="icon-only" color="primary" name="cloud-download"></ion-icon>
+        </ion-button>
+        <ion-button [disabled]="!state.loaded" (click)="create()">
+          <ion-icon slot="icon-only" color="primary" name="add-circle"></ion-icon>
+        </ion-button>
+      </ion-buttons>
+    </ion-toolbar>
+    <ion-progress-bar type="indeterminate" [class.hide]="state.loaded"></ion-progress-bar>
+  </ion-header>
+
+  <ion-content *ngIf="state.loaded">
+    <im-tabs>
+      <im-tab label="Business Admins">
+        <div class="im-cont im-ep">
+          <div class="im-centered" *ngIf="state.downloadedEpAdmins.length < 1 && state.loaded">
+            <div>No temporarily added EP accounts.</div>
+          </div>
+          <im-block *ngFor="let user of state.downloadedEpAdmins">
+            <div header class="im-primary-text">
+              <im-handle [handle]="user.exchangePartner.handle.id"></im-handle>
+            </div>
+            <div body>
+              <div>Business Name: {{ user.exchangePartner.name }}</div>
+              <div *ngIf="user.exchangePartner.email">Business Email: {{ user.exchangePartner.email }}</div>
+            </div>
+            <ion-button end color="danger" (click)="delete(user)">
+              <ion-icon slot="icon-only" name="close"></ion-icon>
+            </ion-button>
+          </im-block>
+        </div>
+      </im-tab>
+    </im-tabs>
+  </ion-content>
+</ng-container>

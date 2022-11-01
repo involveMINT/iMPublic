@@ -1,0 +1,22 @@
+.body {
+  display: grid;
+  grid-template:
+    'a b' auto
+    'c c' auto;
+  gap: var(--im-padding);
+
+  .img-cont {
+    grid-area: a;
+  }
+
+  .text {
+    grid-area: b;
+    display: grid;
+    gap: var(--im-padding);
+    place-content: center;
+  }
+
+  ion-button {
+    grid-area: c;
+  }
+}

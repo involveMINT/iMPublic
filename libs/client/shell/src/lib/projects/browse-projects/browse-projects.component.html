@@ -1,0 +1,70 @@
+<ng-container *ngIf="state$ | async as state">
+  <ion-header [class.ion-no-border]="!state.loaded" *ngIf="!inline">
+    <ion-toolbar>
+      <ion-buttons slot="start">
+        <ion-menu-button></ion-menu-button>
+      </ion-buttons>
+      <ion-title>Projects</ion-title>
+      <ion-buttons slot="end">
+        <ion-button (click)="refresh()">
+          <ion-icon slot="icon-only" name="refresh"></ion-icon>
+        </ion-button>
+      </ion-buttons>
+    </ion-toolbar>
+    <ion-progress-bar type="indeterminate" [class.hide]="state.loaded"></ion-progress-bar>
+  </ion-header>
+
+  <ion-content>
+    <div class="im-cont">
+      <div *ngIf="state.projects.length === 0 && state.loaded" class="im-centered">
+        There are currently no listed Projects.
+      </div>
+
+      <div class="preamble" *ngIf="state.projects.length > 0">
+        The following Projects are available. Select a Project to learn more about it.
+      </div>
+
+      <div class="im-block-cont">
+        <im-block
+          *ngFor="let project of state.projects"
+          [images]="project.imagesFilePaths"
+          (click)="gotoCoverPage(project)"
+        >
+          <div header class="im-primary-text">{{ project.title }}</div>
+          <div body class="card-body">
+            <div *ngIf="slotsRemaining(project) as slots">
+              {{ slots }} slot{{ slots === 1 ? '' : 's' }}
+              remaining
+            </div>
+            <div *ngIf="!slotsRemaining(project)">No slots remaining</div>
+            <div class="im-line-clamp-10">{{ project.description }}</div>
+          </div>
+          <div footer class="im-p-c footer">
+            <div>
+              <ion-icon name="location"></ion-icon>
+              {{ project.address.city }}, {{ project.address.state }}
+            </div>
+            <ion-fab-button class="im-circle-icon-button" (click)="viewSp(project); $event.stopPropagation()">
+              <ion-icon name="information"></ion-icon>
+            </ion-fab-button>
+          </div>
+        </im-block>
+      </div>
+
+      <!-- <ion-infinite-scroll threshold="100px" (ionInfinite)="loadMoreProjects($event)">
+          <ion-infinite-scroll-content
+            loadingSpinner="bubbles"
+            loadingText="Loading more Projects..."
+          ></ion-infinite-scroll-content>
+        </ion-infinite-scroll>
+
+        <ion-item
+          *ngIf="state.projects.length > 0"
+          style="padding: 1em 1em var(--im-bottom-padding) 1em"
+          lines="none"
+        >
+          <i>No more projects found.</i>
+        </ion-item> -->
+    </div>
+  </ion-content>
+</ng-container>

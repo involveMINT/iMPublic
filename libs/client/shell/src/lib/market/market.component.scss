@@ -1,0 +1,153 @@
+im-block {
+  cursor: pointer;
+}
+
+img {
+  border-radius: 4px;
+}
+
+.footer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--im-padding);
+  justify-content: space-between;
+  align-self: end;
+}
+
+.sell-cont {
+  display: grid;
+  grid-template:
+    't t' auto
+    'b v' 1fr
+    / 1fr 1fr;
+  margin: 0 1em;
+  padding: 0 0 1em;
+  gap: 1em 0;
+  border-bottom: 1px solid var(--im-border-color);
+
+  ion-fab-button {
+    height: 25px;
+    width: 25px;
+    --background: var(--im-green);
+
+    ion-icon {
+      font-size: 19px;
+    }
+  }
+
+  .text {
+    grid-area: t;
+    display: grid;
+    place-content: center;
+    font-weight: 700;
+  }
+
+  .buy {
+    grid-area: b;
+    display: grid;
+    place-items: center;
+    border-right: 1px solid var(--im-border-color);
+    gap: var(--im-padding);
+    cursor: pointer;
+  }
+
+  .view {
+    grid-area: v;
+    display: grid;
+    place-items: center;
+    gap: var(--im-padding);
+    cursor: pointer;
+
+    ion-icon {
+      color: var(--im-blue);
+      font-size: 2.25em;
+    }
+  }
+}
+
+.cards-cont {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(173px, 1fr)); // card width
+  grid-auto-rows: 176px; // card height
+  gap: 1em;
+
+  .card-cont {
+    margin: 0;
+    padding: 0;
+    cursor: pointer;
+
+    .logo {
+      width: 22px;
+      height: 22px;
+      object-fit: cover;
+    }
+
+    .title {
+      font-weight: 800;
+      font-family: 'Manrope', sans-serif;
+      font-size: 12px;
+      color: white;
+      text-shadow: 0 0 3px black;
+      text-overflow: hidden;
+    }
+
+    .left-label {
+      font-weight: 700;
+      align-items: center;
+      color: white;
+      text-decoration: underline;
+      font-size: 12px;
+      bottom: 15px;
+      left: 15px;
+      display: grid;
+      grid-auto-flow: column;
+    }
+
+    .right-label {
+      font-size: 24px;
+      bottom: 10px;
+      right: 10px;
+    }
+
+    .card {
+      height: 176px;
+      background-size: cover;
+      background-repeat: no-repeat;
+      background-position: center center;
+      border-radius: 13px;
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+      padding: 8px;
+      justify-items: start;
+      overflow: hidden;
+
+      .head {
+        display: grid;
+        grid-auto-flow: column;
+        align-items: center;
+        justify-content: start;
+        gap: 6px;
+        width: 100%;
+      }
+
+      .foot {
+        display: grid;
+        grid-auto-flow: column;
+        align-items: end;
+        justify-content: space-between;
+        gap: 6px;
+        width: 100%;
+      }
+    }
+  }
+
+  .card {
+    border: 2px solid var(--ion-color-primary);
+    border-radius: 13px;
+  }
+
+  .sp-card .card {
+    border: 2px solid var(--im-orange);
+    border-radius: 13px;
+  }
+}

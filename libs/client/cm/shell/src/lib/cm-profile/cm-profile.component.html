@@ -1,0 +1,200 @@
+<ng-container *ngIf="state$ | async as state">
+  <ng-container *ngIf="state.profile as profile">
+    <ion-header>
+      <ion-toolbar>
+        <ion-buttons slot="start">
+          <ion-menu-button></ion-menu-button>
+        </ion-buttons>
+        <ion-title>ChangeMaker Profile</ion-title>
+      </ion-toolbar>
+    </ion-header>
+    <ion-header class="ion-no-border">
+      <ion-toolbar>
+        <input type="file" (change)="changeProfilePic($event)" #profilePicInp />
+        <div class="header">
+          <div
+            class="im-profile-pic large"
+            [style.cursor]="'pointer'"
+            *ngIf="profile!.profilePicFilePath | imStorageUrl | async as url"
+            [style.background-image]="'url(' + url + ')'"
+            (click)="changeProfilePicButtonClick()"
+          ></div>
+          <ion-icon
+            *ngIf="!profile!.profilePicFilePath"
+            [style.cursor]="'pointer'"
+            class="im-profile-pic-none large"
+            name="person-circle"
+            (click)="changeProfilePicButtonClick()"
+          ></ion-icon>
+          <div class="info">
+            <b class="handle im-primary-text" (click)="settings()">
+              @{{ profile!.handle.id }}
+              <ion-icon [style.color]="'var(--im-yellow)'" name="pencil"></ion-icon>
+            </b>
+            <span class="bio" *ngIf="profile!.bio">{{ profile!.bio }}</span>
+            <span class="bio" *ngIf="!profile!.bio">
+              <i>
+                No Bio set. See
+                <span class="im-link" (click)="settings()">Settings</span>
+                to edit.
+              </i>
+            </span>
+          </div>
+        </div>
+      </ion-toolbar>
+      <ion-progress-bar type="indeterminate" [class.hide]="state.enrollmentsLoaded"></ion-progress-bar>
+    </ion-header>
+
+    <ion-content>
+      <im-tabs (tabChange)="tabChangeEvent($event)">
+        <im-tab label="Ongoing">
+          <div class="im-cont">
+            <div class="ongoing-cont" *ngIf="state.enrollments as enrollments">
+              <div class="im-primary-text title">Current Enrollments</div>
+              <div *ngIf="enrollments.length === 0" style="text-align: center">
+                <i>You have no ongoing enrollments.</i>
+              </div>
+              <div class="im-card-cont">
+                <im-card
+                  class="im-project-card"
+                  *ngFor="let enrollment of enrollments"
+                  [imageUrl]="enrollment.project.imagesFilePaths[0]"
+                  (click)="viewEnrollment(enrollment)"
+                >
+                  <div slot="title" class="im-primary-text im-ellipsis">{{ enrollment.project.title }}</div>
+                  <div slot="content">
+                    <ion-button (click)="createPoi(enrollment); $event.stopPropagation()">
+                      Earn CommunityCredits
+                    </ion-button>
+                  </div>
+                  <div slot="right-label">
+                    <ion-fab-button
+                      class="im-circle-icon-button"
+                      (click)="projectCoverPage(enrollment.project); $event.stopPropagation()"
+                    >
+                      <ion-icon name="eye"></ion-icon>
+                    </ion-fab-button>
+                  </div>
+                </im-card>
+              </div>
+            </div>
+          </div>
+        </im-tab>
+        <im-tab label="Impact">
+          <div class="im-cont impact-cont">
+            <div class="impact-row">
+              <div>
+                <div class="main-text">
+                  {{ state.profile.view.earnedCredits / 100 | currency: '':'' }}
+                  <ion-icon [style.margin-bottom]="'-2px'" src="/assets/icons/cc.svg"></ion-icon>
+                </div>
+                <div>
+                  Earned
+                  <br />
+                  CommunityCredits
+                </div>
+              </div>
+              <div>
+                <div class="main-text">
+                  {{ state.profile.view.spentCredits / 100 | currency: '':'' }}
+                  <ion-icon [style.margin-bottom]="'-2px'" src="/assets/icons/cc.svg"></ion-icon>
+                </div>
+                <div>
+                  Spent
+                  <br />
+                  CommunityCredits
+                </div>
+              </div>
+            </div>
+            <div class="impact-row">
+              <div>
+                <div class="main-text">
+                  {{ state.profile.view.secondsCompleted / 3600 | number: '1.2-2' }}
+                </div>
+                <div>
+                  Hours
+                  <br />
+                  Completed
+                </div>
+              </div>
+              <div>
+                <div class="main-text">{{ state.profile.view.poiApproved }}</div>
+                <div>
+                  Proofs of Impact
+                  <br />
+                  Approved
+                </div>
+              </div>
+              <div>
+                <div class="main-text">{{ state.projectsHeld }}</div>
+                <div>
+                  Projects
+                  <br />
+                  Held
+                </div>
+              </div>
+            </div>
+          </div>
+        </im-tab>
+        <im-tab label="Timeline">
+          <div class="im-cont timeline-cont">
+            <div class="im-centered" *ngIf="!state.poisLoaded">
+              <ion-spinner name="crescent"></ion-spinner>
+            </div>
+            <div class="im-centered" *ngIf="state.pois.length < 1 && state.poisLoaded">
+              <div [style.display]="'grid'" [style.gap]="'0.1rem'">You have no Proofs of Impact.</div>
+            </div>
+            <im-block
+              imageSlot="left"
+              [images]="poi.imagesFilePaths"
+              *ngFor="let poi of state.pois"
+              (click)="viewPoi(poi)"
+            >
+              <div header class="im-primary-text">{{ poi.enrollment.project.title }}</div>
+              <div body class="timeline-details">
+                <div class="timeline-detail-item">
+                  <ion-icon name="information-circle"></ion-icon>
+                  <span [ngSwitch]="poi.status">
+                    <b [style.color]="'var(--im-poi-denied)'" *ngSwitchCase="PoiStatus.denied">Denied</b>
+                    <b [style.color]="'var(--im-poi-approved)'" *ngSwitchCase="PoiStatus.approved">
+                      Approved
+                    </b>
+                    <b [style.color]="'var(--im-poi-submitted)'" *ngSwitchCase="PoiStatus.submitted">
+                      Submitted
+                    </b>
+                    <b [style.color]="'var(--im-poi-stopped)'" *ngSwitchCase="PoiStatus.stopped">Stopped</b>
+                    <b [style.color]="'var(--im-poi-paused)'" *ngSwitchCase="PoiStatus.paused">Paused</b>
+                    <b [style.color]="'var(--im-poi-started)'" *ngSwitchCase="PoiStatus.started">Started</b>
+                    <b [style.color]="'var(--im-poi-created)'" *ngSwitchCase="PoiStatus.created">Created</b>
+                  </span>
+                </div>
+                <div class="timeline-detail-item">
+                  <ion-icon name="calendar"></ion-icon>
+                  <span *ngIf="poi.dateSubmitted">{{ poi.dateSubmitted | date: 'longDate' }}</span>
+                  <div *ngIf="!poi.dateSubmitted">No submission date.</div>
+                </div>
+                <div class="timeline-detail-item">
+                  <ion-icon name="time"></ion-icon>
+                  <span>{{ poi.timeWorked }}</span>
+                </div>
+                <div class="timeline-detail-item">
+                  <ion-icon name="location"></ion-icon>
+                  <span>
+                    {{ poi.enrollment.project.address.city }}, {{ poi.enrollment.project.address.state }}
+                  </span>
+                </div>
+                <div class="timeline-info">{{ poi.enrollment.project.description }}</div>
+              </div>
+            </im-block>
+            <ion-infinite-scroll threshold="100px" (ionInfinite)="loadMore($event)">
+              <ion-infinite-scroll-content
+                loadingSpinner="bubbles"
+                loadingText="Loading more POIs..."
+              ></ion-infinite-scroll-content>
+            </ion-infinite-scroll>
+          </div>
+        </im-tab>
+      </im-tabs>
+    </ion-content>
+  </ng-container>
+</ng-container>

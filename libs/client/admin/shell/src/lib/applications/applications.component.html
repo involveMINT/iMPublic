@@ -1,0 +1,67 @@
+<ng-container *ngIf="state$ | async as state">
+  <ion-header [class.ion-no-border]="true">
+    <ion-toolbar>
+      <ion-buttons slot="start">
+        <ion-menu-button></ion-menu-button>
+      </ion-buttons>
+      <ion-title>Applications</ion-title>
+      <ion-buttons slot="end">
+        <ion-button (click)="refresh()">
+          <ion-icon slot="icon-only" name="refresh"></ion-icon>
+        </ion-button>
+      </ion-buttons>
+    </ion-toolbar>
+    <ion-progress-bar type="indeterminate" [class.hide]="state.loaded"></ion-progress-bar>
+  </ion-header>
+
+  <ion-content *ngIf="state.loaded">
+    <im-tabs>
+      <im-tab label="ServePartners">
+        <div class="im-cont">
+          <div class="im-centered" *ngIf="state.spApplications.length < 1 && state.loaded">
+            <div>No ServePartner Applications Found.</div>
+          </div>
+          <im-block *ngFor="let sp of state.spApplications">
+            <div header class="im-primary-text">
+              {{ sp.name }}
+            </div>
+            <pre body>{{ sp | json }}</pre>
+            <div footer class="im-buttons">
+              <ion-button (click)="processSp(sp, false)" color="danger">
+                <ion-icon name="close-circle" slot="start"></ion-icon>
+                Deny
+              </ion-button>
+              <ion-button (click)="processSp(sp, true)" color="success">
+                <ion-icon name="checkmark" slot="start"></ion-icon>
+                Approve
+              </ion-button>
+            </div>
+          </im-block>
+        </div>
+      </im-tab>
+      <im-tab label="ExchangePartners">
+        <div class="im-cont">
+          <div class="im-centered" *ngIf="state.epApplications.length < 1 && state.loaded">
+            <div>No ExchangePartner Applications Found.</div>
+          </div>
+          <im-block *ngFor="let ep of state.epApplications">
+            <div header class="im-primary-text">
+              {{ ep.name }}
+            </div>
+            <pre body>{{ ep | json }}</pre>
+            <div footer class="im-buttons">
+              <ion-button (click)="processEp(ep, false)" color="danger">
+                <ion-icon name="close-circle" slot="start"></ion-icon>
+                Deny
+              </ion-button>
+              <ion-button (click)="processEp(ep, true)" color="success">
+                <ion-icon name="checkmark" slot="start"></ion-icon>
+                Approve
+              </ion-button>
+            </div>
+          </im-block>
+        </div>
+      </im-tab>
+    </im-tabs>
+  </ion-content>
+</ng-container>

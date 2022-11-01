@@ -1,0 +1,109 @@
+<ng-container *ngIf="state$ | async as state">
+  <ion-header>
+    <ion-toolbar>
+      <ion-buttons slot="start">
+        <ion-button (click)="close()">
+          <ion-icon slot="icon-only" name="close"></ion-icon>
+        </ion-button>
+      </ion-buttons>
+      <ion-title>{{ title }}</ion-title>
+    </ion-toolbar>
+    <ion-toolbar>
+      <ion-searchbar
+        mode="ios"
+        [placeholder]="
+          type === ImHandleSearchModalType.handle ? 'Handle' : 'Business Handle, Name, or Email Address'
+        "
+        [formControl]="search"
+      ></ion-searchbar>
+    </ion-toolbar>
+  </ion-header>
+
+  <ion-content>
+    <div class="im-cont">
+      <div [style.text-align]="'center'" *ngIf="header">{{ header }}</div>
+      <div class="im-centered" *ngIf="state.status === 'loading'">
+        <ion-spinner name="crescent"></ion-spinner>
+      </div>
+      <div *ngIf="state.searchResult.length < 1 && state.status === 'done'" class="im-centered">
+        No matches found.
+      </div>
+      <ng-container *ngIf="type === ImHandleSearchModalType.handle">
+        <div *ngIf="state.status === 'done'" class="im-centered">Please select a user</div>
+        <div class="im-block-cont" *ngIf="state.status === 'done'">
+          <ng-container *ngFor="let handle of state.searchResult">
+            <div *ngIf="handle.changeMaker || handle.exchangePartner || handle.servePartner">
+              <im-block [join]="true" (click)="select(handle)">
+                <div
+                  header
+                  [class]="
+                    handle.changeMaker
+                      ? 'im-cm'
+                      : handle.exchangePartner
+                      ? 'im-ep'
+                      : handle.servePartner
+                      ? 'im-sp'
+                      : ''
+                  "
+                >
+                  <im-handle class="im-primary-text" [handle]="handle.id"></im-handle>
+                  <span class="im-primary-text users-type">
+                    {{
+                      handle.changeMaker
+                        ? 'ChangeMaker'
+                        : handle.exchangePartner
+                        ? 'ExchangePartner'
+                        : handle.servePartner
+                        ? 'ServePartner'
+                        : ''
+                    }}
+                  </span>
+                </div>
+              </im-block>
+              <im-block [join]="true" *ngIf="handle.changeMaker as changeMaker" (click)="select(handle)">
+                <div body>
+                  <div *ngIf="changeMaker.firstName && changeMaker.lastName" class="im-secondary-text">
+                    {{ changeMaker.firstName }} {{ changeMaker.lastName }}
+                  </div>
+                  <div class="im-secondary-text" *ngIf="changeMaker.user?.id as handleId">{{ handleId }}</div>
+                </div>
+              </im-block>
+              <im-block
+                [join]="true"
+                *ngIf="handle.exchangePartner as exchangePartner"
+                (click)="select(handle)"
+              >
+                <div body>
+                  <div class="im-secondary-text">{{ exchangePartner.name }}</div>
+                  <div class="im-secondary-text">{{ exchangePartner.email }}</div>
+                </div>
+              </im-block>
+              <im-block [join]="true" *ngIf="handle.servePartner as servePartner" (click)="select(handle)">
+                <div body>
+                  <div class="im-secondary-text">{{ servePartner.name }}</div>
+                  <div class="im-secondary-text">{{ servePartner.email }}</div>
+                </div>
+              </im-block>
+            </div>
+          </ng-container>
+        </div>
+      </ng-container>
+      <ng-container *ngIf="type === ImHandleSearchModalType.business">
+        <div *ngIf="state.status === 'done'" class="im-centered">Please select a business</div>
+        <div class="im-block-cont im-ep" *ngIf="state.status === 'done'">
+          <div [style.min-width]="'0px'" *ngFor="let handle of state.searchResult">
+            <im-block *ngIf="handle.exchangePartner as exchangePartner" (click)="select(exchangePartner)">
+              <div header class="im-primary-text">{{ exchangePartner.name }}</div>
+              <div body>
+                <div class="im-secondary-text">
+                  <im-handle [handle]="handle.id"></im-handle>
+                </div>
+                <div class="im-secondary-text">{{ exchangePartner.email }}</div>
+              </div>
+            </im-block>
+          </div>
+        </div>
+      </ng-container>
+    </div>
+  </ion-content>
+</ng-container>

@@ -1,0 +1,24 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>Users</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div class="im-cont">
+    <im-item [touched]="true">
+      <ion-icon slot="start" name="person"></ion-icon>
+      <input [formControl]="search" placeholder="Search by user login email or ChangeMaker @handle" />
+    </im-item>
+    <div class="center" *ngIf="loading"><ion-spinner name="crescent"></ion-spinner></div>
+    <im-block *ngFor="let user of users">
+      <div header class="im-primary-text">
+        {{ user.id }}
+      </div>
+      <pre body>{{ user | json }}</pre>
+    </im-block>
+  </div>
+</ion-content>

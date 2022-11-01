@@ -1,0 +1,237 @@
+<ng-container *ngIf="state$ | async as state">
+  <ion-header [class.ion-no-border]="!state.loaded">
+    <ion-toolbar>
+      <ion-buttons slot="start">
+        <ion-menu-button></ion-menu-button>
+      </ion-buttons>
+      <ion-title>Marketplace</ion-title>
+      <ion-buttons slot="end">
+        <ion-button (click)="refresh()">
+          <ion-icon slot="icon-only" name="refresh"></ion-icon>
+        </ion-button>
+      </ion-buttons>
+    </ion-toolbar>
+    <ion-progress-bar type="indeterminate" [class.hide]="state.loaded"></ion-progress-bar>
+  </ion-header>
+
+  <ion-content>
+    <im-tabs
+      *ngIf="state.loaded"
+      #tabs
+      [activeTabIndex]="state.activeTabIndex"
+      (tabChange)="tabChangeEvent($event)"
+    >
+      <im-tab label="Businesses">
+        <div class="im-cont im-ep">
+          <div *ngIf="state.exchangePartners.length === 0 && state.loaded" class="im-centered">
+            There are currently no listed Businesses.
+          </div>
+
+          <div class="cards-cont">
+            <ng-container *ngFor="let ep of state.exchangePartners">
+              <div class="card-cont" (click)="storeFront(ep)">
+                <div class="sp-card">
+                  <div
+                    class="card"
+                    [ngStyle]="{
+                      'background-image':
+                        'linear-gradient( rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.5) ), url(' +
+                        (ep.imagesFilePaths[0]
+                          ? (ep.imagesFilePaths[0] | imStorageUrl | async)
+                          : '/assets/icons/im-default.svg') +
+                        ')'
+                    }"
+                  >
+                    <div class="head">
+                      <img
+                        [src]="(ep.logoFilePath | imStorageUrl | async) || '/assets/logo.svg'"
+                        class="logo"
+                      />
+                      <div class="title im-ellipsis">{{ ep!.name }}</div>
+                    </div>
+                    <div></div>
+                    <div class="foot">
+                      <div class="left-label im-ellipsis" *ngIf="ep.distance as distance">
+                        {{ distance | number: '1.0-1' }} miles away
+                      </div>
+                      <div class="right-label">
+                        <ion-fab-button class="im-circle-icon-button">
+                          <ion-icon name="arrow-forward"></ion-icon>
+                        </ion-fab-button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </ng-container>
+          </div>
+
+          <ion-infinite-scroll threshold="100px" (ionInfinite)="loadMoreStorefronts($event)">
+            <ion-infinite-scroll-content
+              loadingSpinner="bubbles"
+              loadingText="Loading more Businesses..."
+            ></ion-infinite-scroll-content>
+          </ion-infinite-scroll>
+        </div>
+      </im-tab>
+      <im-tab label="Offers">
+        <div class="im-cont">
+          <div class="sell-cont" *ngIf="state.activeProfile?.type !== 'none' && state.activeProfile">
+            <div class="text">Have something to sell? Already listed?</div>
+            <div class="buy" (click)="createOffer()">
+              <ion-fab-button>
+                <ion-icon name="add"></ion-icon>
+              </ion-fab-button>
+              <div>Create an Offer</div>
+            </div>
+            <div class="view" (click)="viewMyOffers()">
+              <ion-icon name="eye"></ion-icon>
+              <div>View My Offers</div>
+            </div>
+          </div>
+
+          <div *ngIf="state.offers.length === 0 && state.loaded" class="im-centered">
+            There are currently no listed offers.
+          </div>
+
+          <div class="cards-cont">
+            <ng-container *ngFor="let offer of state.offers">
+              <div
+                (click)="viewMarketOffer(offer)"
+                class="card-cont"
+                [class]="
+                  offer.changeMaker
+                    ? 'im-green'
+                    : offer.exchangePartner
+                    ? 'im-ep'
+                    : offer.servePartner
+                    ? 'im-sp'
+                    : ''
+                "
+              >
+                <div
+                  class="card"
+                  [ngStyle]="{
+                    'background-image':
+                      'linear-gradient( rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.5) ), url(' +
+                      ((offer.imagesFilePaths[0] | imStorageUrl | async) || '/assets/icons/im-default.svg') +
+                      ')'
+                  }"
+                >
+                  <div class="head">
+                    <img
+                      [src]="
+                        (offer.changeMaker?.profilePicFilePath ||
+                          offer.exchangePartner?.logoFilePath ||
+                          offer.servePartner?.logoFilePath
+                          | imStorageUrl
+                          | async) || '/assets/logo.svg'
+                      "
+                      class="logo"
+                    />
+                    <div class="title im-ellipsis">{{ offer!.name }}</div>
+                  </div>
+                  <div></div>
+                  <div class="foot">
+                    <div class="left-label">
+                      <span class="im-ellipsis">{{ offer.price / 100 | currency: '':'' }}</span>
+                      <ion-icon src="/assets/icons/cc.svg"></ion-icon>
+                    </div>
+                    <div class="right-label">
+                      <ion-fab-button class="im-circle-icon-button">
+                        <ion-icon name="arrow-forward"></ion-icon>
+                      </ion-fab-button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </ng-container>
+          </div>
+
+          <ion-infinite-scroll threshold="100px" (ionInfinite)="loadMoreOffers($event)">
+            <ion-infinite-scroll-content
+              loadingSpinner="bubbles"
+              loadingText="Loading more Offers..."
+            ></ion-infinite-scroll-content>
+          </ion-infinite-scroll>
+        </div>
+      </im-tab>
+      <im-tab label="Requests">
+        <div class="im-cont">
+          <div class="sell-cont" *ngIf="state.activeProfile?.type !== 'none' && state.activeProfile">
+            <div class="text">Have some requests?</div>
+            <div class="buy" (click)="createRequest()">
+              <ion-fab-button>
+                <ion-icon name="add"></ion-icon>
+              </ion-fab-button>
+              <div>Create a Request</div>
+            </div>
+            <div class="view" (click)="viewMyRequests()">
+              <ion-icon name="eye"></ion-icon>
+              <div>View My Requests</div>
+            </div>
+          </div>
+
+          <div *ngIf="state.requests.length === 0 && state.loaded" class="im-centered">
+            There are currently no listed requests.
+          </div>
+
+          <div class="cards-cont">
+            <ng-container *ngFor="let request of state.requests">
+              <div
+                (click)="viewMarketRequest(request)"
+                class="card-cont"
+                [class]="
+                  request.changeMaker
+                    ? 'im-green'
+                    : request.exchangePartner
+                    ? 'im-ep'
+                    : request.servePartner
+                    ? 'im-sp'
+                    : ''
+                "
+              >
+                <div
+                  class="card"
+                  [ngStyle]="{
+                    'background-image':
+                      'linear-gradient( rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.5) ), url(' +
+                      ((request.imagesFilePaths[0] | imStorageUrl | async) ||
+                        '/assets/icons/im-default.svg') +
+                      ')'
+                  }"
+                >
+                  <div class="head">
+                    <img
+                      [src]="
+                        (request.changeMaker?.profilePicFilePath ||
+                          request.exchangePartner?.logoFilePath ||
+                          request.servePartner?.logoFilePath
+                          | imStorageUrl
+                          | async) || '/assets/logo.svg'
+                      "
+                      class="logo"
+                    />
+                    <div class="title im-ellipsis">{{ request!.name }}</div>
+                  </div>
+                  <div></div>
+                  <div class="foot">
+                    <div class="left-label">
+                      <span class="im-ellipsis">{{ request.price / 100 | currency: '':'' }}</span>
+                      <ion-icon src="/assets/icons/cc.svg"></ion-icon>
+                    </div>
+                    <div class="right-label">
+                      <ion-fab-button class="im-circle-icon-button">
+                        <ion-icon name="arrow-forward"></ion-icon>
+                      </ion-fab-button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </ng-container>
+          </div>
+        </div>
+      </im-tab>
+    </im-tabs>
+  </ion-content>
+</ng-container>

@@ -1,0 +1,109 @@
+// ion-fab {
+//   bottom: 25px;
+
+//   ion-fab-button {
+//     .logo {
+//       color: var(--ion-color-primary-contrast);
+
+//       &.im {
+//         width: 56px;
+//         height: 56px;
+//       }
+
+//       &.arrow {
+//         width: 45px;
+//         height: 45px;
+//         padding-left: 1px;
+//       }
+//     }
+//   }
+// }
+
+// ion-tab-bar {
+//   height: 56px;
+//   border-top: 1px solid var(--im-border-color);
+//   border-top-left-radius: 16px;
+//   border-top-right-radius: 16px;
+//   box-shadow: 0 5px 15px;
+//   --background: var(--ion-color-light);
+// }
+
+// ion-tab-button {
+//   color: var(--ion-color-dark);
+//   border-bottom: 5px solid var(--ion-color-light);
+
+//   ion-icon {
+//     font-size: 25px;
+//     padding: 0;
+//     margin: 0;
+
+//     &[src='/assets/icons/cc.svg'] {
+//       font-size: 27px;
+//       margin-bottom: -1px;
+//     }
+
+//     &[name='grid'] {
+//       font-size: 23px;
+//       padding: 1px;
+//     }
+//   }
+
+//   ion-img {
+//     color: var(--ion-color-dark);
+//   }
+
+//   ion-label {
+//     font-style: normal;
+//     font-weight: 600;
+//     font-size: 10px;
+//     line-height: 12px;
+//     color: var(--ion-color-dark);
+//     margin-bottom: -3px;
+//     padding: 3px;
+//   }
+// }
+
+// ion-tab-button[aria-selected='true'] {
+//   color: var(--ion-color-primary);
+//   border-bottom: 5px solid var(--ion-color-primary);
+
+//   ion-label {
+//     color: var(--ion-color-primary);
+//   }
+// }
+
+// modal-wallet {
+//   width: 100%;
+//   bottom: 0;
+//   position: absolute;
+//   transform: translateY(100%);
+// }
+
+// .im-global-header {
+//   --min-height: 16px !important;
+
+//   ion-toolbar {
+//     --min-height: 16px !important;
+//     --background: linear-gradient(0deg, var(--ion-color-primary) 0%, var(--ion-color-primary-tint) 100%);
+//     --color: var(--ion-color-primary-contrast);
+//     display: grid;
+//     place-content: center;
+
+//     div {
+//       display: grid;
+//       grid-template-columns: 1fr auto;
+//       gap: 3px;
+//       align-items: center;
+//       font-size: 10px;
+//       font-weight: 500;
+//     }
+
+//     &:hover {
+//       cursor: pointer;
+//       --background: var(--ion-color-primary-tint);
+//     }
+//   }
+// }
+// .no-show {
+//   display: none;
+// }

@@ -1,0 +1,100 @@
+<ng-container *ngIf="state$ | async as state">
+  <ion-header [class.ion-no-border]="!state.loaded">
+    <ion-toolbar>
+      <ion-buttons slot="start">
+        <ion-button class="no-padding" (click)="back()">
+          <ion-icon name="chevron-back" color="primary"></ion-icon>
+        </ion-button>
+      </ion-buttons>
+      <ion-title>{{ state.document?.name || 'Passport Document' }}</ion-title>
+    </ion-toolbar>
+    <ion-progress-bar type="indeterminate" [class.hide]="state.loaded"></ion-progress-bar>
+  </ion-header>
+
+  <ion-content>
+    <div class="im-centered" *ngIf="!state.document && state.loaded">Passport document not found.</div>
+    <div class="im-cont" *ngIf="state.document as document">
+      <im-block>
+        <div header class="im-primary-text">Name</div>
+        <im-item body [touched]="true">
+          <ion-icon slot="start" name="person"></ion-icon>
+          <input #nameInp [formControl]="nameForm" placeholder="Document Name" />
+          <im-error *ngIf="!nameForm.valid && nameForm.touched">Please enter a valid document name.</im-error>
+        </im-item>
+        <div footer class="im-buttons">
+          <ion-button
+            (click)="editPassportDocument(document)"
+            [disabled]="nameForm.invalid || !nameForm.dirty"
+            fill="clear"
+          >
+            <ion-icon slot="icon-only" name="save"></ion-icon>
+          </ion-button>
+        </div>
+      </im-block>
+
+      <div class="preview" *ngIf="document.filePath | imStorageUrl | async as url" (click)="open(url)">
+        <iframe
+          [style.cursor]="'pointer'"
+          (click)="open(url)"
+          [src]="document.filePath | imStorageUrl: true | async"
+          frameborder="no"
+        ></iframe>
+      </div>
+
+      <div class="im-three-buttons">
+        <div one class="cont" (click)="editButton()">
+          <ion-icon [style.color]="'var(--im-yellow)'" name="pencil"></ion-icon>
+          <span>Edit</span>
+        </div>
+        <div two class="cont" (click)="replacePassportDocumentButtonClick()">
+          <input type="file" (change)="replacePassportDocument($event, state.document)" #fileInp />
+          <ion-icon [style.color]="'var(--im-blue)'" name="cloud-upload"></ion-icon>
+          <span>Replace</span>
+        </div>
+        <div three class="cont" (click)="deletePassportDocument(document)">
+          <ion-icon [style.color]="'var(--im-red)'" name="trash"></ion-icon>
+          <span>Delete</span>
+        </div>
+      </div>
+
+      <div [style.display]="'grid'" *ngIf="document.enrollmentDocuments.length > 0">
+        <im-block [join]="true" *ngFor="let enrollmentDoc of document.enrollmentDocuments; index as i">
+          <div header class="im-primary-text">
+            Enrollment Passport Document Attachment {{ i + 1 }}/{{ document.enrollmentDocuments.length }}
+          </div>
+          <div body class="el-body">
+            <div>
+              <span>Enrollment:&nbsp;</span>
+              <b>{{ enrollmentDoc.enrollment.project.title }}</b>
+            </div>
+            <div>
+              <span>Project Document:&nbsp;</span>
+              <b>{{ enrollmentDoc.projectDocument.title }}</b>
+            </div>
+          </div>
+          <div footer class="im-buttons">
+            <ion-button
+              fill="outline"
+              *imLoadingRoute="
+                this.route.rawRoutes.path.projects.ROOT + '/' + enrollmentDoc.enrollment.project.id
+              "
+              (click)="viewProject(enrollmentDoc.enrollment.project)"
+            >
+              <ion-icon slot="start" name="eye"></ion-icon>
+              Project
+            </ion-button>
+            <ion-button
+              *imLoadingRoute="
+                this.route.rawRoutes.path.cm.enrollments.ROOT + '/' + enrollmentDoc.enrollment.id
+              "
+              (click)="viewEnrollment(enrollmentDoc.enrollment)"
+            >
+              <ion-icon slot="start" name="eye"></ion-icon>
+              Enrollment
+            </ion-button>
+          </div>
+        </im-block>
+      </div>
+    </div>
+  </ion-content>
+</ng-container>

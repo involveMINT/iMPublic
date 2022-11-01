@@ -1,0 +1,65 @@
+<ng-container *ngIf="state$ | async as state">
+  <ion-header [class.ion-no-border]="!state.loaded" *ngIf="!epStorefrontView">
+    <ion-toolbar>
+      <ion-buttons slot="start">
+        <ion-button class="no-padding" (click)="back()">
+          <ion-icon name="chevron-back" color="primary"></ion-icon>
+        </ion-button>
+      </ion-buttons>
+      <ion-title>Offers</ion-title>
+      <ion-buttons slot="end">
+        <ion-button (click)="refresh()">
+          <ion-icon slot="icon-only" name="refresh"></ion-icon>
+        </ion-button>
+      </ion-buttons>
+    </ion-toolbar>
+    <ion-progress-bar type="indeterminate" [class.hide]="state.loaded"></ion-progress-bar>
+  </ion-header>
+
+  <ion-content>
+    <div class="im-cont" *ngIf="state.loaded">
+      <div class="im-buttons">
+        <span class="im-p-c">Products and Services</span>
+        <ion-button (click)="createOffer()" [disabled]="!state.loaded">
+          <ion-icon name="add"></ion-icon>
+          New Offer
+        </ion-button>
+      </div>
+      <div class="im-centered" *ngIf="state.offers.length < 1 && state.loaded">
+        <div [style.display]="'grid'" [style.gap]="'0.1rem'">You have no offers.</div>
+      </div>
+
+      <im-block
+        *ngFor="let offer of state.offers"
+        [images]="offer.imagesFilePaths"
+        (click)="viewOffer(offer)"
+        imageSlot="left"
+      >
+        <ion-icon
+          top
+          name="close-circle"
+          class="delete"
+          (click)="delete(offer); $event.stopPropagation()"
+        ></ion-icon>
+        <div header class="im-primary-text">{{ offer.name }}</div>
+        <div body>
+          <div [style.font-size]="'16px'">{{ offer.description }}</div>
+          <div>
+            <span [style.font-weight]="'600'">
+              <span *ngIf="offer.listingStatus === 'public'" [style.color]="'var(--im-green)'">Public</span>
+              <span *ngIf="offer.listingStatus === 'private'" [style.color]="'var(--im-red)'">Private</span>
+              <span *ngIf="offer.listingStatus === 'unlisted'" [style.color]="'var(--im-yellow)'">
+                Unlisted
+              </span>
+            </span>
+          </div>
+          <div [style.color]="'#888'">{{ formatDistanceToNow(offer.dateUpdated) }} ago</div>
+        </div>
+        <div end class="im-primary-text">
+          {{ offer.price / 100 | currency: '':'' }}
+          <ion-icon src="/assets/icons/cc.svg"></ion-icon>
+        </div>
+      </im-block>
+    </div>
+  </ion-content>
+</ng-container>

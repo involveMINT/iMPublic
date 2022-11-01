@@ -1,0 +1,60 @@
+<ng-container *ngIf="state$ | async as state">
+  <ng-container *ngIf="state.loaded && state.activeProfile">
+    <ion-header>
+      <ion-toolbar>
+        <ion-buttons slot="start">
+          <ion-menu-button></ion-menu-button>
+        </ion-buttons>
+        <ion-title>Messages</ion-title>
+        <ion-buttons slot="end">
+          <ion-button (click)="newChatRoom()">
+            <ion-icon slot="icon-only" name="create"></ion-icon>
+          </ion-button>
+        </ion-buttons>
+      </ion-toolbar>
+      <ion-toolbar>
+        <ion-searchbar mode="ios" (ionChange)="search($event)"></ion-searchbar>
+      </ion-toolbar>
+    </ion-header>
+
+    <ion-content>
+      <div class="im-cont">
+        <div *ngIf="state.chats.length === 0" style="padding: 1em; text-align: center">
+          <i>You have no chats.</i>
+        </div>
+        <im-block *ngFor="let room of state.chats" (click)="chatRoom(room.id)">
+          <div header class="im-primary-text">{{ room.notMe }}</div>
+          <div body class="msg-body">
+            <div class="cont" [ngClass]="{ unread: getUnreadForRoom(state.activeProfile!.handle.id, room) }">
+              <div *ngIf="room.messages[room.messages.length - 1] as msg">
+                @{{ msg.member.handleId }}:
+                <b>{{ msg.content }}</b>
+              </div>
+              <i *ngIf="!room.messages[room.messages.length - 1]?.content">No messages</i>
+            </div>
+          </div>
+          <div end class="end">
+            <ion-badge
+              color="primary"
+              *ngIf="getUnreadForRoom(state.activeProfile!.handle.id, room) as unread"
+            >
+              {{ unread }}
+            </ion-badge>
+            <div class="date-time">
+              <div class="date">{{ room.lastMessage | date: 'M/dd/yyyy' }}</div>
+              <div class="time">{{ room.lastMessage | date: 'shortTime' }}</div>
+            </div>
+          </div>
+        </im-block>
+      </div>
+    </ion-content>
+  </ng-container>
+
+  <ng-container *ngIf="!state.loaded">
+    <ion-content>
+      <div class="im-loader">
+        <ion-spinner name="crescent"></ion-spinner>
+      </div>
+    </ion-content>
+  </ng-container>
+</ng-container>

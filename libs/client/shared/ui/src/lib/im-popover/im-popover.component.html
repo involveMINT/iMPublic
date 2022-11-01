@@ -1,0 +1,12 @@
+<ion-icon (click)="close('dismiss')" name="close-circle" class="close"></ion-icon>
+<div class="cont bg-color" [ngStyle]="{ gap: amount ? '0.5em' : '0' }" (click)="close('action')">
+  <div class="amount-cont" *ngIf="amount">
+    <span>{{ amount / 100 | currency: '':'' }}</span>
+    <ion-icon src="/assets/icons/cc.svg"></ion-icon>
+  </div>
+  <div class="content" [innerHTML]="safeContent"></div>
+</div>
+<svg viewBox="0 0 20 21" width="20" height="21">
+  <polygon points="0 0, 10 10, 20 0" class="bg-color" />
+  <circle cx="10" cy="15" r="3.5" fill="#c94434" />
+</svg>

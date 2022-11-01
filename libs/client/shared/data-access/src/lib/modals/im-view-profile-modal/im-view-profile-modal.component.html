@@ -1,0 +1,365 @@
+<ng-container *ngIf="state$ | async as state">
+  <ion-header>
+    <ion-toolbar>
+      <ion-buttons slot="start">
+        <ion-button (click)="close()">
+          <ion-icon slot="icon-only" name="close-circle"></ion-icon>
+        </ion-button>
+      </ion-buttons>
+      <ion-title
+        [class]="
+          state.profile?.changeMaker
+            ? 'im-cm'
+            : state.profile?.exchangePartner
+            ? 'im-ep'
+            : state.profile?.servePartner
+            ? 'im-sp'
+            : ''
+        "
+      >
+        {{
+          state.profile?.changeMaker
+            ? 'ChangeMaker Profile'
+            : state.profile?.exchangePartner
+            ? 'ExchangePartner Profile'
+            : state.profile?.servePartner
+            ? 'ServePartner Profile'
+            : state.profile
+            ? '@' + handle
+            : 'Loading profile for @' + handle + '...'
+        }}
+      </ion-title>
+      <ion-buttons slot="end">
+        <ion-button (click)="refresh()">
+          <ion-icon slot="icon-only" name="refresh"></ion-icon>
+        </ion-button>
+      </ion-buttons>
+    </ion-toolbar>
+  </ion-header>
+  <ng-container *ngIf="state.profile?.changeMaker as cm; else spEp">
+    <ion-header class="ion-no-border">
+      <ion-toolbar>
+        <div class="cm-header">
+          <div
+            class="im-profile-pic large"
+            [style.cursor]="'pointer'"
+            *ngIf="cm.profilePicFilePath | imStorageUrl | async as url"
+            [style.background-image]="'url(' + url + ')'"
+          ></div>
+          <ion-icon
+            *ngIf="!cm.profilePicFilePath"
+            class="im-profile-pic-none large"
+            name="person-circle"
+          ></ion-icon>
+          <div>
+            <div class="name">
+              {{ state.profile?.changeMaker?.firstName }} {{ state.profile?.changeMaker?.lastName }}
+            </div>
+            <div *ngIf="cm.bio">{{ cm.bio }}</div>
+            <i *ngIf="!cm.bio">No Bio set.</i>
+            <div class="im-link" (click)="messageSeller(state.profile!)">
+              <span>@{{ handle }}</span>
+              <ion-icon class="mail-btn" name="mail"></ion-icon>
+            </div>
+            <div [style.opacity]="0.7">Member since {{ cm!.dateCreated | date: 'MMMM y' }}</div>
+          </div>
+        </div>
+      </ion-toolbar>
+    </ion-header>
+    <ion-content>
+      <im-tabs>
+        <im-tab label="Ongoing">
+          <div class="im-cont">
+            <div class="ongoing-cont" *ngIf="cm.enrollments as enrollments">
+              <div class="im-primary-text title">Current Enrollments</div>
+              <div *ngIf="enrollments.length === 0" style="text-align: center">
+                <i>You have no ongoing enrollments.</i>
+              </div>
+              <div class="im-card-cont">
+                <im-card
+                  class="im-project-card"
+                  *ngFor="let enrollment of enrollments"
+                  [imageUrl]="enrollment.project.imagesFilePaths[0]"
+                  (click)="viewEnrollment(enrollment.id)"
+                >
+                  <div slot="title" class="im-primary-text im-ellipsis">{{ enrollment.project.title }}</div>
+                  <div slot="right-label">
+                    <ion-fab-button
+                      class="im-circle-icon-button"
+                      (click)="projectCoverPage(enrollment.project.id); $event.stopPropagation()"
+                    >
+                      <ion-icon name="eye"></ion-icon>
+                    </ion-fab-button>
+                  </div>
+                </im-card>
+              </div>
+            </div>
+          </div>
+        </im-tab>
+        <im-tab label="Impact">
+          <div class="im-cont impact-cont">
+            <div class="impact-row">
+              <div>
+                <div class="main-text">
+                  {{ cm.view.earnedCredits / 100 | currency: '':'' }}
+                  <ion-icon [style.margin-bottom]="'-2px'" src="/assets/icons/cc.svg"></ion-icon>
+                </div>
+                <div>
+                  Earned
+                  <br />
+                  CommunityCredits
+                </div>
+              </div>
+              <div>
+                <div class="main-text">
+                  {{ cm.view.spentCredits / 100 | currency: '':'' }}
+                  <ion-icon [style.margin-bottom]="'-2px'" src="/assets/icons/cc.svg"></ion-icon>
+                </div>
+                <div>
+                  Spent
+                  <br />
+                  CommunityCredits
+                </div>
+              </div>
+            </div>
+            <div class="impact-row">
+              <div>
+                <div class="main-text">
+                  {{ cm.view.secondsCompleted / 3600 | number: '1.2-2' }}
+                </div>
+                <div>
+                  Hours
+                  <br />
+                  Completed
+                </div>
+              </div>
+              <div>
+                <div class="main-text">{{ cm.view.poiApproved }}</div>
+                <div>
+                  Proofs of Impact
+                  <br />
+                  Approved
+                </div>
+              </div>
+              <div>
+                <div class="main-text">{{ projectsHeld(cm) }}</div>
+                <div>
+                  Projects
+                  <br />
+                  Held
+                </div>
+              </div>
+            </div>
+          </div>
+        </im-tab>
+        <im-tab label="Timeline">
+          <div class="im-cont timeline-cont" *ngIf="mapPois(cm) as pois">
+            <div class="im-centered" *ngIf="pois.length < 1">
+              <div [style.display]="'grid'" [style.gap]="'0.1rem'">
+                @{{ handle }} has no Proofs of Impact.
+              </div>
+            </div>
+            <im-block imageSlot="left" *ngFor="let poi of pois" [images]="poi.imagesFilePaths">
+              <div header class="im-primary-text">{{ poi.enrollment.project.title }}</div>
+              <div body class="timeline-details">
+                <div class="timeline-detail-item">
+                  <ion-icon name="information-circle"></ion-icon>
+                  <span [ngSwitch]="poi.status">
+                    <b [style.color]="'var(--im-poi-denied)'" *ngSwitchCase="PoiStatus.denied">Denied</b>
+                    <b [style.color]="'var(--im-poi-approved)'" *ngSwitchCase="PoiStatus.approved">
+                      Approved
+                    </b>
+                    <b [style.color]="'var(--im-poi-submitted)'" *ngSwitchCase="PoiStatus.submitted">
+                      Submitted
+                    </b>
+                    <b [style.color]="'var(--im-poi-stopped)'" *ngSwitchCase="PoiStatus.stopped">Stopped</b>
+                    <b [style.color]="'var(--im-poi-paused)'" *ngSwitchCase="PoiStatus.paused">Paused</b>
+                    <b [style.color]="'var(--im-poi-started)'" *ngSwitchCase="PoiStatus.started">Started</b>
+                    <b [style.color]="'var(--im-poi-created)'" *ngSwitchCase="PoiStatus.created">Created</b>
+                  </span>
+                </div>
+                <div class="timeline-detail-item">
+                  <ion-icon name="calendar"></ion-icon>
+                  <span *ngIf="poi.dateSubmitted">{{ poi.dateSubmitted | date: 'longDate' }}</span>
+                  <div *ngIf="!poi.dateSubmitted">No submission date.</div>
+                </div>
+                <div class="timeline-detail-item">
+                  <ion-icon name="time"></ion-icon>
+                  <span>{{ poi.timeWorked }}</span>
+                </div>
+                <div class="timeline-detail-item">
+                  <ion-icon name="location"></ion-icon>
+                  <span>
+                    {{ poi.enrollment.project.address.city }}, {{ poi.enrollment.project.address.state }}
+                  </span>
+                </div>
+                <div class="timeline-info">{{ poi.enrollment.project.description }}</div>
+              </div>
+            </im-block>
+          </div>
+        </im-tab>
+      </im-tabs>
+    </ion-content>
+  </ng-container>
+
+  <ng-template #spEp>
+    <ion-content>
+      <div class="im-cont" *ngIf="!state.profile">
+        <div class="im-centered">
+          <ion-spinner name="crescent"></ion-spinner>
+        </div>
+      </div>
+      <div
+        class="im-cont"
+        *ngIf="state.profile"
+        [class]="
+          state.profile?.changeMaker
+            ? 'im-cm'
+            : state.profile?.exchangePartner
+            ? 'im-ep'
+            : state.profile?.servePartner
+            ? 'im-sp'
+            : ''
+        "
+      >
+        <div class="header">
+          <div
+            class="im-profile-pic large"
+            [style.cursor]="'pointer'"
+            *ngIf="
+              state.profile.changeMaker?.profilePicFilePath ||
+                state.profile.servePartner?.logoFilePath ||
+                state.profile.exchangePartner?.logoFilePath
+                | imStorageUrl
+                | async as url
+            "
+            [style.background-image]="'url(' + url + ')'"
+            (click)="viewImage(url)"
+          ></div>
+
+          <ion-icon
+            *ngIf="
+              !(
+                state.profile.changeMaker?.profilePicFilePath ||
+                state.profile.servePartner?.logoFilePath ||
+                state.profile.exchangePartner?.logoFilePath
+              )
+            "
+            class="im-profile-pic-none large"
+            name="person-circle"
+          ></ion-icon>
+          <div>
+            <div class="im-primary-text">
+              {{ state.profile.exchangePartner?.name }}{{ state.profile.servePartner?.name }}
+            </div>
+
+            <div class="info">
+              {{ state.profile.servePartner?.description }}
+              {{ state.profile.exchangePartner?.description }}
+              <div class="im-link" (click)="messageSeller(state.profile!)">
+                <span>@{{ handle }}</span>
+                <ion-icon class="mail-btn" name="mail"></ion-icon>
+              </div>
+              <div class="mail-btn" name="mail"></div>
+            </div>
+          </div>
+        </div>
+        <div body class="im-buttons">
+          <ion-button
+            *ngIf="state.profile.exchangePartner as ep"
+            (click)="viewStorefront(ep.id)"
+            fill="outline"
+          >
+            Storefront
+          </ion-button>
+          <ion-button (click)="messageSeller(state.profile)">Send Message</ion-button>
+        </div>
+
+        <div *ngIf="state.profile.exchangePartner as ep">
+          <im-block [images]="ep.imagesFilePaths" [join]="true" icon="call">
+            <div header class="im-primary-text">Phone</div>
+            <div body>{{ ep!.phone }}</div>
+          </im-block>
+          <im-block [join]="true" icon="person" *ngIf="ep!.description as description">
+            <div header class="im-primary-text">Description</div>
+            <div body>{{ description }}</div>
+          </im-block>
+          <im-block [join]="true" icon="mail">
+            <div header class="im-primary-text">Email</div>
+            <div body>{{ ep!.email }}</div>
+          </im-block>
+          <im-block [join]="true" icon="globe">
+            <div header class="im-primary-text">Website</div>
+            <div body>{{ ep!.website }}</div>
+          </im-block>
+          <im-block [join]="true" icon="person-add">
+            <div header class="im-primary-text">Member Since</div>
+            <div body>{{ ep!.dateCreated | date: 'MMMM y' }}</div>
+          </im-block>
+          <im-block [join]="true" icon="/assets/icons/cc-menu.svg">
+            <div header class="im-primary-text">Remaining Monthly Budget</div>
+            <div body>{{ (ep!.budget - ep!.view.receivedThisMonth) / 100 | currency: '':'' }}</div>
+          </im-block>
+          <im-block [join]="true" icon="compass" *ngIf="state.distance as distance">
+            <div header class="im-primary-text">Distance</div>
+            <div body>{{ distance | number: '1.0-1' }} miles away</div>
+          </im-block>
+          <im-block [join]="true" icon="location" *ngIf="state.address as address">
+            <div header class="im-primary-text">Location</div>
+            <div body>{{ address }}</div>
+          </im-block>
+          <im-block [join]="true" icon="albums">
+            <div header class="im-primary-text">Number of Offers</div>
+            <div body>{{ getPublic(ep!.offers).length }}</div>
+          </im-block>
+          <im-block [join]="true" icon="layers">
+            <div header class="im-primary-text">Number of Requests</div>
+            <div body>{{ getPublic(ep!.requests).length }}</div>
+          </im-block>
+        </div>
+        <div *ngIf="state.profile.servePartner as sp">
+          <im-block [images]="sp.imagesFilePaths" [join]="true" icon="call">
+            <div header class="im-primary-text">Phone</div>
+            <div body>{{ sp!.phone }}</div>
+          </im-block>
+          <im-block [join]="true" icon="person" *ngIf="sp!.description as description">
+            <div header class="im-primary-text">Description</div>
+            <div body>{{ description }}</div>
+          </im-block>
+          <im-block [join]="true" icon="mail">
+            <div header class="im-primary-text">Email</div>
+            <div body>{{ sp!.email }}</div>
+          </im-block>
+          <im-block [join]="true" icon="globe">
+            <div header class="im-primary-text">Website</div>
+            <div body>{{ sp!.website }}</div>
+          </im-block>
+          <im-block [join]="true" icon="person-add">
+            <div header class="im-primary-text">Member Since</div>
+            <div body>{{ sp!.dateCreated | date: 'MMMM y' }}</div>
+          </im-block>
+          <im-block [join]="true" icon="compass" *ngIf="state.distance as distance">
+            <div header class="im-primary-text">Distance</div>
+            <div body>{{ distance | number: '1.0-1' }} miles away</div>
+          </im-block>
+          <im-block [join]="true" icon="location" *ngIf="state.address as address">
+            <div header class="im-primary-text">Location</div>
+            <div body>{{ address }}</div>
+          </im-block>
+          <im-block [join]="true" icon="star">
+            <div header class="im-primary-text">Total Number of Projects</div>
+            <div body>{{ sp!.projects.length }}</div>
+          </im-block>
+          <im-block [join]="true" icon="albums">
+            <div header class="im-primary-text">Number of Offers</div>
+            <div body>{{ getPublic(sp!.offers).length }}</div>
+          </im-block>
+          <im-block [join]="true" icon="layers">
+            <div header class="im-primary-text">Number of Requests</div>
+            <div body>{{ getPublic(sp!.requests).length }}</div>
+          </im-block>
+        </div>
+      </div>
+    </ion-content>
+  </ng-template>
+</ng-container>

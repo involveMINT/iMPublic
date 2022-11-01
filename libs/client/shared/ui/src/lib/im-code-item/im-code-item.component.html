@@ -1,0 +1,11 @@
+<span class="code {{ !active ? 'inactive' : '' }}">
+  <ion-icon name="eye"></ion-icon>
+  {{ code }}
+</span>
+<div class="im-ellipsis">
+  <ng-content></ng-content>
+</div>
+<div class="right" [class.active]="active">
+  <b class="price">{{ price / 100 | currency: '':'' }}</b>
+  <ion-icon src="/assets/icons/cc.svg"></ion-icon>
+</div>

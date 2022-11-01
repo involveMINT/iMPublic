@@ -1,0 +1,58 @@
+<div class="title"><ng-content select="[slot=title]"></ng-content></div>
+<div
+  class="cont"
+  [ngStyle]="{
+    'background-image':
+      'linear-gradient( rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5) ), url(' +
+      ((imageUrl | imStorageUrl | async) || '/assets/icons/im-default.svg') +
+      ')'
+  }"
+>
+  <div *ngIf="percent === 0" class="content"><ng-content select="[slot=content]"></ng-content></div>
+  <div *ngIf="percent > 0" class="content progress">
+    <svg
+      [attr.viewBox]="'0 0 ' + WIDTH + ' ' + HEIGHT"
+      style="height: 100%; width: 100%"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <line
+        [attr.x1]="OFFSET"
+        [attr.y1]="HEIGHT / 2"
+        [attr.x2]="TOTAL_LENGTH + OFFSET"
+        [attr.y2]="HEIGHT / 2"
+        style="stroke: white; stroke-width: 20"
+      />
+      <line
+        [attr.x1]="OFFSET"
+        [attr.y1]="HEIGHT / 2"
+        [attr.x2]="OFFSET + barLength"
+        [attr.y2]="HEIGHT / 2"
+        style="stroke: green; stroke-width: 15"
+      />
+
+      <ng-container *ngFor="let i of checkArr">
+        <circle fill="white" [attr.cx]="OFFSET + i * scale" cy="50" r="22" />
+        <circle *ngIf="barLength >= i * scale" fill="green" [attr.cx]="OFFSET + i * scale" cy="50" r="19" />
+        <line
+          [attr.x1]="11 + i * scale"
+          y1="50"
+          [attr.x2]="18 + i * scale"
+          y2="56"
+          style="stroke-width: 4"
+          [ngStyle]="{ stroke: barLength >= i * scale ? 'white' : 'green' }"
+        />
+        <line
+          [attr.x1]="16 + i * scale"
+          y1="57"
+          [attr.x2]="28 + i * scale"
+          y2="43"
+          style="stroke-width: 4"
+          [ngStyle]="{ stroke: barLength >= i * scale ? 'white' : 'green' }"
+        />
+      </ng-container>
+    </svg>
+    <div><ng-content select="[slot=progressTitle]"></ng-content></div>
+  </div>
+  <div class="left-label"><ng-content select="[slot=left-label]"></ng-content></div>
+  <div class="right-label"><ng-content select="[slot=right-label]"></ng-content></div>
+</div>

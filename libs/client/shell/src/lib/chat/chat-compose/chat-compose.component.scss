@@ -1,0 +1,17 @@
+.header {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+
+  span {
+    color: var(--ion-text-color);
+    padding: var(--im-padding);
+  }
+}
+
+::ng-deep [data-theme='dark'] {
+  ion-chip {
+    background: black;
+    color: white;
+  }
+}

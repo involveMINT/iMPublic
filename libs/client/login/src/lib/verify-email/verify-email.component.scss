@@ -1,0 +1,7 @@
+.centered {
+  display: grid;
+  place-content: center;
+  text-align: center;
+  gap: var(--im-padding);
+  padding: var(--im-padding);
+}

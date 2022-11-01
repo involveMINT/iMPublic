@@ -1,0 +1,73 @@
+<ng-container *ngIf="state$ | async as state">
+  <ng-container *ngIf="state.chat as chat">
+    <ion-header>
+      <ion-toolbar>
+        <ion-buttons slot="start">
+          <ion-button class="no-padding" (click)="back()">
+            <ion-icon name="chevron-back" color="primary"></ion-icon>
+          </ion-button>
+        </ion-buttons>
+        <ion-title>{{ chat!.notMe || 'Loading' }}</ion-title>
+      </ion-toolbar>
+    </ion-header>
+
+    <ion-content imScrollbarTheme>
+      <div class="im-centered" *ngIf="!state.loaded">
+        <ion-spinner name="crescent"></ion-spinner>
+      </div>
+      <div class="im-cont cont">
+        <div
+          *ngFor="let msg of chat!.messages; trackBy: trackByCreated"
+          class="message"
+          [ngClass]="{
+            'other-message': state.myHandle !== msg.member.handleId,
+            'my-message': state.myHandle === msg.member.handleId
+          }"
+        >
+          <div class="member-handle">
+            <div
+              class="im-profile-pic"
+              *ngIf="getProfilePic(msg.member.handleId) | imStorageUrl | async as url"
+              [style.background-image]="'url(' + url + ')'"
+            ></div>
+            <ion-icon
+              *ngIf="!getProfilePic(msg.member.handleId)"
+              class="im-profile-pic-none"
+              name="person-circle"
+            ></ion-icon>
+            <div>
+              <div>@{{ msg.member.handleId }}</div>
+              <div class="name">{{ getName(msg.member.handleId) }}</div>
+            </div>
+            <ion-icon
+              (click)="viewProfile(msg.member.handleId)"
+              class="info"
+              slot="icon-only"
+              name="information-circle"
+            ></ion-icon>
+          </div>
+          <span>{{ msg.content }}</span>
+          <div class="time" text-right>{{ msg.createdAt.toDate() | date: 'short' }}</div>
+        </div>
+      </div>
+    </ion-content>
+
+    <ion-footer>
+      <div class="im-cont send-cont">
+        <textarea autosize [formControl]="messageForm" class="message-input"></textarea>
+        <ion-buttons slot="end">
+          <ion-button
+            expand="block"
+            fill="clear"
+            color="primary"
+            [disabled]="messageForm.invalid || state.sending"
+            class="msg-btn"
+            (click)="submit(chat)"
+          >
+            <ion-icon slot="icon-only" name="send"></ion-icon>
+          </ion-button>
+        </ion-buttons>
+      </div>
+    </ion-footer>
+  </ng-container>
+</ng-container>

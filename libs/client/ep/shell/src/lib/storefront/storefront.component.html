@@ -1,0 +1,78 @@
+<ng-container *ngIf="state$ | async as state">
+  <ng-container *ngIf="state.profile as profile">
+    <ion-header>
+      <ion-toolbar>
+        <ion-buttons slot="start">
+          <ion-menu-button></ion-menu-button>
+        </ion-buttons>
+        <ion-title>Storefront</ion-title>
+      </ion-toolbar>
+    </ion-header>
+
+    <ion-content>
+      <im-tabs #tabs [activeTabIndex]="state.activeTabIndex" (tabChange)="tabChangeEvent($event)">
+        <im-tab label="Storefront">
+          <div class="im-cont" [formGroup]="storeFrontForm">
+            <div>
+              <im-item [touched]="true" label="List Storefront on Marketplace">
+                <ion-select formControlName="listStoreFront" [value]="storeFrontForm.value.listStoreFront">
+                  <ion-select-option *ngFor="let list of listingOptions" [value]="list">
+                    {{ list | titlecase }}
+                  </ion-select-option>
+                </ion-select>
+                <im-error *ngIf="!state.profile!.budget">
+                  Your Storefront will not be listed until your budget is set.
+                </im-error>
+                <div end [ngSwitch]="state.profile!.listStoreFront">
+                  <div *ngSwitchCase="'public'">
+                    Your Storefront is public and is listed
+                    <a [href]="state.deepLink" target="_blank">here.</a>
+                  </div>
+                  <div *ngSwitchCase="'private'">Your Storefront is private and cannot be seen.</div>
+                  <div *ngSwitchCase="'unlisted'">
+                    Your Storefront is unlisted and only can be viewed with
+                    <a [href]="state.deepLink" target="_blank">this link.</a>
+                  </div>
+                </div>
+              </im-item>
+
+              <im-item [touched]="true" label="Business Description">
+                <textarea
+                  autosize
+                  [minRows]="2"
+                  formControlName="description"
+                  placeholder="Business Description"
+                ></textarea>
+                <im-error *ngIf="storeFrontForm.controls.description.invalid">
+                  Your description is too long.
+                </im-error>
+              </im-item>
+
+              <div>
+                <div class="im-primary-text">Storefront Images:</div>
+                <div class="images-cont">
+                  <im-image
+                    *ngFor="let _ of maxImagesPerItem; index as i"
+                    [imgUrl]="profile!.imagesFilePaths[i] | imStorageUrl | async"
+                    [disable]="profile!.imagesFilePaths.length < i"
+                    (imgClick)="viewImages(profile!.imagesFilePaths, i)"
+                    (uploadImg)="uploadImages($event)"
+                    (deleteImg)="deleteImage(i)"
+                  >
+                    <div *ngIf="i > 0" class="cover" (click)="makeCoverPhoto(profile, i)">Make Cover</div>
+                  </im-image>
+                </div>
+              </div>
+            </div>
+          </div>
+        </im-tab>
+        <im-tab label="Offers">
+          <im-offers [epStorefrontView]="true"></im-offers>
+        </im-tab>
+        <im-tab label="Requests">
+          <im-requests [epStorefrontView]="true"></im-requests>
+        </im-tab>
+      </im-tabs>
+    </ion-content>
+  </ng-container>
+</ng-container>

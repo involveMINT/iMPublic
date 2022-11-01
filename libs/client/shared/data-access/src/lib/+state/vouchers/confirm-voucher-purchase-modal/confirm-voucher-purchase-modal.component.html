@@ -1,0 +1,29 @@
+<ng-container *ngIf="state$ | async as state">
+  <ion-header>
+    <ion-toolbar>
+      <ion-buttons slot="start">
+        <ion-button (click)="close()">
+          <ion-icon name="close"></ion-icon>
+          Close
+        </ion-button>
+      </ion-buttons>
+      <ion-title>Confirm</ion-title>
+      <ion-buttons slot="end">
+        <ion-button color="success" (click)="purchase()">
+          <ion-icon name="checkmark" color="success"></ion-icon>
+          Purchase
+        </ion-button>
+      </ion-buttons>
+    </ion-toolbar>
+  </ion-header>
+
+  <ion-content>
+    <div class="im-cont">
+      <div [style.text-align]="'center'">
+        Please confirm your voucher purchase. This is how your Voucher will appear after purchasing and a code
+        will be generated.
+      </div>
+      <im-voucher-info *ngIf="state.voucher as voucher" [voucher]="voucher"></im-voucher-info>
+    </div>
+  </ion-content>
+</ng-container>

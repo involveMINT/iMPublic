@@ -1,0 +1,9 @@
+<ion-slides [options]="slidesOptions" imRemoveWrapper>
+  <ion-slide *ngFor="let url of imagesFormatted | imStorageUrl | async; index as i">
+    <div
+      (click)="viewImages(i)"
+      class="project-image"
+      [ngStyle]="{ 'background-image': 'url(' + url + ')' }"
+    ></div>
+  </ion-slide>
+</ion-slides>

@@ -1,0 +1,110 @@
+.green {
+  --ion-color-primary: var(--im-green);
+  --ion-color-primary-tint: var(--im-green-tint);
+  --ion-color-primary-shade: var(--im-green-shade);
+}
+
+.orange {
+  --ion-color-primary: var(--im-orange);
+  --ion-color-primary-tint: var(--im-orange-tint);
+  --ion-color-primary-shade: var(--im-orange-shade);
+}
+
+.purple {
+  --ion-color-primary: var(--im-purple);
+  --ion-color-primary-tint: var(--im-purple-tint);
+  --ion-color-primary-shade: var(--im-purple-shade);
+}
+
+:host {
+  height: 100%;
+  width: 100%;
+}
+
+.cont {
+  display: grid;
+  grid-template-rows: minmax(auto, 85px) minmax(auto, 30px) minmax(auto, 30px) 1fr auto;
+  place-content: stretch;
+  height: 100%;
+  background-color: var(--ion-color-primary);
+  color: var(--ion-color-primary-contrast);
+  border-radius: 15px 15px 0 0;
+  border: 1px solid var(--ion-color-primary);
+
+  .sending,
+  .total {
+    display: grid;
+    grid-template-columns: auto auto;
+    justify-content: center;
+    align-items: center;
+    max-width: 100vw;
+  }
+
+  .equiv {
+    display: grid;
+    place-content: center;
+  }
+
+  .balance {
+    display: grid;
+    grid-template-columns: auto auto;
+    place-items: center;
+    gap: 5px;
+  }
+
+  .sending {
+    font-size: 45px;
+    gap: 5px;
+    font-weight: 500;
+
+    ion-icon {
+      font-size: 38px;
+    }
+  }
+
+  .total {
+    font-size: 16px;
+    ion-icon {
+      font-size: 18px;
+    }
+  }
+
+  .number-pad {
+    display: grid;
+    grid-template-rows: 1fr 1fr 1fr 1fr;
+
+    ion-button {
+      --background: var(--ion-color-primary);
+      --box-shadow: none;
+      font-size: 20px;
+    }
+
+    .number-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      place-items: center;
+
+      div,
+      ion-button {
+        height: 100%;
+        width: 100%;
+        display: grid;
+        --background: var(--ion-color-primary);
+        --border-radius: 0;
+
+        span {
+          display: grid;
+          place-content: center;
+        }
+      }
+    }
+  }
+
+  .buttons {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.5em;
+    padding: 1em;
+    background-color: white;
+  }
+}

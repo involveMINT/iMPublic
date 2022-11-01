@@ -1,0 +1,49 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Activate Account</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="back()">
+        <ion-icon name="chevron-forward" color="primary"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <form class="cont" [formGroup]="form">
+    <div class="desc">Account User ID.</div>
+    <ion-item class="business-user-id">
+      <ion-icon slot="start" name="person"></ion-icon>
+      <input
+        [disabled]="true"
+        [readonly]="true"
+        formControlName="email"
+        name="email"
+        type="email"
+        placeholder="User Id"
+      />
+    </ion-item>
+    <div class="divider"></div>
+    <div class="desc">Please enter your new password.</div>
+    <im-item [touched]="true">
+      <ion-icon slot="start" name="lock-closed"></ion-icon>
+      <input formControlName="newPassword" placeholder="Password" name="password" type="password" />
+      <im-error *ngIf="!form.controls.newPassword.valid && form.controls.newPassword.touched">
+        {{ pwdValidationText }}
+      </im-error>
+    </im-item>
+    <im-item [touched]="true">
+      <ion-icon slot="start" name="lock-closed"></ion-icon>
+      <input
+        formControlName="confirmNewPassword"
+        placeholder="Confirm Password"
+        name="password"
+        type="password"
+      />
+      <im-error *ngIf="form.controls.newPassword.touched && form.getError('notSame')">
+        Your passwords do not match.
+      </im-error>
+    </im-item>
+    <ion-button [disabled]="!form.valid" (click)="submit()">Set Password</ion-button>
+  </form>
+</ion-content>

@@ -1,0 +1,16 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button (click)="close()">
+        <ion-icon slot="icon-only" name="close-circle"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title>Voucher</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div class="im-cont">
+    <im-voucher-info [voucher]="voucher"></im-voucher-info>
+  </div>
+</ion-content>

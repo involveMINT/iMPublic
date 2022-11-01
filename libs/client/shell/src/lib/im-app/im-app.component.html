@@ -1,0 +1,267 @@
+<ion-app *ngIf="state$ | async as state">
+  <ion-split-pane
+    contentId="main-content"
+    [when]="state.sideMenuBehavior === 'hidden' ? '(min-width: 40000px)' : '(min-width: 947px)'"
+  >
+    <ion-menu contentId="main-content" type="overlay" [swipeGesture]="!state.onboarding">
+      <ion-content>
+        <div class="cont" title="Main Menu">
+          <div class="header" *ngIf="!state.authenticated">
+            <div class="header-img border-bot">
+              <ion-icon
+                src="/assets/involvemint.svg"
+                [style.height]="'60px'"
+                [style.min-width]="'240px'"
+              ></ion-icon>
+            </div>
+            <div *ngIf="!state.authenticated" class="login border-bot">
+              <ion-button (click)="signUp()">Sign Up</ion-button>
+              <div (click)="login()">
+                Already have an account?
+                <span>Log In</span>
+              </div>
+            </div>
+          </div>
+
+          <div *ngIf="!state.authenticated"></div>
+          <div active-profile *ngIf="state.authenticated" (click)="toggleProfilesMenu()">
+            <div
+              class="im-profile-pic"
+              *ngIf="getProfilePic(state.activeProfile) | imStorageUrl | async as url"
+              [style.background-image]="'url(' + url + ')'"
+            ></div>
+            <ion-icon
+              *ngIf="!getProfilePic(state.activeProfile)"
+              class="im-profile-pic-none"
+              name="person-circle"
+            ></ion-icon>
+            <div *ngIf="state.activeProfile.type !== 'none'" class="im-ellipsis">
+              <im-handle [handle]="state.activeProfile.handle.id"></im-handle>
+            </div>
+            <div *ngIf="state.activeProfile.type === 'none'">No Active Profile</div>
+            <div class="im-{{ state.activeProfile.type }}">
+              <div></div>
+              <div>
+                {{
+                  state.activeProfile.type === 'cm'
+                    ? 'ChangeMaker'
+                    : state.activeProfile.type === 'ep'
+                    ? 'ExchangePartner'
+                    : state.activeProfile.type === 'sp'
+                    ? 'ServePartner'
+                    : ''
+                }}
+              </div>
+              <ion-icon
+                [style.transform]="state.profilesMenuOpen ? 'rotate(180deg)' : ''"
+                src="/assets/icons/double-arrow-down.svg"
+              ></ion-icon>
+            </div>
+          </div>
+
+          <div
+            class="menu"
+            title="Profiles and other pages"
+            [style.border-top]="state.authenticated ? '1px solid var(--im-border-color)' : ''"
+          >
+            <div class="profiles" [@menuItemsExpandCollapse]="state.profilesMenuOpen ? 'in' : 'out'">
+              <ng-container *ngFor="let menu of state.menus">
+                <div
+                  class="menu-header"
+                  (click)="menuHeaderClicked(menu)"
+                  [style.font-weight]="menu.profile?.id === state.activeProfile?.id ? '700' : '500'"
+                >
+                  <div class="menu-title">
+                    <ion-icon
+                      slot="start"
+                      [name]="
+                        menu.profile
+                          ? menu.profile?.id === state.activeProfile?.id
+                            ? 'ellipse'
+                            : 'ellipse-outline'
+                          : menu.icon
+                      "
+                      [style.color]="menu.active ? getMenuColor(menu) : menu!.color"
+                    ></ion-icon>
+                    <div [style.overflow]="'auto'">
+                      <div class="im-ellipsis">{{ menu.title }}</div>
+                      <div [style.font-size]="'12px'" [style.filter]="'contrast(0.5)'">
+                        {{ menu.subtitle }}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </ng-container>
+              <ng-container *ngIf="state.selectBusinessProfile as selectBusinessProfile">
+                <div
+                  class="menu-header"
+                  (click)="itemClick(selectBusinessProfile.items[0])"
+                  [style.font-weight]="selectBusinessProfile.active ? '700' : '500'"
+                >
+                  <div class="menu-title">
+                    <ion-icon
+                      slot="start"
+                      [name]="
+                        selectBusinessProfile.profile
+                          ? selectBusinessProfile.profile?.id === state.activeProfile?.id
+                            ? 'ellipse'
+                            : 'ellipse-outline'
+                          : selectBusinessProfile.icon
+                      "
+                      [style.color]="
+                        selectBusinessProfile.active
+                          ? getMenuColor(selectBusinessProfile)
+                          : selectBusinessProfile.color
+                      "
+                    ></ion-icon>
+                    <div [style.overflow]="'auto'">
+                      <div class="im-ellipsis">{{ selectBusinessProfile.title }}</div>
+                    </div>
+                  </div>
+                </div>
+              </ng-container>
+            </div>
+            <div *ngIf="activeMenu() as menu">
+              <ng-container *ngFor="let item of inMenu(menu.items)">
+                <ng-template *ngTemplateOutlet="menuItem; context: { item: item, menu: menu }"></ng-template>
+              </ng-container>
+            </div>
+          </div>
+
+          <div [style.background]="'var(--im-menu)'"></div>
+          <div [style.box-shadow]="'0px 0px 0px 1px var(--im-border-color)'" [style.z-index]="'1'">
+            <div title="Settings">
+              <ng-template
+                *ngTemplateOutlet="menuItem; context: { item: state.settings.items[0], menu: state.settings }"
+              ></ng-template>
+            </div>
+            <div class="version">Version {{ version }}</div>
+          </div>
+        </div>
+      </ion-content>
+    </ion-menu>
+    <ion-router-outlet
+      *ngIf="{
+        showNavTabs: state.navTabs && state.activeProfile.type !== 'none' && !state.onboarding
+      } as context"
+      id="main-content"
+    >
+      <ion-tabs>
+        <ion-tab-bar slot="bottom" *ngIf="context.showNavTabs">
+          <ng-container *ngFor="let menu of state.menus">
+            <ng-container *ngIf="menu.profile?.id === state.activeProfile?.id">
+              <ng-container *ngFor="let item of inTabs(menu.items)">
+                <ion-tab-button
+                  [style.border-bottom]="
+                    item.isActiveRoute
+                      ? '5px solid var(--ion-color-primary)'
+                      : '5px solid var(--im-block-background)'
+                  "
+                  [style.color]="item.isActiveRoute ? 'var(--ion-color-primary)' : 'var(--ion-text-color)'"
+                  [class.tab-selected]="item.isActiveRoute"
+                  (click)="item!.title === 'Wallet' ? toggleWallet() : item.click && item.click!()"
+                >
+                  <div class="item-loader" *ngIf="item.loading">
+                    <ion-spinner [style.color]="item!.color || menu.color" name="crescent"></ion-spinner>
+                  </div>
+                  <ion-icon
+                    *ngIf="!item.loading"
+                    [name]="item.isActiveRoute ? item.icon.replace('-outline', '') : item.icon"
+                    [src]="item!.icon"
+                  ></ion-icon>
+                  <ion-label>{{ item!.title }}</ion-label>
+                </ion-tab-button>
+              </ng-container>
+            </ng-container>
+          </ng-container>
+        </ion-tab-bar>
+      </ion-tabs>
+      <ng-container *ngIf="context.showNavTabs">
+        <ion-fab
+          horizontal="center"
+          vertical="bottom"
+          [edge]="true"
+          #walletFab
+          (click)="toggleWallet()"
+          [style.--background]="
+            state.walletShown
+              ? 'linear-gradient(0deg, var(--ion-color-primary) 0%, var(--ion-color-primary-tint) 100%)'
+              : 'transparent'
+          "
+        >
+          <ion-fab-button>
+            <ion-icon
+              class="logo im"
+              [@walletOpenClose]="state.walletShown ? 'open' : 'close'"
+              [style.position]="'absolute'"
+              src="/assets/logo_circle.svg"
+            ></ion-icon>
+            <ion-icon
+              class="logo arrow"
+              [@walletOpenClose]="!state.walletShown ? 'open' : 'close'"
+              [style.position]="'absolute'"
+              name="chevron-down"
+            ></ion-icon>
+          </ion-fab-button>
+        </ion-fab>
+
+        <involvemint-wallet
+          class="im-wallet"
+          *ngIf="state.walletShown"
+          @wallet
+          [mobileView]="true"
+          [style.height]="height"
+          [style.z-index]="'11'"
+        ></involvemint-wallet>
+      </ng-container>
+
+      <ion-footer
+        class="onboard-footer"
+        *ngIf="
+          state.onboarding === 'cm' || (state.onboarding === 'mkt' && state.activeProfile?.type === 'cm')
+        "
+      >
+        <div class="footer-cont" (click)="skip()">
+          <div *ngIf="state.onboarding === 'cm'" [style.color]="'--ion-text-color'">
+            Don't see a project you like?
+          </div>
+          <div *ngIf="state.onboarding === 'mkt'" [style.color]="'--ion-text-color'">
+            Don't see something you like?
+          </div>
+          <span class="skip">Skip For Now</span>
+          <ion-icon name="arrow-forward"></ion-icon>
+        </div>
+      </ion-footer>
+    </ion-router-outlet>
+  </ion-split-pane>
+</ion-app>
+
+<ng-template #menuItem let-item="item" let-menu="menu">
+  <div
+    [class.menu-child]="menu.color"
+    class="menu-item"
+    (click)="itemClick(item)"
+    [style.background]="item.isActiveRoute ? 'var(--im-menu-item-active)' : ''"
+    [class.active-item]="item.isActiveRoute"
+  >
+    <ng-container *ngIf="item.title === 'Messages'">
+      <ion-badge color="primary" *ngIf="unreadMessages$ | async as unreadMessages">
+        {{ unreadMessages }}
+      </ion-badge>
+    </ng-container>
+    <ion-icon
+      *ngIf="!item.loading"
+      [name]="item.isActiveRoute ? item.icon : item.icon + '-outline'"
+      [src]="item.isActiveRoute ? item.icon : item!.icon.replace('.svg', '-outline.svg')"
+      [style.color]="item.isActiveRoute ? item!.color || menu.color : 'var(--im-menu-item-icon)'"
+      slot="start"
+    ></ion-icon>
+    <div class="item-loader" *ngIf="item.loading">
+      <ion-spinner [style.color]="item!.color || menu.color" name="crescent"></ion-spinner>
+    </div>
+    <div [style.font-weight]="item.isActiveRoute ? '700' : '500'">
+      <div class="im-ellipsis">{{ item!.title }}</div>
+      <div class="im-ellipsis">{{ item!.subtitle }}</div>
+    </div>
+  </div>
+</ng-template>

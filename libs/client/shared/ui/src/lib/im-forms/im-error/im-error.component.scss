@@ -1,0 +1,29 @@
+:host {
+  padding: 1px 0 0 4px;
+  color: var(--ion-color-danger);
+  text-align: start;
+  font-size: 12px;
+  animation: enter 200ms ease-in-out 0s forwards;
+  display: grid;
+  place-content: start;
+
+  &.bg {
+    background-color: #f8d7da;
+    border: 1px solid #f1c6cb;
+    color: #721c24;
+    border-radius: var(--im-border-radius);
+    display: grid;
+    place-content: center;
+  }
+}
+
+@keyframes enter {
+  0% {
+    transform: translateY(-var(--im-forms-margin));
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}

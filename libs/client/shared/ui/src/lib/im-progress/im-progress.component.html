@@ -1,0 +1,58 @@
+<svg
+  [attr.viewBox]="'0 0 ' + WIDTH + ' ' + HEIGHT"
+  style="height: 100%; width: 100%"
+  xmlns="http://www.w3.org/2000/svg"
+>
+  <line
+    [attr.x1]="OFFSET"
+    [attr.y1]="HEIGHT / 2"
+    [attr.x2]="TOTAL_LENGTH + OFFSET"
+    [attr.y2]="HEIGHT / 2"
+    [style.stroke]="'var(--im-menu-expanded)'"
+    [style.stroke-width]="20"
+  />
+  <line
+    [attr.x1]="OFFSET"
+    [attr.y1]="HEIGHT / 2"
+    [attr.x2]="OFFSET + barLength"
+    [attr.y2]="HEIGHT / 2"
+    [style.stroke]="'var(--im-green)'"
+    [style.stroke-width]="20"
+  />
+
+  <ng-container *ngFor="let i of checkArr">
+    <circle [style.fill]="'white'" [attr.cx]="OFFSET + i * scale" cy="50" r="22" />
+    <circle
+      *ngIf="barLength >= i * scale"
+      [style.fill]="'var(--im-green)'"
+      [attr.cx]="OFFSET + i * scale"
+      cy="50"
+      r="19"
+    />
+    <circle
+      *ngIf="barLength < i * scale"
+      [style.fill]="'white'"
+      [style.stroke]="'var(--im-green)'"
+      [style.stroke-width]="'2px'"
+      [attr.cx]="OFFSET + i * scale"
+      cy="50"
+      r="19"
+    />
+    <line
+      [attr.x1]="13 + i * scale"
+      [attr.x2]="20 + i * scale"
+      y1="50"
+      y2="56"
+      [style.stroke-width]="'4px'"
+      [style.stroke]="barLength >= i * scale ? 'var(--im-menu-expanded)' : 'var(--im-green)'"
+    />
+    <line
+      [attr.x1]="18 + i * scale"
+      [attr.x2]="30 + i * scale"
+      y1="57"
+      y2="43"
+      [style.stroke-width]="'4px'"
+      [style.stroke]="barLength >= i * scale ? 'var(--im-menu-expanded)' : 'var(--im-green)'"
+    />
+  </ng-container>
+</svg>

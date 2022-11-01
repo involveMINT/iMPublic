@@ -1,0 +1,32 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button (click)="close()">
+        <ion-icon slot="icon-only" name="close"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title>{{ slideIndex + 1 }}/{{ imagesFilePaths.length }}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content (wheel)="onMouseWheel($event)">
+  <ion-slides
+    [options]="sliderOptions"
+    [pager]="true"
+    (ionSlidesDidLoad)="slidesLoaded()"
+    (ionSlideDidChange)="slidesChanged()"
+    #slides
+  >
+    <ion-slide *ngFor="let url of imagesFilePaths">
+      <div class="swiper-zoom-container">
+        <img [src]="url | imStorageUrl | async" tappable />
+      </div>
+    </ion-slide>
+  </ion-slides>
+  <div class="back" (click)="back()" *ngIf="this.slideIndex > 0">
+    <ion-icon name="chevron-back"></ion-icon>
+  </div>
+  <div class="forward" (click)="forward()" *ngIf="this.slideIndex < this.imagesFilePaths.length - 1">
+    <ion-icon name="chevron-forward"></ion-icon>
+  </div>
+</ion-content>

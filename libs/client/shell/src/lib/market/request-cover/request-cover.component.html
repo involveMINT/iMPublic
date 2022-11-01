@@ -1,0 +1,67 @@
+<ng-container *ngIf="state$ | async as state">
+  <ion-header
+    [class]="
+      state.request?.changeMaker
+        ? 'im-green'
+        : state.request?.exchangePartner
+        ? 'im-ep'
+        : state.request?.servePartner
+        ? 'im-sp'
+        : ''
+    "
+  >
+    <ion-toolbar>
+      <ion-buttons slot="start">
+        <ion-button class="no-padding" (click)="back()">
+          <ion-icon name="chevron-back" color="primary"></ion-icon>
+        </ion-button>
+      </ion-buttons>
+      <ion-title>{{ state.request?.name || 'Request' }}</ion-title>
+      <ion-buttons slot="end" *ngIf="state.request">
+        <ion-button (click)="viewProfile(state.request)">
+          @{{
+            state.request?.changeMaker?.handle?.id ||
+              state.request?.exchangePartner?.handle?.id ||
+              state.request?.servePartner?.handle?.id
+          }}
+          <ion-icon slot="end" name="information-circle-outline"></ion-icon>
+        </ion-button>
+      </ion-buttons>
+    </ion-toolbar>
+    <ion-progress-bar type="indeterminate" [class.hide]="state.request"></ion-progress-bar>
+  </ion-header>
+
+  <ion-content
+    [class]="
+      state.request?.changeMaker
+        ? 'im-green'
+        : state.request?.exchangePartner
+        ? 'im-ep'
+        : state.request?.servePartner
+        ? 'im-sp'
+        : ''
+    "
+  >
+    <div class="im-cont" *ngIf="state.request as request">
+      <div>
+        <im-block [join]="true" [images]="request.imagesFilePaths">
+          <div header class="im-primary-text">{{ request.name }}</div>
+          <div body>
+            <div [style.font-size]="'16px'">{{ request.description }}</div>
+          </div>
+          <div end>
+            {{ request.price / 100 | currency: '':'' }}
+            <ion-icon src="/assets/icons/cc.svg"></ion-icon>
+          </div>
+        </im-block>
+        <im-block [join]="true">
+          <div body class="im-buttons">
+            <ion-button fill="outline" (click)="messageSeller(request)">Message Seller</ion-button>
+            <ion-button (click)="pay(request)" *ngIf="state.authenticated">Pay Now</ion-button>
+            <ion-button *ngIf="!state.authenticated">Login to Pay</ion-button>
+          </div>
+        </im-block>
+      </div>
+    </div>
+  </ion-content>
+</ng-container>

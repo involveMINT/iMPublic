@@ -1,0 +1,114 @@
+{
+  "npmScope": "involvemint",
+  "affected": {
+    "defaultBase": "master"
+  },
+  "implicitDependencies": {
+    "angular.json": "*",
+    "package.json": {
+      "dependencies": "*",
+      "devDependencies": "*"
+    },
+    "tsconfig.base.json": "*",
+    ".eslintrc.json": "*",
+    "nx.json": "*"
+  },
+  "tasksRunnerOptions": {
+    "default": {
+      "runner": "@nrwl/workspace/tasks-runners/default",
+      "options": {
+        "cacheableOperations": ["build", "lint", "test", "e2e"]
+      }
+    }
+  },
+  "projects": {
+    "involvemint": {
+      "tags": []
+    },
+    "involvemint-e2e": {
+      "tags": [],
+      "implicitDependencies": ["involvemint"]
+    },
+    "api": {
+      "tags": []
+    },
+    "server-core-application-services": {
+      "tags": []
+    },
+    "server-core-domain-services": {
+      "tags": []
+    },
+    "shared-domain": {
+      "tags": []
+    },
+    "shared-util": {
+      "tags": []
+    },
+    "client-shared-data-access": {
+      "tags": []
+    },
+    "api-e2e": {
+      "tags": ["type:app"]
+    },
+    "client-shared-util": {
+      "tags": []
+    },
+    "client-shared-ui": {
+      "tags": []
+    },
+    "client-shared-assets": {
+      "tags": []
+    },
+    "client-shared-scss": {
+      "tags": []
+    },
+    "client-shared-routes": {
+      "tags": []
+    },
+    "client-shell": {
+      "tags": []
+    },
+    "client-login": {
+      "tags": []
+    },
+    "client-cm-shell": {
+      "tags": []
+    },
+    "client-cm-data-access": {
+      "tags": []
+    },
+    "client-admin-data-access": {
+      "tags": []
+    },
+    "client-admin-shell": {
+      "tags": []
+    },
+    "client-sp-data-access": {
+      "tags": []
+    },
+    "client-sp-shell": {
+      "tags": []
+    },
+    "client-ep-shell": {
+      "tags": []
+    },
+    "client-ep-data-access": {
+      "tags": []
+    },
+    "client-cm-api": {
+      "tags": []
+    },
+    "client-ba-shell": {
+      "tags": []
+    },
+    "client-ba-data-access": {
+      "tags": []
+    },
+    "server-orcha": {
+      "tags": []
+    },
+    "migrate": {
+      "tags": []
+    }
+  }
+}

@@ -1,0 +1,103 @@
+.error-banner {
+  font-size: 14px;
+  font-weight: bold;
+  padding: 1em;
+  text-align: center;
+}
+
+.budget-cont {
+  display: grid;
+  place-items: center;
+  padding: 1rem 1rem var(--im-bottom-padding) 1rem;
+
+  .set-budget {
+    display: grid;
+    place-items: center;
+    padding-bottom: 1rem;
+    width: 100%;
+
+    .budget-text-cont {
+      display: grid;
+      grid-template-rows: auto auto;
+      place-items: center;
+
+      .budget {
+        display: grid;
+        align-items: center;
+        font-weight: 500;
+        font-size: 35px;
+        gap: 8px;
+
+        input {
+          background: transparent;
+          border: none;
+          text-align: right !important;
+        }
+      }
+    }
+  }
+
+  .tap-edit {
+    color: var(--im-green);
+    text-decoration: underline;
+  }
+
+  .pop-text {
+    font-weight: 700;
+    color: var(--ion-color-primary);
+  }
+
+  .dates {
+    display: grid;
+    grid-template-columns: auto auto;
+    align-items: center;
+    justify-content: space-around;
+    width: 100%;
+    padding: 1em 0;
+    border-bottom: 1px solid var(--im-divider-color);
+
+    .date {
+      display: grid;
+      grid-template-columns: auto auto;
+      gap: 0.2em;
+    }
+
+    .end-date {
+      justify-self: end;
+    }
+  }
+
+  .bar {
+    padding-top: 1em;
+  }
+
+  .r-r-b {
+    display: grid;
+    grid-template-columns: auto auto auto;
+    place-items: center;
+    width: 100%;
+    padding: 1em 0;
+    border-bottom: 1px solid var(--im-divider-color);
+
+    .tc-math {
+      display: grid;
+      grid-template-rows: 1fr 1fr;
+      place-items: center;
+      gap: 5px;
+      width: 100%;
+
+      border-left: 1px solid var(--im-divider-color);
+      &:first-child {
+        border-left: none;
+      }
+
+      .amount {
+        display: grid;
+        grid-template-columns: auto auto;
+        place-items: center;
+        gap: 2px;
+        font-size: 15px;
+      }
+    }
+  }
+}

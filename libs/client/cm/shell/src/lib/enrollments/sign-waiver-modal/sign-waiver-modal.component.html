@@ -1,0 +1,120 @@
+<ng-container *ngIf="state$ | async as state">
+  <ion-header>
+    <ion-toolbar *ngIf="!enrollment.acceptedWaiver">
+      <ion-buttons slot="start">
+        <ion-button color="danger" (click)="deny()">
+          <ion-icon name="close" color="danger"></ion-icon>
+          Deny
+        </ion-button>
+      </ion-buttons>
+      <ion-title>
+        Waiver
+        {{ enrollment.project.requireCustomWaiver ? (state.page === 'standard' ? '1/2' : '2/2') : '1/1' }}
+      </ion-title>
+      <ion-buttons slot="end">
+        <ion-button color="success" (click)="accept()">
+          <ion-icon name="checkmark" color="success"></ion-icon>
+          Accept
+        </ion-button>
+      </ion-buttons>
+    </ion-toolbar>
+    <ion-toolbar *ngIf="enrollment.acceptedWaiver">
+      <ion-buttons slot="start">
+        <ion-button (click)="deny()">
+          <ion-icon name="close"></ion-icon>
+        </ion-button>
+      </ion-buttons>
+      <ion-title>
+        Waiver
+        {{ enrollment.project.requireCustomWaiver ? (state.page === 'standard' ? '1/2' : '2/2') : '1/1' }}
+      </ion-title>
+      <ion-buttons slot="end">
+        <ion-button (click)="next()">
+          {{
+            enrollment.project.requireCustomWaiver ? (state.page === 'standard' ? 'Next' : 'Close') : 'Close'
+          }}
+          <ion-icon name="chevron-forward"></ion-icon>
+        </ion-button>
+      </ion-buttons>
+    </ion-toolbar>
+  </ion-header>
+
+  <ion-content>
+    <ng-container *ngIf="state.page === 'custom'">
+      <iframe
+        *ngIf="enrollment.project.customWaiverFilePath as url"
+        body
+        [src]="url | imStorageUrl: true | async"
+        width="100%"
+        height="100%"
+        frameborder="no"
+      ></iframe>
+    </ng-container>
+    <div class="cont" *ngIf="state.page === 'standard'">
+      <p [style.font-size]="'23px'" [style.text-align]="'center'">
+        <b>RELEASE AND WAIVER OF LIABILITY AGREEMENT</b>
+      </p>
+      <p>
+        IN CONSIDERATION OF permission to [{{ enrollment.project.description }}] (the "Activity") hosted by
+        [{{ enrollment.project.servePartner.name }}] ("ServePartner") and facilitated through my engagement
+        with involveMINT **Terms of Service** , engaging in any and all lawful activities incidental to the
+        forgoing activities, except as restricted in involveMINT **Terms of Service**.[s] provided by
+        involveMINT, the undersigned, both as an individual and on behalf of their legal representatives,
+        heirs, successors, and assigns, (collectively, the "ChangeMaker"), hereby releases, waives, and
+        discharges ServePartner, involveMINT, and any/all of their affiliates, subsidiaries, attorneys,
+        officers, directors, agents, representatives, and employees (collectively "Agents") from any and all
+        liability for any and all claims, losses or damages on account of injury to ChangeMaker's person or
+        property, whether caused by the negligence of ServePartner, involveMINT, the aforementioned Agents, or
+        otherwise relating to or arising out of ChangeMaker's participant in the Activity.
+      </p>
+      <p>
+        ChangeMaker hereby assumes full responsibility for the risk of bodily injury, death or property damage
+        to ChangeMaker.
+      </p>
+      <p>ChangeMaker agrees to:</p>
+      <div>
+        <ol>
+          <li>
+            abide by all instructions issued by ServePartner, including, without limitation, safety and
+            security measures while participating in the ServePartner Activity,
+          </li>
+          <li>
+            be responsible for all costs and expenses associated with any damage to property or injury to
+            person, to ServePartner or any third party, caused by ChangeMaker while participating in the
+            ServePartner Activity.
+          </li>
+          <li>
+            not drive an automobile in connection to the activities described above unless ChangeMaker is
+            fully licensed and insured to do so as required by applicable PA law,
+          </li>
+          <li>
+            not, under any circumstances whatsoever, take or participate in or facilitate the taking of or
+            participation in any photography, videotaping or other recordings of any nature without the
+            explicit consent of ServePartner, and
+          </li>
+          <li>
+            be responsible for and acknowledges their understanding that any actions in violation of sections
+            (1), (2) or (3) hereof may result in, among other things, the immediate dismissal of ChangeMaker
+            from the ServePartner Activity and disqualification of ChangeMaker for any previously agreed to
+            benefit, financial or otherwise, arising out of ChangeMaker's participation in the ServePartner
+            Activity and provided by involveMINT.
+          </li>
+        </ol>
+      </div>
+      <p>
+        ChangeMaker expressly agrees that this Release and Waiver of Liability Agreement (this "Agreement") is
+        intended to be as broad and as inclusive as permitted by applicable law and that if any portion hereof
+        is held to be invalid, it is agreed that the remaining portion(s) shall continue in full force and
+        effect. This Agreement contains the entire agreement between the parties hereto. The terms of this
+        Agreement are contractual and not a mere recital and shall nor terminate or expire after conclusion of
+        the ServePartner Activity referenced herein.
+      </p>
+      <p>
+        ChangeMaker states that they (i) have carefully read this Agreement, (ii) understand the contents
+        hereof agree to abide by them, (iii) are authorized to execute this Agreement for the purposes stated
+        herein and on behalf of the persons described herein and (iv) sign this Agreement of their own free
+        act, deed and volition.
+      </p>
+    </div>
+  </ion-content>
+</ng-container>

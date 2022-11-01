@@ -1,0 +1,614 @@
+<ng-container *ngIf="state$ | async as state">
+  <ion-header [class.ion-no-border]="true">
+    <ion-toolbar>
+      <ion-buttons slot="start">
+        <ion-button class="no-padding" (click)="back()">
+          <ion-icon name="chevron-back" color="primary"></ion-icon>
+        </ion-button>
+      </ion-buttons>
+      <ion-title>{{ state.project?.title || 'Project Editor' }}</ion-title>
+      <ion-buttons slot="end">
+        <ion-button (click)="refresh()">
+          <ion-icon slot="icon-only" name="refresh"></ion-icon>
+        </ion-button>
+      </ion-buttons>
+    </ion-toolbar>
+    <ion-progress-bar type="indeterminate" [class.hide]="state.loaded"></ion-progress-bar>
+  </ion-header>
+
+  <ion-content>
+    <div class="im-centered" *ngIf="!state.project && state.loaded">Project not found.</div>
+    <im-tabs
+      *ngIf="state.project"
+      [activeTabIndex]="state.activeTabIndex"
+      (tabChange)="tabChangeEvent($event)"
+    >
+      <im-tab label="Info">
+        <div class="im-cont" [formGroup]="projectForm">
+          <div>
+            <div class="im-primary-text" [style.padding-top]="'var(--im-padding)'">Images</div>
+            <div class="im-images-cont">
+              <!-- <im-image
+                  *ngFor="let _ of [0, 1, 2, 3]; index as i"
+                  [imgUrl]="project!.imagesFilePaths[i]"
+                  [disable]="project!.imagesFilePaths.length < i"
+                  (imgClick)="viewImages({ imagesFilePaths: project!.imagesFilePaths, slideIndex: i })"
+                  (uploadImg)="uploadImage(project, $event)"
+                  (deleteImg)="deleteProjectImage(project, i)"
+                >
+                  <div *ngIf="i > 0" class="cover" (click)="makeCoverImage(project, i)">Make Cover</div>
+                </im-image> -->
+              <im-image
+                *ngFor="let _ of maxImagesPerItem; index as i"
+                [imgUrl]="state.project!.imagesFilePaths[i] | imStorageUrl | async"
+                [disable]="state.project!.imagesFilePaths.length < i"
+                (uploadImg)="uploadImage(state.project, $event)"
+                (deleteImg)="deleteImage(state.project, i)"
+              >
+                <div *ngIf="i > 0" class="cover" (click)="makeCoverImage(state.project, i)">Make Cover</div>
+              </im-image>
+            </div>
+
+            <im-item [touched]="true" label="Listing" [required]="true">
+              <ion-select
+                (ionChange)="listingStatusChanged($event)"
+                [value]="projectForm.value.listingStatus"
+              >
+                <ion-select-option *ngFor="let list of listingOptions" [value]="list">
+                  {{ list | titlecase }}
+                </ion-select-option>
+              </ion-select>
+              <im-error *ngIf="!projectForm.controls.listingStatus.valid">
+                Please enter a valid listing status.
+              </im-error>
+              <div end [ngSwitch]="state.project!.listingStatus">
+                <div *ngSwitchCase="'public'">
+                  This project is public and is listed
+                  <a [href]="deepLink" target="_blank">here.</a>
+                </div>
+                <div *ngSwitchCase="'private'">This project is private and cannot be seen.</div>
+                <div *ngSwitchCase="'unlisted'">
+                  This project is unlisted and only can be viewed with
+                  <a [href]="deepLink" target="_blank">this link.</a>
+                </div>
+                <i *ngIf="state.savingState === 'changed'">Requires saving.</i>
+              </div>
+            </im-item>
+
+            <im-item [touched]="true" label="Title">
+              <input formControlName="title" />
+              <im-error *ngIf="!projectForm.controls.title.valid">Please enter a title.</im-error>
+            </im-item>
+
+            <im-item [touched]="true" label="Description">
+              <textarea formControlName="description"></textarea>
+              <im-error *ngIf="!projectForm.controls.description.valid">
+                Please enter a valid description (max character length of {{ maxCharLen }}).
+              </im-error>
+            </im-item>
+
+            <im-item [touched]="true" label="Address">
+              <input formControlName="address1" type="address1" placeholder="Address" />
+              <im-error *ngIf="!projectForm.controls.address1.valid">Please enter a valid address.</im-error>
+            </im-item>
+
+            <im-item [touched]="true" label="Address 2">
+              <input formControlName="address2" type="address2" placeholder="Address 2" />
+              <im-error *ngIf="!projectForm.controls.address2.valid">Please enter a valid address.</im-error>
+            </im-item>
+
+            <im-item [touched]="true" label="City">
+              <input formControlName="city" type="city" placeholder="City" />
+              <im-error *ngIf="!projectForm.controls.city.valid">Please enter a valid city.</im-error>
+            </im-item>
+
+            <im-item
+              [touched]="true"
+              label="State"
+              [required]="true"
+              [hasError]="!projectForm.controls.state.valid"
+            >
+              <ion-select
+                test-attr="state-project-editor"
+                (ionChange)="USStateChange($event)"
+                [value]="selectedUSState"
+              >
+                <ion-select-option *ngFor="let state of USStates" [value]="state">
+                  {{ state }}
+                </ion-select-option>
+              </ion-select>
+              <im-error *ngIf="!projectForm.controls.state.valid">Please enter a valid state.</im-error>
+            </im-item>
+
+            <im-item [touched]="true" label="Zip Code">
+              <input formControlName="zip" type="zip" placeholder="Zip Code" />
+              <im-error *ngIf="!projectForm.controls.zip.valid">Please enter a valid zip code.</im-error>
+            </im-item>
+
+            <im-item [touched]="true" label="Preferred Schedule of Work">
+              <input formControlName="preferredScheduleOfWork" placeholder="Ex.: 4 hours per shift" />
+              <im-error *ngIf="!projectForm.controls.preferredScheduleOfWork.valid">
+                Please enter the Preferred Schedule of Work.
+              </im-error>
+            </im-item>
+
+            <im-item [touched]="true" label="Maximum CommunityCredits Earned Per Day" [required]="true">
+              <input formControlName="creditsEarned" currencyMask />
+              <im-error *ngIf="!projectForm.controls.creditsEarned.valid">
+                Please enter the daily maximum Credit amount earned for this Project.
+              </im-error>
+            </im-item>
+
+            <im-item [touched]="true" label="Maximum ChangeMaker Enrollments">
+              <input formControlName="maxChangeMakers" placeholder="Ex.: 5" />
+              <im-error *ngIf="!projectForm.controls.maxChangeMakers.valid">
+                Please enter a positive number.
+              </im-error>
+            </im-item>
+
+            <im-item [touched]="true" label="Require Location for POI">
+              <ion-label text-wrap>
+                {{
+                  projectForm.value.requireLocation ? 'Location is required.' : 'Location is not required.'
+                }}
+              </ion-label>
+              <ion-toggle mode="md" slot="start" formControlName="requireLocation"></ion-toggle>
+            </im-item>
+
+            <im-item [touched]="true" label="Require Images for POI">
+              <ion-label text-wrap>
+                {{ projectForm.value.requireImages ? 'Images are required.' : 'Images are not required.' }}
+              </ion-label>
+              <ion-toggle mode="md" slot="start" formControlName="requireImages"></ion-toggle>
+            </im-item>
+
+            <im-item [touched]="true" label="Start Date">
+              <input
+                formControlName="startDate"
+                type="date"
+                value="{{ projectForm.value.startDate | date: 'yyyy-MM-dd' }}"
+              />
+              <im-error *ngIf="!projectForm.controls.startDate.valid">
+                Please enter Project Start Date.
+              </im-error>
+            </im-item>
+
+            <im-item
+              [touched]="true"
+              label="End Date"
+              [hasError]="projectForm.controls.endDate.touched && projectForm.getError('endDateNotAfter')"
+            >
+              <input
+                formControlName="endDate"
+                type="date"
+                value="{{ projectForm.value.endDate | date: 'yyyy-MM-dd' }}"
+              />
+              <im-error *ngIf="!projectForm.controls.endDate.valid">
+                End date must come after start date.
+              </im-error>
+            </im-item>
+
+            <im-item
+              [touched]="true"
+              label="Waiver"
+              info="This is a custom Waiver document that a ChangeMaker will have to sign (in addition to the Standard Waiver) in order to apply for this Project."
+            >
+              <ion-label text-wrap>
+                {{
+                  projectForm.value.requireCustomWaiver
+                    ? 'Use custom waiver and standard waiver.'
+                    : 'Use only standard waiver.'
+                }}
+              </ion-label>
+              <ion-toggle mode="md" slot="start" formControlName="requireCustomWaiver"></ion-toggle>
+            </im-item>
+            <im-block *ngIf="projectForm.value.requireCustomWaiver" [style.margin-bottom]="'5px'">
+              <div header class="im-primary-text">Custom Waiver</div>
+              <div body class="waiver">
+                <div class="im-buttons">
+                  <ion-button (click)="uploadCustomWaiverButtonClick()">
+                    Upload
+                    <input type="file" (change)="uploadCustomWaiver($event, state.project)" #waiverInp />
+                  </ion-button>
+                </div>
+                <iframe
+                  *ngIf="state.project.customWaiverFilePath as url"
+                  body
+                  [src]="url | imStorageUrl: true | async"
+                  width="100%"
+                  height="100%"
+                  frameborder="no"
+                ></iframe>
+              </div>
+            </im-block>
+
+            <im-item
+              label="Collect SDG Data"
+              [generic]="true"
+              info="These are questions that each ChangeMaker will be required to answer upon POI submission."
+            >
+              <ng-container formArrayName="questions" *ngFor="let _ of questions.controls; index as i">
+                <div [style.padding-top]="i > 0 ? '1.5rem' : ''"></div>
+                <ng-container [formGroupName]="i">
+                  <im-item label="Question {{ i + 1 }}">
+                    <textarea test-attr="question-textarea" formControlName="text"></textarea>
+                  </im-item>
+                </ng-container>
+                <ion-button (click)="deleteQuestion(i)" fill="outline" class="delete-btn" color="danger">
+                  <ion-icon name="trash" slot="icon-only"></ion-icon>
+                </ion-button>
+              </ng-container>
+              <ion-button (click)="addQuestion()" class="add" [disabled]="questions.length >= maxQuestions">
+                <ion-icon slot="icon-only" name="add" *ngIf="questions.length < maxQuestions"></ion-icon>
+                <span *ngIf="questions.length >= maxQuestions">Max Questions Reached</span>
+              </ion-button>
+            </im-item>
+
+            <im-item
+              label="Clearances"
+              [generic]="true"
+              info="These are clearance documents that a ChangeMaker will be required to upload to qualify for this Project's service."
+            >
+              <ng-container formArrayName="projectDocuments" *ngFor="let _ of documents.controls; index as i">
+                <div [style.padding-top]="i > 0 ? 'var(--im-padding)' : ''"></div>
+                <ng-container [formGroupName]="i">
+                  <im-item label="Clearance {{ i + 1 }}">
+                    <input formControlName="title" />
+                  </im-item>
+                  <im-item label="Description {{ i + 1 }}">
+                    <textarea formControlName="description"></textarea>
+                  </im-item>
+                  <im-item label="Info Url {{ i + 1 }}">
+                    <input formControlName="infoUrl" type="url" />
+                  </im-item>
+                </ng-container>
+                <ion-button (click)="deleteDoc(i)" fill="outline" class="delete-btn" color="danger">
+                  <ion-icon name="trash" slot="icon-only"></ion-icon>
+                </ion-button>
+              </ng-container>
+              <span [style.width]="'100%'"></span>
+              <ion-button (click)="addDocument()" class="add" [disabled]="documents.length >= maxDocuments">
+                <ion-icon slot="icon-only" name="add" *ngIf="documents.length < maxDocuments"></ion-icon>
+                <span *ngIf="documents.length >= maxDocuments">Max Documents Reached</span>
+              </ion-button>
+            </im-item>
+
+            <div class="im-buttons">
+              <ion-button color="danger" (click)="delete(state.project)">Delete Project</ion-button>
+              <div class="save-button" [ngSwitch]="state.savingState">
+                <ion-button [disabled]="true" *ngSwitchCase="'unchanged'">Saved</ion-button>
+                <ion-button [disabled]="true" *ngSwitchCase="'saving'">Saving...</ion-button>
+                <ion-button
+                  *ngSwitchCase="'changed'"
+                  (click)="save(state.project)"
+                  [disabled]="!projectForm.valid"
+                >
+                  Save
+                </ion-button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </im-tab>
+      <im-tab label="Enrollments">
+        <div class="im-cont">
+          <ng-container *ngIf="state.loaded">
+            <div *ngIf="getEnrollmentStatuses() as statuses">
+              <div>
+                Pending Applications:
+                {{ statuses.pending }}
+              </div>
+              <div>
+                Unfinished Applications:
+                {{ statuses.started }}
+              </div>
+              <div>
+                Currently Enrolled:
+                {{ statuses.enrolled }}
+              </div>
+            </div>
+          </ng-container>
+          <div class="im-centered" *ngIf="state.enrollments.length < 1 && state.loaded">
+            No Enrollments for this project.
+          </div>
+          <div
+            *ngFor="
+              let enrollment of state.enrollments
+                | paginate: { itemsPerPage: 10, currentPage: enrollmentsPage, id: 'enrollments' }
+            "
+          >
+            <im-block [join]="true">
+              <div header class="enrollment-header">
+                <div class="im-primary-text">
+                  <im-handle [handle]="enrollment.changeMaker.handle.id"></im-handle>
+                </div>
+                <div [ngSwitch]="calculateEnrollmentStatus(enrollment)" body>
+                  Status:
+                  <b [style.color]="'var(--im-green)'" *ngSwitchCase="EnrollmentStatus.started">
+                    Application Started
+                  </b>
+                  <b [style.color]="'var(--im-yellow)'" *ngSwitchCase="EnrollmentStatus.pending">
+                    Application Pending
+                  </b>
+                  <b [style.color]="'var(--im-blue)'" *ngSwitchCase="EnrollmentStatus.enrolled">Enrolled</b>
+                  <b [style.color]="'var(--im-red)'" *ngSwitchCase="EnrollmentStatus.denied">Denied</b>
+                  <b [style.color]="''" *ngSwitchCase="EnrollmentStatus.retired">Retired</b>
+                </div>
+                <ng-container *ngIf="enrolleeHasAppliedMoreThanOnce(enrollment) as t">
+                  <div *ngIf="t.length > 0">
+                    <im-handle [handle]="enrollment.changeMaker.handle.id"></im-handle>
+                    has applied to this Project
+                    {{ t.length + 1 }} times.
+                  </div>
+                </ng-container>
+              </div>
+              <div body class="body">
+                <div
+                  class="im-profile-pic"
+                  *ngIf="enrollment!.changeMaker.profilePicFilePath as url"
+                  [style.background-image]="'url(' + (url | imStorageUrl | async) + ')'"
+                ></div>
+                <ion-icon
+                  *ngIf="!enrollment!.changeMaker.profilePicFilePath"
+                  class="im-profile-pic-none"
+                  name="person-circle"
+                ></ion-icon>
+                <div>
+                  <div class="im-p-c">
+                    {{ enrollment!.changeMaker.firstName }} {{ enrollment!.changeMaker.lastName }}
+                  </div>
+                  <div>{{ enrollment!.changeMaker.phone }}</div>
+                  <div>{{ enrollment!.changeMaker.user.id }}</div>
+                  <br *ngIf="enrollment!.changeMaker.bio" />
+                  <div *ngIf="enrollment!.changeMaker.bio">{{ enrollment!.changeMaker.bio }}</div>
+                </div>
+              </div>
+            </im-block>
+            <im-block [join]="true" *ngFor="let doc of enrollment.enrollmentDocuments; index as i">
+              <div header class="im-primary-text">
+                {{ i + 1 }}. Linked Passport Document to {{ doc.projectDocument.title }}
+              </div>
+              <div body>
+                <a
+                  [href]="doc.passportDocument.filePath | imStorageUrl | async"
+                  target="_blank"
+                  class="doc-li im-link"
+                >
+                  {{ doc.passportDocument.name }}
+                  <ion-icon src="/assets/icons/external-link.svg"></ion-icon>
+                </a>
+              </div>
+            </im-block>
+            <im-block [join]="true" [collapsible]="true" [collapsed]="true">
+              <div header class="im-primary-text">Timeline</div>
+              <div body class="im-time-blocks">
+                <div>
+                  <b [style.color]="'var(--im-enrollment-applied)'">Applied:&nbsp;</b>
+                  <div>{{ enrollment.dateApplied | date: 'MMMM d, y, h:mm:ss a' }}</div>
+                </div>
+                <div *ngIf="enrollment.dateSubmitted">
+                  <b [style.color]="'var(--im-enrollment-submitted)'">Submitted:&nbsp;</b>
+                  <div>{{ enrollment.dateSubmitted | date: 'MMMM d, y, h:mm:ss a' }}</div>
+                </div>
+                <div *ngIf="enrollment.dateApproved">
+                  <b [style.color]="'var(--im-enrollment-approved)'">Approved:&nbsp;</b>
+                  <div>{{ enrollment.dateApproved | date: 'MMMM d, y, h:mm:ss a' }}</div>
+                </div>
+                <div *ngIf="enrollment.dateDenied">
+                  <b [style.color]="'var(--im-enrollment-denied)'">Denied:&nbsp;</b>
+                  <div>{{ enrollment.dateDenied | date: 'MMMM d, y, h:mm:ss a' }}</div>
+                </div>
+                <div *ngIf="enrollment.dateRetired">
+                  <b [style.color]="'var(--im-enrollment-retired)'">Retired:&nbsp;</b>
+                  <div>{{ enrollment.dateRetired | date: 'MMMM d, y, h:mm:ss a' }}</div>
+                </div>
+              </div>
+            </im-block>
+            <im-block
+              [join]="true"
+              *ngIf="
+                calculateEnrollmentStatus(enrollment) !== EnrollmentStatus.started &&
+                calculateEnrollmentStatus(enrollment) !== EnrollmentStatus.retired
+              "
+            >
+              <div body class="im-buttons">
+                <ng-container *ngIf="calculateEnrollmentStatus(enrollment) === EnrollmentStatus.pending">
+                  <ion-button
+                    expand="block"
+                    color="danger"
+                    (click)="processEnrollmentApplication(enrollment, state.project, false)"
+                  >
+                    <ion-icon slot="start" name="close"></ion-icon>
+                    Deny
+                  </ion-button>
+
+                  <ion-button
+                    expand="block"
+                    color="success"
+                    (click)="processEnrollmentApplication(enrollment, state.project, true)"
+                  >
+                    <ion-icon slot="start" name="checkmark"></ion-icon>
+                    Approve
+                  </ion-button>
+                </ng-container>
+
+                <ion-button
+                  expand="block"
+                  color="danger"
+                  fill="outline"
+                  *ngIf="
+                    calculateEnrollmentStatus(enrollment) === EnrollmentStatus.enrolled ||
+                    calculateEnrollmentStatus(enrollment) === EnrollmentStatus.denied
+                  "
+                  (click)="revertBackToPending(enrollment)"
+                >
+                  <ion-icon slot="start" name="arrow-undo"></ion-icon>
+                  Revert Back To Pending
+                </ion-button>
+
+                <ion-button
+                  expand="block"
+                  color="danger"
+                  *ngIf="calculateEnrollmentStatus(enrollment) === EnrollmentStatus.enrolled"
+                  (click)="retire(enrollment)"
+                >
+                  <ion-icon slot="start" name="close"></ion-icon>
+                  Retire
+                </ion-button>
+              </div>
+            </im-block>
+          </div>
+          <pagination-controls
+            *ngIf="state.loaded"
+            id="enrollments"
+            (pageChange)="enrollmentsPage = $event"
+          ></pagination-controls>
+        </div>
+      </im-tab>
+      <im-tab label="Activity">
+        <div class="im-cont">
+          <div class="im-centered" *ngIf="state.pois.length < 1 && state.loaded">
+            No Proofs of Impact for this project.
+          </div>
+          <div
+            *ngFor="let poi of state.pois | paginate: { itemsPerPage: 10, currentPage: poiPage, id: 'poi' }"
+          >
+            <im-block [join]="true">
+              <div header [ngSwitch]="poi.status">
+                <div class="im-primary-text">Proof of Impact</div>
+                Status:
+                <b [style.color]="'var(--im-poi-denied)'" *ngSwitchCase="PoiStatus.denied">Denied</b>
+                <b [style.color]="'var(--im-poi-approved)'" *ngSwitchCase="PoiStatus.approved">Approved</b>
+                <b [style.color]="'var(--im-poi-submitted)'" *ngSwitchCase="PoiStatus.submitted">Submitted</b>
+                <b [style.color]="'var(--im-poi-stopped)'" *ngSwitchCase="PoiStatus.stopped">Stopped</b>
+                <b [style.color]="'var(--im-poi-paused)'" *ngSwitchCase="PoiStatus.paused">Paused</b>
+                <b [style.color]="'var(--im-poi-started)'" *ngSwitchCase="PoiStatus.started">Started</b>
+                <b [style.color]="'var(--im-poi-created)'" *ngSwitchCase="PoiStatus.created">Created</b>
+              </div>
+              <div body class="poi-header">
+                <div
+                  class="im-profile-pic"
+                  *ngIf="poi.enrollment.changeMaker.profilePicFilePath as url"
+                  [style.background-image]="'url(' + (url | imStorageUrl | async) + ')'"
+                ></div>
+                <ion-icon
+                  *ngIf="!poi.enrollment.changeMaker.profilePicFilePath"
+                  class="im-profile-pic-none"
+                  name="person-circle"
+                ></ion-icon>
+                <div>
+                  <div class="im-primary-text">
+                    {{ poi.enrollment.changeMaker.firstName }} {{ poi.enrollment.changeMaker.lastName }}
+                  </div>
+                  <im-handle [handle]="poi.enrollment.changeMaker.handle.id"></im-handle>
+                </div>
+              </div>
+            </im-block>
+            <im-block [join]="true" *ngIf="poi.status >= PoiStatus.stopped">
+              <div header class="im-primary-text">Credit Info</div>
+              <div body>
+                Credits Earned: {{ calculateCreditsEarnedForPoi(poi) / 100 | currency: '':'' }}
+                <ion-icon src="/assets/icons/cc.svg"></ion-icon>
+              </div>
+            </im-block>
+            <im-block
+              *ngIf="poi.status >= PoiStatus.submitted"
+              [join]="true"
+              [collapsible]="true"
+              [collapsed]="true"
+            >
+              <div header class="im-primary-text">Images</div>
+              <div body class="im-images-cont">
+                <ng-container *ngIf="{ urls: poi!.imagesFilePaths | imStorageUrl | async } as context">
+                  <ng-container *ngFor="let url of context.urls; index as i">
+                    <div
+                      (click)="viewImages(context.urls || [], i)"
+                      [style.background-image]="'url(' + url + ')'"
+                      class="img"
+                    ></div>
+                  </ng-container>
+                </ng-container>
+              </div>
+            </im-block>
+            <im-block
+              *ngIf="poi.status > PoiStatus.created"
+              [join]="true"
+              [collapsible]="true"
+              [collapsed]="true"
+            >
+              <div header class="im-primary-text">Timeline</div>
+              <div body class="im-time-blocks">
+                <!-- <div>
+                  <b [style.color]="'var(--im-poi-created)'">Created:&nbsp;</b>
+                  <div>{{ poi.dateCreated | date: 'MMMM d, y, h:mm:ss a' }}</div>
+                </div> -->
+                <div *ngIf="poi.dateStarted">
+                  <b [style.color]="'var(--im-poi-started)'">Started:&nbsp;</b>
+                  <div>{{ poi.dateStarted | date: 'MMMM d, y, h:mm:ss a' }}</div>
+                </div>
+                <div *ngFor="let t of getPausedResumedTimes(poi)">
+                  <b [style.color]="t.type === 'resumed' ? 'var(--im-poi-started)' : 'var(--im-poi-paused)'">
+                    <span>{{ t.type | titlecase }}:&nbsp;</span>
+                  </b>
+                  <div>{{ t.date | date: 'MMMM d, y, h:mm:ss a' }}</div>
+                </div>
+                <div *ngIf="poi.dateStopped">
+                  <b [style.color]="'var(--im-poi-stopped)'">Stopped:&nbsp;</b>
+                  <div>{{ poi.dateStopped | date: 'MMMM d, y, h:mm:ss a' }}</div>
+                </div>
+                <div *ngIf="poi.dateSubmitted">
+                  <b [style.color]="'var(--im-poi-submitted)'">Submitted:&nbsp;</b>
+                  <div>{{ poi.dateSubmitted | date: 'MMMM d, y, h:mm:ss a' }}</div>
+                </div>
+                <div *ngIf="poi.dateApproved">
+                  <b [style.color]="'var(--im-poi-approved)'">Approved:&nbsp;</b>
+                  <div>{{ poi.dateApproved | date: 'MMMM d, y, h:mm:ss a' }}</div>
+                </div>
+                <div *ngIf="poi.dateDenied">
+                  <b [style.color]="'var(--im-poi-denied)'">Denied:&nbsp;</b>
+                  <div>{{ poi.dateDenied | date: 'MMMM d, y, h:mm:ss a' }}</div>
+                </div>
+              </div>
+            </im-block>
+            <im-block
+              *ngIf="poi.status >= PoiStatus.submitted"
+              [join]="true"
+              [collapsible]="true"
+              [collapsed]="true"
+            >
+              <div header class="im-primary-text">Question Answers</div>
+              <div body class="questions">
+                <div *ngFor="let answer of poi.answers; index as i">
+                  <span class="im-p-c">{{ i + 1 }}: {{ answer.question.text }}</span>
+                  &nbsp;&nbsp;
+                  <span *ngIf="answer.answer as a">{{ a }}</span>
+                  <i *ngIf="!answer.answer">No answer given.</i>
+                </div>
+              </div>
+            </im-block>
+            <im-block [join]="true" *ngIf="poi.status === PoiStatus.submitted">
+              <div body class="im-buttons">
+                <ion-button color="danger">
+                  <ion-icon slot="start" name="close"></ion-icon>
+                  <span>Deny</span>
+                </ion-button>
+                <ion-button color="success" (click)="approvePoi(poi)">
+                  <ion-icon slot="start" name="checkmark"></ion-icon>
+                  <span>Approve</span>
+                </ion-button>
+              </div>
+            </im-block>
+          </div>
+          <pagination-controls
+            *ngIf="state.loaded && activeTabIndex"
+            id="poi"
+            (pageChange)="poiPage = $event"
+          ></pagination-controls>
+        </div>
+      </im-tab>
+      <im-tab label="Statistics">
+        <i>Coming soon</i>
+      </im-tab>
+    </im-tabs>
+  </ion-content>
+</ng-container>

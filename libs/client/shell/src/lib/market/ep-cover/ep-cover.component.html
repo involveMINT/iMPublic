@@ -1,0 +1,162 @@
+<ng-container *ngIf="state$ | async as state">
+  <ion-header>
+    <ion-toolbar>
+      <ion-buttons slot="start">
+        <ion-button class="no-padding" (click)="back()">
+          <ion-icon name="chevron-back" color="primary"></ion-icon>
+        </ion-button>
+      </ion-buttons>
+      <ion-buttons slot="end" *ngIf="state.exchangePartner">
+        <ion-button (click)="viewProfile(state.exchangePartner)">
+          Posted by:
+          <!-- <ion-icon
+            *ngIf="!state.exchangePartner?.logoFilePath"
+            class="im-profile-pic-none"
+            name="person-circle"
+          ></ion-icon> -->
+          <ion-icon
+            class="im-profile-pic"
+            [style.cursor]="'pointer'"
+            [style.height]="'30px'"
+            [style.width]="'30px'"
+            *ngIf="state.exchangePartner?.logoFilePath | imStorageUrl | async as url"
+            [style.background-image]="'url(' + url + ')'"
+          ></ion-icon>
+        </ion-button>
+      </ion-buttons>
+    </ion-toolbar>
+    <ion-progress-bar type="indeterminate" [class.hide]="state.exchangePartner"></ion-progress-bar>
+  </ion-header>
+
+  <ion-content>
+    <im-tabs *ngIf="state.exchangePartner as ep" #tabs [swipeEnabled]="false">
+      <im-tab label="Storefront">
+        <div class="im-cont">
+          <div class="im-primary-text title">{{ ep!.name }}</div>
+          <im-image-slides
+            *ngIf="state.exchangePartner.imagesFilePaths.length > 0"
+            [images]="state.exchangePartner.imagesFilePaths"
+          ></im-image-slides>
+          <im-block>
+            <div body class="info-disp">
+              <div class="b-item">
+                <b>Budget Left:</b>
+                <div class="cash">
+                  {{ (ep.budget - ep.view.receivedThisMonth) / 100 | currency: '':'' }}
+                  <ion-icon src="/assets/icons/cc.svg"></ion-icon>
+                </div>
+              </div>
+              <div class="b-item">
+                <b>Budget End Date:</b>
+                {{ ep.budgetEndDate | date }}
+              </div>
+              <div class="b-item">
+                <b>Address:</b>
+                <span class="address-item">
+                  <a
+                    *ngIf="ep.address"
+                    target="_blank"
+                    href="http://maps.google.com/?q={{ state.fullAddress }}"
+                  >
+                    {{ state.fullAddress }}
+                  </a>
+                </span>
+                <i *ngIf="!ep.address">No address listed.</i>
+              </div>
+            </div>
+          </im-block>
+          <div class="im-buttons no-wrap">
+            <ion-button fill="outline" (click)="offersTab()">View Offers</ion-button>
+            <ion-button (click)="pay(ep)" *ngIf="state.authenticated">Pay Now</ion-button>
+            <ion-button *ngIf="!state.authenticated">Login to Pay</ion-button>
+          </div>
+        </div>
+      </im-tab>
+      <im-tab label="Offers">
+        <div class="im-cont">
+          <div class="im-primary-text" style="text-align: center">Items For Sale</div>
+          <div style="text-align: center" *ngIf="ep.offers.length === 0">No offers listed.</div>
+          <div>
+            <im-block [join]="true" *ngFor="let offer of ep.offers">
+              <div body class="offers">
+                <ion-thumbnail class="thumbnail" *ngIf="offer.imagesFilePaths[0]">
+                  <img [src]="offer.imagesFilePaths[0] | imStorageUrl | async" />
+                </ion-thumbnail>
+                <i class="no-image" *ngIf="!offer.imagesFilePaths[0]">No Image</i>
+                <div class="chip">
+                  <ion-chip
+                    [ngClass]="{ selected: getOffer(offer) }"
+                    (click)="offerCheck({ checked: !getOffer(offer), offer: offer, quantity: 1 })"
+                  >
+                    <span>{{ offer.name }}</span>
+                    <div class="chip-price">
+                      <div>{{ offer.price / 100 | currency: '':'' }}&nbsp;</div>
+                      <ion-icon src="/assets/icons/cc.svg"></ion-icon>
+                    </div>
+                  </ion-chip>
+                </div>
+
+                <ng-container *ngIf="{ offer: getOffer(offer) } as context">
+                  <div class="price-changer">
+                    <ion-icon
+                      [style.cursor]="'pointer'"
+                      name="remove-circle"
+                      style="color: #ee4a39; font-size: 23px"
+                      (click)="
+                        offerCheck({
+                          checked: true,
+                          offer: offer,
+                          quantity: (context.offer?.quantity || 0) - 1
+                        })
+                      "
+                    ></ion-icon>
+                    <span>{{ context.offer?.quantity || 0 }}</span>
+                    <ion-icon
+                      [style.cursor]="'pointer'"
+                      name="add-circle"
+                      style="color: #38a20d; font-size: 23px"
+                      (click)="
+                        offerCheck({
+                          checked: true,
+                          offer: offer,
+                          quantity: (context.offer?.quantity || 0) + 1
+                        })
+                      "
+                    ></ion-icon>
+                  </div>
+                  <div></div>
+                  <div class="offer-description">
+                    {{ offer?.description }}
+                  </div>
+                </ng-container>
+              </div>
+            </im-block>
+          </div>
+          <div class="im-buttons">
+            <ion-button
+              *ngIf="state.authenticated"
+              [disabled]="
+                offersChecked.size === 0 ||
+                !state.total ||
+                ep.budget - ep.view.receivedThisMonth - state.total < 0
+              "
+              (click)="buyVoucher(ep)"
+            >
+              Buy Offers: {{ state.total / 100 | currency: '':'' }}&nbsp;
+              <ion-icon src="/assets/icons/cc.svg"></ion-icon>
+            </ion-button>
+            <ion-button *ngIf="!state.authenticated">Login to Buy Offers</ion-button>
+          </div>
+          <div
+            *ngIf="ep.budget - ep.view.receivedThisMonth - state.total < 0"
+            style="color: red; text-align: center"
+          >
+            Total Amount Exceeding
+            <br />
+            SpendPartner Budget
+          </div>
+        </div>
+      </im-tab>
+    </im-tabs>
+  </ion-content>
+</ng-container>

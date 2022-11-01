@@ -1,0 +1,33 @@
+.cont {
+  display: grid;
+  grid-template-rows: auto auto auto 1fr auto;
+  align-items: center;
+  width: 320px;
+  margin-left: calc((100% - 320px) / 2);
+  max-height: 600px;
+  padding: 1em;
+
+  .desc {
+    font-weight: 700;
+    padding-bottom: var(--im-padding);
+  }
+}
+.business-user-id {
+  --border-color: transparent !important;
+  border: 1px solid var(--im-border-color);
+  border-radius: var(--im-border-radius);
+  --padding-start: 10px;
+  ::ng-deep input,
+  ::ng-deep input:focus {
+    border: none;
+    outline: none;
+    font-size: 14px;
+    width: 100%;
+  }
+  ::ng-deep [slot='start'] {
+    margin: 0px 5px 0px 0px;
+  }
+}
+.divider {
+  height: 20px;
+}

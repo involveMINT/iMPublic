@@ -1,0 +1,13 @@
+.title {
+  text-align: center;
+}
+
+.timer {
+  display: grid;
+  grid-auto-flow: column;
+  gap: 2px;
+  place-content: center;
+  font-size: 60px;
+  font-family: 'digital-7';
+  height: 1em;
+}

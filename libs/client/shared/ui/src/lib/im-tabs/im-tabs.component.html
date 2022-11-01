@@ -1,0 +1,18 @@
+<super-tabs
+  #superTabs
+  [style.padding]="padding"
+  (tabChange)="tabChangeEvent($event)"
+  [activeTabIndex]="activeTabIndex"
+>
+  <super-tabs-toolbar imSuperTabsToolbarTheme [slot]="slot" [scrollable]="true" [scrollablePadding]="false">
+    <super-tab-button *ngFor="let label of labels$ | async">
+      <ion-label>{{ label }}</ion-label>
+    </super-tab-button>
+  </super-tabs-toolbar>
+  <super-tabs-container
+    [swipeEnabled]="swipeEnabled"
+    class="{{ slot === 'top' ? 'tabs-container-slot-top' : 'tabs-container-slot-bottom' }}"
+  >
+    <ng-content select="im-tab"></ng-content>
+  </super-tabs-container>
+</super-tabs>

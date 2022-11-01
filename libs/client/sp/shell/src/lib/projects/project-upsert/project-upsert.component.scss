@@ -1,0 +1,38 @@
+ion-button.add {
+  float: right;
+}
+
+ion-button.delete-btn {
+  justify-self: start;
+}
+
+.poi-header {
+  display: grid;
+  grid-auto-flow: column;
+  gap: var(--im-padding);
+  justify-content: start;
+  align-items: center;
+}
+
+.body {
+  display: grid;
+  grid-auto-flow: column;
+  justify-content: start;
+  align-items: center;
+  gap: var(--im-padding);
+}
+
+.waiver {
+  display: grid;
+  gap: var(--im-padding);
+
+  iframe {
+    min-height: 300px;
+  }
+}
+
+.questions {
+  display: grid;
+  gap: var(--im-padding);
+  padding: var(--im-padding);
+}

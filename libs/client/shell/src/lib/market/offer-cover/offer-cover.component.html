@@ -1,0 +1,63 @@
+<ng-container *ngIf="state$ | async as state">
+  <ion-header
+    [class]="
+      state.offer?.changeMaker
+        ? 'im-green'
+        : state.offer?.exchangePartner
+        ? 'im-ep'
+        : state.offer?.servePartner
+        ? 'im-sp'
+        : ''
+    "
+  >
+    <ion-toolbar>
+      <ion-buttons slot="start">
+        <ion-button class="no-padding" (click)="back()">
+          <ion-icon name="chevron-back" color="primary"></ion-icon>
+        </ion-button>
+      </ion-buttons>
+      <ion-title>{{ state.offer?.name || 'Offer' }}</ion-title>
+      <ion-buttons slot="end" *ngIf="state.offer">
+        <ion-button (click)="viewProfile(state.offer)">
+          @{{
+            state.offer?.changeMaker?.handle?.id ||
+              state.offer?.exchangePartner?.handle?.id ||
+              state.offer?.servePartner?.handle?.id
+          }}
+          <ion-icon slot="end" name="information-circle-outline"></ion-icon>
+        </ion-button>
+      </ion-buttons>
+    </ion-toolbar>
+    <ion-progress-bar type="indeterminate" [class.hide]="state.offer"></ion-progress-bar>
+  </ion-header>
+
+  <ion-content
+    [class]="
+      state.offer?.changeMaker
+        ? 'im-green'
+        : state.offer?.exchangePartner
+        ? 'im-ep'
+        : state.offer?.servePartner
+        ? 'im-sp'
+        : ''
+    "
+  >
+    <div class="im-cont" *ngIf="state.offer as offer">
+      <div [style.font-size]="'1.1em'" [style.text-align]="'center'">
+        <b>Cost:&nbsp;</b>
+        <span class="im-primary-text">{{ offer.price / 100 | currency: '':'' }}</span>
+        <ion-icon src="/assets/icons/cc.svg"></ion-icon>
+        <span [style.opacity]="'.6'">&nbsp;({{ offer.price / 100 | currency }} USD)</span>
+      </div>
+      <im-block [images]="offer.imagesFilePaths">
+        <div header class="im-primary-text">{{ offer.name }}</div>
+        <div body>
+          <div [style.font-size]="'16px'">{{ offer.description }}</div>
+        </div>
+      </im-block>
+      <div class="im-buttons">
+        <ion-button (click)="messageSeller(offer)">Message Seller</ion-button>
+      </div>
+    </div>
+  </ion-content>
+</ng-container>

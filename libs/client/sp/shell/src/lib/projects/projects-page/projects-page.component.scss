@@ -1,0 +1,19 @@
+.edit {
+  --ion-color-primary: var(--im-yellow);
+  --ion-color-primary-tint: var(--im-yellow-tint);
+  --ion-color-primary-shade: var(--im-yellow-shade);
+  --ion-color-primary-contract: var(--im-yellow-contract);
+}
+
+.cont {
+  display: grid;
+}
+
+.add {
+  justify-self: end;
+  margin-bottom: var(--im-padding);
+}
+
+im-block {
+  cursor: pointer;
+}

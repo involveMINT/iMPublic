@@ -1,0 +1,184 @@
+<ng-container *ngIf="state$ | async as state">
+  <ion-header class="im-ep">
+    <ion-toolbar>
+      <ion-buttons slot="start">
+        <ion-menu-button></ion-menu-button>
+      </ion-buttons>
+      <ion-title>Onboarding</ion-title>
+    </ion-toolbar>
+  </ion-header>
+
+  <ion-content *ngIf="state.profile as profile">
+    <div class="cont im-ep" [formGroup]="createProfileForm">
+      <span class="im-primary-text" [style.padding]="'var(--im-padding)'">
+        Setup Profile for: {{ profile.name }}
+      </span>
+      <ion-slides [pager]="true" #slides>
+        <ion-slide class="slide">
+          <div class="im-cont small">
+            <div class="info">
+              <ion-icon name="person-circle-outline" class="header-icon"></ion-icon>
+              <div class="im-primary-text">Setting Up Your SpendPartner Profile</div>
+              <span class="description">
+                Now that your application has been approved, we’ll help you setup your SpendPartner Profile.
+                This is a simple 3 step process which covers the following:
+              </span>
+            </div>
+            <im-block>
+              <div body class="centered">
+                <ul>
+                  <li>Your company's logo</li>
+                  <li>Company Description</li>
+                  <li>Setting a monthly budget</li>
+                </ul>
+              </div>
+              <div class="im-buttons" footer>
+                <ion-button (click)="next()">Begin</ion-button>
+              </div>
+            </im-block>
+          </div>
+        </ion-slide>
+        <ion-slide class="slide">
+          <div class="im-cont small">
+            <div class="info">
+              <ion-icon name="information-circle-outline" class="header-icon"></ion-icon>
+              <div class="im-primary-text">Logo</div>
+              <span class="description">
+                Provide a short description about your business, and the hours you operate.
+              </span>
+            </div>
+            <div>
+              <im-block [join]="true">
+                <div body class="logo-cont">
+                  <input type="file" (change)="changeLogoFile($event)" #logoFileInp />
+                  <div
+                    class="im-profile-pic"
+                    *ngIf="profile!.logoFilePath | imStorageUrl | async as url"
+                    [style.background-image]="'url(' + url + ')'"
+                    [style.place-self]="'center'"
+                  ></div>
+                  <ion-icon
+                    *ngIf="!profile!.logoFilePath"
+                    class="im-profile-pic-none"
+                    name="person-circle"
+                    [style.place-self]="'center'"
+                  ></ion-icon>
+                  <div class="im-buttons">
+                    <ion-button
+                      color="danger"
+                      (click)="deleteLogoFile()"
+                      fill="clear"
+                      *ngIf="profile!.logoFilePath"
+                    >
+                      <ion-icon slot="icon-only" name="trash"></ion-icon>
+                    </ion-button>
+                    <ion-button (click)="changeLogoFileButtonClick()">
+                      <ion-icon
+                        slot="start"
+                        [name]="state.profile!.logoFilePath ? 'swap-horizontal' : 'cloud-upload'"
+                      ></ion-icon>
+                      {{ state.profile!.logoFilePath ? 'Replace Logo' : 'Upload Logo' }}
+                    </ion-button>
+                  </div>
+                </div>
+              </im-block>
+              <im-block [join]="true">
+                <div body class="im-buttons">
+                  <ion-button fill="outline" (click)="prev()">Back</ion-button>
+                  <ion-button (click)="next()">Next</ion-button>
+                </div>
+              </im-block>
+            </div>
+          </div>
+        </ion-slide>
+        <ion-slide class="slide">
+          <div class="im-cont small">
+            <div class="info">
+              <ion-icon name="information-circle-outline" class="header-icon"></ion-icon>
+              <div class="im-primary-text">Description</div>
+              <span class="description">
+                Provide a short description about your business, and the hours you operate.
+              </span>
+            </div>
+            <im-block>
+              <ng-container body>
+                <im-item [touched]="true">
+                  <ion-icon slot="start" name="information"></ion-icon>
+                  <textarea formControlName="description" placeholder="Description"></textarea>
+                  <im-error
+                    *ngIf="
+                      createProfileForm.controls.description.invalid &&
+                      createProfileForm.controls.description.touched
+                    "
+                  >
+                    Your business description is too long.
+                  </im-error>
+                </im-item>
+              </ng-container>
+              <div class="im-buttons" footer>
+                <ion-button fill="outline" (click)="prev()">Back</ion-button>
+                <ion-button (click)="next()" [disabled]="createProfileForm.controls.description.invalid">
+                  Next
+                </ion-button>
+              </div>
+            </im-block>
+          </div>
+        </ion-slide>
+        <ion-slide class="slide">
+          <div class="im-cont small">
+            <div class="info">
+              <ion-icon src="/assets/icons/cc.svg" class="header-icon"></ion-icon>
+              <div class="im-primary-text">Set a Monthly Budget</div>
+              <span class="description">
+                Set a budget for how many CommunityCredits you will accept per month.
+              </span>
+            </div>
+            <im-block>
+              <ng-container body>
+                <div class="im-primary-text" [style.color]="'var(--im-green)'" [style.margin-bottom]="'7px'">
+                  Your Monthly Budget:
+                </div>
+                <im-item [touched]="true">
+                  <ion-icon slot="start" src="/assets/icons/cc.svg"></ion-icon>
+                  <input formControlName="budget" currencyMask />
+                  <im-error
+                    *ngIf="
+                      createProfileForm.controls.budget.invalid && createProfileForm.controls.budget.touched
+                    "
+                  >
+                    Please enter the daily maximum Credit amount earned for this Project.
+                  </im-error>
+                </im-item>
+                <div>Equivalent to {{ createProfileForm.value.budget | currency }} USD</div>
+              </ng-container>
+              <div class="im-buttons" footer>
+                <ion-button fill="outline" (click)="prev()">Back</ion-button>
+                <ion-button (click)="next()" [disabled]="createProfileForm.controls.budget.invalid">
+                  Next
+                </ion-button>
+              </div>
+            </im-block>
+          </div>
+        </ion-slide>
+        <ion-slide class="slide">
+          <div class="im-cont small">
+            <div class="info">
+              <ion-icon name="checkmark-circle" class="header-icon"></ion-icon>
+              <div class="im-primary-text">Almost Done!</div>
+            </div>
+            <im-block>
+              <div body>
+                Press the Save button below to finish setting up your SpendPartner Profile. Information you
+                have entered for your Profile can be edited at any time from the Settings page.
+              </div>
+              <div class="im-buttons" footer>
+                <ion-button fill="outline" (click)="prev()">Back</ion-button>
+                <ion-button (click)="save()">Save</ion-button>
+              </div>
+            </im-block>
+          </div>
+        </ion-slide>
+      </ion-slides>
+    </div>
+  </ion-content>
+</ng-container>

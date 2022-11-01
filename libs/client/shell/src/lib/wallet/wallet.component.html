@@ -1,0 +1,229 @@
+<ng-container *ngIf="state$ | async as state">
+  <ion-header [class.ion-no-border]="true" *ngIf="!mobileView">
+    <ion-toolbar>
+      <ion-buttons slot="start">
+        <ion-menu-button></ion-menu-button>
+      </ion-buttons>
+      <ion-title>Wallet</ion-title>
+      <ion-buttons slot="end">
+        <ion-button (click)="refresh()">
+          <ion-icon slot="icon-only" name="refresh"></ion-icon>
+        </ion-button>
+      </ion-buttons>
+    </ion-toolbar>
+    <ion-progress-bar
+      type="indeterminate"
+      [class.hide]="state.creditsLoaded && state.transactionsLoaded"
+    ></ion-progress-bar>
+  </ion-header>
+
+  <ion-content>
+    <im-tabs #tabs (tabChange)="tabChangeEvent($event)" [slot]="mobileView ? 'bottom' : 'top'">
+      <im-tab label="Balance">
+        <div class="im-cont">
+          <div class="im-primary-text title">Balance</div>
+          <div class="current-balance" *ngIf="state.creditsLoaded">
+            <div class="cur-balance-number-cont">
+              <div class="cur-balance-number">{{ state.balance | currency: '':'' }}</div>
+              <ion-icon src="/assets/icons/cc.svg" class="cur-balance-icon"></ion-icon>
+              <div class="float-shadow text"></div>
+              <div class="float-shadow icon"></div>
+            </div>
+            <span class="equiv">
+              <i>Valued at: {{ state.balance | currency }} USD</i>
+            </span>
+            <span class="escrow">
+              <span #connectedTo>
+                Credits in Escrow:
+                <b>{{ state.escrowBalance | currency: '':'' }}</b>
+              </span>
+              <ion-icon src="/assets/icons/cc.svg"></ion-icon>
+              &nbsp;
+              <ion-icon
+                name="help-circle"
+                [imInfoPopup]="info"
+                [connectedTo]="connectedTo"
+                [style.color]="'var(--ion-text-color)'"
+                [style.font-size]="'1.5em'"
+                [style.cursor]="'pointer'"
+              ></ion-icon>
+              <ng-template #info>
+                <div class="im-info-pop-up">
+                  Escrow credits are credits withheld from a Voucher transaction until the Voucher is
+                  redeemed.
+                </div>
+              </ng-template>
+            </span>
+          </div>
+          <div body *ngIf="!state.creditsLoaded" class="spin-loader">
+            <ion-spinner name="crescent"></ion-spinner>
+          </div>
+
+          <div class="recent-transactions-container">
+            <div class="recent-transactions-title">Recent Transactions</div>
+            <div class="recent-transactions-divider"></div>
+            <div class="recent-transactions-list" *ngIf="state.transactionsLoaded">
+              <p *ngIf="state.allTransactions.length === 0"><i>No recent transactions.</i></p>
+              <div class="transaction" *ngFor="let t of state.allTransactions.slice(0, 10)">
+                <b class="to-from im-ellipsis">
+                  @{{
+                    state.activeProfile?.handle?.id === t.meta.senderHandle
+                      ? t.meta.receiverHandle
+                      : t.meta.senderHandle
+                  }}
+                </b>
+                <span *ngIf="t.epAudibleCode" class="code">{{ t.epAudibleCode }}</span>
+                <span class="date">{{ t.dateTransacted | date: 'M/dd/yy' }}</span>
+                <div>
+                  <b
+                    [style.color]="
+                      state.activeProfile?.handle?.id === t.meta.senderHandle
+                        ? 'var(--im-red)'
+                        : 'var(--im-green-tint)'
+                    "
+                  >
+                    {{ state.activeProfile?.handle?.id === t.meta.senderHandle ? '&ndash;' : '+' }}
+                    {{ t.amount / 100 | currency: '':'' }}
+                    <ion-icon src="/assets/icons/cc.svg"></ion-icon>
+                  </b>
+                </div>
+              </div>
+            </div>
+            <div class="im-centered" *ngIf="!state.transactionsLoaded">
+              <ion-spinner name="crescent"></ion-spinner>
+            </div>
+          </div>
+        </div>
+      </im-tab>
+      <im-tab label="History">
+        <div class="im-cont">
+          <div class="history-cont">
+            <div class="title">History</div>
+            <div *ngIf="state.allTransactions.length === 0" style="padding: 1em; text-align: center">
+              <i>You have no transaction history.</i>
+            </div>
+            <div *ngFor="let t of state.allTransactions; index as i" class="transaction">
+              <ion-icon name="globe" class="globe-icon" slot="start"></ion-icon>
+              <div class="item-info">
+                <div class="handle im-ellipsis">
+                  @{{
+                    state.activeProfile?.handle?.id === t.meta.senderHandle
+                      ? t.meta.receiverHandle
+                      : t.meta.senderHandle
+                  }}
+                </div>
+                <b class="code">
+                  {{ t.epAudibleCode }}
+                </b>
+                <div class="amount">
+                  <b
+                    [style.color]="
+                      state.activeProfile?.handle?.id === t.meta.senderHandle
+                        ? 'var(--im-red)'
+                        : 'var(--im-green-tint)'
+                    "
+                  >
+                    {{ state.activeProfile?.handle?.id === t.meta.senderHandle ? '&ndash;' : '+' }}
+                    {{ t.amount / 100 | currency: '':'' }}
+                    <ion-icon src="/assets/icons/cc.svg"></ion-icon>
+                  </b>
+                  <span>({{ getRunningTotal(state, i) | currency: '':'' }})</span>
+                </div>
+                <div class="im-ellipsis memo">{{ t.memo }}&nbsp;</div>
+                <div class="date">{{ t.dateTransacted | date: 'M/dd/yy' }}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </im-tab>
+      <im-tab label="Vouchers">
+        <div class="im-cont">
+          <div class="im-primary-text title">Vouchers</div>
+          <div *ngIf="!state.vouchersLoaded" class="spin-loader">
+            <ion-spinner name="crescent"></ion-spinner>
+          </div>
+          <div [style.text-align]="'center'" *ngIf="state.vouchers.length < 1 && state.vouchersLoaded">
+            You nave no Vouchers.
+          </div>
+          <im-code-item
+            *ngFor="let voucher of state.vouchers"
+            [code]="voucher.code"
+            [price]="voucher.amount"
+            [active]="voucherIsActive(voucher)"
+            (click)="openVoucher(voucher)"
+          >
+            <im-handle [handle]="voucher.seller.handle.id"></im-handle>
+          </im-code-item>
+        </div>
+      </im-tab>
+      <im-tab label="Send">
+        <div class="im-cont cont">
+          <div class="im-primary-text title">Send</div>
+          <div class="amount-cont">
+            <div class="send-amt">
+              Balance Leftover:
+              <ion-spinner *ngIf="!state.creditsLoaded" class="spin-loader" name="crescent"></ion-spinner>
+              <span *ngIf="state.creditsLoaded" [style.font-weight]="'700'">
+                {{ state.balance - amount.value | currency: '':'' }}
+              </span>
+              <ion-icon
+                *ngIf="state.creditsLoaded"
+                src="/assets/icons/cc.svg"
+                [style.margin-bottom]="'-1px'"
+              ></ion-icon>
+            </div>
+            <div class="amount" (click)="focus()">
+              <div
+                class="sending-amount"
+                [style.grid-template-columns]="amount.value.toFixed(2).length + 'ch auto'"
+              >
+                <input
+                  [style.width.ch]="amount.value.toFixed(2).length"
+                  #amountInp
+                  currencyMask
+                  [formControl]="amount"
+                />
+                <ion-icon src="/assets/icons/cc.svg" class="amount-icon"></ion-icon>
+              </div>
+              <span class="equiv">
+                <i>Valued at: {{ amount.value | currency }} USD</i>
+              </span>
+            </div>
+            <span class="tap" (click)="focus()">Tap to edit Amount</span>
+          </div>
+          <div>
+            <im-item
+              [touched]="true"
+              label="Recipient"
+              [style.cursor]="'pointer'"
+              (click)="openProfileSearchModal()"
+            >
+              <ion-icon src="/assets/icons/@.svg" slot="start"></ion-icon>
+              <input
+                readonly
+                [disabled]="true"
+                [value]="state.recipient?.id"
+                [style.cursor]="'pointer'"
+                placeholder="Tap to select recipient"
+              />
+            </im-item>
+            <im-item [touched]="true" label="Memo">
+              <input [formControl]="memo" placeholder="Memo" />
+              <im-error *ngIf="!memo.valid && memo.touched">Please enter a memo.</im-error>
+            </im-item>
+          </div>
+          <div class="im-buttons">
+            <ion-button
+              (click)="transaction(state.recipient!.id)"
+              [disabled]="
+                !(state.recipient && memo.valid && amount.value && state.balance - amount.value >= 0)
+              "
+            >
+              Send
+            </ion-button>
+          </div>
+        </div>
+      </im-tab>
+    </im-tabs>
+  </ion-content>
+</ng-container>

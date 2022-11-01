@@ -1,0 +1,133 @@
+<ng-container *ngIf="state$ | async as state">
+  <ng-container *ngIf="state.profile as profile">
+    <ion-header>
+      <ion-toolbar>
+        <ion-buttons slot="start">
+          <ion-menu-button></ion-menu-button>
+        </ion-buttons>
+        <ion-title>Dashboard</ion-title>
+      </ion-toolbar>
+    </ion-header>
+
+    <ion-content>
+      <div class="im-cont">
+        <im-block>
+          <div header class="im-buttons">
+            <div class="align">
+              <ion-icon src="/assets/icons/im-voucher.svg" [style.font-size]="'35px'"></ion-icon>
+              <span [style.font-size]="'16px'">Recent Payments</span>
+            </div>
+            <ion-button (click)="payments()">View</ion-button>
+          </div>
+          <div body>
+            <ion-spinner body name="crescent" *ngIf="!state.receivedTransactionsLoaded"></ion-spinner>
+            <div
+              *ngIf="state.receivedTransactions.length === 0 && state.receivedTransactionsLoaded"
+              [style.display]="'grid'"
+              [style.font-weight]="'400'"
+            >
+              <i>No recent transactions found.</i>
+            </div>
+            <im-code-item
+              *ngFor="let rt of state.receivedTransactions"
+              [code]="rt.epAudibleCode || 'N/A'"
+              [price]="rt.amount"
+              [active]="false"
+              cursor="default"
+              class="code-item"
+            >
+              <span>
+                @{{
+                  rt.senderChangeMaker?.handle?.id ||
+                    rt.senderExchangePartner?.handle?.id ||
+                    rt.senderServePartner?.handle?.id
+                }}
+              </span>
+            </im-code-item>
+          </div>
+        </im-block>
+
+        <im-block>
+          <div header class="im-buttons no-wrap">
+            <div class="align">
+              <ion-icon src="/assets/icons/im-voucher.svg" [style.font-size]="'35px'"></ion-icon>
+              <span class="im-ellipsis" [style.font-size]="'16px'">Unredeemed Vouchers</span>
+            </div>
+            <ion-button (click)="vouchers()">Manage</ion-button>
+          </div>
+          <div body>
+            <ion-spinner body name="crescent" *ngIf="!state.unredeemedVouchersLoaded"></ion-spinner>
+            <div
+              *ngIf="state.unredeemedVouchers.length === 0 && state.unredeemedVouchersLoaded"
+              [style.display]="'grid'"
+              [style.font-weight]="'400'"
+            >
+              <i>No unredeemed vouchers found.</i>
+            </div>
+            <im-code-item
+              *ngFor="let voucher of state.unredeemedVouchers"
+              [code]="voucher.code"
+              [price]="voucher.amount"
+              [active]="true"
+              cursor="default"
+              class="code-item"
+              [style.cursor]="'pointer'"
+              (click)="viewVoucher(voucher)"
+            >
+              <span>
+                @{{
+                  voucher?.changeMakerReceiver?.handle?.id ||
+                    voucher.exchangePartnerReceiver?.handle?.id ||
+                    voucher.servePartnerReceiver?.handle?.id
+                }}
+              </span>
+            </im-code-item>
+          </div>
+        </im-block>
+
+        <im-block>
+          <div header class="im-buttons">
+            <div class="align">
+              <ion-icon src="/assets/icons/cc.svg" [style.font-size]="'35px'"></ion-icon>
+              <span [style.font-size]="'16px'">My Budget</span>
+            </div>
+            <ion-button (click)="gotoBudget()">Manage</ion-button>
+          </div>
+          <div body>
+            <div class="row">
+              <div>Remaining Monthly Budget</div>
+              <div>
+                {{ (profile.budget - profile.view.receivedThisMonth) / 100 | currency: '':'' }}
+                <ion-icon src="/assets/icons/cc.svg"></ion-icon>
+              </div>
+            </div>
+            <div class="row">
+              <div>Monthly Budget</div>
+              <div class="budget-cont">
+                <div
+                  class="budget"
+                  [style.grid-template-columns]="budget.value.toFixed(2).length + 'ch auto'"
+                >
+                  <input #budgetInp currencyMask [formControl]="budget" />
+                  <ion-icon (click)="edit()" src="/assets/icons/cc.svg"></ion-icon>
+                </div>
+                <u (click)="edit()">Tap to Edit</u>
+              </div>
+            </div>
+            <div class="row">
+              <div>Budget End Date</div>
+              <div>{{ profile.budgetEndDate | date: 'M/dd/yy' }}</div>
+            </div>
+            <div class="row">
+              <div>Received This Month</div>
+              <div>
+                {{ profile.view.receivedThisMonth / 100 | currency: '':'' }}
+                <ion-icon src="/assets/icons/cc.svg"></ion-icon>
+              </div>
+            </div>
+          </div>
+        </im-block>
+      </div>
+    </ion-content>
+  </ng-container>
+</ng-container>

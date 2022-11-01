@@ -1,0 +1,46 @@
+<ng-container *ngIf="state$ | async as state">
+  <ion-header>
+    <ion-toolbar>
+      <ion-buttons slot="start">
+        <ion-button (click)="back()">
+          <ion-icon slot="icon-only" name="chevron-back"></ion-icon>
+        </ion-button>
+      </ion-buttons>
+      <ion-title>Voucher</ion-title>
+    </ion-toolbar>
+  </ion-header>
+
+  <ion-content>
+    <div class="im-cont" *ngIf="state.voucher as voucher">
+      <im-voucher-info [voucher]="state.voucher"></im-voucher-info>
+      <div class="im-three-buttons" [style.margin-bottom]="'var(--im-bottom-padding)'">
+        <div
+          one
+          class="cont"
+          [class.disabled]="!state.voucherCanBeRefunded"
+          (click)="state.voucherCanBeRefunded && refund(voucher)"
+        >
+          <ion-icon src="/assets/icons/refund.svg"></ion-icon>
+          <span>Refund</span>
+        </div>
+        <div two *ngIf="!voucher.dateArchived" class="cont" (click)="archive(voucher)">
+          <ion-icon [style.color]="'var(--im-green)'" name="archive"></ion-icon>
+          <span>Archive</span>
+        </div>
+        <div two *ngIf="voucher.dateArchived" class="cont" (click)="unarchive(voucher)">
+          <ion-icon [style.color]="'var(--im-green)'" name="share"></ion-icon>
+          <span>Unarchive</span>
+        </div>
+        <div
+          three
+          class="cont"
+          [class.disabled]="!state.voucherCanBeRedeemed"
+          (click)="state.voucherCanBeRedeemed && redeem(voucher)"
+        >
+          <ion-icon [style.color]="'var(--im-blue)'" name="pricetag"></ion-icon>
+          <span>Redeem</span>
+        </div>
+      </div>
+    </div>
+  </ion-content>
+</ng-container>

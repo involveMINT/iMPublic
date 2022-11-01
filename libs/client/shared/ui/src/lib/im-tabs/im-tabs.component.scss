@@ -1,0 +1,53 @@
+super-tabs-container {
+  width: 100%;
+}
+
+super-tab-button {
+  ion-label {
+    color: var(--ion-text-color);
+  }
+}
+
+super-tab-button {
+  height: 38px;
+  flex-grow: 1;
+  max-width: 100%;
+  padding: 0;
+
+  ion-label {
+    text-transform: none;
+  }
+}
+
+super-tab-button:nth-child(even) {
+  box-shadow: 0px 0px 0px 1px var(--im-border-color);
+  z-index: 1;
+}
+
+super-tabs-toolbar {
+  background: var(--im-menu-item);
+  height: 40px;
+  max-width: var(--max-content-width);
+  margin: 0 auto;
+  box-shadow: 0px 0px 0px 1px var(--im-border-color);
+  z-index: 1;
+
+  &::after {
+    display: none;
+  }
+}
+
+super-tabs,
+super-tabs-container,
+::ng-deep super-tab {
+  max-width: var(--im-max-width);
+}
+
+.tabs-container-slot-top {
+  border-top: 1px solid var(--im-border-color);
+}
+
+.tabs-container-slot-bottom {
+  border-top: 0;
+  border-bottom: 1px solid var(--im-border-color);
+}

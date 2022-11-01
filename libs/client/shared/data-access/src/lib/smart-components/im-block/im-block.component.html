@@ -1,0 +1,42 @@
+<ng-content select="[top]"></ng-content>
+<div
+  class="image"
+  *ngIf="imagesFormatted[0] | imStorageUrl | async as url"
+  [style.background-image]="'url(' + url + ')'"
+  [style.width.px]="imageLeft && width"
+  [style.height]="imageTop && '250px'"
+  [style.max-width]="imageLeft && '35%'"
+>
+  <ion-button (click)="$event.stopPropagation(); viewImages()" fill="clear" class="img-button">
+    <span>{{ imagesFormatted.length }}</span>
+    <ion-icon class="img-icon" slot="end" name="image-outline"></ion-icon>
+  </ion-button>
+</div>
+<div class="content {{ imageSlot === 'top' ? 'img-border' : '' }}">
+  <div class="block">
+    <ion-icon *ngIf="icon && !icon?.includes('https://')" [name]="icon" [src]="icon" class="icon"></ion-icon>
+    <div
+      class="im-profile-pic body-image"
+      *ngIf="icon && icon?.includes('https://')"
+      [style.background-image]="'url(' + icon + ')'"
+    ></div>
+    <div class="container">
+      <div
+        class="coll"
+        *ngIf="showHeader"
+        [class.header]="collapsible ? 'header' : ''"
+        (click)="toggleCollapse()"
+      >
+        <div #headerWrapper><ng-content select="[header]"></ng-content></div>
+        <div *ngIf="collapsible" class="collapsible">
+          <ion-icon [name]="collapsed ? 'chevron-up' : 'chevron-down'"></ion-icon>
+        </div>
+      </div>
+      <div class="body" #bodyWrapper *ngIf="!collapsed">
+        <ng-content select="[body]"></ng-content>
+      </div>
+    </div>
+    <ng-content select="[end]"></ng-content>
+  </div>
+  <ng-content select="[footer]"></ng-content>
+</div>
