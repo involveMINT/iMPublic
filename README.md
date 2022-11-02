@@ -5,7 +5,7 @@
 Prerequisites:
 
 - Nodejs
-- Postgres database named `involvemint` running on localhost port 5432 with username `postgres` and password `yourpassword`
+- Postgres database named `involvemint` running on localhost port 5432 with username `postgres` and password `1Qazxsw2`
 - Visual Studio Code
 
 ### Steps
@@ -13,13 +13,13 @@ Prerequisites:
 1. Clone repository
 
 ```sh
-git clone https://github.com/involveMINT/iM
+git clone git@ssh.dev.azure.com:v3/involvemint/involveMINT/involvemint2.0
 ```
 
 2. Change directory into repository
 
 ```sh
-cd iM
+cd involvemint2.0
 ```
 
 3. Install dependencies
@@ -28,15 +28,13 @@ cd iM
 npm install
 ```
 
-4. Update environments.ts with your settings
-
-5. Start client
+4. Start client
 
 ```sh
 npx ng s
 ```
 
-6. In another terminal, start server
+5. In another terminal, start server
 
 ```sh
 npx ng s api

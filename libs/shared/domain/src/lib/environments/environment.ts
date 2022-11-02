@@ -11,14 +11,14 @@ export const environment: Env = {
   appUrl: `http://${host}:4202`,
   storageBucket: 'your storage bucket',
   adminPasswordHash:
-    'insert admin password hash',
+    'sZfCJx5X3sGSwkokIs9IVFxDfxWd2lEKsAhkOSDfEK8u2YS98y5rJAmXmtrJs7AQ29xkHMmz0bDfLkXCKS9/+A==',
   gcpApiKey: 'insert your key here',
   typeOrmConfig: {
     type: 'postgres',
     host: '127.0.0.1',
     port: 5432,
     username: 'postgres',
-    password: 'password',
+    password: '1Qazxsw2',
     database: 'involvemint',
     synchronize: true,
     autoLoadEntities: true,
@@ -51,7 +51,7 @@ export const environment: Env = {
     private_key:
       '-----BEGIN PRIVATE KEY-----\nYour Private Key\n-----END PRIVATE KEY-----\n',
     client_email: 'Your client email',
-    client_id: 'client id', 
+    client_id: 'client id',
     auth_uri: 'https://accounts.google.com/o/oauth2/auth',
     token_uri: 'https://oauth2.googleapis.com/token',
     auth_provider_x509_cert_url: 'https://www.googleapis.com/oauth2/v1/certs',
@@ -63,6 +63,6 @@ export const environment: Env = {
     memCost: 14,
     rounds: 8,
     saltSeparator: 'Bw==',
-    signerKey: 'signerKey',
+    signerKey: 'de/PQ/Gy53mgslvUgDUKDCgHJPArYqbFnGILLQZNe5My/CvqIThVL/CsndU8oudZ9lc4B7PT8w3sAar2/luQxA==',
   },
 };
