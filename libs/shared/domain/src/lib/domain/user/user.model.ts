@@ -1,9 +1,12 @@
-import { IOneToMany, IOneToOne } from '@orcha/common';
+import { IOneToMany, IOneToOne, IManyToOne } from '@orcha/common';
 import { ChangeMaker } from '../change-maker';
 import { EpApplication } from '../ep-application';
 import { ExchangeAdmin } from '../exchange-admin';
 import { ServeAdmin } from '../serve-admin';
 import { SpApplication } from '../sp-application';
+import { ActivityPost } from '../activity-post';
+import { Like } from '../like';
+import { Comment } from '../comment';
 
 export interface User {
   /** `id` is the user's email address. */
@@ -23,6 +26,9 @@ export interface User {
   exchangeAdmins: IOneToMany<ExchangeAdmin, 'user'>;
   epApplications: IOneToMany<EpApplication, 'user'>;
   spApplications: IOneToMany<SpApplication, 'user'>;
+  activityPosts: IManyToOne<ActivityPost, 'user'>;
+  likes: IManyToOne<Like, 'user'>;
+  comments: IManyToOne<Comment, 'user'>;
 }
 
 export type ISnoopData = User & { token: string };
