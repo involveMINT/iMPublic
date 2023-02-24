@@ -7,6 +7,8 @@ import { CreateActivityPostDto,
 import { ActivityPost } from './activity-post.model';
 
 export interface IActivityPostOrchestration {
+  list: IOperation<ActivityPost[]>;
+  /** !May be a need to do get for individual Post in the future! */
   create: IOperation<ActivityPost, CreateActivityPostDto>;
 
   enable: IOperation<ActivityPost, EnableActivityPostDto>;

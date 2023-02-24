@@ -11,5 +11,6 @@ export const commentQuery = createQuery<Comment>()({
   },
   user: {
     id: true,
+    /** Probably want to fetch user handle */
   }
 })

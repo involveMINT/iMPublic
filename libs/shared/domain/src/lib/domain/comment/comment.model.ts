@@ -1,15 +1,15 @@
-import { IOneToMany } from '@orcha/common';
+import { IManyToOne } from '@orcha/common';
 import { User } from '../user';
-import {ActivityPost } from '../activity-post'
+import { ActivityPost } from '../activity-post'
 
 
 export interface Comment {
   id: string;
-  dateCreated: Date | string;
   text: string;
+
+  activityPost: IManyToOne<ActivityPost, 'comments'>;
+  user: IManyToOne<User, 'comments'>;
+
+  dateCreated: Date | string;
   hidden: boolean;
-
-  activityPost: IOneToMany<ActivityPost, 'comments'>;
-  user: IOneToMany<User, 'comments'>;
-
 }

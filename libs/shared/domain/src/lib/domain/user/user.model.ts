@@ -26,9 +26,10 @@ export interface User {
   exchangeAdmins: IOneToMany<ExchangeAdmin, 'user'>;
   epApplications: IOneToMany<EpApplication, 'user'>;
   spApplications: IOneToMany<SpApplication, 'user'>;
-  activityPosts: IManyToOne<ActivityPost, 'user'>;
-  likes: IManyToOne<Like, 'user'>;
-  comments: IManyToOne<Comment, 'user'>;
+
+  activityPosts: IOneToMany<ActivityPost, 'user'>;
+  likes: IOneToMany<Like, 'user'>;
+  comments: IOneToMany<Comment, 'user'>;
 }
 
 export type ISnoopData = User & { token: string };

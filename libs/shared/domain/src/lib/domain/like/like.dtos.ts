@@ -1,11 +1,9 @@
 import { IsString } from 'class-validator';
 
-export abstract class CreateLikeDto {
-  // id and dateCreated will automatically be generated?
-}
+/**
+ * Since likes is done via Post orchestration, we can edit 
+ * likes Repo directly in the Post server core service.
+ */
 
-export abstract class RemoveLikeDto {
-  @IsString()
-  id!: string;
-}
-
+// export abstract class CreateLikeDto { }
+// export abstract class RemoveLikeDto { }
