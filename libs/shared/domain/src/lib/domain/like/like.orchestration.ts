@@ -1,6 +1,6 @@
-import { IOperation } from '@orcha/common';
-import { CreateLikeDto,  RemoveLikeDto} from './like.dtos';
-import { Like } from './like.model';
+// import { IOperation } from '@orcha/common';
+// import { CreateLikeDto,  RemoveLikeDto} from './like.dtos';
+// import { Like } from './like.model';
 
 /**
  * See likes.dto comment.

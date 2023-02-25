@@ -23,5 +23,6 @@ export interface Poi {
   enrollment: IManyToOne<Enrollment, 'pois'>;
   credits: IOneToMany<Credit, 'poi'>;
   task?: IOneToOne<Task, 'poi'>;
-  activityPost: IOneToOne<ActivityPost, 'poi'>;
+
+  activityPost?: IOneToOne<ActivityPost, 'poi'>; /** CAN have an activity post */
 }
