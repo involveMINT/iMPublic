@@ -117,6 +117,10 @@ import { WalletComponent } from './wallet/wallet.component';
               import('@involvemint/client/admin/shell').then((m) => m.ClientAdminShellModule),
           },
           {
+            path: ImRoutes.activityfeed.ROOT,
+            loadChildren: () => import('./activityfeed/activityfeed.module').then((m) => m.ActivityFeedModule),
+          },
+          {
             path: ImRoutes.projects.ROOT,
             loadChildren: () => import('./projects/projects.module').then((m) => m.ProjectsModule),
           },

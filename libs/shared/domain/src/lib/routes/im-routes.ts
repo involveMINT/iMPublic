@@ -52,6 +52,9 @@ export const ImRoutes = {
       REQUEST: 0,
     },
   },
+  activityfeed: {
+    ROOT: 'activityfeed',
+  },
   settings: {
     ROOT: 'settings',
   },

@@ -373,11 +373,11 @@ export class ImAppComponent extends StatefulComponent<State> implements OnInit {
                              |___/
         */
             if (changeMaker) {
-              const profile: MenuItem = {
-                title: 'Profile',
-                icon: 'person-circle',
-                route: this.route.rawRoutes.path.cm.profile.ROOT,
-                click: () => this.route.to.cm.profile.ROOT({ queryParams: { [AP]: changeMaker.id } }),
+              const activityfeed: MenuItem = {
+                title: 'Activity Feed',
+                icon: 'newspaper',
+                route: this.route.rawRoutes.path.activityfeed.ROOT,
+                click: () => this.route.to.activityfeed.ROOT({ queryParams: { [AP]: changeMaker.id } }),
                 inMenu: true,
                 inTabs: true,
               };
@@ -405,14 +405,22 @@ export class ImAppComponent extends StatefulComponent<State> implements OnInit {
                 inMenu: !navTabs,
                 inTabs: true,
               };
-              const passport: MenuItem = {
-                title: 'Passport',
-                icon: 'globe',
-                route: this.route.rawRoutes.path.cm.passport.ROOT,
-                click: () => this.route.to.cm.passport.ROOT({ queryParams: { [AP]: changeMaker.id } }),
+              const profile: MenuItem = {
+                title: 'Profile',
+                icon: 'person-circle',
+                route: this.route.rawRoutes.path.cm.profile.ROOT,
+                click: () => this.route.to.cm.profile.ROOT({ queryParams: { [AP]: changeMaker.id } }),
                 inMenu: true,
                 inTabs: true,
               };
+              // const passport: MenuItem = {
+              //   title: 'Passport',
+              //   icon: 'globe',
+              //   route: this.route.rawRoutes.path.cm.passport.ROOT,
+              //   click: () => this.route.to.cm.passport.ROOT({ queryParams: { [AP]: changeMaker.id } }),
+              //   inMenu: true,
+              //   inTabs: true,
+              // };
               // const poi: MenuItem = {
               //   title: 'Proofs of Impact',
               //   icon: 'checkmark-done',
@@ -445,7 +453,7 @@ export class ImAppComponent extends StatefulComponent<State> implements OnInit {
                 color: 'var(--im-green)',
                 profile: changeMaker,
                 uponActivation: () => setImPrimaryColors('cm'),
-                items: [profile, enrollments, wallet, market, passport, chat, settings],
+                items: [activityfeed, enrollments, wallet, market, profile, chat, settings],
               });
             }
 
