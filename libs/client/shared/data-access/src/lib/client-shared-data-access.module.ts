@@ -31,8 +31,10 @@ import { EpApplicationGateway } from './gateways/ep-application.gateway';
 import { SpApplicationGateway } from './gateways/sp-application.gateway';
 import { ImProfileSelectModalModule } from './modals/im-profile-select-modal/im-profile-select-modal.module';
 import {
+  ActivityPostOrchestration,
   ChangeMakerOrchestration,
   ChatOrchestration,
+  CommentOrchestration,
   CreditOrchestration,
   EnrollmentOrchestration,
   EpApplicationOrchestration,
@@ -83,8 +85,10 @@ import { StorageOrchestration } from './orchestrations/storage.orchestration';
     ]),
     OrchaModule.forFeature({
       orchestrations: [
+        ActivityPostOrchestration,
         ChangeMakerOrchestration,
         ChatOrchestration,
+        CommentOrchestration,
         CreditOrchestration,
         EnrollmentOrchestration,
         EpApplicationOrchestration,

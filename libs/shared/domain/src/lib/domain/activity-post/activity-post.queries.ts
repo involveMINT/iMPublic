@@ -2,7 +2,7 @@ import { createQuery } from '@orcha/common';
 import { ActivityPost } from './activity-post.model';
 
 /** ?Think these are used for validations + data returned? */
-export const activityCreateQuery = createQuery<ActivityPost>()({
+export const ActivityPostQuery = createQuery<ActivityPost>()({
   id: true,
   likeCount: true,
   dateCreated: true,
