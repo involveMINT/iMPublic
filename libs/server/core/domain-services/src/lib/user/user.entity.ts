@@ -6,6 +6,9 @@ import { EpApplicationEntity } from '../ep-application/ep-application.entity';
 import { ExchangeAdminEntity } from '../exchange-admin/exchange-admin.entity';
 import { ServeAdminEntity } from '../serve-admin/serve-admin.entity';
 import { SpApplicationEntity } from '../sp-application/sp-application.entity';
+import { ActivityPostEntity } from '../activity-post/activity-post.entity';
+import { LikeEntity } from '../like/like.entity';
+import { CommentEntity } from '../comment/comment.entity';
 
 @Entity({ name: DbTableNames.User })
 export class UserEntity implements Required<User> {
@@ -54,4 +57,13 @@ export class UserEntity implements Required<User> {
 
   @OneToMany(() => SpApplicationEntity, (e) => e.user)
   spApplications!: SpApplicationEntity[];
+
+  @OneToMany(() => ActivityPostEntity, (e) => e.user)
+  activityPosts!: ActivityPostEntity[];
+
+  @OneToMany(() => LikeEntity, (e) => e.user)
+  likes!: LikeEntity[];
+
+  @OneToMany(() => CommentEntity, (e) => e.user)
+  comments!: CommentEntity[];
 }
