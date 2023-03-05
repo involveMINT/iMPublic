@@ -3,6 +3,7 @@ import { ActivityPostRepository } from "@involvemint/server/core/domain-services
 import { ActivityPost, CreateActivityPostDto, DisableActivityPostDto, EnableActivityPostDto, LikeActivityPostDto, UnlikeActivityPostDto } from "@involvemint/shared/domain";
 import { IQuery } from "@orcha/common";
 import { AuthService } from '../auth/auth.service';
+import * as uuid from 'uuid';
 
 @Injectable()
 export class ActivityPostService {
@@ -16,15 +17,16 @@ export class ActivityPostService {
     }
 
     async create(query: IQuery<ActivityPost>, token: string, dto: CreateActivityPostDto) {
+        const user = await this.auth.validateUserToken(token ?? '');
         return this.activityPostRepo.upsert({
-            id: "",
-            likeCount: 0,
-            poi: undefined,
+            id: uuid.v4(),
+            user: user.id,
+            poi: dto.poiId,
             likes: [],
             comments: [],
-            user: undefined,
-            dateCreated: "",
-            enabled: false
+            likeCount: 0,
+            dateCreated: new Date(),
+            enabled: true
         },
         query);
     }

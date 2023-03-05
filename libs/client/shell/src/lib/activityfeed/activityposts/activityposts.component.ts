@@ -4,6 +4,7 @@ import {
   EnrollmentsModalService,
   PoiCmStoreModel,
 } from '@involvemint/client/cm/data-access';
+import { UserFacade, PostStoreModel } from '@involvemint/client/shared/data-access';
 import { RouteService } from '@involvemint/client/shared/routes';
 import { StatefulComponent } from '@involvemint/client/shared/util';
 import { calculatePoiStatus, calculatePoiTimeWorked, PoiStatus } from '@involvemint/shared/domain';
@@ -13,7 +14,7 @@ import { merge } from 'rxjs';
 import { take, tap } from 'rxjs/operators';
 
 interface State {
-  pois: Array<PoiCmStoreModel & { status: PoiStatus; timeWorked: string; }>;
+  posts: Array<PostStoreModel & { status: PoiStatus; timeWorked: string; }>;
   loaded: boolean;
 }
 
@@ -31,30 +32,34 @@ export class PoisComponent extends StatefulComponent<State> implements OnInit {
   constructor(
     private readonly cf: ChangeMakerFacade,
     private readonly route: RouteService,
-    private readonly enrollmentsModal: EnrollmentsModalService
+    private readonly enrollmentsModal: EnrollmentsModalService,
+    private readonly user: UserFacade
+    
   ) {
-    super({ pois: [], loaded: false });
+    super({ posts: [], loaded: false });
   }
 
   ngOnInit(): void {
-    this.effect(() =>
-      this.cf.poi.selectors.pois$.pipe(
-        tap(({ pois, loaded }) =>
+
+    this.effect(() => 
+      this.user.posts.selectors.posts$.pipe(
+        tap(({ posts, loaded }) => 
           this.updateState({
-            pois: pois
-              .sort((a, b) =>
-                compareDesc(parseDate(a.dateStarted ?? new Date()), parseDate(b.dateStarted ?? new Date()))
+            posts: posts
+              .sort((a, b) => 
+                compareDesc(parseDate(a.dateCreated ?? new Date()), parseDate(b.dateCreated ?? new Date()))
               )
-              .map((poi) => ({
-                ...poi,
-                status: calculatePoiStatus(poi),
-                timeWorked: calculatePoiTimeWorked(poi),
+              .map((post) => ({
+                ...post,
+                status: calculatePoiStatus(post.poi),
+                timeWorked: calculatePoiTimeWorked(post.poi)
               })),
-            loaded,
+            loaded: loaded
           })
         )
       )
     );
+
   }
 
   refresh() {

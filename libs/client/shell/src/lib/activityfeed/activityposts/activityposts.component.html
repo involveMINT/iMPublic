@@ -16,20 +16,20 @@
 
   <ion-content>
     <div class="im-cont" *ngIf="state.loaded">
-      <div class="im-centered" *ngIf="state.pois.length < 1 && state.loaded">
+      <div class="im-centered" *ngIf="state.posts.length < 1 && state.loaded">
         <div [style.display]="'grid'" [style.gap]="'0.1rem'">There are no activity posts.</div>
       </div>
 
       <im-block
         imageSlot="left"
-        [images]="poi.imagesFilePaths"
-        *ngFor="let poi of state.pois"
+        [images]="post.poi.imagesFilePaths"
+        *ngFor="let post of state.posts"
       >
-        <div header class="im-primary-text">{{ poi.enrollment.project.title }}</div>
+        <div header class="im-primary-text">{{ post.poi.enrollment.project.title }}</div>
         <div body class="timeline-details">
           <div class="timeline-detail-item">
             <ion-icon name="information-circle"></ion-icon>
-            <span [ngSwitch]="poi.status">
+            <span [ngSwitch]="post.status">
               <b [style.color]="'var(--im-poi-denied)'" *ngSwitchCase="PoiStatus.denied">Denied</b>
               <b [style.color]="'var(--im-poi-approved)'" *ngSwitchCase="PoiStatus.approved">Approved</b>
               <b [style.color]="'var(--im-poi-submitted)'" *ngSwitchCase="PoiStatus.submitted">Submitted</b>
@@ -41,18 +41,18 @@
           </div>
           <div class="timeline-detail-item">
             <ion-icon name="calendar"></ion-icon>
-            <span *ngIf="poi.dateSubmitted">{{ poi.dateSubmitted | date: 'longDate' }}</span>
-            <div *ngIf="!poi.dateSubmitted">No submission date.</div>
+            <span *ngIf="post.poi.dateSubmitted">{{ post.poi.dateSubmitted | date: 'longDate' }}</span>
+            <div *ngIf="!post.poi.dateSubmitted">No submission date.</div>
           </div>
           <div class="timeline-detail-item">
             <ion-icon name="time"></ion-icon>
-            <span>{{ poi.timeWorked }}</span>
+            <span>{{ post.timeWorked }}</span>
           </div>
           <div class="timeline-detail-item">
             <ion-icon name="location"></ion-icon>
-            <span>{{ poi.enrollment.project.address.city }}, {{ poi.enrollment.project.address.state }}</span>
+            <span>{{ post.poi.enrollment.project.address.city }}, {{ post.poi.enrollment.project.address.state }}</span>
           </div>
-          <div class="timeline-info">{{ poi.enrollment.project.description }}</div>
+          <div class="timeline-info">{{ post.poi.enrollment.project.description }}</div>
 
           <div class="timeline-detail-item">
             <ion-buttons slot="start">

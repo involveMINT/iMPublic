@@ -1,4 +1,6 @@
 import { createQuery } from '@orcha/common';
+import { PoiCmQuery } from '../poi';
+import { UserQuery } from '../user';
 import { ActivityPost } from './activity-post.model';
 
 /** ?Think these are used for validations + data returned? */
@@ -8,12 +10,10 @@ export const ActivityPostQuery = createQuery<ActivityPost>()({
   dateCreated: true,
   enabled: true,
   poi: {
-    id: true,
-    /** Probably want to fetch entirety of POI */
+    ...PoiCmQuery
   },
   user: {
-    id: true,
-    /** Probably want to fetch handler of user */
+    ...UserQuery
   },
   comments: {
     text: true,

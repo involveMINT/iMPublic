@@ -33,3 +33,4 @@ export * from './lib/orchestrations';
 export * from './lib/pipes';
 export * from './lib/shared-routes';
 export * from './lib/smart-components';
+export * from './lib/+state/activity-posts';
