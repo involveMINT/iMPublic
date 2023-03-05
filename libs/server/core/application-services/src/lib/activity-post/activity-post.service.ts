@@ -1,8 +1,8 @@
 import { Injectable } from "@nestjs/common";
-import { AuthService } from '@involvemint/server/core/application-services';
 import { ActivityPostRepository } from "@involvemint/server/core/domain-services";
 import { ActivityPost, CreateActivityPostDto, DisableActivityPostDto, EnableActivityPostDto, LikeActivityPostDto, UnlikeActivityPostDto } from "@involvemint/shared/domain";
 import { IQuery } from "@orcha/common";
+import { AuthService } from '../auth/auth.service';
 
 @Injectable()
 export class ActivityPostService {
