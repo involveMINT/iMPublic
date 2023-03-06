@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, ViewChild, ViewChildren, ViewEncapsulation } from '@angular/core';
 import {
   ChangeMakerFacade,
   EnrollmentsModalService,
@@ -12,6 +12,8 @@ import { parseDate } from '@involvemint/shared/util';
 import { compareDesc } from 'date-fns';
 import { merge } from 'rxjs';
 import { take, tap } from 'rxjs/operators';
+import { IonSlides } from '@ionic/angular';
+
 
 interface State {
   posts: Array<PostStoreModel & { status: PoiStatus; timeWorked: string; }>;
@@ -25,6 +27,7 @@ interface State {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PoisComponent extends StatefulComponent<State> implements OnInit {
+
   get PoiStatus() {
     return PoiStatus;
   }
@@ -81,4 +84,5 @@ export class PoisComponent extends StatefulComponent<State> implements OnInit {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       .subscribe(() => (event.target as any).complete());
   }
+
 }

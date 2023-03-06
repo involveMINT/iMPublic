@@ -8,7 +8,6 @@ import {
   ImStorageUrlPipeModule,
 } from '@involvemint/client/shared/data-access';
 import { ImFormsModule, ImImageModule } from '@involvemint/client/shared/ui';
-import { ConfirmDeactivationGuard } from '@involvemint/client/shared/util';
 import { IonicModule } from '@ionic/angular';
 import { PoiComponent } from './activitypost/activitypost.component';
 import { PoisComponent } from './activityposts/activityposts.component';
