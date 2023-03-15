@@ -76,9 +76,14 @@
 
           <div class="timeline-detail-item">
             <ion-buttons slot="start">
-              <ion-button>
+              <ion-button (click)="like(post.id)">
                 <ion-icon name="heart-outline"></ion-icon>
+                <p>{{post.likeCount}}</p>
               </ion-button>
+              <!-- <ion-button (click)="like(post.id)">
+                <ion-icon name="heart-outline"></ion-icon>
+                <p>{{post.likeCount}}</p>
+              </ion-button> -->
   
 
               <ion-button>

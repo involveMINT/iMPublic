@@ -41,5 +41,15 @@ export const PostsReducer = createReducer(
                 posts: postsAdapter.upsertOne(post, state.posts)
             }
         }
-    )
+    ),
+    on(
+        PostsActions.likeSuccess,
+        (state, { post }): PostsState => {
+            return {
+                ...state,
+                posts: postsAdapter.upsertOne(post, state.posts)
+            }
+        }
+    ),
+
 )

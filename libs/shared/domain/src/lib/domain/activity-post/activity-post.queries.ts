@@ -1,4 +1,5 @@
 import { createQuery } from '@orcha/common';
+import { likeQuery } from '../like';
 import { PoiCmQuery } from '../poi';
 import { UserQuery } from '../user';
 import { ActivityPost } from './activity-post.model';
@@ -21,5 +22,8 @@ export const ActivityPostQuery = createQuery<ActivityPost>()({
       id: true
     },
     hidden: true
+  },
+  likes: {
+    id: true,
   }
 });

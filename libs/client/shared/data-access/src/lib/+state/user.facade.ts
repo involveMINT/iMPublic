@@ -13,6 +13,7 @@ import {
   EditSpProfileDto,
   GetSuperAdminForExchangePartnerDto,
   ImConfig,
+  LikeActivityPostDto,
   SignUpDto,
   SubmitEpApplicationDto,
   SubmitSpApplicationDto,
@@ -648,7 +649,10 @@ export class UserFacade {
       },
       create: (dto: CreateActivityPostDto) => {
         this.store.dispatch(PostActions.createPost({ dto }));
-      }
+      },
+      like: (dto: LikeActivityPostDto) => {
+        this.store.dispatch(PostActions.like({ dto }));
+      },
     },
     selectors: {
       posts$: this.store.pipe(select(PostSelectors.getPosts)).pipe(

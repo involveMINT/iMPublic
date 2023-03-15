@@ -38,12 +38,12 @@ export class PoisComponent extends StatefulComponent<State> implements OnInit {
     private readonly enrollmentsModal: EnrollmentsModalService,
     private readonly user: UserFacade
     
+    
   ) {
     super({ posts: [], loaded: false });
   }
 
   ngOnInit(): void {
-
     this.effect(() => 
       this.user.posts.selectors.posts$.pipe(
         tap(({ posts, loaded }) => 
@@ -83,6 +83,13 @@ export class PoisComponent extends StatefulComponent<State> implements OnInit {
       .pipe(take(1))
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       .subscribe(() => (event.target as any).complete());
+  }
+
+  like(id: string) {
+    console.log(id);
+    this.user.posts.dispatchers.like({
+      postId: id,
+    })
   }
 
 }

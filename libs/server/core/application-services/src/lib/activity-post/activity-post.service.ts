@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
-import { ActivityPostRepository } from "@involvemint/server/core/domain-services";
-import { ActivityPost, CreateActivityPostDto, DisableActivityPostDto, EnableActivityPostDto, LikeActivityPostDto, UnlikeActivityPostDto } from "@involvemint/shared/domain";
+import { ActivityPostRepository, LikeRepository } from "@involvemint/server/core/domain-services";
+import { ActivityPost, ActivityPostQuery, CreateActivityPostDto, DisableActivityPostDto, EnableActivityPostDto, LikeActivityPostDto, likeQuery, UnlikeActivityPostDto } from "@involvemint/shared/domain";
 import { IQuery } from "@orcha/common";
 import { AuthService } from '../auth/auth.service';
 import * as uuid from 'uuid';
@@ -9,7 +9,8 @@ import * as uuid from 'uuid';
 export class ActivityPostService {
     constructor(
         private readonly auth: AuthService,
-        private readonly activityPostRepo: ActivityPostRepository
+        private readonly activityPostRepo: ActivityPostRepository,
+        private readonly likeRepo: LikeRepository
     ) {}
 
     async list(query: IQuery<ActivityPost[]>, token: string) {
@@ -60,17 +61,25 @@ export class ActivityPostService {
     }
 
     async like(query: IQuery<ActivityPost>, token: string, dto: LikeActivityPostDto) {
-        return this.activityPostRepo.upsert({
-            id: "",
-            likeCount: 0,
-            poi: undefined,
-            likes: [],
-            comments: [],
-            user: undefined,
-            dateCreated: "",
-            enabled: false
+        const user = await this.auth.validateUserToken(token ?? '');
+        // did this user already like this post
+        const likeRecords = await this.likeRepo.query(likeQuery, { where: { user: user.id } });
+
+        if (likeRecords.length > 0) {
+            throw new Error('User already liked this activity post');
+        }
+        // insert new record into 'like' table
+       this.likeRepo.upsert({
+            id: uuid.v4(),
+            dateCreated: new Date(),
+            activityPost: dto.postId,
+            user: user.id
         },
-        query);
+        likeQuery);
+
+        // update activity post like counter
+        const currentPost = await this.activityPostRepo.findOneOrFail(dto.postId, ActivityPostQuery);
+        return this.activityPostRepo.update(dto.postId, {likeCount: currentPost.likeCount + 1}, query);
     }
 
     async unlike(query: IQuery<ActivityPost>, token: string, dto: UnlikeActivityPostDto) {

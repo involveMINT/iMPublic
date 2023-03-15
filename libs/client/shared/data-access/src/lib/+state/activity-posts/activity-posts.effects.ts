@@ -51,6 +51,28 @@ export class PostEffects {
             tap(() => this.status.dismissLoader())
         )
     );
+    
+    /** Effects when likePost is dispatched */
+    readonly likePost$ = createEffect(() => 
+        this.actions$.pipe(
+            ofType(PostsActions.like),
+            pessimisticUpdate({
+                run: ({ dto }) => 
+                    this.posts.like(
+                        ActivityPostQuery,
+                        dto
+                    ).pipe(
+                        map((post) => PostsActions.likeSuccess({ post }))
+                    ),
+                onError: (action, { error }) => {
+                    this.status.presentNgRxActionAlert(action, error)
+                    return PostsActions.likeError({ error })
+                }
+            }),
+            tap(() => this.status.dismissLoader())
+        )
+    );
+
 
     constructor(
         private readonly actions$: Actions,
