@@ -92,4 +92,11 @@ export class PoisComponent extends StatefulComponent<State> implements OnInit {
     })
   }
 
+  unlike(id: string) {
+    console.log(id);
+    this.user.posts.dispatchers.unlike({
+      postId: id,
+    })
+  }
+
 }

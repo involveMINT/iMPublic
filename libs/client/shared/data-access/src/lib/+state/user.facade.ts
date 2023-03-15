@@ -18,6 +18,7 @@ import {
   SubmitEpApplicationDto,
   SubmitSpApplicationDto,
   TransactionDto,
+  UnlikeActivityPostDto,
   UpdateOfferDto,
   UpdateRequestDto,
   WalletTabs,
@@ -652,6 +653,9 @@ export class UserFacade {
       },
       like: (dto: LikeActivityPostDto) => {
         this.store.dispatch(PostActions.like({ dto }));
+      },
+      unlike: (dto: UnlikeActivityPostDto) => {
+        this.store.dispatch(PostActions.unlike({ dto }));
       },
     },
     selectors: {

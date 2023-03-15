@@ -1,6 +1,6 @@
 import { createAction, props } from '@ngrx/store';
 import { OrchaOperationError } from '@orcha/common';
-import { CreateActivityPostDto, LikeActivityPostDto } from '@involvemint/shared/domain';
+import { CreateActivityPostDto, LikeActivityPostDto, UnlikeActivityPostDto } from '@involvemint/shared/domain';
 import { PostStoreModel } from './activity-posts.reducer';
 
 /**
@@ -50,7 +50,22 @@ export const likeSuccess = createAction(
 );
 
 export const likeError = createAction(
-    '[Activity Posts] Like Activity Posts Error',
+    '[Activity Posts] Like Activity Post Error',
+    props<{ error: OrchaOperationError }>()
+);
+
+export const unlike = createAction(
+    '[Activity Posts] unlike Activity Post',
+    props<{ dto: UnlikeActivityPostDto }>()
+);
+
+export const unlikeSuccess = createAction(
+    '[Activity Posts] unlike Activity Post Sucess',
+    props<{ post: PostStoreModel }>()
+);
+
+export const unlikeError = createAction(
+    '[Activity Posts] unlike Activity Post Error',
     props<{ error: OrchaOperationError }>()
 );
 

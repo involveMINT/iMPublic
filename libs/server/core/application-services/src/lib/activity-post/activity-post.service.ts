@@ -63,7 +63,7 @@ export class ActivityPostService {
     async like(query: IQuery<ActivityPost>, token: string, dto: LikeActivityPostDto) {
         const user = await this.auth.validateUserToken(token ?? '');
         // did this user already like this post
-        const likeRecords = await this.likeRepo.query(likeQuery, { where: { user: user.id } });
+        const likeRecords = await this.likeRepo.query(likeQuery, { where: { user: user.id, activityPost: dto.postId } });
 
         if (likeRecords.length > 0) {
             throw new Error('User already liked this activity post');
@@ -83,17 +83,20 @@ export class ActivityPostService {
     }
 
     async unlike(query: IQuery<ActivityPost>, token: string, dto: UnlikeActivityPostDto) {
-        return this.activityPostRepo.upsert({
-            id: "",
-            likeCount: 0,
-            poi: undefined,
-            likes: [],
-            comments: [],
-            user: undefined,
-            dateCreated: "",
-            enabled: false
-        },
-        query);
+        const user = await this.auth.validateUserToken(token ?? '');
+        // make sure user liked the post
+        const likeRecords = await this.likeRepo.query(likeQuery, { where: { user: user.id, activityPost: dto.postId } });
+        if (likeRecords.length == 0) {
+            throw new Error('User already unliked this activity post');
+        }
+
+        // Remove like record from like repo
+        // We can index into 1st index because we do the check above
+        await this.likeRepo.delete(likeRecords[0].id);
+
+        // update activity post like counter
+        const currentPost = await this.activityPostRepo.findOneOrFail(dto.postId, ActivityPostQuery);
+        return this.activityPostRepo.update(dto.postId, {likeCount: currentPost.likeCount - 1}, query);
     }
 
 }
