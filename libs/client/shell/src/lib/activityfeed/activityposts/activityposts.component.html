@@ -78,14 +78,20 @@
             <ion-buttons slot="start">
               <!-- *ngIf="post.; -->
               <!-- Is there a session? Get current user somehow -->
-              <ion-button  else elseblock" (click)="like(post.id)">
-                <ion-icon name="heart-outline"></ion-icon>
-                <p>{{post.likeCount}}</p>
-              </ion-button>
-              <!-- <ion-button #elseblock (click)="unlike(post.id)">
-                <ion-icon name="heart"></ion-icon>
-                <p>{{post.likeCount}}</p>
-              </ion-button> -->
+              <div *ngIf="!checkUserLiked(post)">
+                <ion-button (click)="like(post.id)">
+                  <ion-icon name="heart-outline"></ion-icon>
+                  <p>{{post.likeCount}}</p>
+                </ion-button>
+              </div>
+              <div *ngIf="checkUserLiked(post)">
+                <ion-button (click)="unlike(post.id)">
+                  <ion-icon name="heart"></ion-icon>
+                  <p>{{post.likeCount}}</p>
+                </ion-button>
+              </div>
+              
+              
   
 
               <ion-button>

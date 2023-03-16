@@ -25,5 +25,8 @@ export const ActivityPostQuery = createQuery<ActivityPost>()({
   },
   likes: {
     id: true,
+    user: {
+      id: true
+    },
   }
 });

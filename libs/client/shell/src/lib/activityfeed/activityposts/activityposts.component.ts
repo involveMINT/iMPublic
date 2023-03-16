@@ -4,7 +4,7 @@ import {
   EnrollmentsModalService,
   PoiCmStoreModel,
 } from '@involvemint/client/cm/data-access';
-import { UserFacade, PostStoreModel } from '@involvemint/client/shared/data-access';
+import { UserFacade, PostStoreModel, UserStoreModel } from '@involvemint/client/shared/data-access';
 import { RouteService } from '@involvemint/client/shared/routes';
 import { StatefulComponent } from '@involvemint/client/shared/util';
 import { calculatePoiStatus, calculatePoiTimeWorked, PoiStatus } from '@involvemint/shared/domain';
@@ -13,6 +13,7 @@ import { compareDesc } from 'date-fns';
 import { merge } from 'rxjs';
 import { take, tap } from 'rxjs/operators';
 import { IonSlides } from '@ionic/angular';
+import { Store } from '@ngrx/store';
 
 
 interface State {
@@ -99,4 +100,13 @@ export class PoisComponent extends StatefulComponent<State> implements OnInit {
     })
   }
 
+  checkUserLiked(post: PostStoreModel) {
+    // const currUser: UserStoreModel = 
+    // this.user.session.dispatchers.getUserData();
+    let userId = ""
+    console.log(this.user.session.selectors.email$.subscribe(s => userId = s));
+    console.log(userId);
+    const filteredObj = post.likes.filter(obj => obj.user.id === userId);
+    return filteredObj.length != 0
+  }
 }
