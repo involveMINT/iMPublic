@@ -14,6 +14,10 @@ export const ImRoutes = {
   login: {
     ROOT: 'login',
   },
+  comments: {
+    ROOT: 'comments',
+    THREAD: 0,
+  },
   signUp: {
     ROOT: 'signUp',
   },

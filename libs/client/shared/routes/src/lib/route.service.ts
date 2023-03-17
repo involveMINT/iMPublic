@@ -72,6 +72,7 @@ export class RouteService extends RxJSBaseClass {
               // Important to store this name in memory b/c it will change
               const path = obj[k] as string;
               obj[k] = ((ro?: IRouteOptions) => {
+                console.log('1', path);
                 return this.goToRoute(path, ro);
                 // eslint-disable-next-line @typescript-eslint/no-explicit-any
               }) as any;
@@ -83,6 +84,7 @@ export class RouteService extends RxJSBaseClass {
               // Important to store this name in memory b/c it will change
               const path = ROOT;
               obj[k] = ((id: string, ro?: IRouteOptions) => {
+                console.log('2', path);
                 return this.goToRoute(`${path}/${id}`, ro);
                 // eslint-disable-next-line @typescript-eslint/no-explicit-any
               }) as any;
@@ -90,8 +92,10 @@ export class RouteService extends RxJSBaseClass {
             break;
         }
       }
+      console.log('3', obj);
       return obj as unknown as Routes<IFrontendRoutes>;
     };
+    console.log('4');
     return traverse({ ...cloneDeep(this._routes.path), ROOT: '' });
   }
 

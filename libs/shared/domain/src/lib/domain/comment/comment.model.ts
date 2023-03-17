@@ -13,3 +13,13 @@ export interface Comment {
   dateCreated: Date | string;
   hidden: boolean;
 }
+
+export interface Comments {
+  id: string;
+  comments: Comment[];
+}
+
+export interface FormattedComments {
+  id: string;
+  comments: Comment[];
+}

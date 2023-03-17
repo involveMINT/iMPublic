@@ -4,7 +4,7 @@ import {
   EnrollmentsModalService,
   PoiCmStoreModel,
 } from '@involvemint/client/cm/data-access';
-import { UserFacade, PostStoreModel, UserStoreModel } from '@involvemint/client/shared/data-access';
+import { UserFacade, PostStoreModel, UserStoreModel, CommentService } from '@involvemint/client/shared/data-access';
 import { RouteService } from '@involvemint/client/shared/routes';
 import { StatefulComponent } from '@involvemint/client/shared/util';
 import { calculatePoiStatus, calculatePoiTimeWorked, PoiStatus } from '@involvemint/shared/domain';
@@ -37,14 +37,17 @@ export class PoisComponent extends StatefulComponent<State> implements OnInit {
     private readonly cf: ChangeMakerFacade,
     private readonly route: RouteService,
     private readonly enrollmentsModal: EnrollmentsModalService,
-    private readonly user: UserFacade
-    
+    private readonly user: UserFacade,
+    private readonly commentService: CommentService
     
   ) {
     super({ posts: [], loaded: false });
   }
 
   ngOnInit(): void {
+    this.user.posts.dispatchers.create({
+      poiId: '7e7b3ee3-b9fe-4f76-aa67-06a62f03300b',
+    })
     this.effect(() => 
       this.user.posts.selectors.posts$.pipe(
         tap(({ posts, loaded }) => 
@@ -109,4 +112,8 @@ export class PoisComponent extends StatefulComponent<State> implements OnInit {
     const filteredObj = post.likes.filter(obj => obj.user.id === userId);
     return filteredObj.length != 0
   }
+  comments(id: string) {
+    return this.commentService.goToComments(id);
+  }
+
 }

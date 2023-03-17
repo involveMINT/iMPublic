@@ -16,6 +16,9 @@ export abstract class CreateCommentDto {
 
   @IsString()
   text!: string;
+
+  @IsString()
+  commentsId!: string;
 }
 
 export abstract class HideCommentDto {
