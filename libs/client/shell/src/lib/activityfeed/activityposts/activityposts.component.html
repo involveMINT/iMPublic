@@ -21,7 +21,7 @@
       </div>
 
       <im-block
-        *ngFor="let post of state.posts"
+        *ngFor="let post of state.posts; trackBy: trackPost"
       >
         <div body header class="im-primary-text">{{ post.poi.enrollment.project.title }}</div>
 
@@ -76,16 +76,14 @@
 
           <div class="timeline-detail-item">
             <ion-buttons slot="start">
-              <!-- *ngIf="post.; -->
-              <!-- Is there a session? Get current user somehow -->
               <div *ngIf="!checkUserLiked(post)">
-                <ion-button (click)="like(post.id)">
+                <ion-button #likeButton (click)="like(post.id, likeButton)">
                   <ion-icon name="heart-outline"></ion-icon>
                   <p>{{post.likeCount}}</p>
                 </ion-button>
               </div>
               <div *ngIf="checkUserLiked(post)">
-                <ion-button (click)="unlike(post.id)">
+                <ion-button #unlikeButton (click)="unlike(post.id, unlikeButton)">
                   <ion-icon name="heart"></ion-icon>
                   <p>{{post.likeCount}}</p>
                 </ion-button>

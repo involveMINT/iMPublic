@@ -69,7 +69,7 @@ export class ActivityPostService {
             throw new Error('User already liked this activity post');
         }
         // insert new record into 'like' table
-       this.likeRepo.upsert({
+       await this.likeRepo.upsert({
             id: uuid.v4(),
             dateCreated: new Date(),
             activityPost: dto.postId,

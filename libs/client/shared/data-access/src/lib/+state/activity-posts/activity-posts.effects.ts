@@ -68,8 +68,7 @@ export class PostEffects {
                     this.status.presentNgRxActionAlert(action, error)
                     return PostsActions.likeError({ error })
                 }
-            }),
-            tap(() => this.status.dismissLoader())
+            })
         )
     );
 
@@ -89,8 +88,7 @@ export class PostEffects {
                 this.status.presentNgRxActionAlert(action, error)
                 return PostsActions.unlikeError({ error })
             }
-        }),
-        tap(() => this.status.dismissLoader())
+        })
     )
 );
 
