@@ -1,3 +1,15 @@
+/**
+ * The code is a test suite for the PoisComponent component using ngneat/spectator testing 
+ * framework.
+ * The test suite includes a beforeEach() function that creates an instance of PoisComponent 
+ * using the createComponentFactory() method from ngneat/spectator. The createComponentFactory() 
+ * method creates a factory function that creates a PoisComponent instance with the specified dependencies, 
+ * and providers property is used to provide UserFacade service.
+ * The it() function tests whether the component is created or not by checking the toBeTruthy() function. 
+ * The test suite also includes an assertion that is intended to fail to show how a failed test looks like.
+
+Note that the fdescribe() function is used to run only this test suite while excluding others.
+ */
 import { createComponentFactory, Spectator } from '@ngneat/spectator';
 import { PoisComponent } from './activityposts.component';
 import { RouteService } from '@involvemint/client/shared/routes';
@@ -20,10 +32,8 @@ fdescribe('Activity Posts Component', () => {
         EnrollmentsModalService,
         UserFacade,
         CommentService
-      ],
-     
+      ]
 
-      // declarations: [ImBlockComponent],
     });
 
   beforeEach(() => {
