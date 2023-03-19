@@ -30,7 +30,7 @@
           <ion-row class="ion-justify-content-center">
             <ion-slides pager #slides [options]="{ slidesPerView: true, loop: false }">
               <ion-slide *ngFor="let image of post.poi.imagesFilePaths">
-                <img [src]="image | async" tappable />
+                <img [src]="image | imStorageUrl | async" tappable />
               </ion-slide>
             </ion-slides>
           </ion-row>
