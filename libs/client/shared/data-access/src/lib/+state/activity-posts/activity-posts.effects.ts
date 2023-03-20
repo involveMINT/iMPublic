@@ -72,25 +72,45 @@ export class PostEffects {
         )
     );
 
-    /** Effects when likePost is dispatched */
+    /** Effects when unlikePost is dispatched */
     readonly unlikePost$ = createEffect(() => 
-    this.actions$.pipe(
-        ofType(PostsActions.unlike),
-        pessimisticUpdate({
-            run: ({ dto }) => 
-                this.posts.unlike(
-                    ActivityPostQuery,
-                    dto
-                ).pipe(
-                    map((post) => PostsActions.unlikeSuccess({ post }))
-                ),
-            onError: (action, { error }) => {
-                this.status.presentNgRxActionAlert(action, error)
-                return PostsActions.unlikeError({ error })
-            }
-        })
-    )
-);
+        this.actions$.pipe(
+            ofType(PostsActions.unlike),
+            pessimisticUpdate({
+                run: ({ dto }) => 
+                    this.posts.unlike(
+                        ActivityPostQuery,
+                        dto
+                    ).pipe(
+                        map((post) => PostsActions.unlikeSuccess({ post }))
+                    ),
+                onError: (action, { error }) => {
+                    this.status.presentNgRxActionAlert(action, error)
+                    return PostsActions.unlikeError({ error })
+                    }
+            })
+        )
+    );
+
+    /** Effects when unlikePost is dispatched */
+    readonly commentPost$ = createEffect(() => 
+        this.actions$.pipe(
+            ofType(PostsActions.comment),
+            pessimisticUpdate({
+                run: ({ dto }) => 
+                    this.posts.comment(
+                        ActivityPostQuery,
+                        dto
+                    ).pipe(
+                        map((post) => PostsActions.commentSuccess({ post }))
+                    ),
+                onError: (action, { error }) => {
+                    this.status.presentNgRxActionAlert(action, error)
+                    return PostsActions.unlikeError({ error })
+                    }
+            })
+        )
+    );
 
 
     constructor(

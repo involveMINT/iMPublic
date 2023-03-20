@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { ActivityPostRepository, LikeRepository } from "@involvemint/server/core/domain-services";
-import { ActivityPost, ActivityPostQuery, CreateActivityPostDto, DisableActivityPostDto, EnableActivityPostDto, LikeActivityPostDto, likeQuery, UnlikeActivityPostDto } from "@involvemint/shared/domain";
+import { ActivityPost, ActivityPostQuery, CreateActivityPostDto, CreateCommentDto, DisableActivityPostDto, EnableActivityPostDto, LikeActivityPostDto, likeQuery, UnlikeActivityPostDto } from "@involvemint/shared/domain";
 import { IQuery } from "@orcha/common";
 import { AuthService } from '../auth/auth.service';
 import * as uuid from 'uuid';
@@ -97,6 +97,14 @@ export class ActivityPostService {
         // update activity post like counter
         const currentPost = await this.activityPostRepo.findOneOrFail(dto.postId, ActivityPostQuery);
         return this.activityPostRepo.update(dto.postId, {likeCount: currentPost.likeCount - 1}, query);
+    }
+
+    async comment(query: IQuery<ActivityPost>, token: string, dto: CreateCommentDto) {
+        const user = await this.auth.validateUserToken(token ?? '');
+
+        // update activity post comments
+        const currentPost = await this.activityPostRepo.findOneOrFail(dto.postId, ActivityPostQuery);
+        return this.activityPostRepo.update(dto.postId, {comments: currentPost.comments}, query);
     }
 
 }

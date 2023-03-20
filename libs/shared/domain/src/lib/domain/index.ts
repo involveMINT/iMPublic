@@ -31,4 +31,4 @@ export * from './voucher';
 export * from './wallet';
 export * from './activity-post';
 export * from './like';
-export * from './comment';
+export {CreateCommentDto} from './comment';

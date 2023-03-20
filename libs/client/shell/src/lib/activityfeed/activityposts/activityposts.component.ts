@@ -4,12 +4,14 @@ import {
   EnrollmentsModalService,
   PoiCmStoreModel,
 } from '@involvemint/client/cm/data-access';
-import { UserFacade, PostStoreModel, CommentService } from '@involvemint/client/shared/data-access';
+import { UserFacade, PostStoreModel } from '@involvemint/client/shared/data-access';
 import { RouteService } from '@involvemint/client/shared/routes';
 import { StatefulComponent } from '@involvemint/client/shared/util';
 import { calculatePoiStatus, calculatePoiTimeWorked, PoiStatus } from '@involvemint/shared/domain';
 import { parseDate } from '@involvemint/shared/util';
 import { IonButton } from '@ionic/angular';
+import { ModalController } from '@ionic/angular';
+import { ModalCommentComponent } from './comments/modal-comments.component';
 import { compareDesc } from 'date-fns';
 import { merge } from 'rxjs';
 import { take, tap } from 'rxjs/operators';
@@ -37,7 +39,7 @@ export class PoisComponent extends StatefulComponent<State> implements OnInit {
     private readonly route: RouteService,
     private readonly enrollmentsModal: EnrollmentsModalService,
     private readonly user: UserFacade,
-    private readonly commentService: CommentService
+    private modalCtrl: ModalController
     
   ) {
     super({ posts: [], loaded: false });
@@ -102,12 +104,25 @@ export class PoisComponent extends StatefulComponent<State> implements OnInit {
     return filteredObj.length != 0
   }
 
-  comments(id: string) {
-    return this.commentService.goToComments(id);
+  comment(id: string, message: string) {
+    this.user.posts.dispatchers.comment({
+      postId: id,
+      text: message,
+      commentsId: ''
+    })
   }
 
   trackPost(index: number, post: PostStoreModel) {
     return post.id;
   }
 
+  async openModal() {
+    const modal = await this.modalCtrl.create({
+      component: ModalCommentComponent,
+    });
+    modal.present();
+
+    const { data, role } = await modal.onWillDismiss();
+
+  }
 }

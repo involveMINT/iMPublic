@@ -11,9 +11,10 @@ import { ImFormsModule, ImImageModule } from '@involvemint/client/shared/ui';
 import { IonicModule } from '@ionic/angular';
 import { PoiComponent } from './activitypost/activitypost.component';
 import { PoisComponent } from './activityposts/activityposts.component';
+import { ModalCommentComponent } from './activityposts/comments/modal-comments.component';
 
 @NgModule({
-  declarations: [PoisComponent, PoiComponent],
+  declarations: [PoisComponent, PoiComponent, ModalCommentComponent],
   imports: [
     CommonModule,
     IonicModule,

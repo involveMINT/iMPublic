@@ -4,6 +4,7 @@ import {
   ChangePasswordDto,
   CreateActivityPostDto,
   CreateChangeMakerProfileDto,
+  CreateCommentDto,
   DeleteEpImageDto,
   DeleteOfferImageDto,
   DeleteRequestImageDto,
@@ -656,6 +657,9 @@ export class UserFacade {
       },
       unlike: (dto: UnlikeActivityPostDto) => {
         this.store.dispatch(PostActions.unlike({ dto }));
+      },
+      comment: (dto: CreateCommentDto) => {
+        this.store.dispatch(PostActions.comment({ dto }));
       },
     },
     selectors: {

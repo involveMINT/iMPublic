@@ -21,7 +21,6 @@ export { TransactionStoreModel } from './lib/+state/transactions/transactions.re
 export * from './lib/+state/user.facade';
 export { VoucherStoreModel } from './lib/+state/vouchers/vouchers.reducer';
 export * from './lib/chat.service';
-export * from './lib/comment.service';
 export * from './lib/client-shared-data-access.module';
 export * from './lib/directives';
 export * from './lib/email';

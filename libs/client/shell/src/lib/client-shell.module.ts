@@ -144,11 +144,6 @@ import { WalletComponent } from './wallet/wallet.component';
             canLoad: [AuthGuard],
           },
           {
-            path: ImRoutes.comments.ROOT,
-            loadChildren: () => import('./comment/comments.module').then((m) => m.CommentsModule),
-            canLoad: [AuthGuard],
-          },
-          {
             path: ImRoutes.applications.ROOT,
             children: [
               {

@@ -17,6 +17,9 @@ export class ActivityPostOrchestration implements IClientOrchestration<IActivity
     unlike!: IClientOrchestration<IActivityPostOrchestration>['unlike'];
 
     @ClientOperation()
+    comment!: IClientOrchestration<IActivityPostOrchestration>['comment'];
+
+    @ClientOperation()
     enable!: IClientOrchestration<IActivityPostOrchestration>['enable'];
 
     @ClientOperation()

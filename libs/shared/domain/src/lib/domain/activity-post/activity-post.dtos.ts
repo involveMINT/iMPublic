@@ -67,3 +67,24 @@ export abstract class UnlikeActivityPostDto {
   @IsString()
   postId!: string;
 }
+
+export abstract class CreateCommentDto {
+  /**
+   * Take in postId and text to create comment.
+   * 
+   * Service Logic: 
+   * hidden => false
+   * DateCreated => now()
+   * ID => UUID
+   * User => Fetched via auth + perform checks.
+   * Insert Comment into the database.
+   */
+  @IsString()
+  postId!: string;
+
+  @IsString()
+  text!: string;
+
+  @IsString()
+  commentsId!: string;
+}
