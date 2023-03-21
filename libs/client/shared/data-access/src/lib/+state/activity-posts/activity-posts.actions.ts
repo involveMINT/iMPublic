@@ -4,20 +4,39 @@ import { CreateActivityPostDto, LikeActivityPostDto, UnlikeActivityPostDto } fro
 import { PostStoreModel } from './activity-posts.reducer';
 
 /**
+ * Constant Type Values
+ */
+export const LOAD_POSTS =  '[Activity Posts] Activity Posts Load';
+export const LOAD_POSTS_SUCCESS = '[Activity Posts] Activity Posts Load Success';
+export const LOAD_POSTS_ERROR = '[Activity Posts] Activity Posts Load Error';
+
+export const CREATE_POST = '[Activity Posts] Activity Posts Create';
+export const CREATE_POST_SUCCESS = '[Activity Posts] Activity Posts Create Success';
+export const CREATE_POST_ERROR = '[Activity Posts] Activity Posts Create Error';
+
+export const LIKE_POST = '[Activity Posts] Like Activity Post';
+export const LIKE_POST_SUCCESS = '[Activity Posts] Like Activity Post Success';
+export const LIKE_POST_ERROR = '[Activity Posts] Like Activity Post Error';
+
+export const UNLIKE_POST = '[Activity Posts] unlike Activity Post';
+export const UNLIKE_POST_SUCCESS = '[Activity Posts] unlike Activity Post Success';
+export const UNLIKE_POST_ERROR = '[Activity Posts] unlike Activity Post Error';
+
+/**
  * Actions for loading activity post
  */
 export const loadPosts = createAction(
-    '[Activity Posts] Activity Posts Load', 
+    LOAD_POSTS,
     props<{ page: number }>()
 );
 
 export const loadPostsSuccess = createAction(
-    '[Activity Posts] Activity Posts Load Success',
+    LOAD_POSTS_SUCCESS,
     props<{ posts: PostStoreModel[]; page: number }>()
 );
 
 export const loadPostsError = createAction(
-    '[Activity Posts] Activity Posts Load Error',
+    LOAD_POSTS_ERROR,
     props<{ error: OrchaOperationError }>()
 );
 
@@ -25,47 +44,47 @@ export const loadPostsError = createAction(
  * Actions for creating activity post
  */
 export const createPost = createAction(
-    '[Activity Posts] Activity Posts Create',
+    CREATE_POST,
     props<{ dto: CreateActivityPostDto }>() // not entirely sure which should go here...
 );
 
 export const createPostSuccess = createAction(
-    '[Activity Posts] Activity Posts Create Success',
+    CREATE_POST_SUCCESS,
     props<{ post: PostStoreModel }>()
 );
 
 export const createPostError = createAction(
-    '[Activity Posts] Activity Posts Create Error',
+    CREATE_POST_ERROR,
     props<{ error: OrchaOperationError }>()
 );
 
 export const like = createAction(
-    '[Activity Posts] Like Activity Post',
+    LIKE_POST, 
     props<{ dto: LikeActivityPostDto }>()
 );
 
 export const likeSuccess = createAction(
-    '[Activity Posts] Like Activity Post Sucess',
+    LIKE_POST_SUCCESS,
     props<{ post: PostStoreModel }>()
 );
 
 export const likeError = createAction(
-    '[Activity Posts] Like Activity Post Error',
+    LIKE_POST_ERROR,
     props<{ error: OrchaOperationError }>()
 );
 
 export const unlike = createAction(
-    '[Activity Posts] unlike Activity Post',
+    UNLIKE_POST,
     props<{ dto: UnlikeActivityPostDto }>()
 );
 
 export const unlikeSuccess = createAction(
-    '[Activity Posts] unlike Activity Post Sucess',
+    UNLIKE_POST_SUCCESS,
     props<{ post: PostStoreModel }>()
 );
 
 export const unlikeError = createAction(
-    '[Activity Posts] unlike Activity Post Error',
+    UNLIKE_POST_ERROR,
     props<{ error: OrchaOperationError }>()
 );
 

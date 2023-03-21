@@ -46,6 +46,14 @@ describe('Activity-Post Reducer', () => {
         expect(newState).toEqual(initialState);
     });
 
+    it('should return initial state on unregistered action', () => {
+        const newState = PostsReducer(
+            initialState, 
+            PostsActions.like({ dto: { postId: "1"}})
+        );
+        expect(newState).toEqual(initialState);
+    });
+
     it('should update posts & page on load posts success', () => {
         const action = PostsActions.loadPostsSuccess({ posts: [{ id: 1 }, { id: 2 }], page: 1 } as any);
         const newState = PostsReducer(initialState, action);
