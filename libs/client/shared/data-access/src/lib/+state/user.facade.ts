@@ -9,6 +9,7 @@ import {
   DeleteOfferImageDto,
   DeleteRequestImageDto,
   DeleteSpImageDto,
+  DisplayCommentsDto,
   EditCmProfileDto,
   EditEpProfileDto,
   EditSpProfileDto,
@@ -60,6 +61,8 @@ import * as VouchersActions from './vouchers/vouchers.actions';
 import * as VouchersSelectors from './vouchers/vouchers.selectors';
 import * as PostActions from './activity-posts/activity-posts.actions';
 import * as PostSelectors from './activity-posts/activity-posts.selectors';
+import * as CommentSelectors from './comments/comments.selectors';
+import * as CommentActions from './comments/comments.actions';
 
 @Injectable()
 export class UserFacade {
@@ -658,9 +661,6 @@ export class UserFacade {
       unlike: (dto: UnlikeActivityPostDto) => {
         this.store.dispatch(PostActions.unlike({ dto }));
       },
-      comment: (dto: CreateCommentDto) => {
-        this.store.dispatch(PostActions.comment({ dto }));
-      },
     },
     selectors: {
       posts$: this.store.pipe(select(PostSelectors.getPosts)).pipe(
@@ -683,6 +683,42 @@ export class UserFacade {
       loadPosts: {
         success: this.actions$.pipe(ofType(PostActions.loadPostsSuccess)),
         error: this.actions$.pipe(ofType(PostActions.loadPostsError)),
+      }
+    }
+  }
+
+  readonly comments = {
+    dispatchers: {
+      loadComments: () => {
+        this.store.pipe(select(CommentSelectors.getComments), take(1)).subscribe((state) => {
+          this.store.dispatch(CommentActions.loadComments({ page: state.pagesLoaded + 1}));
+        });
+      },
+      createComment: (dto: CreateCommentDto) => {
+        this.store.dispatch(CommentActions.createComment({ dto }));
+      },
+    },
+    selectors: {
+      comments$: this.store.pipe(select(CommentSelectors.getComments)).pipe(
+        tap(({ loaded }) => {
+          if (!loaded) {
+            this.store.dispatch(CommentActions.loadComments({ page: 1 }));
+          }
+        })
+      ),
+      getComment: (commentId: string) =>
+        this.store.pipe(select(CommentSelectors.getComment(commentId))).pipe(
+          tap(({ loaded }) => {
+            if (!loaded) {
+              this.store.dispatch(CommentActions.loadComments({ page: 1 }));
+            }
+          })
+        ),
+    },
+    actionListeners: {
+      loads: {
+        success: this.actions$.pipe(ofType(CommentActions.loadCommentsSuccess)),
+        error: this.actions$.pipe(ofType(CommentActions.loadCommentsError)),
       }
     }
   }

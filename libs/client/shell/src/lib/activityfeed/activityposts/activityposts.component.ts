@@ -104,21 +104,17 @@ export class PoisComponent extends StatefulComponent<State> implements OnInit {
     return filteredObj.length != 0
   }
 
-  comment(id: string, message: string) {
-    this.user.posts.dispatchers.comment({
-      postId: id,
-      text: message,
-      commentsId: ''
-    })
-  }
-
   trackPost(index: number, post: PostStoreModel) {
     return post.id;
   }
 
-  async openModal() {
+  async openModal(post: PostStoreModel) {
     const modal = await this.modalCtrl.create({
       component: ModalCommentComponent,
+      componentProps: {
+        'post': post,
+        'user': this.user,
+     }
     });
     modal.present();
 

@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 import { ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import {
@@ -17,6 +18,7 @@ import { ModalCommentComponent } from './activityposts/comments/modal-comments.c
   declarations: [PoisComponent, PoiComponent, ModalCommentComponent],
   imports: [
     CommonModule,
+    FormsModule,
     IonicModule,
     ImBlockModule,
     ImFormsModule,

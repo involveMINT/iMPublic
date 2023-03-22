@@ -68,23 +68,15 @@ export abstract class UnlikeActivityPostDto {
   postId!: string;
 }
 
-export abstract class CreateCommentDto {
+export abstract class DisplayCommentsDto {
   /**
-   * Take in postId and text to create comment.
+   * Take in a Post ID and display comments on it
    * 
    * Service Logic: 
-   * hidden => false
-   * DateCreated => now()
-   * ID => UUID
-   * User => Fetched via auth + perform checks.
-   * Insert Comment into the database.
+   * Fetch the userId based on auth token + perform checks
+   * Bring up modal component
    */
   @IsString()
   postId!: string;
-
-  @IsString()
-  text!: string;
-
-  @IsString()
-  commentsId!: string;
 }
+

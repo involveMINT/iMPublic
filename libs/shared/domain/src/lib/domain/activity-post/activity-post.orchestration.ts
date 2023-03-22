@@ -1,7 +1,7 @@
 import { IOperation } from '@orcha/common';
 import { CreateActivityPostDto, 
-         CreateCommentDto,
          DisableActivityPostDto, 
+         DisplayCommentsDto, 
          EnableActivityPostDto, 
          LikeActivityPostDto, 
          UnlikeActivityPostDto, } from './activity-post.dtos';
@@ -17,6 +17,5 @@ export interface IActivityPostOrchestration {
 
   like: IOperation<ActivityPost, LikeActivityPostDto>;
   unlike: IOperation<ActivityPost, UnlikeActivityPostDto>;
-
-  comment: IOperation<ActivityPost, CreateCommentDto>;
+  displayComments: IOperation<ActivityPost, DisplayCommentsDto>;
 }

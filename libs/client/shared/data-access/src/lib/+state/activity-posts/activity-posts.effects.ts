@@ -92,27 +92,6 @@ export class PostEffects {
         )
     );
 
-    /** Effects when unlikePost is dispatched */
-    readonly commentPost$ = createEffect(() => 
-        this.actions$.pipe(
-            ofType(PostsActions.comment),
-            pessimisticUpdate({
-                run: ({ dto }) => 
-                    this.posts.comment(
-                        ActivityPostQuery,
-                        dto
-                    ).pipe(
-                        map((post) => PostsActions.commentSuccess({ post }))
-                    ),
-                onError: (action, { error }) => {
-                    this.status.presentNgRxActionAlert(action, error)
-                    return PostsActions.unlikeError({ error })
-                    }
-            })
-        )
-    );
-
-
     constructor(
         private readonly actions$: Actions,
         private readonly status: StatusService,

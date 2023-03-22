@@ -37,9 +37,4 @@ export class ActivityPostOrchestration implements IServerOrchestration<IActivity
         return this.activityPostService.unlike(query, token, dto);
     }
 
-    @ServerOperation()
-    comment(query: IQuery<ActivityPost>, token: string, dto: CreateCommentDto) {
-        return this.activityPostService.comment(query, token, dto);
-    }
-
 }

@@ -60,14 +60,5 @@ export const PostsReducer = createReducer(
             }
         }
     ),
-    on(
-        PostsActions.commentSuccess,
-        (state, { post }): PostsState => {
-            return {
-                ...state,
-                posts: postsAdapter.upsertOne(post, state.posts)
-            }
-        }
-    ),
 
 )
