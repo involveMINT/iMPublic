@@ -21,8 +21,10 @@ export class CommentEffects {
                     this.comments.list({
                         ...CommentQuery
                     }).pipe(
-                        map((comments) => CommentsActions.loadCommentsSuccess({ comments: comments, page: page}))
-                        ),
+                        map((comments) => {
+                            return CommentsActions.loadCommentsSuccess({ comments: comments, page: page});
+                        })
+                    ),
                 onError: (action, { error }) => {
                     this.status.presentNgRxActionAlert(action, error);
                     return CommentsActions.loadCommentsError({ error });
@@ -42,7 +44,10 @@ export class CommentEffects {
                         CommentQuery,
                         dto
                     ).pipe(
-                        map((comment) => CommentsActions.createCommentSuccess({ comment }))
+                        map((comment) => {
+                            console.log('createCommentSuccess:', comment);
+                            return CommentsActions.createCommentSuccess({ comment });
+                        })
                     ),
                 onError: (action, { error }) => {
                     this.status.presentNgRxActionAlert(action, error)

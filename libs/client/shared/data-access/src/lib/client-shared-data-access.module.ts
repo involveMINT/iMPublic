@@ -78,6 +78,7 @@ import { CommentEffects } from './+state/comments/comments.effects';
     EffectsModule.forFeature([
       CmProfileEffects,
       CreditsEffects,
+      CommentEffects,
       EpProfileEffects,
       MarketEffects,
       OffersEffects,
