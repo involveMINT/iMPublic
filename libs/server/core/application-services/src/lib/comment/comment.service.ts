@@ -4,7 +4,7 @@ import { CommentRepository } from "@involvemint/server/core/domain-services";
 import { IQuery } from '@orcha/common';
 import * as uuid from 'uuid';
 import { CreateCommentDto } from "@involvemint/shared/domain";
-import { HideCommentDto, UnhideCommentDto } from "libs/shared/domain/src/lib/domain/comment";
+import { Comment, HideCommentDto, UnhideCommentDto } from "libs/shared/domain/src/lib/domain/comment";
 
 @Injectable()
 export class CommentService {
@@ -32,12 +32,7 @@ export class CommentService {
 
     async hide(query: IQuery<Comment>, token: string, dto: HideCommentDto) {
         const user = await this.auth.validateUserToken(token ?? '');
-        return this.commentRepo.upsert({
-            id: dto.commentId,
-            // text: "",
-            // activityPost: null,
-            // user: undefined,
-            // dateCreated: "",
+        return this.commentRepo.update(dto.commentId, {
             hidden: true
         },
         query);
@@ -45,12 +40,7 @@ export class CommentService {
 
     async unhide(query: IQuery<Comment>, token: string, dto: UnhideCommentDto) {
         const user = await this.auth.validateUserToken(token ?? '');
-        return this.commentRepo.upsert({
-            id: dto.commentId,
-            // text: "",
-            // activityPost: null,
-            // user: undefined,
-            // dateCreated: "",
+        return this.commentRepo.update(dto.commentId, {
             hidden: false
         },
         query);

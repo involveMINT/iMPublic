@@ -17,5 +17,4 @@ export interface IActivityPostOrchestration {
 
   like: IOperation<ActivityPost, LikeActivityPostDto>;
   unlike: IOperation<ActivityPost, UnlikeActivityPostDto>;
-  displayComments: IOperation<ActivityPost, DisplayCommentsDto>;
 }
