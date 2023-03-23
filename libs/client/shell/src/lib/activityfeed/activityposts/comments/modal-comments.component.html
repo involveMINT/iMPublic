@@ -14,14 +14,30 @@
 <ion-content>
   <ion-list>
     <ion-item *ngFor="let comment of post.comments">
-      <ion-label>{{comment.user.id}}: {{comment.text}}</ion-label>
+      <div class="member-handle">
+        <ng-container *ngIf="profilePic$ | async as url">
+          <div
+            class="im-profile-pic"
+            [style.background-image]="'url(' + url + ')'"
+          ></div>
+        </ng-container>
+        <ion-icon
+          *ngIf="!(profilePic$ | async)"
+          class="im-profile-pic-none"
+          name="person-circle"
+        ></ion-icon>
+        <div>
+          <div class="name">{{ name$ | async }}</div>
+        </div>
+      </div>
+      <ion-label>{{comment.text}}</ion-label>
     </ion-item>
   </ion-list>
 </ion-content>
 
 <ion-footer>
   <ion-toolbar>
-    <ion-input [(ngModel)]="msg" placeholder="Add a comment..."></ion-input>
+    <ion-input [(ngModel)]="msg" placeholder="Add a comment..."(keyup.enter)="comment()" type="text" color="medium"></ion-input>
     <ion-button (click)="comment()">Post</ion-button>
   </ion-toolbar>
 </ion-footer>
