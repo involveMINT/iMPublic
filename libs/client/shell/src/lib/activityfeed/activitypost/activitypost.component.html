@@ -6,7 +6,7 @@
           <ion-icon name="chevron-back" color="primary"></ion-icon>
         </ion-button>
       </ion-buttons>
-      <ion-title>Proof of Impact</ion-title>
+      <ion-title>Activity Post</ion-title>
       <ion-buttons slot="end">
         <ion-button (click)="refresh()">
           <ion-icon slot="icon-only" name="refresh"></ion-icon>
@@ -17,7 +17,7 @@
   </ion-header>
 
   <ion-content>
-    <div class="im-centered" *ngIf="!state.poi && state.loaded">Proof of Impact not found.</div>
+    <div class="im-centered" *ngIf="!state.poi && state.loaded">Activity Post not found.</div>
     <div class="im-cont" *ngIf="state.poi as poi">
       <div class="im-primary-text title" *ngIf="state.status! < PoiStatus.submitted">
         Proof of Impact to Project: {{ poi.enrollment.project.title }}
