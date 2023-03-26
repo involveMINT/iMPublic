@@ -11,7 +11,7 @@
 Note that the fdescribe() function is used to run only this test suite while excluding others.
  */
 import { createComponentFactory, Spectator } from '@ngneat/spectator';
-import { PoisComponent } from './activityposts.component';
+import { ActivityFeedComponent } from './activityposts.component';
 import { RouteService } from '@involvemint/client/shared/routes';
 import { IonicModule } from '@ionic/angular';
 import { CommentService, ImBlockModule, ImStorageUrlPipeModule, UserFacade } from '@involvemint/client/shared/data-access';
@@ -20,11 +20,11 @@ import { of } from 'rxjs';
 
 fdescribe('Activity Posts Component', () => {
   let userFacade: UserFacade;
-  let spectator: Spectator<PoisComponent>;
+  let spectator: Spectator<ActivityFeedComponent>;
 
   const createComponent = createComponentFactory(
     {
-      component: PoisComponent,
+      component: ActivityFeedComponent,
       imports: [IonicModule.forRoot(), ImBlockModule, ImStorageUrlPipeModule],
       mocks: [
         RouteService,
