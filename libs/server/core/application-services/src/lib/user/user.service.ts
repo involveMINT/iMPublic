@@ -73,6 +73,9 @@ export class UserService {
         spApplications: [],
         joyride: true,
         baAdmin: false,
+        activityPosts: [],
+        likes: [],
+        comments: []
       },
       {}
     );
@@ -182,6 +185,9 @@ export class UserService {
         spApplications: [],
         joyride: true,
         baAdmin: false,
+        activityPosts: [],
+        likes: [],
+        comments: []
       },
       { id: true }
     );

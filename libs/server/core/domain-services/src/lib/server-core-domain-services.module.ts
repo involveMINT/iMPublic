@@ -1,9 +1,13 @@
 import { Module, Provider } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { ActivityPostEntity } from './activity-post/activity-post.entity';
+import { ActivityPostRepository } from './activity-post/activity-post.repository';
 import { AddressEntity } from './address/address.entity';
 import { ChangeMakerEntity } from './change-maker/change-maker.entity';
 import { ChangeMakerRepository } from './change-maker/change-maker.repository';
 import { ChangeMakerViewEntity } from './change-maker/change-maker.view';
+import { CommentEntity } from './comment/comment.entity';
+import { CommentRepository } from './comment/comment.repository';
 import { CreditEntity } from './credit/credit.entity';
 import { CreditRepository } from './credit/credit.repository';
 import { EnrollmentDocumentEntity } from './enrollment-document/enrollment-document.entity';
@@ -19,6 +23,8 @@ import { ExchangePartnerRepository } from './exchange-partner/exchange-partner.r
 import { ExchangePartnerViewEntity } from './exchange-partner/exchange-partner.view';
 import { HandleEntity } from './handle/handle.entity';
 import { HandleRepository } from './handle/handle.repository';
+import { LikeEntity } from './like/like.entity';
+import { LikeRepository } from './like/like.repository';
 import { LinkedVoucherOfferEntity } from './linked-voucher-offers/linked-voucher-offers.entity';
 import { LinkedVoucherOfferRepository } from './linked-voucher-offers/linked-voucher-offers.repository';
 import { OfferEntity } from './offer/offer.entity';
@@ -53,9 +59,11 @@ import { VoucherEntity } from './voucher/voucher.entity';
 import { VoucherRepository } from './voucher/voucher.repository';
 
 const entities = TypeOrmModule.forFeature([
+  ActivityPostEntity,
   AddressEntity,
   ChangeMakerEntity,
   ChangeMakerViewEntity,
+  CommentEntity,
   CreditEntity,
   EnrollmentDocumentEntity,
   EnrollmentEntity,
@@ -64,6 +72,7 @@ const entities = TypeOrmModule.forFeature([
   ExchangePartnerEntity,
   ExchangePartnerViewEntity,
   HandleEntity,
+  LikeEntity,
   LinkedVoucherOfferEntity,
   OfferEntity,
   PassportDocumentEntity,
@@ -83,7 +92,9 @@ const entities = TypeOrmModule.forFeature([
 ]);
 
 const repositories: Provider[] = [
+  ActivityPostRepository,
   ChangeMakerRepository,
+  CommentRepository,
   CreditRepository,
   EnrollmentDocumentRepository,
   EnrollmentRepository,
@@ -91,6 +102,7 @@ const repositories: Provider[] = [
   ExchangeAdminRepository,
   ExchangePartnerRepository,
   HandleRepository,
+  LikeRepository,
   LinkedVoucherOfferRepository,
   OfferRepository,
   PassportDocumentRepository,

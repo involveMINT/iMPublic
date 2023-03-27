@@ -93,6 +93,7 @@ import { WalletComponent } from './wallet/wallet.component';
           {
             path: ImRoutes.cm.ROOT,
             canLoad: [CmGuard],
+            // eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
             loadChildren: () => import('@involvemint/client/cm/shell').then((m) => m.ClientCmShellModule),
           },
           {
@@ -117,6 +118,10 @@ import { WalletComponent } from './wallet/wallet.component';
               import('@involvemint/client/admin/shell').then((m) => m.ClientAdminShellModule),
           },
           {
+            path: ImRoutes.activityfeed.ROOT,
+            loadChildren: () => import('./activityfeed/activityfeed.module').then((m) => m.ActivityFeedModule),
+          },
+          {
             path: ImRoutes.projects.ROOT,
             loadChildren: () => import('./projects/projects.module').then((m) => m.ProjectsModule),
           },
@@ -136,6 +141,11 @@ import { WalletComponent } from './wallet/wallet.component';
           {
             path: ImRoutes.chat.ROOT,
             loadChildren: () => import('./chat/chat.module').then((m) => m.ChatModule),
+            canLoad: [AuthGuard],
+          },
+          {
+            path: ImRoutes.comments.ROOT,
+            loadChildren: () => import('./comment/comments.module').then((m) => m.CommentsModule),
             canLoad: [AuthGuard],
           },
           {

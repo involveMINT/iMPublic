@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { RouteService } from '@involvemint/client/shared/routes';
 import {
   ChangePasswordDto,
+  CreateActivityPostDto,
   CreateChangeMakerProfileDto,
   DeleteEpImageDto,
   DeleteOfferImageDto,
@@ -12,17 +13,19 @@ import {
   EditSpProfileDto,
   GetSuperAdminForExchangePartnerDto,
   ImConfig,
+  LikeActivityPostDto,
   SignUpDto,
   SubmitEpApplicationDto,
   SubmitSpApplicationDto,
   TransactionDto,
+  UnlikeActivityPostDto,
   UpdateOfferDto,
   UpdateRequestDto,
   WalletTabs,
 } from '@involvemint/shared/domain';
 import { UnArray } from '@involvemint/shared/util';
 import { Actions, ofType } from '@ngrx/effects';
-import { Store } from '@ngrx/store';
+import { select, Store } from '@ngrx/store';
 import { debounceTime, distinctUntilChanged, filter, map, switchMap, take, tap } from 'rxjs/operators';
 import * as CreditsActions from './credits/credits.actions';
 import * as CreditsSelectors from './credits/credits.selectors';
@@ -54,6 +57,8 @@ import * as TransactionsActions from './transactions/transactions.actions';
 import * as TransactionsSelectors from './transactions/transactions.selectors';
 import * as VouchersActions from './vouchers/vouchers.actions';
 import * as VouchersSelectors from './vouchers/vouchers.selectors';
+import * as PostActions from './activity-posts/activity-posts.actions';
+import * as PostSelectors from './activity-posts/activity-posts.selectors';
 
 @Injectable()
 export class UserFacade {
@@ -635,6 +640,48 @@ export class UserFacade {
       ),
     },
   };
+
+  readonly posts = {
+    dispatchers: {
+      loadPosts: () => {
+        this.store.pipe(select(PostSelectors.getPosts), take(1)).subscribe((state) => {
+          this.store.dispatch(PostActions.loadPosts({ page: state.pagesLoaded + 1}));
+        });
+      },
+      create: (dto: CreateActivityPostDto) => {
+        this.store.dispatch(PostActions.createPost({ dto }));
+      },
+      like: (dto: LikeActivityPostDto) => {
+        this.store.dispatch(PostActions.like({ dto }));
+      },
+      unlike: (dto: UnlikeActivityPostDto) => {
+        this.store.dispatch(PostActions.unlike({ dto }));
+      },
+    },
+    selectors: {
+      posts$: this.store.pipe(select(PostSelectors.getPosts)).pipe(
+        tap(({ loaded }) => {
+          if (!loaded) {
+            this.store.dispatch(PostActions.loadPosts({ page: 1 }));
+          }
+        })
+      ),
+      getPost: (postId: string) =>
+        this.store.pipe(select(PostSelectors.getPost(postId))).pipe(
+          tap(({ loaded }) => {
+            if (!loaded) {
+              this.store.dispatch(PostActions.loadPosts({ page: 1 }));
+            }
+          })
+        ),
+    },
+    actionListeners: {
+      loadPosts: {
+        success: this.actions$.pipe(ofType(PostActions.loadPostsSuccess)),
+        error: this.actions$.pipe(ofType(PostActions.loadPostsError)),
+      }
+    }
+  }
 
   constructor(
     private readonly store: Store,
