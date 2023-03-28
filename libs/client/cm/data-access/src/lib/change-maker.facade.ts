@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { ProjectFeedStoreModel, UserFacade } from '@involvemint/client/shared/data-access';
+import { ProjectFeedStoreModel } from '@involvemint/client/shared/data-access';
 import { LatLng } from '@involvemint/client/shared/util';
 import {
   LinkPassportDocumentDto,
@@ -134,8 +134,6 @@ export class ChangeMakerFacade {
       },
       submit: (poi: PoiCmStoreModel, files: File[], answers: QuestionAnswersDto[]) => {
         this.store.dispatch(PoiActions.submitPoi({ poi, files, answers }));
-        this.user.posts.dispatchers.create({poiId: poi.id})
-        this.user.posts.dispatchers.loadPosts();
       },
     },
     selectors: {
@@ -166,6 +164,5 @@ export class ChangeMakerFacade {
   constructor(
     private readonly store: Store, 
     private readonly actions$: Actions,
-    private readonly user: UserFacade
   ) {}
 }
