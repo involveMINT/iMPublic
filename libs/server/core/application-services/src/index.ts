@@ -23,3 +23,4 @@ export * from './lib/transaction-creator/transaction-creator.service';
 export { TransactionService } from './lib/transaction/transaction.service';
 export * from './lib/user/user.service';
 export * from './lib/voucher/voucher.service';
+export * from './lib/notification-digest/notification-digest.service'
