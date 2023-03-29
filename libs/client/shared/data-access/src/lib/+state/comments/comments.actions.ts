@@ -40,3 +40,11 @@ export const createCommentError = createAction(
     '[Comments] Comments Create Error',
     props<{ error: OrchaOperationError }>()
 );
+
+/**
+ * Action to load comment modal with comments from a post
+ */
+export const initComments = createAction(
+    '[Comments] Comments Init',
+    props<{ comments: CommentStoreModel[] }>()
+);

@@ -2,7 +2,7 @@ import { createEntityAdapter, EntityState } from '@ngrx/entity';
 import { IParser } from '@orcha/common';
 import { createReducer, on } from '@ngrx/store';
 import * as CommentsActions from './comments.actions';
-import { CommentQuery } from 'libs/shared/domain/src/lib/domain/comment';
+import { Comment, CommentQuery } from '@involvemint/shared/domain';
 
 
 export const COMMENTS_KEY = 'Comments';
@@ -39,6 +39,15 @@ export const CommentsReducer = createReducer(
             return {
                 ...state,
                 comments: commentsAdapter.upsertOne(comment, state.comments)
+            }
+        }
+    ),
+    on( // reducer to add initial set of comments from post
+        CommentsActions.initComments,
+        (state, { comments }): CommentsState => {
+            return {
+                ...state,
+                comments: commentsAdapter.upsertMany(comments, state.comments),
             }
         }
     ),

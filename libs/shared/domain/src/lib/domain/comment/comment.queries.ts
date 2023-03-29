@@ -6,9 +6,9 @@ export const CommentQuery = createQuery<Comment>()({
   text: true,
   dateCreated: true,
   hidden: true,
-  activityPost: {
-    id: true
-  },
+  // activityPost: {
+  //   id: true
+  // },
   user: {
     id: true,
     /** Probably want to fetch user handle */

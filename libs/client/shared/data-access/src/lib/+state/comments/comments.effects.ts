@@ -37,7 +37,7 @@ export class CommentEffects {
     readonly createComment$ = createEffect(() => 
         this.actions$.pipe(
             ofType(CommentsActions.createComment),
-            delayWhen(() => from(this.status.showLoader('Creating...'))),
+            delayWhen(() => from(this.status.showLoader('Adding...'))),
             pessimisticUpdate({
                 run: ({ dto }) => 
                     this.comments.create(

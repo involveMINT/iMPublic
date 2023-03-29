@@ -1,28 +1,46 @@
-import { Component, Input, OnInit } from '@angular/core';
-import { PostStoreModel, UserFacade } from '@involvemint/client/shared/data-access';
-import { map } from 'rxjs/operators';
+import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
+import { postsAdapter, PostStoreModel, UserFacade } from '@involvemint/client/shared/data-access';
+import { map, tap } from 'rxjs/operators';
 
 import { ModalController } from '@ionic/angular';
 import { Observable } from 'rxjs';
+import { CommentStoreModel } from 'libs/client/shared/data-access/src/lib/+state/comments/comments.reducer';
+import { StatefulComponent } from '@involvemint/client/shared/util';
+
+interface State {
+  comments: Array<CommentStoreModel>;
+  loaded: boolean;
+}
 
 @Component({
   selector: 'app-modal-comments',
   templateUrl: 'modal-comments.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ModalCommentComponent implements OnInit {
+export class ModalCommentComponent extends StatefulComponent<State> implements OnInit {
   @Input() post!: PostStoreModel;
   msg!: string;
-  user!: UserFacade;
   profilePic$!: Observable<string | null>;
   name$!: Observable<string>;
 constructor(
   private modalCtrl: ModalController,
-  private userFacade: UserFacade
+  private user: UserFacade
 ) {
-  this.user = userFacade;
+  super({ comments: [], loaded: true });
 }
 
 ngOnInit() {
+
+  this.user.comments.dispatchers.initComments(this.post.comments);
+  this.effect(() => 
+    this.user.comments.selectors.comments$.pipe(
+      tap(({ comments }) => 
+        this.updateState({
+          comments: comments
+        }))
+    )
+  );
+
   this.profilePic$ = this.user.session.selectors.changeMaker$.pipe(
     map(changeMaker => changeMaker?.profilePicFilePath || null)
   );
