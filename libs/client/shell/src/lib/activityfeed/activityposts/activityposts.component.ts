@@ -9,10 +9,11 @@ import { RouteService } from '@involvemint/client/shared/routes';
 import { StatefulComponent } from '@involvemint/client/shared/util';
 import { calculatePoiStatus, calculatePoiTimeWorked, PoiStatus } from '@involvemint/shared/domain';
 import { parseDate } from '@involvemint/shared/util';
-import { IonButton } from '@ionic/angular';
+import { IonButton, ModalController } from '@ionic/angular';
 import { compareDesc } from 'date-fns';
 import { merge } from 'rxjs';
 import { take, tap } from 'rxjs/operators';
+import { ModalDigestComponent } from './digest/modal-digest.component';
 
 
 interface State {
@@ -37,8 +38,8 @@ export class ActivityFeedComponent extends StatefulComponent<State> implements O
     private readonly route: RouteService,
     private readonly enrollmentsModal: EnrollmentsModalService,
     private readonly user: UserFacade,
-    private readonly commentService: CommentService
-    
+    private readonly commentService: CommentService,
+    private modalDigestCtrl: ModalController,
   ) {
     super({ posts: [], loaded: false });
   }
@@ -106,8 +107,18 @@ export class ActivityFeedComponent extends StatefulComponent<State> implements O
     return this.commentService.goToComments(id);
   }
 
-  trackPost(index: number, post: PostStoreModel) {
+  trackPost(_index: number, post: PostStoreModel) {
     return post.id;
+  }
+
+  async openDigestModal() {
+    const modal = await this.modalDigestCtrl.create({
+      component: ModalDigestComponent
+    });
+
+    modal.present();
+    
+    await modal.onWillDismiss();
   }
 
 }

@@ -6,8 +6,8 @@
       </ion-buttons>
       <ion-title>Activity Feed</ion-title>
       <ion-buttons slot="end">
-        <ion-button (click)="refresh()">
-          <ion-icon slot="icon-only" name="refresh"></ion-icon>
+        <ion-button (click)="openDigestModal()">
+          <ion-icon slot="icon-only" name="notifications" ></ion-icon>
         </ion-button>
       </ion-buttons>
     </ion-toolbar>
@@ -25,7 +25,7 @@
       >
         <div body header class="im-primary-text">{{ post.poi.enrollment.project.title }}</div>
 
-        <!-- Adds Swip-able carousel... still needs images to be sized + desktop version -->
+        <!-- Adds Swipe-able carousel... still needs images to be sized + desktop version -->
         <div body class="activity-post-carousel">
           <ion-row class="ion-justify-content-center">
             <ion-slides pager #slides [options]="{ slidesPerView: true, loop: false }">
@@ -105,7 +105,7 @@
       <ion-infinite-scroll threshold="100px" (ionInfinite)="loadMore($event)">
         <ion-infinite-scroll-content
           loadingSpinner="bubbles"
-          loadingText="Loading more POIs..."
+          loadingText="Loading more posts..."
         ></ion-infinite-scroll-content>
       </ion-infinite-scroll>
     </div>

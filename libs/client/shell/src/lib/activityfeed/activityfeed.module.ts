@@ -10,9 +10,10 @@ import {
 import { ImFormsModule, ImImageModule } from '@involvemint/client/shared/ui';
 import { IonicModule } from '@ionic/angular';
 import { ActivityFeedComponent } from './activityposts/activityposts.component';
+import { ModalDigestComponent } from './activityposts/digest/modal-digest.component';
 
 @NgModule({
-  declarations: [ActivityFeedComponent],
+  declarations: [ActivityFeedComponent, ModalDigestComponent],
   imports: [
     CommonModule,
     IonicModule,
