@@ -25,6 +25,27 @@
       >
         <div body header class="im-primary-text">{{ post.poi.enrollment.project.title }}</div>
 
+        <!-- Adds Swip-able carousel... still needs images to be sized + desktop version -->
+        <div body class="activity-post-carousel">
+          <ion-row class="ion-justify-content-center">
+            <ion-slides pager #slides [options]="{ slidesPerView: true, loop: false }">
+              <ion-slide *ngFor="let image of post.poi.imagesFilePaths">
+                <img [src]="image | imStorageUrl | async" tappable />
+              </ion-slide>
+            </ion-slides>
+          </ion-row>
+          <ion-row class="ion-justify-content-center">
+            <ion-buttons>
+                <ion-button (click)="slides.slidePrev()" *ngIf="post.poi.imagesFilePaths.length > 1">
+                  <ion-icon name="arrow-back-outline"></ion-icon>
+                </ion-button>
+                <ion-button (click)="slides.slideNext()" *ngIf="post.poi.imagesFilePaths.length > 1">
+                  <ion-icon name="arrow-forward-outline"></ion-icon>
+                </ion-button>
+            </ion-buttons>
+          </ion-row>
+        </div>
+
         <div body class="timeline-details">
           <div class="timeline-detail-item">
             <ion-icon name="information-circle"></ion-icon>
