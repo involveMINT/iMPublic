@@ -28,7 +28,7 @@ interface State {
   styleUrls: ['./activityposts.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class PoisComponent extends StatefulComponent<State> implements OnInit {
+export class ActivityFeedComponent extends StatefulComponent<State> implements OnInit {
 
   get PoiStatus() {
     return PoiStatus;

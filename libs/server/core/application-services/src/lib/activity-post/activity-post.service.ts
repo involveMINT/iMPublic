@@ -87,7 +87,7 @@ export class ActivityPostService {
         // make sure user liked the post
         const likeRecords = await this.likeRepo.query(likeQuery, { where: { user: user.id, activityPost: dto.postId } });
         if (likeRecords.length == 0) {
-            throw new Error('User already unliked this activity post');
+            throw new Error('User has not liked this activity post');
         }
 
         // Remove like record from like repo

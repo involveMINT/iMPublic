@@ -16,7 +16,7 @@ export interface PostsState {
 
 export const postsAdapter = createEntityAdapter<PostStoreModel>();
 
-const initialState: PostsState = {
+export const initialState: PostsState = {
     posts: postsAdapter.getInitialState(),
     pagesLoaded: 0,
 }
