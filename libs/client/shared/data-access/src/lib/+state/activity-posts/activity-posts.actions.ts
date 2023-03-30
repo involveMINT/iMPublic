@@ -22,6 +22,31 @@ export const UNLIKE_POST = '[Activity Posts] unlike Activity Post';
 export const UNLIKE_POST_SUCCESS = '[Activity Posts] unlike Activity Post Success';
 export const UNLIKE_POST_ERROR = '[Activity Posts] unlike Activity Post Error';
 
+export const LOAD_DIGEST = "[Notification Digest] load digest"
+export const LOAD_DIGEST_SUCCESS = "[Notification Digest] load digest success"
+export const LOAD_DIGEST_ERROR = "[Notification Digest] load digest error"
+
+/**
+ * Actions for loading digest
+ */
+
+export const loadDigest = createAction(
+    LOAD_DIGEST,
+    props<{ page: number }>()
+);
+
+export const loadDigestSuccess = createAction(
+    LOAD_DIGEST_SUCCESS,
+    props<{ posts: PostStoreModel[]; page: number }>()
+);
+
+export const loadDigestError = createAction(
+    LOAD_DIGEST_ERROR,
+    props<{ error: OrchaOperationError }>()
+);
+
+
+
 /**
  * Actions for loading activity post
  */

@@ -25,6 +25,15 @@ export const initialState: PostsState = {
 export const PostsReducer = createReducer(
     initialState,
     on(
+        PostsActions.loadDigestSuccess,
+        (state, { posts, page }): PostsState => {
+            return {
+                posts: postsAdapter.upsertMany(posts, state.posts),
+                pagesLoaded: page,
+            }
+        }
+    ),
+    on(
         PostsActions.loadPostsSuccess,
         (state, { posts, page }): PostsState => {
             return {

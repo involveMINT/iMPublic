@@ -21,6 +21,7 @@ export const ActivityPostQuery = createQuery<ActivityPost>()({
     user: {
       id: true
     },
+    dateCreated: true,
     hidden: true
   },
   likes: {
@@ -28,5 +29,6 @@ export const ActivityPostQuery = createQuery<ActivityPost>()({
     user: {
       id: true
     },
+    dateCreated: true
   }
 });

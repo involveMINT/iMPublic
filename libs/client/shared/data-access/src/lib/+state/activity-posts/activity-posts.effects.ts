@@ -11,6 +11,26 @@ import { ActivityPostOrchestration } from '../../orchestrations/activity-post.or
 @Injectable()
 export class PostEffects {
 
+    /** Effect when loadDigest is dispatched */
+    readonly loadDigest$ = createEffect(() => 
+        this.actions$.pipe(
+            ofType(PostsActions.loadDigest),
+            fetch({
+                run: ({ page }) =>
+                    this.posts.list({
+                        ...ActivityPostQuery
+                    }).pipe(
+                        map((posts) => PostsActions.loadDigestSuccess({ posts: posts, page: page}))
+                        ),
+                onError: (action, { error }) => {
+                    this.status.presentNgRxActionAlert(action, error);
+                    return PostsActions.loadDigestError({ error });
+                }
+            })
+        )
+    );
+
+
     /** Effect when loadPosts is dispatched */
     readonly loadPosts$ = createEffect(() => 
         this.actions$.pipe(
