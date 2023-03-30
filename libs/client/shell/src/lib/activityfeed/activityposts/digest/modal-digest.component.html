@@ -15,51 +15,44 @@
   
 
   <ion-content>
-    <div class="im-cont" *ngIf="state.loaded">
+
+    <div class="im-cont" *ngIf="state.loaded" >
+
       <div class="im-centered" *ngIf="state.posts.length < 1 && state.loaded">
-        <div [style.display]="'grid'" [style.gap]="'0.1rem'">No recent activity</div>
+        <div [style.display]="'grid'" [style.gap]="'0.1rem'">No Recent Notifications</div>
       </div>
+
+        <im-block
+            *ngFor="let post of filter(state.posts)"
+            imageSlot="left"
+            [images]="selectPostImage(post.poi.imagesFilePaths)"
+            (click)="openPost(post)"
+        >
+
+            <div header class="im-primary-text notification-item">Notification Updates</div>
+            <div body class="timeline-details">
+                <div class="timeline-detail-item">
+                <div *ngIf="filterOnDate(post.likes).length > 0">
+                    There is/are {{filterOnDate(post.likes).length}} new like(s)
+                </div>
+                <div *ngIf="filterOnDate(post.likes).length == 0">
+                    No new likes
+                </div>
+                </div>
+                <div class="timeline-detail-item">
+                <div *ngIf="filterOnDate(post.comments).length > 0">
+                    There is/are {{filterOnDate(post.comments).length}} new comment(s)
+                </div>
+                <div *ngIf="filterOnDate(post.comments).length == 0">
+                    No new comments
+                </div>
+                </div>
+            </div>
+
+        </im-block>
+
     </div>
 
-    <ion-list>
-        <ion-item *ngFor="let post of filter(state.posts)">
-            <div class="im-centered">
-              <im-block
-                imageSlot="left"
-                [images]="post.poi.imagesFilePaths"
-              >
-                <div header class="im-primary-text notification-item">Notification Updates</div>
-                <div body class="timeline-details">
-                  <div class="timeline-detail-item">
-                    <div *ngIf="filterOnDate(post.likes).length > 0">
-                      There is/are {{filterOnDate(post.likes).length}} new like(s)
-                    </div>
-                    <div *ngIf="filterOnDate(post.likes).length == 0">
-                      No new likes
-                    </div>
-                  </div>
-                  <div class="timeline-detail-item">
-                    <div *ngIf="filterOnDate(post.comments).length > 0">
-                      There is/are {{filterOnDate(post.comments).length}} new comment(s)
-                    </div>
-                    <div *ngIf="filterOnDate(post.comments).length == 0">
-                      No new comments
-                    </div>
-                  </div>
-                </div>
-
-              </im-block>
-            </div>
-        </ion-item>
-    </ion-list>
   </ion-content>
-
-  <!-- 
-  <ion-footer>
-    <ion-toolbar>
-      <ion-input [(ngModel)]="msg" placeholder="Add a comment..."(keyup.enter)="comment()" type="text" color="medium"></ion-input>
-      <ion-button (click)="comment()">Post</ion-button>
-    </ion-toolbar>
-  </ion-footer> -->
 
 </ng-container>

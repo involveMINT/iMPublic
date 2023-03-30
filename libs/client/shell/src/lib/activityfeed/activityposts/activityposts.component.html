@@ -21,6 +21,7 @@
       </div>
 
       <im-block
+        id="{{post.id}}"
         *ngFor="let post of state.posts; trackBy: trackPost"
       >
         <div body header class="im-primary-text">{{ post.poi.enrollment.project.title }}</div>

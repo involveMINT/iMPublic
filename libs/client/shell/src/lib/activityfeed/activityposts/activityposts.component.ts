@@ -118,7 +118,12 @@ export class ActivityFeedComponent extends StatefulComponent<State> implements O
 
     modal.present();
     
-    await modal.onWillDismiss();
+    const { data } = await modal.onWillDismiss();
+    if (data) {
+      const el = document.getElementById(data);
+      el?.scrollIntoView({ behavior: 'smooth'});
+    }
+
   }
 
 }

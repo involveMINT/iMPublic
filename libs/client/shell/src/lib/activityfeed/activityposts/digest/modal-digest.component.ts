@@ -12,12 +12,16 @@ interface State {
     loaded: boolean;
 }
 
+const imagePlaceholder 
+        = "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d1/Image_not_available.png/640px-Image_not_available.png";
+
 @Component({
     selector: 'app-modal-digest',
     templateUrl: './modal-digest.component.html',
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ModalDigestComponent extends StatefulComponent<State> implements OnInit {
+
 
     constructor(
         private readonly modalCtrl: ModalController,
@@ -64,6 +68,22 @@ export class ModalDigestComponent extends StatefulComponent<State> implements On
         return obj.filter((p: any) => { 
             return this.filterOnDate(p.likes).length > 0 || this.filterOnDate(p.comments).length > 0
         });
+    }
+
+    selectPostImage(imageFilePaths: string[]) {
+        if (imageFilePaths.length === 0) {
+            return [imagePlaceholder];
+        }
+        return imageFilePaths;
+    }
+
+    openPost(post: PostStoreModel) {
+        /**
+         * 1. Return the post id that was clicked
+         * 2. Make a call to NgRx such that the state is updated to have the post
+         * 3. ActivtyPosts module needs to be able to find image in state then scroll to it for user (or place at top)
+         */
+        return this.modalCtrl.dismiss(post.id, 'close');
     }
 
     close() {
