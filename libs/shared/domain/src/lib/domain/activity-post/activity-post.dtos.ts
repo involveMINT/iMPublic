@@ -1,4 +1,23 @@
-import { IsString } from 'class-validator';
+import { IsBoolean, IsString } from 'class-validator';
+
+
+export abstract class RecentActivityPostDto {
+  /**
+   * Take in POI to create Post.
+   * 
+   * Service Logic:
+   * Enabled => True
+   * DateCreated => now()
+   * ID => UUID
+   * Comments => None yet.
+   * LikesCount => 0.
+   * Likes => None yet. 
+   * User => Fetched via auth + perform checks
+   * Insert Post into the database.
+   */
+  @IsBoolean()
+  recent?: boolean;
+}
 
 export abstract class CreateActivityPostDto {
   /**

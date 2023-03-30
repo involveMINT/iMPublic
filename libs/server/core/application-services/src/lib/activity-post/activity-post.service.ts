@@ -1,9 +1,10 @@
 import { Injectable } from "@nestjs/common";
 import { ActivityPostRepository, LikeRepository } from "@involvemint/server/core/domain-services";
-import { ActivityPost, ActivityPostQuery, CreateActivityPostDto, DisableActivityPostDto, EnableActivityPostDto, LikeActivityPostDto, likeQuery, UnlikeActivityPostDto } from "@involvemint/shared/domain";
+import { ActivityPost, ActivityPostQuery, CreateActivityPostDto, DisableActivityPostDto, EnableActivityPostDto, LikeActivityPostDto, likeQuery, RecentActivityPostDto, UnlikeActivityPostDto } from "@involvemint/shared/domain";
 import { IQuery } from "@orcha/common";
 import { AuthService } from '../auth/auth.service';
 import * as uuid from 'uuid';
+import { MoreThan } from 'typeorm';
 
 @Injectable()
 export class ActivityPostService {
@@ -13,7 +14,17 @@ export class ActivityPostService {
         private readonly likeRepo: LikeRepository
     ) {}
 
-    async list(query: IQuery<ActivityPost[]>, token: string) {
+    async list(query: IQuery<ActivityPost[]>, token: string, dto: RecentActivityPostDto) {
+        const user = await this.auth.validateUserToken(token ?? '');
+        if (dto.recent) {
+            // get the recent posts for this user.  Recent = min(7 days, lastLoggedIn)
+            const days = 1; // Past days you want to get
+            const currDate = new Date();
+            const lastDays = new Date(currDate.getTime() - (days * 24 * 60 * 60 * 1000));
+            console.log(lastDays.toISOString);
+            
+            return this.activityPostRepo.query(query, {where: { dateCreated: MoreThan(lastDays.toLocaleDateString()), user: user.id }})
+        }
         return this.activityPostRepo.findAll(query);
     }
 

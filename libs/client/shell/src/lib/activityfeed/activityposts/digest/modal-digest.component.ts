@@ -5,7 +5,7 @@ import { ModalController } from "@ionic/angular";
 import { compareDesc } from 'date-fns';
 import { tap } from 'rxjs/operators';
 import { parseDate } from '@involvemint/shared/util';
-import { calculatePoiStatus, calculatePoiTimeWorked, Like, PoiStatus, Comment } from '@involvemint/shared/domain';
+import { calculatePoiStatus, calculatePoiTimeWorked, Like, PoiStatus, Comment, ActivityPost } from '@involvemint/shared/domain';
 
 interface State {
     posts: Array<PostStoreModel & { status: PoiStatus; timeWorked: string; }>;

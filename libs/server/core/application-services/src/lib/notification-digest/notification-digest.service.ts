@@ -25,7 +25,7 @@ export class NotificationDigestService {
     //   return recentLikes;
     // }
 
-    async likeNotificationUpdate(query: IQuery<ActivityPost>, token: string) {
+    async notificationUpdate(query: IQuery<ActivityPost>, token: string) {
         const user = await this.auth.validateUserToken(token ?? '');
 
         // get the recent posts for this user.  Recent = min(7 days, lastLoggedIn)
@@ -34,7 +34,6 @@ export class NotificationDigestService {
         const lastDays = new Date(currDate.getTime() - (days * 24 * 60 * 60 * 1000));
         
         return this.activityPostRepo.query(query, {where: { dateCreated: MoreThan(lastDays.getTime()), user: user.id }})
-
     }
 
 }

@@ -1,5 +1,6 @@
 import { IOperation } from '@orcha/common';
-import { CreateActivityPostDto, 
+import { RecentActivityPostDto,
+         CreateActivityPostDto, 
          DisableActivityPostDto, 
          EnableActivityPostDto, 
          LikeActivityPostDto, 
@@ -7,7 +8,7 @@ import { CreateActivityPostDto,
 import { ActivityPost } from './activity-post.model';
 
 export interface IActivityPostOrchestration {
-  list: IOperation<ActivityPost[]>;
+  list: IOperation<ActivityPost[], RecentActivityPostDto>;
   /** !May be a need to do get for individual Post in the future! */
   create: IOperation<ActivityPost, CreateActivityPostDto>;
 

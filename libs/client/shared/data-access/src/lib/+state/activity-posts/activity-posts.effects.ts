@@ -17,9 +17,9 @@ export class PostEffects {
             ofType(PostsActions.loadDigest),
             fetch({
                 run: ({ page }) =>
-                    this.posts.list({
-                        ...ActivityPostQuery
-                    }).pipe(
+                    this.posts.list(
+                        ActivityPostQuery,
+                       {recent: true}).pipe(
                         map((posts) => PostsActions.loadDigestSuccess({ posts: posts, page: page}))
                         ),
                 onError: (action, { error }) => {
@@ -37,9 +37,9 @@ export class PostEffects {
             ofType(PostsActions.loadPosts),
             fetch({
                 run: ({ page }) =>
-                    this.posts.list({
-                        ...ActivityPostQuery
-                    }).pipe(
+                    this.posts.list(
+                        ActivityPostQuery,
+                        {recent: false}).pipe(
                         map((posts) => PostsActions.loadPostsSuccess({ posts: posts, page: page}))
                         ),
                 onError: (action, { error }) => {
