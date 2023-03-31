@@ -10,12 +10,11 @@ import {
 } from '@involvemint/client/shared/data-access';
 import { ImFormsModule, ImImageModule } from '@involvemint/client/shared/ui';
 import { IonicModule } from '@ionic/angular';
-import { PoiComponent } from './activitypost/activitypost.component';
-import { PoisComponent } from './activityposts/activityposts.component';
+import { ActivityFeedComponent } from './activityposts/activityposts.component';
 import { ModalCommentComponent } from './activityposts/comments/modal-comments.component';
 
 @NgModule({
-  declarations: [PoisComponent, PoiComponent, ModalCommentComponent],
+  declarations: [ActivityFeedComponent, ModalCommentComponent],
   imports: [
     CommonModule,
     FormsModule,
@@ -29,7 +28,7 @@ import { ModalCommentComponent } from './activityposts/comments/modal-comments.c
     RouterModule.forChild([
       {
         path: '',
-        component: PoisComponent,
+        component: ActivityFeedComponent,
       }
     ]),
   ],
