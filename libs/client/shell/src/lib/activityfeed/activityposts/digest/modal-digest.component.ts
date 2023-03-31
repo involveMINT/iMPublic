@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnInit } from "@angular/core";
+import { ChangeDetectionStrategy, Component, Input, OnInit } from "@angular/core";
 import { PostStoreModel, UserFacade } from "@involvemint/client/shared/data-access";
 import { StatefulComponent } from "@involvemint/client/shared/util";
 import { ModalController } from "@ionic/angular";
@@ -21,8 +21,7 @@ const imagePlaceholder
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ModalDigestComponent extends StatefulComponent<State> implements OnInit {
-
-
+    @Input() digestPosts!: Array<PostStoreModel>;
     constructor(
         private readonly modalCtrl: ModalController,
         private readonly user: UserFacade
@@ -31,6 +30,9 @@ export class ModalDigestComponent extends StatefulComponent<State> implements On
     }
 
     ngOnInit(): void {
+
+        console.log(this.digestPosts);
+
         this.effect(() => 
             this.user.posts.selectors.digest_posts$.pipe(
                 tap(({ posts, loaded }) => 

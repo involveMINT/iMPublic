@@ -1,5 +1,6 @@
 import { IOperation } from '@orcha/common';
 import { CreateActivityPostDto, 
+         DigestActivityPostDto, 
          DisableActivityPostDto, 
          EnableActivityPostDto, 
          LikeActivityPostDto, 
@@ -16,4 +17,6 @@ export interface IActivityPostOrchestration {
 
   like: IOperation<ActivityPost, LikeActivityPostDto>;
   unlike: IOperation<ActivityPost, UnlikeActivityPostDto>;
+
+  digest: IOperation<ActivityPost[], DigestActivityPostDto>;
 }

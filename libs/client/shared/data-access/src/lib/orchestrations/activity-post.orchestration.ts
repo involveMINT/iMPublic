@@ -21,4 +21,7 @@ export class ActivityPostOrchestration implements IClientOrchestration<IActivity
 
     @ClientOperation()
     disable!: IClientOrchestration<IActivityPostOrchestration>['disable'];
+
+    @ClientOperation()
+    digest!: IClientOrchestration<IActivityPostOrchestration>['digest'];
 }

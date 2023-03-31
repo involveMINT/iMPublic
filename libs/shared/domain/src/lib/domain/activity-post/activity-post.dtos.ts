@@ -67,3 +67,8 @@ export abstract class UnlikeActivityPostDto {
   @IsString()
   postId!: string;
 }
+
+export abstract class DigestActivityPostDto {
+  @IsString()
+  startDate!: string;
+}

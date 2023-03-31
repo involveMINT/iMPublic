@@ -1,9 +1,10 @@
 import { Injectable } from "@nestjs/common";
 import { ActivityPostRepository, LikeRepository } from "@involvemint/server/core/domain-services";
-import { ActivityPost, ActivityPostQuery, CreateActivityPostDto, DisableActivityPostDto, EnableActivityPostDto, LikeActivityPostDto, likeQuery, UnlikeActivityPostDto } from "@involvemint/shared/domain";
-import { IQuery } from "@orcha/common";
+import { ActivityPost, ActivityPostQuery, CreateActivityPostDto, DigestActivityPostDto, DisableActivityPostDto, EnableActivityPostDto, LikeActivityPostDto, likeQuery, UnlikeActivityPostDto } from "@involvemint/shared/domain";
+import { IPaginate, IParserObject, IQuery } from "@orcha/common";
 import { AuthService } from '../auth/auth.service';
 import * as uuid from 'uuid';
+import { IQueryObject } from "@orcha/common/src/lib/query";
 
 @Injectable()
 export class ActivityPostService {
@@ -97,6 +98,22 @@ export class ActivityPostService {
         // update activity post like counter
         const currentPost = await this.activityPostRepo.findOneOrFail(dto.postId, ActivityPostQuery);
         return this.activityPostRepo.update(dto.postId, {likeCount: currentPost.likeCount - 1}, query);
+    }
+
+    async digest(query: IQuery<ActivityPost[]>, token: string, dto: DigestActivityPostDto) {
+        const user = await this.auth.validateUserToken(token ?? '');
+        const startDate = new Date(dto.startDate);
+        const posts = await this.activityPostRepo.query(query, { where: { user: user.id }});
+        const res: IParserObject<ActivityPost, IQueryObject<ActivityPost> & IPaginate>[] = [];
+        posts.forEach(post => {
+            post.comments = post.comments?.filter(comment => new Date(comment?.dateCreated as any) >= startDate);
+            post.likes = post.likes?.filter(like => new Date(like?.dateCreated as any) >= startDate);
+            if ((post.comments?.length ?? 0 > 0) || (post.likes?.length ?? 0 > 0)) res.push(post);
+        });
+        console.log(posts);
+        console.log(res);
+        console.log(startDate);
+        return res;
     }
 
 }

@@ -4,10 +4,10 @@ import {
   EnrollmentsModalService,
   PoiCmStoreModel,
 } from '@involvemint/client/cm/data-access';
-import { UserFacade, PostStoreModel, CommentService } from '@involvemint/client/shared/data-access';
+import { UserFacade, PostStoreModel, CommentService, ActivityPostOrchestration } from '@involvemint/client/shared/data-access';
 import { RouteService } from '@involvemint/client/shared/routes';
 import { StatefulComponent } from '@involvemint/client/shared/util';
-import { calculatePoiStatus, calculatePoiTimeWorked, PoiStatus } from '@involvemint/shared/domain';
+import { ActivityPostQuery, calculatePoiStatus, calculatePoiTimeWorked, PoiStatus } from '@involvemint/shared/domain';
 import { parseDate } from '@involvemint/shared/util';
 import { IonButton, ModalController } from '@ionic/angular';
 import { compareDesc } from 'date-fns';
@@ -18,6 +18,7 @@ import { ModalDigestComponent } from './digest/modal-digest.component';
 
 interface State {
   posts: Array<PostStoreModel & { status: PoiStatus; timeWorked: string; }>;
+  digestPosts: Array<PostStoreModel>;
   loaded: boolean;
 }
 
@@ -40,8 +41,9 @@ export class ActivityFeedComponent extends StatefulComponent<State> implements O
     private readonly user: UserFacade,
     private readonly commentService: CommentService,
     private modalDigestCtrl: ModalController,
+    private readonly post: ActivityPostOrchestration,
   ) {
-    super({ posts: [], loaded: false });
+    super({ posts: [], digestPosts: [], loaded: false });
   }
 
   ngOnInit(): void {
@@ -64,6 +66,28 @@ export class ActivityFeedComponent extends StatefulComponent<State> implements O
         )
       )
     );
+    
+    /**
+     * Register a new effect which loads the notifications for a user in the background.
+     * Add values to the state.
+     * This tests if it will work at all.
+     */
+    this.user.session.selectors.state$.subscribe(
+      session => {
+        const weekAgo = new Date();
+        weekAgo.setDate(weekAgo.getDate() - 7);
+        const lastLoggedIn = session.dateLastLoggedIn ? new Date(session.dateLastLoggedIn) : weekAgo;
+        const startDate = (lastLoggedIn > weekAgo ? lastLoggedIn : weekAgo).toISOString();
+        this.post.digest(ActivityPostQuery, { startDate }).subscribe(
+          posts => {
+            console.log(posts);
+            this.updateState({
+              digestPosts: posts
+            })
+          }
+        )
+      }
+    )
 
   }
 
@@ -113,7 +137,10 @@ export class ActivityFeedComponent extends StatefulComponent<State> implements O
 
   async openDigestModal() {
     const modal = await this.modalDigestCtrl.create({
-      component: ModalDigestComponent
+      component: ModalDigestComponent,
+      componentProps: {
+        'digestPosts': this.state.digestPosts
+      }
     });
 
     modal.present();
