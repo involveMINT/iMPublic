@@ -1,5 +1,6 @@
 import { ClientOperation, ClientOrchestration, IClientOrchestration } from '@orcha/angular';
-import { ICommentOrchestration, InvolvemintOrchestrations } from '@involvemint/shared/domain';
+import { InvolvemintOrchestrations } from '@involvemint/shared/domain';
+import { ICommentOrchestration } from 'libs/shared/domain/src/lib/domain/comment';
 
 @ClientOrchestration(InvolvemintOrchestrations.comment)
 export class CommentOrchestration implements IClientOrchestration<ICommentOrchestration> {

@@ -4,10 +4,12 @@ import {
   ChangePasswordDto,
   CreateActivityPostDto,
   CreateChangeMakerProfileDto,
+  CreateCommentDto,
   DeleteEpImageDto,
   DeleteOfferImageDto,
   DeleteRequestImageDto,
   DeleteSpImageDto,
+  DisplayCommentsDto,
   EditCmProfileDto,
   EditEpProfileDto,
   EditSpProfileDto,
@@ -59,6 +61,10 @@ import * as VouchersActions from './vouchers/vouchers.actions';
 import * as VouchersSelectors from './vouchers/vouchers.selectors';
 import * as PostActions from './activity-posts/activity-posts.actions';
 import * as PostSelectors from './activity-posts/activity-posts.selectors';
+import * as CommentSelectors from './comments/comments.selectors';
+import * as CommentActions from './comments/comments.actions';
+import { CommentStoreModel } from './comments/comments.reducer';
+import { PostStoreModel } from './activity-posts';
 
 @Injectable()
 export class UserFacade {
@@ -679,6 +685,41 @@ export class UserFacade {
       loadPosts: {
         success: this.actions$.pipe(ofType(PostActions.loadPostsSuccess)),
         error: this.actions$.pipe(ofType(PostActions.loadPostsError)),
+      }
+    }
+  }
+
+  readonly comments = {
+    dispatchers: {
+      loadComments: () => {
+        this.store.pipe(select(CommentSelectors.getComments), take(1)).subscribe((state) => {
+          this.store.dispatch(CommentActions.loadComments({ page: state.pagesLoaded + 1}));
+        });
+      },
+      initComments: (comments: CommentStoreModel[]) => {
+        this.store.pipe(select(CommentSelectors.getComments), take(1)).subscribe((_state) => {
+          this.store.dispatch(CommentActions.initComments({ comments: comments}));
+        })
+      },
+      createComment: (dto: CreateCommentDto) => {
+        this.store.dispatch(CommentActions.createComment({ dto }));
+      },
+    },
+    selectors: {
+      comments$: this.store.select(CommentSelectors.getComments),
+      getComment: (commentId: string) =>
+        this.store.pipe(select(CommentSelectors.getComment(commentId))).pipe(
+          tap(({ loaded }) => {
+            if (!loaded) {
+              this.store.dispatch(CommentActions.loadComments({ page: 1 }));
+            }
+          })
+        ),
+    },
+    actionListeners: {
+      loads: {
+        success: this.actions$.pipe(ofType(CommentActions.loadCommentsSuccess)),
+        error: this.actions$.pipe(ofType(CommentActions.loadCommentsError)),
       }
     }
   }

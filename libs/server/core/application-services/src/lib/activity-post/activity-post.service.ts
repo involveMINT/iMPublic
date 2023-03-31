@@ -98,5 +98,4 @@ export class ActivityPostService {
         const currentPost = await this.activityPostRepo.findOneOrFail(dto.postId, ActivityPostQuery);
         return this.activityPostRepo.update(dto.postId, {likeCount: currentPost.likeCount - 1}, query);
     }
-
 }

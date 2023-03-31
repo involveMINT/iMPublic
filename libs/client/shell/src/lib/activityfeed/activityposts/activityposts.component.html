@@ -88,12 +88,9 @@
                   <p>{{post.likeCount}}</p>
                 </ion-button>
               </div>
-              
-              
-  
-
-              <ion-button (click)="comments(post.id)">
-                <ion-icon name="chatbubble-ellipses-outline"></ion-icon>
+      
+              <ion-button (click)="openModal(post)">
+                <ion-icon name="chatbubble-ellipses-outline" expand="block"></ion-icon>
               </ion-button>
             </ion-buttons>
           </div>

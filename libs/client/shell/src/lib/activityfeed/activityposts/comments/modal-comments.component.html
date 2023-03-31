@@ -1,0 +1,49 @@
+<ng-container *ngIf="state$ | async as state">
+
+  <ion-header>
+    <ion-toolbar>
+      <ion-title>
+        Comments
+      </ion-title>
+      <ion-buttons slot="end">
+        <ion-button (click)="cancel()">
+          <ion-icon slot="icon-only" name="close"></ion-icon>
+        </ion-button>
+      </ion-buttons>
+    </ion-toolbar>
+  </ion-header>
+
+  <ion-content>
+    <ion-list>
+
+        <ion-item *ngFor="let comment of state.comments">
+          <div body class="member-handle">
+            <ng-container *ngIf="profilePic$ | async as url">
+              <div
+                class="im-profile-pic"
+                [style.background-image]="'url(' + url + ')'"
+              ></div>
+            </ng-container>
+            <ion-icon
+              *ngIf="!(profilePic$ | async)"
+              class="im-profile-pic-none"
+              name="person-circle"
+            ></ion-icon>
+            <div>
+              <div class="name">{{ name$ | async }}</div>
+            </div>
+          </div>
+          <ion-label>{{ comment.text }}</ion-label>
+        </ion-item>
+
+    </ion-list>
+  </ion-content>
+
+  <ion-footer>
+    <ion-toolbar>
+      <ion-input [(ngModel)]="msg" placeholder="Add a comment..."(keyup.enter)="comment()" type="text" color="medium"></ion-input>
+      <ion-button (click)="comment()">Post</ion-button>
+    </ion-toolbar>
+  </ion-footer>
+
+</ng-container>
