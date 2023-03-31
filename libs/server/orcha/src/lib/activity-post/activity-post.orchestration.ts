@@ -1,5 +1,5 @@
 import { ServerOrchestration, IServerOrchestration, ServerOperation } from '@orcha/nestjs';
-import { ActivityPost, CreateActivityPostDto, DigestActivityPostDto, DisableActivityPostDto, EnableActivityPostDto, IActivityPostOrchestration, InvolvemintOrchestrations, LikeActivityPostDto, UnlikeActivityPostDto } from '@involvemint/shared/domain';
+import { ActivityPost, CreateActivityPostDto, DigestActivityPostDto, DisableActivityPostDto, EnableActivityPostDto, IActivityPostOrchestration, InvolvemintOrchestrations, LikeActivityPostDto, RecentActivityPostDto, UnlikeActivityPostDto } from '@involvemint/shared/domain';
 import { ActivityPostService } from '@involvemint/server/core/application-services';
 import { IQuery } from '@orcha/common';
 
@@ -8,8 +8,8 @@ export class ActivityPostOrchestration implements IServerOrchestration<IActivity
     constructor(private readonly activityPostService: ActivityPostService) {}
 
     @ServerOperation()
-    list(query: IQuery<ActivityPost[]>, token: string) {
-        return this.activityPostService.list(query, token);      
+    list(query: IQuery<ActivityPost[]>, token: string, dto: RecentActivityPostDto) {
+        return this.activityPostService.list(query, token, dto);      
     }
 
     @ServerOperation()
