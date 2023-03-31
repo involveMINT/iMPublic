@@ -1,5 +1,5 @@
 import { IServerOrchestration, ServerOperation, ServerOrchestration } from "@orcha/nestjs";
-import { Comment, CreateCommentDto, HideCommentDto, ICommentOrchestration, InvolvemintOrchestrations, UnhideCommentDto } from '@involvemint/shared/domain';
+import { Comment, CreateCommentDto, FlagCommentDto, HideCommentDto, ICommentOrchestration, InvolvemintOrchestrations, UnhideCommentDto } from '@involvemint/shared/domain';
 import { CommentService } from "@involvemint/server/core/application-services";
 import { IQuery } from '@orcha/common';
 
@@ -26,6 +26,11 @@ export class CommentOrchestration implements IServerOrchestration<ICommentOrches
     @ServerOperation()
     unhide(query: IQuery<Comment>, token: string, dto: UnhideCommentDto) {
         return this.commentService.unhide(query, token, dto);
+    }
+
+    @ServerOperation()
+    flag(query: IQuery<Comment>, token: string, dto: FlagCommentDto) {
+        return this.commentService.flag(query, token, dto);
     }
 
 }

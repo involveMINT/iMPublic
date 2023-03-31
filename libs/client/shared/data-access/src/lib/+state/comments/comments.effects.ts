@@ -7,6 +7,7 @@ import { map, delayWhen, tap } from 'rxjs/operators';
 import { fetch, pessimisticUpdate } from "@nrwl/angular";
 import { from } from 'rxjs';
 import { CommentOrchestration } from "../../orchestrations/comment.orchestration";
+// eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
 import { CommentQuery } from "libs/shared/domain/src/lib/domain/comment/comment.queries";
 
 @Injectable()
@@ -52,6 +53,27 @@ export class CommentEffects {
                 onError: (action, { error }) => {
                     this.status.presentNgRxActionAlert(action, error)
                     return CommentsActions.createCommentError({ error })
+                }
+            }),
+            tap(() => this.status.dismissLoader())
+        )
+    );
+
+    /** Effects when flagComment is dispatched */
+    readonly flagComment$ = createEffect(() =>
+        this.actions$.pipe(
+            ofType(CommentsActions.flagComment),
+            pessimisticUpdate({
+                run: ({ dto }) =>
+                    this.comments.flag(
+                        CommentQuery,
+                        dto
+                    ).pipe(
+                        map((comment) => CommentsActions.flagCommentSuccess({ comment }))
+                    ),
+                onError: (action, { error }) => {
+                    this.status.presentNgRxActionAlert(action, error);
+                    return CommentsActions.flagCommentError({ error });
                 }
             }),
             tap(() => this.status.dismissLoader())

@@ -25,5 +25,6 @@ export const enum DbTableNames {
     Voucher = 'Voucher',
     ActivityPost = "ActivityPost",
     Like = "Like",
-    Comment = "Comment"
+    Comment = "Comment",
+    Flag = "Flag"
 }

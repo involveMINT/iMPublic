@@ -8,7 +8,7 @@ import { ServeAdminEntity } from '../serve-admin/serve-admin.entity';
 import { SpApplicationEntity } from '../sp-application/sp-application.entity';
 import { ActivityPostEntity } from '../activity-post/activity-post.entity';
 import { LikeEntity } from '../like/like.entity';
-import { CommentEntity } from '../comment/comment.entity';
+import { FlagEntity } from '../flag/flag.entity';
 
 @Entity({ name: DbTableNames.User })
 export class UserEntity implements Required<User> {
@@ -64,6 +64,6 @@ export class UserEntity implements Required<User> {
   @OneToMany(() => LikeEntity, (e) => e.user)
   likes!: LikeEntity[];
 
-  @OneToMany(() => CommentEntity, (e) => e.user)
-  comments!: CommentEntity[];
+  @OneToMany(() => FlagEntity, (e) => e.user)
+  flags!: FlagEntity[];
 }

@@ -21,6 +21,8 @@ import { ExchangeAdminRepository } from './exchange-admin/exchange-admin.reposit
 import { ExchangePartnerEntity } from './exchange-partner/exchange-partner.entity';
 import { ExchangePartnerRepository } from './exchange-partner/exchange-partner.repository';
 import { ExchangePartnerViewEntity } from './exchange-partner/exchange-partner.view';
+import { FlagEntity } from './flag/flag.entity';
+import { FlagRepository } from './flag/flag.repository';
 import { HandleEntity } from './handle/handle.entity';
 import { HandleRepository } from './handle/handle.repository';
 import { LikeEntity } from './like/like.entity';
@@ -71,6 +73,7 @@ const entities = TypeOrmModule.forFeature([
   ExchangeAdminEntity,
   ExchangePartnerEntity,
   ExchangePartnerViewEntity,
+  FlagEntity,
   HandleEntity,
   LikeEntity,
   LinkedVoucherOfferEntity,
@@ -101,6 +104,7 @@ const repositories: Provider[] = [
   EpApplicationRepository,
   ExchangeAdminRepository,
   ExchangePartnerRepository,
+  FlagRepository,
   HandleRepository,
   LikeRepository,
   LinkedVoucherOfferRepository,

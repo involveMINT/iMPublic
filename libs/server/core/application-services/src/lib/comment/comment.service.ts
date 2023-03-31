@@ -1,16 +1,19 @@
 import { Injectable } from "@nestjs/common";
+// eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
 import { AuthService } from '@involvemint/server/core/application-services';
-import { CommentRepository } from "@involvemint/server/core/domain-services";
+import { CommentRepository, FlagRepository } from "@involvemint/server/core/domain-services";
 import { IQuery } from '@orcha/common';
 import * as uuid from 'uuid';
 import { CreateCommentDto } from "@involvemint/shared/domain";
-import { Comment, HideCommentDto, UnhideCommentDto } from "libs/shared/domain/src/lib/domain/comment";
+// eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
+import { Comment, CommentQuery, HideCommentDto, UnhideCommentDto, FlagCommentDto, flagQuery } from "@involvemint/shared/domain";
 
 @Injectable()
 export class CommentService {
     constructor(
         private readonly auth: AuthService,
-        private readonly commentRepo: CommentRepository
+        private readonly commentRepo: CommentRepository,
+        private readonly flagRepo: FlagRepository
     ) {}
 
     async list(query: IQuery<Comment[]>, token: string) {
@@ -25,7 +28,9 @@ export class CommentService {
             activityPost: dto.postId,
             user: user.id,
             dateCreated: new Date(),
-            hidden: false
+            hidden: false,
+            flags: [],
+            flagCount: 0
         },
         query);
     }
@@ -46,4 +51,22 @@ export class CommentService {
         query);
     }
 
+    async flag(query: IQuery<Comment>, token: string, dto: FlagCommentDto) {
+        const user = await this.auth.validateUserToken(token ?? '');
+        const flagRecords = await this.flagRepo.query(flagQuery, { where: { user:user.id } });
+        // if (flagRecords.length > 0) {
+        //     throw new Error('User has already flagged this comment.');
+        // }
+
+        this.flagRepo.upsert({
+            id: uuid.v4(),
+            dateCreated: new Date(),
+            comment: dto.commentId,
+            user: user.id
+        },
+        flagQuery);
+
+        const currentComment = await this.commentRepo.findOneOrFail(dto.commentId, CommentQuery);
+        return this.commentRepo.update(dto.commentId, {flagCount: currentComment.flagCount + 1}, query);
+    }
 }

@@ -33,7 +33,11 @@
               <div class="name">{{ name$ | async }}</div>
             </div>
           </div>
+
           <ion-label>{{ comment.text }}</ion-label>
+          <ion-button class="flag-button" fill="clear" (click)="flag(comment.id)">
+            <ion-icon name="flag-outline" class="flag-icon"></ion-icon>
+          </ion-button>
         </ion-item>
 
     </ion-list>

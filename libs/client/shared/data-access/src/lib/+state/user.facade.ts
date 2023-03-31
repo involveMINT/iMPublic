@@ -13,6 +13,7 @@ import {
   EditCmProfileDto,
   EditEpProfileDto,
   EditSpProfileDto,
+  FlagCommentDto,
   GetSuperAdminForExchangePartnerDto,
   ImConfig,
   LikeActivityPostDto,
@@ -704,6 +705,9 @@ export class UserFacade {
       createComment: (dto: CreateCommentDto) => {
         this.store.dispatch(CommentActions.createComment({ dto }));
       },
+      flagComment: (dto: FlagCommentDto) => {
+        this.store.dispatch(CommentActions.flagComment({ dto }));
+      }
     },
     selectors: {
       comments$: this.store.select(CommentSelectors.getComments),

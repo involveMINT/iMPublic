@@ -1,4 +1,4 @@
-import { CreateCommentDto } from "@involvemint/shared/domain";
+import { CreateCommentDto, FlagCommentDto } from "@involvemint/shared/domain";
 import { createAction, props } from "@ngrx/store";
 import { OrchaOperationError } from "@orcha/common";
 import { CommentStoreModel } from "./comments.reducer";
@@ -47,4 +47,23 @@ export const createCommentError = createAction(
 export const initComments = createAction(
     '[Comments] Comments Init',
     props<{ comments: CommentStoreModel[] }>()
+);
+
+/**
+ * Actions for flagging a comment
+ */
+
+export const flagComment = createAction(
+    '[Comments] Flag Comment',
+    props<{ dto: FlagCommentDto }>()
+);
+
+export const flagCommentSuccess = createAction(
+    '[Comments] Flag Comment Success',
+    props<{ comment: CommentStoreModel }>()
+);
+
+export const flagCommentError = createAction(
+    '[Comments] Flag Comment Error',
+    props<{ error: OrchaOperationError }>()
 );
