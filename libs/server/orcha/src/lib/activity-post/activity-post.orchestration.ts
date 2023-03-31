@@ -1,5 +1,5 @@
 import { ServerOrchestration, IServerOrchestration, ServerOperation } from '@orcha/nestjs';
-import { ActivityPost, CreateActivityPostDto, DisableActivityPostDto, EnableActivityPostDto, IActivityPostOrchestration, InvolvemintOrchestrations, LikeActivityPostDto, UnlikeActivityPostDto } from '@involvemint/shared/domain';
+import { ActivityPost, CreateActivityPostDto, CreateCommentDto, DisableActivityPostDto, EnableActivityPostDto, IActivityPostOrchestration, InvolvemintOrchestrations, LikeActivityPostDto, UnlikeActivityPostDto } from '@involvemint/shared/domain';
 import { ActivityPostService } from '@involvemint/server/core/application-services';
 import { IQuery } from '@orcha/common';
 

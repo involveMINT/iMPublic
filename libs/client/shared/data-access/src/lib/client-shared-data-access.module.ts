@@ -55,6 +55,8 @@ import { PoiOrchestration } from './orchestrations/poi.orchestration';
 import { RequestOrchestration } from './orchestrations/request.orchestration';
 import { ServePartnerOrchestration } from './orchestrations/serve-partner.orchestration';
 import { StorageOrchestration } from './orchestrations/storage.orchestration';
+import { COMMENTS_KEY, CommentsReducer } from './+state/comments/comments.reducer';
+import { CommentEffects } from './+state/comments/comments.effects';
 
 @NgModule({
   imports: [
@@ -72,9 +74,11 @@ import { StorageOrchestration } from './orchestrations/storage.orchestration';
     StoreModule.forFeature(TRANSACTIONS_KEY, TransactionsReducer),
     StoreModule.forFeature(USER_SESSION_KEY, UserSessionReducer),
     StoreModule.forFeature(VOUCHERS_KEY, VoucherReducer),
+    StoreModule.forFeature(COMMENTS_KEY, CommentsReducer),
     EffectsModule.forFeature([
       CmProfileEffects,
       CreditsEffects,
+      CommentEffects,
       EpProfileEffects,
       MarketEffects,
       OffersEffects,
@@ -85,6 +89,7 @@ import { StorageOrchestration } from './orchestrations/storage.orchestration';
       TransactionsEffects,
       UserSessionEffects,
       VouchersEffects,
+      CommentEffects,
     ]),
     OrchaModule.forFeature({
       orchestrations: [

@@ -1,6 +1,6 @@
 import { createAction, props } from '@ngrx/store';
 import { OrchaOperationError } from '@orcha/common';
-import { CreateActivityPostDto, LikeActivityPostDto, UnlikeActivityPostDto } from '@involvemint/shared/domain';
+import { CreateActivityPostDto, LikeActivityPostDto, UnlikeActivityPostDto, DisplayCommentsDto } from '@involvemint/shared/domain';
 import { PostStoreModel } from './activity-posts.reducer';
 
 /**

@@ -72,26 +72,25 @@ export class PostEffects {
         )
     );
 
-    /** Effects when likePost is dispatched */
+    /** Effects when unlikePost is dispatched */
     readonly unlikePost$ = createEffect(() => 
-    this.actions$.pipe(
-        ofType(PostsActions.unlike),
-        pessimisticUpdate({
-            run: ({ dto }) => 
-                this.posts.unlike(
-                    ActivityPostQuery,
-                    dto
-                ).pipe(
-                    map((post) => PostsActions.unlikeSuccess({ post }))
-                ),
-            onError: (action, { error }) => {
-                this.status.presentNgRxActionAlert(action, error)
-                return PostsActions.unlikeError({ error })
-            }
-        })
-    )
-);
-
+        this.actions$.pipe(
+            ofType(PostsActions.unlike),
+            pessimisticUpdate({
+                run: ({ dto }) => 
+                    this.posts.unlike(
+                        ActivityPostQuery,
+                        dto
+                    ).pipe(
+                        map((post) => PostsActions.unlikeSuccess({ post }))
+                    ),
+                onError: (action, { error }) => {
+                    this.status.presentNgRxActionAlert(action, error)
+                    return PostsActions.unlikeError({ error })
+                    }
+            })
+        )
+    );
 
     constructor(
         private readonly actions$: Actions,
