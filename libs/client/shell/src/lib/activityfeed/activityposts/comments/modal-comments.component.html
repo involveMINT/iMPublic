@@ -16,7 +16,7 @@
   <ion-content>
     <ion-list>
 
-        <ion-item *ngFor="let comment of state.comments">
+        <ion-item *ngFor="let comment of state.comments; trackBy: trackComment">
           <div body class="member-handle">
             <ng-container *ngIf="profilePic$ | async as url">
               <div
@@ -33,11 +33,17 @@
               <div class="name">{{ name$ | async }}</div>
             </div>
           </div>
-
           <ion-label>{{ comment.text }}</ion-label>
-          <ion-button class="flag-button" fill="clear" (click)="flag(comment.id)">
-            <ion-icon name="flag-outline" class="flag-icon"></ion-icon>
-          </ion-button>
+          <div *ngIf="!checkUserFlagged(comment)">
+            <ion-button #flagButton class="flag-button" fill="clear" (click)="flag(comment.id, flagButton)">
+              <ion-icon name="flag-outline" class="flag-icon"></ion-icon>
+            </ion-button>
+          </div>
+          <div *ngIf="checkUserFlagged(comment)">
+            <ion-button #unflagButton class="flag-button" fill="clear" (click)="unflag(comment.id, unflagButton)">
+              <ion-icon name="flag" class="flag-icon"></ion-icon>
+            </ion-button>
+          </div>
         </ion-item>
 
     </ion-list>

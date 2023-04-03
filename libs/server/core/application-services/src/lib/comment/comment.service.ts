@@ -4,7 +4,7 @@ import { AuthService } from '@involvemint/server/core/application-services';
 import { CommentRepository, FlagRepository } from "@involvemint/server/core/domain-services";
 import { IQuery } from '@orcha/common';
 import * as uuid from 'uuid';
-import { CreateCommentDto } from "@involvemint/shared/domain";
+import { CreateCommentDto, UnflagCommentDto } from "@involvemint/shared/domain";
 // eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
 import { Comment, CommentQuery, HideCommentDto, UnhideCommentDto, FlagCommentDto, flagQuery } from "@involvemint/shared/domain";
 
@@ -53,10 +53,10 @@ export class CommentService {
 
     async flag(query: IQuery<Comment>, token: string, dto: FlagCommentDto) {
         const user = await this.auth.validateUserToken(token ?? '');
-        const flagRecords = await this.flagRepo.query(flagQuery, { where: { user:user.id } });
-        // if (flagRecords.length > 0) {
-        //     throw new Error('User has already flagged this comment.');
-        // }
+        const flagRecords = await this.flagRepo.query(flagQuery, { where: { user:user.id, comment: dto.commentId } });
+        if (flagRecords.length > 0) {
+            throw new Error('User has already flagged this comment.');
+        }
 
         this.flagRepo.upsert({
             id: uuid.v4(),
@@ -68,5 +68,22 @@ export class CommentService {
 
         const currentComment = await this.commentRepo.findOneOrFail(dto.commentId, CommentQuery);
         return this.commentRepo.update(dto.commentId, {flagCount: currentComment.flagCount + 1}, query);
+    }
+
+    async unflag(query: IQuery<Comment>, token: string, dto: UnflagCommentDto) {
+        const user = await this.auth.validateUserToken(token ?? '');
+        // make sure user flagged the post
+        const flagRecords = await this.flagRepo.query(flagQuery, { where: { user:user.id, comment: dto.commentId } });
+        if (flagRecords.length == 0) {
+            throw new Error('User has not flagged this comment');
+        }
+
+        // Remove flag record from flag repo
+        // We can index into 1st index because we do the check above
+        await this.flagRepo.delete(flagRecords[0].id);
+
+        // update activity post like counter
+        const currentComment = await this.commentRepo.findOneOrFail(dto.commentId, CommentQuery);
+        return this.commentRepo.update(dto.commentId, {flagCount: currentComment.flagCount - 1}, query);;
     }
 }

@@ -21,6 +21,7 @@ import {
   SubmitEpApplicationDto,
   SubmitSpApplicationDto,
   TransactionDto,
+  UnflagCommentDto,
   UnlikeActivityPostDto,
   UpdateOfferDto,
   UpdateRequestDto,
@@ -707,6 +708,9 @@ export class UserFacade {
       },
       flagComment: (dto: FlagCommentDto) => {
         this.store.dispatch(CommentActions.flagComment({ dto }));
+      },
+      unflagComment: (dto: UnflagCommentDto) => {
+        this.store.dispatch(CommentActions.unflagComment({ dto }));
       }
     },
     selectors: {

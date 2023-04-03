@@ -1,4 +1,4 @@
-import { CreateCommentDto, FlagCommentDto } from "@involvemint/shared/domain";
+import { CreateCommentDto, FlagCommentDto, UnflagCommentDto } from "@involvemint/shared/domain";
 import { createAction, props } from "@ngrx/store";
 import { OrchaOperationError } from "@orcha/common";
 import { CommentStoreModel } from "./comments.reducer";
@@ -65,5 +65,20 @@ export const flagCommentSuccess = createAction(
 
 export const flagCommentError = createAction(
     '[Comments] Flag Comment Error',
+    props<{ error: OrchaOperationError }>()
+);
+
+export const unflagComment = createAction(
+    '[Comments] Unflag Comment',
+    props<{ dto: UnflagCommentDto }>()
+);
+
+export const unflagCommentSuccess = createAction(
+    '[Comments] Unflag Comment Success',
+    props<{ comment: CommentStoreModel }>()
+);
+
+export const unflagCommentError = createAction(
+    '[Comments] Unflag Comment Error',
     props<{ error: OrchaOperationError }>()
 );

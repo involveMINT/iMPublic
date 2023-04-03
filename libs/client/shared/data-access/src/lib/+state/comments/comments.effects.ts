@@ -80,6 +80,28 @@ export class CommentEffects {
         )
     );
 
+    /** Effects when unflagComment is dispatched */
+    readonly unflagComment$ = createEffect(() =>
+        this.actions$.pipe(
+            ofType(CommentsActions.unflagComment),
+            pessimisticUpdate({
+                run: ({ dto }) =>
+                    this.comments.unflag(
+                        CommentQuery,
+                        dto
+                    ).pipe(
+                        map((comment) => CommentsActions.unflagCommentSuccess({ comment }))
+                    ),
+                onError: (action, { error }) => {
+                    this.status.presentNgRxActionAlert(action, error);
+                    return CommentsActions.unflagCommentError({ error });
+                }
+            }),
+            tap(() => this.status.dismissLoader())
+        )
+    );
+    
+
     constructor(
         private readonly actions$: Actions,
         private readonly status: StatusService,

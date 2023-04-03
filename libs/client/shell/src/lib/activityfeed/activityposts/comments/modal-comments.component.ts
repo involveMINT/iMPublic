@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core
 import { postsAdapter, PostStoreModel, UserFacade } from '@involvemint/client/shared/data-access';
 import { map, tap } from 'rxjs/operators';
 
-import { ModalController } from '@ionic/angular';
+import { IonButton, ModalController } from '@ionic/angular';
 import { Observable } from 'rxjs';
 import { CommentStoreModel } from 'libs/client/shared/data-access/src/lib/+state/comments/comments.reducer';
 import { StatefulComponent } from '@involvemint/client/shared/util';
@@ -75,10 +75,29 @@ ngOnInit() {
     return this.modalCtrl.dismiss(null, 'cancel');
   }
 
-  flag(id: string) {
+  flag(id: string, button: IonButton) {
+    button.disabled = true;
     this.user.comments.dispatchers.flagComment({
       commentId: id,
     })
+  }
+
+  unflag(id: string, button: IonButton) {
+    button.disabled = true;
+    this.user.comments.dispatchers.unflagComment({
+      commentId: id,
+    })
+  }
+
+  checkUserFlagged(comment: CommentStoreModel) {
+    let userId = "";
+    this.user.session.selectors.email$.subscribe(s => userId = s);
+    const filteredObj = comment.flags.filter(obj => obj.user.id === userId);
+    return filteredObj.length != 0
+  }
+
+  trackComment(index: number, comment: CommentStoreModel) {
+    return comment.id;
   }
 
 }

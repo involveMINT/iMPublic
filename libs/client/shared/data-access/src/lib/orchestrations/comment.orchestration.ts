@@ -17,4 +17,7 @@ export class CommentOrchestration implements IClientOrchestration<ICommentOrches
 
     @ClientOperation()
     flag!: IClientOrchestration<ICommentOrchestration>['flag'];
+
+    @ClientOperation()
+    unflag!: IClientOrchestration<ICommentOrchestration>['unflag'];
 }

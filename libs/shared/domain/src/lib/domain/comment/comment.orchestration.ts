@@ -2,7 +2,8 @@ import { IOperation } from '@orcha/common';
 import { CreateCommentDto, 
         HideCommentDto, 
         UnhideCommentDto,
-        FlagCommentDto } from './comment.dtos';
+        FlagCommentDto, 
+        UnflagCommentDto} from './comment.dtos';
 import { Comment } from './comment.model';
 
 export interface ICommentOrchestration {
@@ -14,4 +15,5 @@ export interface ICommentOrchestration {
   unhide: IOperation<Comment, UnhideCommentDto>;
 
   flag: IOperation<Comment, FlagCommentDto>;
+  unflag: IOperation<Comment, UnflagCommentDto>;
 }
