@@ -6,7 +6,7 @@ import {
 } from '@involvemint/client/cm/data-access';
 import { UserFacade, PostStoreModel, CommentService, ActivityPostOrchestration } from '@involvemint/client/shared/data-access';
 import { RouteService } from '@involvemint/client/shared/routes';
-import { StatefulComponent } from '@involvemint/client/shared/util';
+import { StatefulComponent, StatusService } from '@involvemint/client/shared/util';
 import { ActivityPostQuery, calculatePoiStatus, calculatePoiTimeWorked, PoiStatus } from '@involvemint/shared/domain';
 import { parseDate } from '@involvemint/shared/util';
 import { IonButton, ModalController } from '@ionic/angular';
@@ -42,6 +42,7 @@ export class ActivityFeedComponent extends StatefulComponent<State> implements O
     private readonly commentService: CommentService,
     private modalDigestCtrl: ModalController,
     private readonly post: ActivityPostOrchestration,
+    private readonly status: StatusService,
   ) {
     super({ posts: [], digestPosts: [], loaded: false });
   }
@@ -146,9 +147,25 @@ export class ActivityFeedComponent extends StatefulComponent<State> implements O
     modal.present();
     
     const { data } = await modal.onWillDismiss();
+
     if (data) {
-      const el = document.getElementById(data);
-      el?.scrollIntoView({ behavior: 'smooth'});
+      /**
+       * Update the feed s.t. it contains the selected post information
+       */
+      const index = this.state.posts.findIndex(p => p.id === data);
+      if (index < 0) {
+        this.user.posts.dispatchers.get({ postId: data });
+      }
+      this.status.showLoader('Loading...');
+
+      setTimeout(() => {
+        this.status.dismissLoader();
+        document.getElementById(data)?.scrollIntoView({
+          behavior: "smooth",
+          block: "start",
+        });
+      }, 600);
+
     }
 
   }

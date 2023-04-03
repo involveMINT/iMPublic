@@ -5,12 +5,14 @@ import { RecentActivityPostDto,
          DisableActivityPostDto, 
          EnableActivityPostDto, 
          LikeActivityPostDto, 
-         UnlikeActivityPostDto } from './activity-post.dtos';
+         UnlikeActivityPostDto, 
+         GetActivityPostDto} from './activity-post.dtos';
 import { ActivityPost } from './activity-post.model';
 
 export interface IActivityPostOrchestration {
   list: IOperation<ActivityPost[], RecentActivityPostDto>;
-  /** !May be a need to do get for individual Post in the future! */
+
+  get: IOperation<ActivityPost, GetActivityPostDto>;
   create: IOperation<ActivityPost, CreateActivityPostDto>;
 
   enable: IOperation<ActivityPost, EnableActivityPostDto>;

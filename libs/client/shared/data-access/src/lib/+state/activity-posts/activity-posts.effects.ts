@@ -50,6 +50,26 @@ export class PostEffects {
         )
     );
 
+    /** Effects when getPost is dispatched */
+    readonly getPost$ = createEffect(() =>
+        this.actions$.pipe(
+            ofType(PostsActions.getPost),
+            fetch({
+                run: ({ dto }) =>
+                    this.posts.get(
+                        ActivityPostQuery,
+                        dto
+                    ).pipe(
+                        map((post) => PostsActions.getPostSuccess({ post }))
+                    ),
+                onError: (action, { error }) => {
+                    this.status.presentNgRxActionAlert(action, error);
+                    return PostsActions.getPostError({ error })
+                }
+            })
+        )
+    );
+
     /** Effects when createPost is dispatched */
     readonly createPost$ = createEffect(() => 
         this.actions$.pipe(

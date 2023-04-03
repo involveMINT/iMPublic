@@ -4,7 +4,7 @@ import { IPaginate, IParserObject, IQuery } from "@orcha/common";
 import { AuthService } from '../auth/auth.service';
 import * as uuid from 'uuid';
 import { IQueryObject } from "@orcha/common/src/lib/query";
-import { ActivityPost, ActivityPostQuery, CreateActivityPostDto, DigestActivityPostDto, DisableActivityPostDto, EnableActivityPostDto, LikeActivityPostDto, likeQuery, RecentActivityPostDto, UnlikeActivityPostDto } from "@involvemint/shared/domain";
+import { ActivityPost, ActivityPostQuery, CreateActivityPostDto, DigestActivityPostDto, DisableActivityPostDto, EnableActivityPostDto, GetActivityPostDto, LikeActivityPostDto, likeQuery, RecentActivityPostDto, UnlikeActivityPostDto } from "@involvemint/shared/domain";
 import { MoreThan } from 'typeorm';
 
 @Injectable()
@@ -27,6 +27,11 @@ export class ActivityPostService {
             return this.activityPostRepo.query(query, {where: { dateCreated: MoreThan(lastDays.toLocaleDateString()), user: user.id }})
         }
         return this.activityPostRepo.findAll(query);
+    }
+
+    async get(query: IQuery<ActivityPost>, token: string, dto: GetActivityPostDto) {
+        const _user = await this.auth.validateUserToken(token ?? '');
+        return this.activityPostRepo.findOneOrFail(dto.postId, query);
     }
 
     async create(query: IQuery<ActivityPost>, token: string, dto: CreateActivityPostDto) {

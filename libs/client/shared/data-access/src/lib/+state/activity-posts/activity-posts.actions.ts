@@ -1,6 +1,6 @@
 import { createAction, props } from '@ngrx/store';
 import { OrchaOperationError } from '@orcha/common';
-import { CreateActivityPostDto, LikeActivityPostDto, UnlikeActivityPostDto } from '@involvemint/shared/domain';
+import { CreateActivityPostDto, GetActivityPostDto, LikeActivityPostDto, UnlikeActivityPostDto } from '@involvemint/shared/domain';
 import { PostStoreModel } from './activity-posts.reducer';
 
 /**
@@ -9,6 +9,10 @@ import { PostStoreModel } from './activity-posts.reducer';
 export const LOAD_POSTS =  '[Activity Posts] Activity Posts Load';
 export const LOAD_POSTS_SUCCESS = '[Activity Posts] Activity Posts Load Success';
 export const LOAD_POSTS_ERROR = '[Activity Posts] Activity Posts Load Error';
+
+export const GET_POST = '[Activity Posts] Activity Posts Get';
+export const GET_POST_SUCCESS = '[Activity Posts] Activity Posts Get Success';
+export const GET_POST_ERROR = '[Activity Posts] Activity Posts Get Error';
 
 export const CREATE_POST = '[Activity Posts] Activity Posts Create';
 export const CREATE_POST_SUCCESS = '[Activity Posts] Activity Posts Create Success';
@@ -80,6 +84,21 @@ export const createPostSuccess = createAction(
 
 export const createPostError = createAction(
     CREATE_POST_ERROR,
+    props<{ error: OrchaOperationError }>()
+);
+
+export const getPost = createAction(
+    GET_POST,
+    props<{ dto: GetActivityPostDto }>()
+);
+
+export const getPostSuccess = createAction(
+    GET_POST_SUCCESS,
+    props<{ post: PostStoreModel }>()
+)
+
+export const getPostError = createAction(
+    GET_POST_ERROR,
     props<{ error: OrchaOperationError }>()
 );
 

@@ -19,6 +19,18 @@ export abstract class RecentActivityPostDto {
   recent?: boolean;
 }
 
+export abstract class GetActivityPostDto {
+  /**
+   * Take in a post id to fetch.
+   * 
+   * Service Logic:
+   * Take in the id,
+   * fetch existing post otherwise throw error
+   */
+  @IsString()
+  postId!: string;
+}
+
 export abstract class CreateActivityPostDto {
   /**
    * Take in POI to create Post.

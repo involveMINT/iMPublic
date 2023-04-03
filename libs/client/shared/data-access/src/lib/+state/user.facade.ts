@@ -11,6 +11,7 @@ import {
   EditCmProfileDto,
   EditEpProfileDto,
   EditSpProfileDto,
+  GetActivityPostDto,
   GetSuperAdminForExchangePartnerDto,
   ImConfig,
   LikeActivityPostDto,
@@ -653,6 +654,9 @@ export class UserFacade {
           this.store.dispatch(PostActions.loadPosts({ page: state.pagesLoaded + 1}));
         });
       },
+      get: (dto: GetActivityPostDto) => {
+        this.store.dispatch(PostActions.getPost({ dto }));
+      },
       create: (dto: CreateActivityPostDto) => {
         this.store.dispatch(PostActions.createPost({ dto }));
       },
@@ -679,7 +683,7 @@ export class UserFacade {
         })
       ),
       getPost: (postId: string) =>
-        this.store.pipe(select(PostSelectors.getPost(postId))).pipe(
+        this.store.pipe(select(PostSelectors.selectPost(postId))).pipe(
           tap(({ loaded }) => {
             if (!loaded) {
               this.store.dispatch(PostActions.loadPosts({ page: 1 }));

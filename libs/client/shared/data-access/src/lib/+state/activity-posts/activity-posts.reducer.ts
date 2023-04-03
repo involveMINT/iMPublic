@@ -43,6 +43,15 @@ export const PostsReducer = createReducer(
         }
     ),
     on(
+        PostsActions.getPostSuccess,
+        (state, { post }): PostsState => {
+            return {
+                ...state,
+                posts: postsAdapter.upsertOne(post, state.posts)
+            }
+        }
+    ),
+    on(
         PostsActions.createPostSuccess,
         (state, { post }): PostsState => {
             return {

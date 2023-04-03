@@ -2,14 +2,10 @@ import { ChangeDetectionStrategy, Component, Input, OnInit } from "@angular/core
 import { PostStoreModel, UserFacade } from "@involvemint/client/shared/data-access";
 import { StatefulComponent } from "@involvemint/client/shared/util";
 import { ModalController } from "@ionic/angular";
-import { compareDesc } from 'date-fns';
-import { tap } from 'rxjs/operators';
-import { parseDate } from '@involvemint/shared/util';
-import { calculatePoiStatus, calculatePoiTimeWorked, Like, PoiStatus, Comment, ActivityPost } from '@involvemint/shared/domain';
+import { PoiStatus } from '@involvemint/shared/domain';
 
 interface State {
     posts: Array<PostStoreModel & { status: PoiStatus; timeWorked: string; }>;
-    loaded: boolean;
 }
 
 const imagePlaceholder 
@@ -26,31 +22,11 @@ export class ModalDigestComponent extends StatefulComponent<State> implements On
         private readonly modalCtrl: ModalController,
         private readonly user: UserFacade
     ) { 
-        super({ posts: [], loaded: false })
+        super({ posts: [] })
     }
 
     ngOnInit(): void {
 
-        console.log(this.digestPosts);
-
-        this.effect(() => 
-            this.user.posts.selectors.digest_posts$.pipe(
-                tap(({ posts, loaded }) => 
-                this.updateState({
-                    posts: posts
-                    .sort((a, b) => 
-                        compareDesc(parseDate(a.dateCreated ?? new Date()), parseDate(b.dateCreated ?? new Date()))
-                    )
-                    .map((post) => ({
-                        ...post,
-                        status: calculatePoiStatus(post.poi),
-                        timeWorked: calculatePoiTimeWorked(post.poi)
-                    })),
-                    loaded: loaded
-                })
-                )
-            )
-        );
     }
 
     filterOnDate(obj: any[]) {
