@@ -75,7 +75,8 @@ export class UserService {
         baAdmin: false,
         activityPosts: [],
         likes: [],
-        comments: []
+        comments: [],
+        flags: []
       },
       {}
     );
@@ -187,7 +188,8 @@ export class UserService {
         baAdmin: false,
         activityPosts: [],
         likes: [],
-        comments: []
+        comments: [],
+        flags: []
       },
       { id: true }
     );
