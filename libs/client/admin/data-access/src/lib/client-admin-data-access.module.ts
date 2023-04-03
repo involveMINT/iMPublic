@@ -8,12 +8,14 @@ import { ApplicationsReducer, APPLICATIONS_FEATURE_KEY } from './applications/ap
 import { CreditsEffects } from './credits/credits.effects';
 import { PrivilegesEffects } from './privileges/privileges.effects';
 import { PrivilegesReducer, PRIVILEGES_FEATURE_KEY } from './privileges/privileges.reducer';
+import { PostsReducer, MODERATION_FEATURE_KEY } from './moderation/moderation.reducer';
 
 @NgModule({
   imports: [
     CommonModule,
     StoreModule.forFeature(APPLICATIONS_FEATURE_KEY, ApplicationsReducer),
     StoreModule.forFeature(PRIVILEGES_FEATURE_KEY, PrivilegesReducer),
+    StoreModule.forFeature(MODERATION_FEATURE_KEY, PostsReducer),
     EffectsModule.forFeature([ApplicationsEffects, PrivilegesEffects, CreditsEffects]),
   ],
   providers: [AdminFacade],
