@@ -13,7 +13,7 @@ import { IonButton, ModalController } from '@ionic/angular';
 import { compareDesc } from 'date-fns';
 import { merge } from 'rxjs';
 import { take, tap } from 'rxjs/operators';
-import { ModalDigestComponent } from './digest/modal-digest.component';
+import { OPEN, ModalDigestComponent } from './digest/modal-digest.component';
 
 
 interface State {
@@ -143,14 +143,14 @@ export class ActivityFeedComponent extends StatefulComponent<State> implements O
         'digestPosts': this.state.digestPosts
       }
     });
-
     modal.present();
     
-    const { data } = await modal.onWillDismiss();
+    const { data, role } = await modal.onWillDismiss();
 
-    if (data) {
+    if (role === OPEN) {
       /**
-       * Update the feed s.t. it contains the selected post information
+       * Update the feed s.t. it contains the selected post information,
+       * then scroll post into view.
        */
       const index = this.state.posts.findIndex(p => p.id === data);
       if (index < 0) {

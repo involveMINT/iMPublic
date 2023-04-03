@@ -119,16 +119,13 @@ export class ActivityPostService {
     async digest(query: IQuery<ActivityPost[]>, token: string, dto: DigestActivityPostDto) {
         const user = await this.auth.validateUserToken(token ?? '');
         const startDate = new Date(dto.startDate);
-        const posts = await this.activityPostRepo.query(query, { where: { user: user.id }});
+        const posts = await this.activityPostRepo.query(query, { where: { user: user.id }}); // todo -> way to query for dates here instead??
         const res: IParserObject<ActivityPost, IQueryObject<ActivityPost> & IPaginate>[] = [];
         posts.forEach(post => {
             post.comments = post.comments?.filter(comment => new Date(comment?.dateCreated as any) >= startDate);
             post.likes = post.likes?.filter(like => new Date(like?.dateCreated as any) >= startDate);
             if ((post.comments?.length ?? 0 > 0) || (post.likes?.length ?? 0 > 0)) res.push(post);
         });
-        console.log(posts);
-        console.log(res);
-        console.log(startDate);
         return res;
     }
 

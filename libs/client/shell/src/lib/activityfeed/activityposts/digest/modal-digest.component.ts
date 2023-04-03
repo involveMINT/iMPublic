@@ -8,6 +8,8 @@ interface State {
     posts: Array<PostStoreModel & { status: PoiStatus; timeWorked: string; }>;
 }
 
+export const CLOSED = "close";
+export const OPEN = "open";
 const imagePlaceholder 
         = "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d1/Image_not_available.png/640px-Image_not_available.png";
 
@@ -61,11 +63,11 @@ export class ModalDigestComponent extends StatefulComponent<State> implements On
          * 2. Make a call to NgRx such that the state is updated to have the post
          * 3. ActivtyPosts module needs to be able to find image in state then scroll to it for user (or place at top)
          */
-        return this.modalCtrl.dismiss(post.id, 'close');
+        return this.modalCtrl.dismiss(post.id, OPEN);
     }
 
     close() {
-        return this.modalCtrl.dismiss(null, 'close');
+        return this.modalCtrl.dismiss(null, CLOSED);
     }
 
 }
