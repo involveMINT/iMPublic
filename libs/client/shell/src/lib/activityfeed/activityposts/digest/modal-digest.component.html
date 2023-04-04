@@ -29,23 +29,20 @@
             style="cursor: pointer;"
             (click)="openPost(post)"
         >
-            <div header class="im-primary-text notification-item">Notification Updates</div>
+            <div header class="im-primary-text notification-item">Post Updates</div>
             <div body class="timeline-details">
                 <div class="timeline-detail-item">
-                <div *ngIf="filterOnDate(post.likes).length > 0">
-                    There is/are {{filterOnDate(post.likes).length}} new like(s)
+                  <div *ngIf="post.likes.length > 0">
+                    Your post has <b [style.color]="'var(--im-poi-approved)'">{{post.likes.length}}</b> new {{post.likes.length === 1 ? "like" : "likes"}}
+                    <ion-icon name="heart"></ion-icon>
+                  </div>
                 </div>
-                <div *ngIf="filterOnDate(post.likes).length == 0">
-                    No new likes
-                </div>
-                </div>
+                <br>
                 <div class="timeline-detail-item">
-                <div *ngIf="filterOnDate(post.comments).length > 0">
-                    There is/are {{filterOnDate(post.comments).length}} new comment(s)
-                </div>
-                <div *ngIf="filterOnDate(post.comments).length == 0">
-                    No new comments
-                </div>
+                  <div *ngIf="post.comments.length > 0">
+                    Your post has <b [style.color]="'var(--im-poi-approved)'">{{post.comments.length}}</b> new {{post.comments.length === 1 ? "comment" : "comments"}}
+                    <ion-icon slot="icon-only" name="chatbubble-ellipses" ></ion-icon>
+                  </div>
                 </div>
             </div>
 

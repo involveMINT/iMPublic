@@ -81,7 +81,6 @@ export class ActivityFeedComponent extends StatefulComponent<State> implements O
         const startDate = (lastLoggedIn > weekAgo ? lastLoggedIn : weekAgo).toISOString();
         this.post.digest(ActivityPostQuery, { startDate }).subscribe(
           posts => {
-            console.log(posts);
             this.updateState({
               digestPosts: posts
             })
@@ -162,9 +161,17 @@ export class ActivityFeedComponent extends StatefulComponent<State> implements O
         this.status.dismissLoader();
         document.getElementById(data)?.scrollIntoView({
           behavior: "smooth",
-          block: "start",
         });
-      }, 600);
+      }, 650);
+
+      /**
+       * Remove from notifications
+       */
+      this.updateState({
+        digestPosts: this.state.digestPosts.filter(p => {
+          return p.id != data
+        })
+      });
 
     }
 
