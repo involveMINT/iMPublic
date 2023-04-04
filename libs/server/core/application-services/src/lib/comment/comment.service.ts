@@ -25,7 +25,10 @@ export class CommentService {
             activityPost: dto.postId,
             user: user.id,
             dateCreated: new Date(),
-            hidden: false
+            hidden: false,
+            handleId: dto.handleId,
+            profilePicFilePath: dto.profilePicFilePath,
+            name: dto.name,
         },
         query);
     }

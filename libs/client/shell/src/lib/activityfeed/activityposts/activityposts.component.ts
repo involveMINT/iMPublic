@@ -118,7 +118,7 @@ export class ActivityFeedComponent extends StatefulComponent<State> implements O
     });
     modal.present();
 
-    const { data, role } = await modal.onWillDismiss();
+    await modal.onWillDismiss();
 
   }
 }
