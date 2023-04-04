@@ -47,7 +47,7 @@ export const CommentsReducer = createReducer(
         (state, { comments }): CommentsState => {
             return {
                 ...state,
-                comments: commentsAdapter.upsertMany(comments, state.comments),
+                comments: commentsAdapter.setAll(comments, state.comments),
             }
         }
     ),
