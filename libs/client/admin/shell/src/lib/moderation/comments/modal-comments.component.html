@@ -34,23 +34,23 @@
             </div>
           </div>
           <ion-label>{{ comment.text }}</ion-label>
+          <div class="flag-container">
+            <ion-icon [name]="comment.flagCount > 0 ? 'flag' : 'flag-outline'"></ion-icon>
+          </div>
+          <div class="flag-container">
+            <p>{{comment.flagCount}}</p>
+          </div>
           <div *ngIf="!checkCommentHidden(comment)">
             <ion-button class="hide-button" color="danger" (click)="hide(comment.id)">Hide</ion-button>
           </div>
           <div *ngIf="checkCommentHidden(comment)">
             <ion-button class="unhide-button" color="medium" (click)="unhide(comment.id)">Unhide</ion-button>
           </div>
+
           
         </ion-item>
 
     </ion-list>
   </ion-content>
-
-  <ion-footer>
-    <ion-toolbar>
-      <ion-input [(ngModel)]="msg" placeholder="Add a comment..."(keyup.enter)="comment()" type="text" color="medium"></ion-input>
-      <ion-button (click)="comment()">Post</ion-button>
-    </ion-toolbar>
-  </ion-footer>
 
 </ng-container>

@@ -50,18 +50,6 @@ ngOnInit() {
     map(changeMaker => `${changeMaker?.firstName || ''} ${changeMaker?.lastName || ''}` || '')
   );
 
-  // In Progress - Need to figure out how to show new comments as they are created
-  
-  // // Subscribe to the comments$ observable to get the initial comments list
-  // this.user.comments.selectors.comments$.subscribe(comments => {
-  //   this.post.comments = comments;
-  // });
-
-  // // Subscribe to the comments$ observable to get new comments as they are created
-  // this.user.comments.selectors.comments$.subscribe(newComment => {
-  //   // Push the new comment to the comments list of the post
-  //   this.post.comments.push(newComment);
-  // });
 }
 
   comment() {
