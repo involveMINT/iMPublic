@@ -36,7 +36,7 @@ ngOnInit() {
     this.user.comments.selectors.comments$.pipe(
       tap(({ comments }) => 
         this.updateState({
-          comments: comments
+          comments: comments.filter(comment => !(comment.hidden))
         }))
     )
   );
