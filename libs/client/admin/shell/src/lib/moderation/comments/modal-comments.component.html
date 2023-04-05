@@ -34,6 +34,13 @@
             </div>
           </div>
           <ion-label>{{ comment.text }}</ion-label>
+          <div *ngIf="!checkCommentHidden(comment)">
+            <ion-button class="hide-button" color="danger" (click)="hide(comment.id)">Hide</ion-button>
+          </div>
+          <div *ngIf="checkCommentHidden(comment)">
+            <ion-button class="unhide-button" color="medium" (click)="unhide(comment.id)">Unhide</ion-button>
+          </div>
+          
         </ion-item>
 
     </ion-list>

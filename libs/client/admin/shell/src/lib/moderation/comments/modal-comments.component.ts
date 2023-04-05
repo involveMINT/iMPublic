@@ -6,6 +6,7 @@ import { ModalController } from '@ionic/angular';
 import { Observable } from 'rxjs';
 import { CommentStoreModel } from 'libs/client/shared/data-access/src/lib/+state/comments/comments.reducer';
 import { StatefulComponent } from '@involvemint/client/shared/util';
+import { AdminFacade } from '@involvemint/client/admin/data-access';
 
 interface State {
   comments: Array<CommentStoreModel>;
@@ -24,13 +25,13 @@ export class ModalCommentComponent extends StatefulComponent<State> implements O
   name$!: Observable<string>;
 constructor(
   private modalCtrl: ModalController,
-  private user: UserFacade
+  private user: UserFacade,
+  private admin: AdminFacade
 ) {
   super({ comments: [], loaded: true });
 }
 
 ngOnInit() {
-
   this.user.comments.dispatchers.initComments(this.post.comments);
   this.effect(() => 
     this.user.comments.selectors.comments$.pipe(
@@ -70,6 +71,24 @@ ngOnInit() {
         commentsId: '',
     });
     this.msg = '';
+  }
+
+  hide(id: string) {
+    this.user.comments.dispatchers.hideComment({
+      commentId: id,
+    })
+  }
+
+  unhide(id: string) {
+    this.user.comments.dispatchers.unhideComment({
+      commentId: id,
+    })
+  }
+
+  checkCommentHidden(comment: CommentStoreModel) {
+    let userId = "";
+    this.user.session.selectors.email$.subscribe(s => userId = s);
+    return comment.hidden
   }
 
   getProfilePic(): Observable<string> {

@@ -36,7 +36,7 @@ export class CommentService {
     }
 
     async hide(query: IQuery<Comment>, token: string, dto: HideCommentDto) {
-        const user = await this.auth.validateUserToken(token ?? '');
+        const admin = await this.auth.validateAdminToken(token ?? '');
         return this.commentRepo.update(dto.commentId, {
             hidden: true
         },
@@ -44,7 +44,7 @@ export class CommentService {
     }
 
     async unhide(query: IQuery<Comment>, token: string, dto: UnhideCommentDto) {
-        const user = await this.auth.validateUserToken(token ?? '');
+        const admin = await this.auth.validateAdminToken(token ?? '');
         return this.commentRepo.update(dto.commentId, {
             hidden: false
         },

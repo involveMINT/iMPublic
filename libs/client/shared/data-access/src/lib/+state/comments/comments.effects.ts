@@ -1,6 +1,5 @@
 import { Injectable } from "@angular/core";
 import { StatusService } from "@involvemint/client/shared/util";
-import { ActivityPostQuery } from "@involvemint/shared/domain";
 import { Actions, createEffect, ofType } from "@ngrx/effects";
 import * as CommentsActions from './comments.actions';
 import { map, delayWhen, tap } from 'rxjs/operators';
@@ -100,8 +99,49 @@ export class CommentEffects {
             tap(() => this.status.dismissLoader())
         )
     );
-    
 
+    /** Effects when hideComment is dispatched */
+readonly hideComment$ = createEffect(() =>
+    this.actions$.pipe(
+        ofType(CommentsActions.hideComment),
+        pessimisticUpdate({
+            run: ({ dto }) =>
+                this.comments.hide(
+                    CommentQuery,
+                    dto
+                ).pipe(
+                    map((comment) => CommentsActions.hideCommentSuccess({ comment }))
+                ),
+            onError: (action, { error }) => {
+                this.status.presentNgRxActionAlert(action, error);
+                return CommentsActions.hideCommentError({ error });
+            }
+        }),
+        tap(() => this.status.dismissLoader())
+    )
+);
+
+/** Effects when unhideComment is dispatched */
+readonly unhideComment$ = createEffect(() =>
+    this.actions$.pipe(
+        ofType(CommentsActions.unhideComment),
+        pessimisticUpdate({
+            run: ({ dto }) =>
+                this.comments.unhide(
+                    CommentQuery,
+                    dto
+                ).pipe(
+                    map((comment) => CommentsActions.unhideCommentSuccess({ comment }))
+                ),
+            onError: (action, { error }) => {
+                this.status.presentNgRxActionAlert(action, error);
+                return CommentsActions.unhideCommentError({ error });
+            }
+        }),
+        tap(() => this.status.dismissLoader())
+    )
+);
+    
     constructor(
         private readonly actions$: Actions,
         private readonly status: StatusService,

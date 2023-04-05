@@ -1,7 +1,15 @@
-import { CreateCommentDto, FlagCommentDto, UnflagCommentDto } from "@involvemint/shared/domain";
+import { CreateCommentDto, FlagCommentDto, HideCommentDto, UnflagCommentDto, UnhideCommentDto } from "@involvemint/shared/domain";
 import { createAction, props } from "@ngrx/store";
 import { OrchaOperationError } from "@orcha/common";
 import { CommentStoreModel } from "./comments.reducer";
+
+export const HIDE_COMMENT = '[Comment] Hide Comment';
+export const HIDE_COMMENT_SUCCESS = '[Comment] Hide Comment Success';
+export const HIDE_COMMENT_ERROR = '[Comment] Hide Comment Error';
+
+export const UNHIDE_COMMENT = '[Comment] Unhide Comment';
+export const UNHIDE_COMMENT_SUCCESS = '[Comment] Unhide Comment Success';
+export const UNHIDE_COMMENT_ERROR = '[Comment] Unhide Comment Error';
 
 /**
  * Actions for loading comments
@@ -80,5 +88,43 @@ export const unflagCommentSuccess = createAction(
 
 export const unflagCommentError = createAction(
     '[Comments] Unflag Comment Error',
+    props<{ error: OrchaOperationError }>()
+);
+
+/**
+ * Actions for hiding a comment
+ */
+
+ export const hideComment = createAction(
+    HIDE_COMMENT,
+    props<{ dto: HideCommentDto }>()
+);
+
+export const hideCommentSuccess = createAction(
+    HIDE_COMMENT_SUCCESS,
+    props<{ comment: CommentStoreModel }>()
+);
+
+export const hideCommentError = createAction(
+    HIDE_COMMENT_ERROR,
+    props<{ error: OrchaOperationError }>()
+);
+
+/**
+ * Actions for unhiding a comment
+ */
+
+ export const unhideComment = createAction(
+    UNHIDE_COMMENT,
+    props<{ dto: UnhideCommentDto }>()
+);
+
+export const unhideCommentSuccess = createAction(
+    UNHIDE_COMMENT_SUCCESS,
+    props<{ comment: CommentStoreModel }>()
+);
+
+export const unhideCommentError = createAction(
+    UNHIDE_COMMENT_ERROR,
     props<{ error: OrchaOperationError }>()
 );

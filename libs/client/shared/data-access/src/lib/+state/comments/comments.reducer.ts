@@ -68,5 +68,23 @@ export const CommentsReducer = createReducer(
                 comments: commentsAdapter.upsertOne(comment, state.comments)
             }
         }
-    )
+    ),
+    on(
+        CommentsActions.hideCommentSuccess,
+        (state, { comment }): CommentsState => {
+            return {
+                ...state,
+                comments: commentsAdapter.upsertOne(comment, state.comments)
+            }
+        }
+    ),
+    on(
+        CommentsActions.unhideCommentSuccess,
+        (state, { comment }): CommentsState => {
+            return {
+                ...state,
+                comments: commentsAdapter.upsertOne(comment, state.comments)
+            }
+        }
+    ),
 )

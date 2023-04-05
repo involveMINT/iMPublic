@@ -15,6 +15,7 @@ import {
   EditSpProfileDto,
   FlagCommentDto,
   GetSuperAdminForExchangePartnerDto,
+  HideCommentDto,
   ImConfig,
   LikeActivityPostDto,
   SignUpDto,
@@ -22,6 +23,7 @@ import {
   SubmitSpApplicationDto,
   TransactionDto,
   UnflagCommentDto,
+  UnhideCommentDto,
   UnlikeActivityPostDto,
   UpdateOfferDto,
   UpdateRequestDto,
@@ -66,8 +68,6 @@ import * as PostSelectors from './activity-posts/activity-posts.selectors';
 import * as CommentSelectors from './comments/comments.selectors';
 import * as CommentActions from './comments/comments.actions';
 import { CommentStoreModel } from './comments/comments.reducer';
-import { PostStoreModel } from './activity-posts';
-
 @Injectable()
 export class UserFacade {
   readonly cmProfile = {
@@ -711,7 +711,13 @@ export class UserFacade {
       },
       unflagComment: (dto: UnflagCommentDto) => {
         this.store.dispatch(CommentActions.unflagComment({ dto }));
-      }
+      },
+      hideComment: (dto: HideCommentDto) => {
+        this.store.dispatch(CommentActions.hideComment({ dto }));
+      },
+      unhideComment: (dto: UnhideCommentDto) => {
+        this.store.dispatch(CommentActions.unhideComment({ dto }));
+      },
     },
     selectors: {
       comments$: this.store.select(CommentSelectors.getComments),

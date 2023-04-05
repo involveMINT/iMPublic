@@ -1,57 +1,24 @@
 import { Injectable } from '@angular/core';
 import {
   GrantBaPrivilegesDto,
+  HideCommentDto,
   MintDto,
   ProcessEpApplicationDto,
   ProcessSpApplicationDto,
   RevokeBaPrivilegesDto,
+  UnhideCommentDto,
 } from '@involvemint/shared/domain';
 import { Actions, ofType } from '@ngrx/effects';
 import { select, Store } from '@ngrx/store';
-import { tap, take } from 'rxjs/operators';
+import { take, tap } from 'rxjs/operators';
 import * as ApplicationsActions from './applications/applications.actions';
 import * as ApplicationsSelectors from './applications/applications.selectors';
 import * as CreditsActions from './credits/credits.actions';
 import * as PrivilegesActions from './privileges/privileges.actions';
 import * as PrivilegesSelectors from './privileges/privileges.selectors';
-import * as ModerationActions from './moderation/moderation.actions';
-import * as ModerationSelectors from './moderation/moderation.selectors';
 
 @Injectable()
 export class AdminFacade {
-
-  readonly moderation = {
-    selectors: {
-      posts$: this.store.pipe(select(ModerationSelectors.getPosts)).pipe(
-        tap(({ loaded }) => {
-          if (!loaded) {
-            this.store.dispatch(ModerationActions.loadPosts({ page: 1 }));
-          }
-        })
-      ),
-      getPost: (postId: string) =>
-        this.store.pipe(select(ModerationSelectors.getPost(postId))).pipe(
-          tap(({ loaded }) => {
-            if (!loaded) {
-              this.store.dispatch(ModerationActions.loadPosts({ page: 1 }));
-            }
-          })
-        ),
-    },
-    actionListeners: {
-      loadPosts: {
-        success: this.actions$.pipe(ofType(ModerationActions.loadPostsSuccess)),
-        error: this.actions$.pipe(ofType(ModerationActions.loadPostsError)),
-      }
-    },
-    dispatchers: {
-      loadPosts: () => {
-        this.store.pipe(select(ModerationSelectors.getPosts), take(1)).subscribe((state) => {
-          this.store.dispatch(ModerationActions.loadPosts({ page: state.pagesLoaded + 1}));
-        });
-      },
-    },
-  }
 
   readonly applications = {
     selectors: {
