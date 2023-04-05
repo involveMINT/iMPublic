@@ -96,6 +96,12 @@ ngOnInit() {
     return filteredObj.length != 0
   }
 
+  checkCommentHidden(comment: CommentStoreModel) {
+    let userId = "";
+    this.user.session.selectors.email$.subscribe(s => userId = s);
+    return comment.hidden
+  }
+
   trackComment(index: number, comment: CommentStoreModel) {
     return comment.id;
   }
