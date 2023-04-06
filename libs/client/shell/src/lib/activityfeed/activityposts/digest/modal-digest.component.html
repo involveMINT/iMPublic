@@ -29,7 +29,7 @@
             style="cursor: pointer;"
             (click)="openPost(post)"
         >
-            <div header class="im-primary-text notification-item">Post Updates</div>
+            <div header class="im-primary-text notification-item">Your POI on {{ convertDate(post.dateCreated) }}</div>
             <div body class="timeline-details">
                 <div class="timeline-detail-item">
                   <div *ngIf="post.likes.length > 0">

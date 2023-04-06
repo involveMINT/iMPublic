@@ -3,6 +3,7 @@ import { PostStoreModel, UserFacade } from "@involvemint/client/shared/data-acce
 import { StatefulComponent } from "@involvemint/client/shared/util";
 import { ModalController } from "@ionic/angular";
 import { PoiStatus } from '@involvemint/shared/domain';
+import { PostComponent } from '../post/modal-post.component';
 
 interface State {
     posts: Array<PostStoreModel & { status: PoiStatus; timeWorked: string; }>;
@@ -57,17 +58,30 @@ export class ModalDigestComponent extends StatefulComponent<State> implements On
         return imageFilePaths;
     }
 
-    openPost(post: PostStoreModel) {
+    async openPost(post: PostStoreModel) {
         /**
          * 1. Return the post id that was clicked
          * 2. Make a call to NgRx such that the state is updated to have the post
          * 3. ActivtyPosts module needs to be able to find image in state then scroll to it for user (or place at top)
          */
-        return this.modalCtrl.dismiss(post.id, OPEN);
+        // return this.modalCtrl.dismiss(post.id, OPEN);
+        const modal = await this.modalCtrl.create({
+            component: PostComponent,
+            componentProps: {post: post},
+          });
+        await modal.present();
+        return (await modal.onDidDismiss()).data;
     }
 
     close() {
         return this.modalCtrl.dismiss(null, CLOSED);
+    }
+
+    convertDate(date: Date | string) {
+        if (typeof date == "string") {
+            return new Date(date).toLocaleDateString();
+        }
+        return date.toLocaleDateString();
     }
 
 }

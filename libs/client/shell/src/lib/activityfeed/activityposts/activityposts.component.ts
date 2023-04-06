@@ -144,37 +144,7 @@ export class ActivityFeedComponent extends StatefulComponent<State> implements O
     });
     modal.present();
     
-    const { data, role } = await modal.onWillDismiss();
-
-    if (role === OPEN) {
-      /**
-       * Update the feed s.t. it contains the selected post information,
-       * then scroll post into view.
-       */
-      const index = this.state.posts.findIndex(p => p.id === data);
-      if (index < 0) {
-        this.user.posts.dispatchers.get({ postId: data });
-      }
-      this.status.showLoader('Loading...');
-
-      setTimeout(() => {
-        this.status.dismissLoader();
-        document.getElementById(data)?.scrollIntoView({
-          behavior: "smooth",
-        });
-      }, 650);
-
-      /**
-       * Remove from notifications
-       */
-      this.updateState({
-        digestPosts: this.state.digestPosts.filter(p => {
-          return p.id != data
-        })
-      });
-
-    }
-
+    await modal.onWillDismiss();
   }
 
 }
