@@ -1,31 +1,26 @@
 import { Injectable } from "@nestjs/common";
-import { ActivityPostRepository, LikeRepository } from "@involvemint/server/core/domain-services";
+import { ActivityPostRepository, LikeRepository, UserRepository } from "@involvemint/server/core/domain-services";
 import { IPaginate, IParserObject, IQuery } from "@orcha/common";
 import { AuthService } from '../auth/auth.service';
 import * as uuid from 'uuid';
 import { IQueryObject } from "@orcha/common/src/lib/query";
 import { ActivityPost, ActivityPostQuery, CreateActivityPostDto, DigestActivityPostDto, DisableActivityPostDto, EnableActivityPostDto, GetActivityPostDto, LikeActivityPostDto, likeQuery, RecentActivityPostDto, UnlikeActivityPostDto } from "@involvemint/shared/domain";
 import { MoreThan } from 'typeorm';
+import { Cron, CronExpression } from "@nestjs/schedule"
+import { SMSService } from "../sms/sms.service";
+import { UserQuery } from '@involvemint/shared/domain';
 
 @Injectable()
 export class ActivityPostService {
     constructor(
         private readonly auth: AuthService,
         private readonly activityPostRepo: ActivityPostRepository,
-        private readonly likeRepo: LikeRepository
+        private readonly likeRepo: LikeRepository,
+        private readonly sms: SMSService,
+        private readonly user: UserRepository
     ) {}
 
     async list(query: IQuery<ActivityPost[]>, token: string, dto: RecentActivityPostDto) {
-        const user = await this.auth.validateUserToken(token ?? '');
-        if (dto.recent) {
-            // get the recent posts for this user.  Recent = min(7 days, lastLoggedIn)
-            const days = 1; // Past days you want to get
-            const currDate = new Date();
-            const lastDays = new Date(currDate.getTime() - (days * 24 * 60 * 60 * 1000));
-            console.log(lastDays.toISOString);
-            
-            return this.activityPostRepo.query(query, {where: { dateCreated: MoreThan(lastDays.toLocaleDateString()), user: user.id }})
-        }
         return this.activityPostRepo.findAll(query);
     }
 
@@ -127,6 +122,19 @@ export class ActivityPostService {
             if ((post.comments?.length ?? 0 > 0) || (post.likes?.length ?? 0 > 0)) res.push(post);
         });
         return res;
+    }
+    // @Cron("0 20 * * 2") every tuesday at 8pm
+    @Cron(CronExpression.EVERY_MINUTE)
+    async sendNotificationDigestText(): Promise<void> {
+        const allUsers = await this.user.findAll(UserQuery);
+        allUsers.forEach( async (user) => {
+            if (user.changeMaker?.id) {
+                await this.sms.sendInfoSMS({
+                    message: "Your activity posts are getting attention. Check your recent updates on the digest page.",
+                    phone: user.changeMaker.phone,
+                });
+            }
+        });
     }
 
 }
