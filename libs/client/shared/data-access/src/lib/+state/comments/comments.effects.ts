@@ -75,7 +75,6 @@ export class CommentEffects {
                     return CommentsActions.flagCommentError({ error });
                 }
             }),
-            tap(() => this.status.dismissLoader())
         )
     );
 
@@ -96,7 +95,6 @@ export class CommentEffects {
                     return CommentsActions.unflagCommentError({ error });
                 }
             }),
-            tap(() => this.status.dismissLoader())
         )
     );
 

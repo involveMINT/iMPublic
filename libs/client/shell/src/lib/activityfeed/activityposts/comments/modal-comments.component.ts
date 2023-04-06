@@ -15,7 +15,7 @@ interface State {
 @Component({
   selector: 'app-modal-comments',
   templateUrl: 'modal-comments.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush,
+  // changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ModalCommentComponent extends StatefulComponent<State> implements OnInit {
   @Input() post!: PostStoreModel;
