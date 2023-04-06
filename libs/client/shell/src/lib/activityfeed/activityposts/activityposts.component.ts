@@ -2,22 +2,21 @@ import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import {
   ChangeMakerFacade,
   EnrollmentsModalService,
-  PoiCmStoreModel,
 } from '@involvemint/client/cm/data-access';
 import { UserFacade, PostStoreModel, CommentService, ActivityPostOrchestration } from '@involvemint/client/shared/data-access';
 import { RouteService } from '@involvemint/client/shared/routes';
 import { StatefulComponent, StatusService } from '@involvemint/client/shared/util';
-import { ActivityPostQuery, calculatePoiStatus, calculatePoiTimeWorked, PoiStatus } from '@involvemint/shared/domain';
+import { ActivityPostQuery, PoiStatus } from '@involvemint/shared/domain';
 import { parseDate } from '@involvemint/shared/util';
-import { IonButton, ModalController } from '@ionic/angular';
+import { ModalController } from '@ionic/angular';
 import { compareDesc } from 'date-fns';
 import { merge } from 'rxjs';
 import { take, tap } from 'rxjs/operators';
-import { OPEN, ModalDigestComponent } from './digest/modal-digest.component';
+import { ModalDigestComponent, CLOSED } from './modal-digest/modal-digest.component';
 
 
 interface State {
-  posts: Array<PostStoreModel & { status: PoiStatus; timeWorked: string; }>;
+  posts: Array<PostStoreModel>;
   digestPosts: Array<PostStoreModel>;
   loaded: boolean;
 }
@@ -58,9 +57,7 @@ export class ActivityFeedComponent extends StatefulComponent<State> implements O
                 compareDesc(parseDate(a.dateCreated ?? new Date()), parseDate(b.dateCreated ?? new Date()))
               )
               .map((post) => ({
-                ...post,
-                status: calculatePoiStatus(post.poi),
-                timeWorked: calculatePoiTimeWorked(post.poi)
+                ...post
               })),
             loaded: loaded
           })
@@ -91,44 +88,11 @@ export class ActivityFeedComponent extends StatefulComponent<State> implements O
 
   }
 
-  refresh() {
-    this.cf.poi.dispatchers.refresh();
-  }
-
-  calculatePoiStatus(poi: PoiCmStoreModel) {
-    return calculatePoiStatus(poi);
-  }
-
   loadMore(event: Event) {
     this.cf.poi.dispatchers.loadMore();
     merge(this.cf.poi.actionListeners.loadPois.success, this.cf.poi.actionListeners.loadPois.error)
       .pipe(take(1))
       .subscribe(() => (event.target as any).complete());
-  }
-
-  like(id: string, button: IonButton) {
-    button.disabled = true; // prevent click spam
-    this.user.posts.dispatchers.like({
-      postId: id,
-    })
-  }
-
-  unlike(id: string, button: IonButton) {
-    button.disabled = true; // prevent click spam
-    this.user.posts.dispatchers.unlike({
-      postId: id,
-    })
-  }
-
-  checkUserLiked(post: PostStoreModel) {
-    let userId = "";
-    this.user.session.selectors.email$.subscribe(s => userId = s);
-    const filteredObj = post.likes.filter(obj => obj.user.id === userId);
-    return filteredObj.length != 0
-  }
-
-  comments(id: string) {
-    return this.commentService.goToComments(id);
   }
 
   trackPost(_index: number, post: PostStoreModel) {
@@ -142,9 +106,16 @@ export class ActivityFeedComponent extends StatefulComponent<State> implements O
         'digestPosts': this.state.digestPosts
       }
     });
-    modal.present();
-    
-    await modal.onWillDismiss();
+
+    await modal.present();
+    const { data, role } = await modal.onWillDismiss();
+
+    if (role === CLOSED) {
+      this.updateState({
+        digestPosts: data
+      });
+    }
+
   }
 
 }

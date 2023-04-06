@@ -1,35 +1,24 @@
 import { ChangeDetectionStrategy, Component, Input, OnInit } from "@angular/core";
 import { CommentService, PostStoreModel, UserFacade } from "@involvemint/client/shared/data-access";
-import { StatefulComponent } from "@involvemint/client/shared/util";
 import { PoiStatus, calculatePoiStatus, calculatePoiTimeWorked } from "@involvemint/shared/domain";
-import { IonButton, ModalController } from "@ionic/angular";
+import { IonButton } from "@ionic/angular";
 
 export const CLOSED = "close";
 
 @Component({
     selector: 'app-post',
-    templateUrl: './modal-post.component.html',
-    styleUrls: ['./modal-post.component.scss'],
+    templateUrl: './post.component.html',
+    styleUrls: ['./post.component.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class PostComponent implements OnInit {
-    @Input() post!: PostStoreModel & { status: PoiStatus; timeWorked: string; };
+    @Input() post!: PostStoreModel;
     constructor(
-        private readonly modalCtrl: ModalController,
         private readonly user: UserFacade,
         private readonly commentService: CommentService
-    ) {}  
+    ) { } 
 
-    get PoiStatus() {
-        return PoiStatus;
-    }
-    ngOnInit(): void { 
-        this.post = {
-            ...this.post,
-            status: calculatePoiStatus(this.post.poi),
-            timeWorked: calculatePoiTimeWorked(this.post.poi)
-        }
-    }
+    ngOnInit(): void { }
 
     like(id: string, button: IonButton) {
         button.disabled = true; // prevent click spam
@@ -56,8 +45,17 @@ export class PostComponent implements OnInit {
         return this.commentService.goToComments(id);
     }
 
-    close() {
-        return this.modalCtrl.dismiss(null, CLOSED);
+    calculatePoiStatus(poi: any) {
+        return calculatePoiStatus(poi);
+    }
+
+    calculateTimeWorked(poi: any) {
+        return calculatePoiTimeWorked(poi);
+    }
+
+
+    get PoiStatus() {
+        return PoiStatus;
     }
 
 }

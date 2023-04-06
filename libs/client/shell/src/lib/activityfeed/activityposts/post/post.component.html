@@ -1,0 +1,82 @@
+<im-block
+id="{{post.id}}"
+>
+    <div body header class="im-primary-text">{{ post.poi.enrollment.project.title }}</div>
+
+    <!-- Adds Swipe-able carousel... still needs images to be sized + desktop version -->
+    <div body class="activity-post-carousel">
+        <ion-row class="ion-justify-content-center">
+        <ion-slides pager #slides [options]="{ slidesPerView: true, loop: false }">
+            <ion-slide *ngFor="let image of post.poi.imagesFilePaths">
+            <img [src]="image | imStorageUrl | async" tappable />
+            </ion-slide>
+        </ion-slides>
+        </ion-row>
+        <ion-row class="ion-justify-content-center">
+        <ion-buttons>
+            <ion-button (click)="slides.slidePrev()" *ngIf="post.poi.imagesFilePaths.length > 1">
+                <ion-icon name="arrow-back-outline"></ion-icon>
+            </ion-button>
+            <ion-button (click)="slides.slideNext()" *ngIf="post.poi.imagesFilePaths.length > 1">
+                <ion-icon name="arrow-forward-outline"></ion-icon>
+            </ion-button>
+        </ion-buttons>
+        </ion-row>
+    </div>
+
+    <div body class="timeline-details">
+        <div class="timeline-detail-item">
+        <ion-icon name="information-circle"></ion-icon>
+        <span [ngSwitch]="calculatePoiStatus(post.poi)">
+            <b [style.color]="'var(--im-poi-denied)'" *ngSwitchCase="PoiStatus.denied">Denied</b>
+            <b [style.color]="'var(--im-poi-approved)'" *ngSwitchCase="PoiStatus.approved">Approved</b>
+            <b [style.color]="'var(--im-poi-submitted)'" *ngSwitchCase="PoiStatus.submitted">Submitted</b>
+            <b [style.color]="'var(--im-poi-stopped)'" *ngSwitchCase="PoiStatus.stopped">Stopped</b>
+            <b [style.color]="'var(--im-poi-paused)'" *ngSwitchCase="PoiStatus.paused">Paused</b>
+            <b [style.color]="'var(--im-poi-started)'" *ngSwitchCase="PoiStatus.started">Started</b>
+            <b [style.color]="'var(--im-poi-created)'" *ngSwitchCase="PoiStatus.created">Created</b>
+        </span>
+        </div>
+        <div class="timeline-detail-item">
+        <ion-icon name="calendar"></ion-icon>
+        <span *ngIf="post.poi.dateSubmitted">{{ post.poi.dateSubmitted | date: 'longDate' }}</span>
+        <div *ngIf="!post.poi.dateSubmitted">No submission date.</div>
+        </div>
+        <div class="timeline-detail-item">
+        <ion-icon name="time"></ion-icon>
+        <span>{{ calculateTimeWorked(post.poi) }}</span>
+        </div>
+        <div class="timeline-detail-item">
+        <ion-icon name="location"></ion-icon>
+        <span>{{ post.poi.enrollment.project.address.city }}, {{ post.poi.enrollment.project.address.state }}</span>
+        </div>
+        <div class="timeline-info">{{ post.poi.enrollment.project.description }}</div>
+
+        <div class="timeline-detail-item">
+        <ion-buttons slot="start">
+            <div *ngIf="!checkUserLiked(post)">
+            <ion-button #likeButton (click)="like(post.id, likeButton)">
+                <ion-icon name="heart-outline"></ion-icon>
+                <p>{{post.likeCount}}</p>
+            </ion-button>
+            </div>
+            <div *ngIf="checkUserLiked(post)">
+            <ion-button #unlikeButton (click)="unlike(post.id, unlikeButton)">
+                <ion-icon name="heart"></ion-icon>
+                <p>{{post.likeCount}}</p>
+            </ion-button>
+            </div>
+
+
+
+
+            <ion-button (click)="comments(post.id)">
+            <ion-icon name="chatbubble-ellipses-outline"></ion-icon>
+            </ion-button>
+        </ion-buttons>
+        </div>
+
+    </div>
+
+
+</im-block>
