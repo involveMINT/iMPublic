@@ -9,6 +9,7 @@ import { SpApplicationEntity } from '../sp-application/sp-application.entity';
 import { ActivityPostEntity } from '../activity-post/activity-post.entity';
 import { LikeEntity } from '../like/like.entity';
 import { FlagEntity } from '../flag/flag.entity';
+import { CommentEntity } from '../comment/comment.entity';
 
 @Entity({ name: DbTableNames.User })
 export class UserEntity implements Required<User> {
@@ -66,4 +67,7 @@ export class UserEntity implements Required<User> {
 
   @OneToMany(() => FlagEntity, (e) => e.user)
   flags!: FlagEntity[];
+
+  @OneToMany(() => CommentEntity, (e) => e.user)
+  comments!: CommentEntity[];
 }

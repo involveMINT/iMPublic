@@ -19,6 +19,15 @@ export abstract class CreateCommentDto {
 
   @IsString()
   commentsId!: string;
+
+  @IsString()
+  handleId!: string;
+
+  @IsString()
+  profilePicFilePath!: string;
+
+  @IsString()
+  name!: string;
 }
 
 export abstract class HideCommentDto {

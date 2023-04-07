@@ -54,9 +54,12 @@ ngOnInit() {
 
   comment() {
     this.user.comments.dispatchers.createComment({
-        postId: this.post.id,
-        text: this.msg,
-        commentsId: '',
+      postId: this.post.id,
+      text: this.msg,
+      commentsId: '',
+      handleId: '',
+      profilePicFilePath: '',
+      name: ''
     });
     this.msg = '';
   }

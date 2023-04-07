@@ -79,4 +79,3 @@ export abstract class DisplayCommentsDto {
   @IsString()
   postId!: string;
 }
-

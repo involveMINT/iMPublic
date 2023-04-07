@@ -1,4 +1,3 @@
-
 import { createFeatureSelector, createSelector } from '@ngrx/store';
 import { COMMENTS_KEY, CommentsState, commentsAdapter } from './comments.reducer';
 
@@ -17,3 +16,4 @@ export const getComment = (id: string) =>
         pagesLoaded: state.pagesLoaded,
         loaded: state.pagesLoaded > 0,
     }));
+

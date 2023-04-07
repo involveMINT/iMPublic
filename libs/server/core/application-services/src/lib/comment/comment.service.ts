@@ -30,7 +30,10 @@ export class CommentService {
             dateCreated: new Date(),
             hidden: false,
             flags: [],
-            flagCount: 0
+            flagCount: 0,
+            handleId: dto.handleId,
+            profilePicFilePath: dto.profilePicFilePath,
+            name: dto.name,
         },
         query);
     }

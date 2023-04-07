@@ -32,4 +32,12 @@ export class CommentEntity implements Required<Comment> {
     @Column()
     flagCount!: number;
 
+    @Column()
+    handleId!: string;
+
+    @Column()
+    profilePicFilePath!: string;
+
+    @Column()
+    name!: string;
 }

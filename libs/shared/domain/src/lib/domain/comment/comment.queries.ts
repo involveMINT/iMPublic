@@ -7,17 +7,16 @@ export const CommentQuery = createQuery<Comment>()({
   dateCreated: true,
   hidden: true,
   flagCount: true,
-  // activityPost: {
-  //   id: true
-  // },
   user: {
     id: true,
-    /** Probably want to fetch user handle */
   },
   flags: {
     id: true,
     user: {
       id: true
     },
-  }
+  },
+  handleId: true,
+  profilePicFilePath: true,
+  name: true
 })

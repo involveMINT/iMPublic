@@ -13,47 +13,57 @@
     </ion-toolbar>
   </ion-header>
 
-  <ion-content>
-    <ion-list>
-        <ion-item *ngFor="let comment of state.comments; trackBy: trackComment">
+  <ion-content id="content">
+    <ion-list lines="none">
+        <ion-item *ngFor="let comment of state.comments">
           <ng-container *ngIf="!checkCommentHidden(comment)">
-            <div body class="member-handle">
-              <ng-container *ngIf="profilePic$ | async as url">
+            <div class="comment-container">
+              <div class="member-handle">
                 <div
-                  class="im-profile-pic"
-                  [style.background-image]="'url(' + url + ')'"
+                  class="im-profile-pic medium"
+                  *ngIf="comment.profilePicFilePath | imStorageUrl | async as url"
+                  [ngStyle]="{ 'background-image': 'url(' + url + ')' }"
                 ></div>
-              </ng-container>
-              <ion-icon
-                *ngIf="!(profilePic$ | async)"
-                class="im-profile-pic-none"
-                name="person-circle"
-              ></ion-icon>
-              <div>
-                <div class="name">{{ name$ | async }}</div>
               </div>
+              <ion-list class="comment">
+                <ion-label class="pointer" (click)="viewProfile(comment.handleId)" > <b>@{{ comment.handleId }}</b> </ion-label>
+                <ion-label class="spaced" color="medium"> {{ comment.name }} </ion-label>
+                <ion-label class="ion-text-wrap"> {{ comment.text }} </ion-label>
+              </ion-list>
             </div>
-            <ion-label>{{ comment.text }}</ion-label>
-            <div *ngIf="!checkUserFlagged(comment)">
-              <ion-button #flagButton class="flag-button" fill="clear" (click)="flag(comment.id, flagButton)">
-                <ion-icon name="flag-outline" class="flag-icon"></ion-icon>
-              </ion-button>
-            </div>
-            <div *ngIf="checkUserFlagged(comment)">
-              <ion-button #unflagButton class="flag-button" fill="clear" (click)="unflag(comment.id, unflagButton)">
-                <ion-icon name="flag" class="flag-icon"></ion-icon>
-              </ion-button>
+            <div class="flag-container">
+              <div *ngIf="!checkUserFlagged(comment)">
+                <ion-button #flagButton class="flag-button" fill="clear" (click)="flag(comment.id, flagButton)">
+                  <ion-icon name="flag-outline" class="flag-icon"></ion-icon>
+                </ion-button>
+              </div>
+              <div *ngIf="checkUserFlagged(comment)">
+                <ion-button #unflagButton class="flag-button" fill="clear" (click)="unflag(comment.id, unflagButton)">
+                  <ion-icon name="flag" class="flag-icon"></ion-icon>
+                </ion-button>
+              </div>
             </div>
           </ng-container>
         </ion-item>
-
     </ion-list>
   </ion-content>
 
   <ion-footer>
-    <ion-toolbar>
-      <ion-input [(ngModel)]="msg" placeholder="Add a comment..."(keyup.enter)="comment()" type="text" color="medium"></ion-input>
-      <ion-button (click)="comment()">Post</ion-button>
+    <ion-toolbar color="light">
+      <ion-item lines="none">
+        <ion-input 
+          item-start 
+          [(ngModel)]="msg"
+          placeholder="Write a comment..."
+          (keyup.enter)="comment()" 
+          type="text" 
+          minlength="1" 
+          maxlength="200" 
+          color="medium" 
+          required> 
+        </ion-input>
+        <ion-button slot="end" (click)="comment()">Post</ion-button>
+      </ion-item>
     </ion-toolbar>
   </ion-footer>
 

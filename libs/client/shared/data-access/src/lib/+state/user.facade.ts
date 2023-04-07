@@ -68,6 +68,8 @@ import * as PostSelectors from './activity-posts/activity-posts.selectors';
 import * as CommentSelectors from './comments/comments.selectors';
 import * as CommentActions from './comments/comments.actions';
 import { CommentStoreModel } from './comments/comments.reducer';
+import { PostStoreModel } from './activity-posts';
+
 @Injectable()
 export class UserFacade {
   readonly cmProfile = {
