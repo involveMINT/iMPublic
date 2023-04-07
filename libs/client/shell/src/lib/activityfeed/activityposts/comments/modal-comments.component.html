@@ -15,8 +15,8 @@
 
   <ion-content id="content">
     <ion-list lines="none">
-        <ion-item *ngFor="let comment of state.comments">
-          <ng-container *ngIf="!checkCommentHidden(comment)">
+        <ng-container *ngFor="let comment of state.comments">
+          <ion-item *ngIf="!checkCommentHidden(comment)">
             <div class="comment-container">
               <div class="member-handle">
                 <div
@@ -43,8 +43,8 @@
                 </ion-button>
               </div>
             </div>
-          </ng-container>
-        </ion-item>
+          </ion-item>
+        </ng-container>
     </ion-list>
   </ion-content>
 
