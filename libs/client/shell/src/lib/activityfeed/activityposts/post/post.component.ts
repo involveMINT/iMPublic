@@ -1,7 +1,8 @@
 import { ChangeDetectionStrategy, Component, Input, OnInit } from "@angular/core";
 import { CommentService, PostStoreModel, UserFacade } from "@involvemint/client/shared/data-access";
 import { PoiStatus, calculatePoiStatus, calculatePoiTimeWorked } from "@involvemint/shared/domain";
-import { IonButton } from "@ionic/angular";
+import { IonButton, ModalController } from "@ionic/angular";
+import { ModalCommentComponent } from "../comments/modal-comments.component";
 
 export const CLOSED = "close";
 
@@ -15,6 +16,7 @@ export class PostComponent implements OnInit {
     @Input() post!: PostStoreModel;
     constructor(
         private readonly user: UserFacade,
+        private modalCtrl: ModalController,
         private readonly commentService: CommentService
     ) { } 
 
@@ -56,6 +58,20 @@ export class PostComponent implements OnInit {
 
     get PoiStatus() {
         return PoiStatus;
+    }
+
+    async openModal(post: PostStoreModel) {
+        const modal = await this.modalCtrl.create({
+            component: ModalCommentComponent,
+            componentProps: {
+            'post': post,
+            'user': this.user,
+            }
+        });
+        modal.present();
+
+        await modal.onWillDismiss();
+
     }
 
 }
