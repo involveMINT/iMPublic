@@ -8,7 +8,9 @@ import { RouteService } from '@involvemint/client/shared/routes';
 import { StatefulComponent, StatusService } from '@involvemint/client/shared/util';
 import { ActivityPostQuery, PoiStatus } from '@involvemint/shared/domain';
 import { parseDate } from '@involvemint/shared/util';
+import { IonButton } from '@ionic/angular';
 import { ModalController } from '@ionic/angular';
+import { ModalCommentComponent } from './comments/modal-comments.component';
 import { compareDesc } from 'date-fns';
 import { merge } from 'rxjs';
 import { take, tap } from 'rxjs/operators';
@@ -39,7 +41,7 @@ export class ActivityFeedComponent extends StatefulComponent<State> implements O
     private readonly enrollmentsModal: EnrollmentsModalService,
     private readonly user: UserFacade,
     private readonly commentService: CommentService,
-    private modalDigestCtrl: ModalController,
+    private modalCtrl: ModalController,
     private readonly post: ActivityPostOrchestration,
     private readonly status: StatusService,
   ) {
@@ -100,7 +102,7 @@ export class ActivityFeedComponent extends StatefulComponent<State> implements O
   }
 
   async openDigestModal() {
-    const modal = await this.modalDigestCtrl.create({
+    const modal = await this.modalCtrl.create({
       component: ModalDigestComponent,
       componentProps: {
         'digestPosts': this.state.digestPosts
@@ -118,4 +120,38 @@ export class ActivityFeedComponent extends StatefulComponent<State> implements O
 
   }
 
+  like(id: string, button: IonButton) {
+    button.disabled = true; // prevent click spam
+    this.user.posts.dispatchers.like({
+      postId: id,
+    })
+  }
+
+  unlike(id: string, button: IonButton) {
+    button.disabled = true; // prevent click spam
+    this.user.posts.dispatchers.unlike({
+      postId: id,
+    })
+  }
+
+  checkUserLiked(post: PostStoreModel) {
+    let userId = "";
+    this.user.session.selectors.email$.subscribe(s => userId = s);
+    const filteredObj = post.likes.filter(obj => obj.user.id === userId);
+    return filteredObj.length != 0
+  }
+
+  async openModal(post: PostStoreModel) {
+    const modal = await this.modalCtrl.create({
+      component: ModalCommentComponent,
+      componentProps: {
+        'post': post,
+        'user': this.user,
+     }
+    });
+    modal.present();
+
+    await modal.onWillDismiss();
+
+  }
 }

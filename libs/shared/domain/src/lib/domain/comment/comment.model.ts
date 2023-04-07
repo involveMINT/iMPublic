@@ -12,6 +12,10 @@ export interface Comment {
 
   dateCreated: Date | string;
   hidden: boolean;
+
+  handleId: string;
+  profilePicFilePath: string;
+  name: string;
 }
 
 export interface Comments {

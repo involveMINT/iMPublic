@@ -1,6 +1,7 @@
 export * from './address';
 export * from './change-maker';
 export * from './chat';
+export * from './comment';
 export * from './credit';
 export * from './enrollment';
 export * from './enrollment-document';
@@ -31,4 +32,4 @@ export * from './voucher';
 export * from './wallet';
 export * from './activity-post';
 export * from './like';
-export * from './comment';
+export {CreateCommentDto} from './comment';

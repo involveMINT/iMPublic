@@ -103,3 +103,15 @@ export abstract class DigestActivityPostDto {
   @IsString()
   startDate!: string;
 }
+
+export abstract class DisplayCommentsDto {
+  /**
+   * Take in a Post ID and display comments on it
+   * 
+   * Service Logic: 
+   * Fetch the userId based on auth token + perform checks
+   * Bring up modal component
+   */
+  @IsString()
+  postId!: string;
+}

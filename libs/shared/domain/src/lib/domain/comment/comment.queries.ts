@@ -1,16 +1,15 @@
 import { createQuery } from '@orcha/common';
 import { Comment } from './comment.model';
 
-export const commentQuery = createQuery<Comment>()({
+export const CommentQuery = createQuery<Comment>()({
   id: true,
   text: true,
-  dateCreated: true,
-  hidden: true,
-  activityPost: {
-    id: true
-  },
   user: {
     id: true,
-    /** Probably want to fetch user handle */
-  }
+  },
+  dateCreated: true,
+  hidden: true,
+  handleId: true,
+  profilePicFilePath: true,
+  name: true
 })

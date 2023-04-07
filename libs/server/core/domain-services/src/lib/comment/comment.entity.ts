@@ -24,4 +24,13 @@ export class CommentEntity implements Required<Comment> {
 
     @Column()
     hidden!: boolean;
+
+    @Column()
+    handleId!: string;
+
+    @Column()
+    profilePicFilePath!: string;
+
+    @Column()
+    name!: string;
 }

@@ -2,7 +2,9 @@ import { Injectable } from "@nestjs/common";
 import { AuthService } from '@involvemint/server/core/application-services';
 import { CommentRepository } from "@involvemint/server/core/domain-services";
 import { IQuery } from '@orcha/common';
-import { Comment, CreateCommentDto, HideCommentDto, UnhideCommentDto } from "@involvemint/shared/domain";
+import * as uuid from 'uuid';
+import { CreateCommentDto } from "@involvemint/shared/domain";
+import { Comment, HideCommentDto, UnhideCommentDto } from "libs/shared/domain/src/lib/domain/comment";
 
 @Injectable()
 export class CommentService {
@@ -16,36 +18,32 @@ export class CommentService {
     }
 
     async create(query: IQuery<Comment>, token: string, dto: CreateCommentDto) {
+        const user = await this.auth.validateUserToken(token ?? '');
         return this.commentRepo.upsert({
-            id: "",
-            text: "",
-            activityPost: null,
-            user: undefined,
-            dateCreated: "",
-            hidden: false
+            id: uuid.v4(),
+            text: dto.text,
+            activityPost: dto.postId,
+            user: user.id,
+            dateCreated: new Date(),
+            hidden: false,
+            handleId: dto.handleId,
+            profilePicFilePath: dto.profilePicFilePath,
+            name: dto.name,
         },
         query);
     }
 
     async hide(query: IQuery<Comment>, token: string, dto: HideCommentDto) {
-        return this.commentRepo.upsert({
-            id: "",
-            text: "",
-            activityPost: null,
-            user: undefined,
-            dateCreated: "",
-            hidden: false
+        const user = await this.auth.validateUserToken(token ?? '');
+        return this.commentRepo.update(dto.commentId, {
+            hidden: true
         },
         query);
     }
 
     async unhide(query: IQuery<Comment>, token: string, dto: UnhideCommentDto) {
-        return this.commentRepo.upsert({
-            id: "",
-            text: "",
-            activityPost: null,
-            user: undefined,
-            dateCreated: "",
+        const user = await this.auth.validateUserToken(token ?? '');
+        return this.commentRepo.update(dto.commentId, {
             hidden: false
         },
         query);

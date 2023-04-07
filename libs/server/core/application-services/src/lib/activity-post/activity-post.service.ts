@@ -5,7 +5,6 @@ import { AuthService } from '../auth/auth.service';
 import * as uuid from 'uuid';
 import { IQueryObject } from "@orcha/common/src/lib/query";
 import { ActivityPost, ActivityPostQuery, CreateActivityPostDto, DigestActivityPostDto, DisableActivityPostDto, EnableActivityPostDto, GetActivityPostDto, LikeActivityPostDto, likeQuery, RecentActivityPostDto, UnlikeActivityPostDto } from "@involvemint/shared/domain";
-import { MoreThan } from 'typeorm';
 import { Cron, CronExpression } from "@nestjs/schedule"
 import { SMSService } from "../sms/sms.service";
 import { UserQuery } from '@involvemint/shared/domain';
