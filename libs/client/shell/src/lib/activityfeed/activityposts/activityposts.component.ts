@@ -141,17 +141,5 @@ export class ActivityFeedComponent extends StatefulComponent<State> implements O
     return filteredObj.length != 0
   }
 
-  async openModal(post: PostStoreModel) {
-    const modal = await this.modalCtrl.create({
-      component: ModalCommentComponent,
-      componentProps: {
-        'post': post,
-        'user': this.user,
-     }
-    });
-    modal.present();
-
-    await modal.onWillDismiss();
-
-  }
+  
 }
