@@ -8,8 +8,8 @@ export class ActivityPostOrchestration implements IServerOrchestration<IActivity
     constructor(private readonly activityPostService: ActivityPostService) {}
 
     @ServerOperation()
-    list(query: IQuery<ActivityPost[]>, token: string, dto: RecentActivityPostDto) {
-        return this.activityPostService.list(query, token, dto);      
+    list(query: IQuery<ActivityPost[]>, token: string) {
+        return this.activityPostService.list(query, token);      
     }
 
     @ServerOperation()

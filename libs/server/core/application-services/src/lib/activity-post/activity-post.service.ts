@@ -19,7 +19,7 @@ export class ActivityPostService {
         private readonly user: UserRepository
     ) {}
 
-    async list(query: IQuery<ActivityPost[]>, token: string, dto: RecentActivityPostDto) {
+    async list(query: IQuery<ActivityPost[]>, token: string) {
         return this.activityPostRepo.findAll(query);
     }
 
@@ -122,8 +122,8 @@ export class ActivityPostService {
         });
         return res;
     }
-    // @Cron("0 20 * * 2") every tuesday at 8pm
-    @Cron(CronExpression.EVERY_MINUTE)
+    // Send digest notificatino every tuesday at 8pm
+    @Cron("0 20 * * 2")
     async sendNotificationDigestText(): Promise<void> {
         const allUsers = await this.user.findAll(UserQuery);
         allUsers.forEach( async (user) => {
