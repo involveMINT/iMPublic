@@ -15,6 +15,7 @@ import { ModalCommentComponent } from './comments/modal-comments.component';
 import { compareDesc } from 'date-fns';
 import { merge } from 'rxjs';
 import { take, tap } from 'rxjs/operators';
+import { CommentStoreModel } from 'libs/client/shared/data-access/src/lib/+state/comments/comments.reducer';
 
 
 interface State {
@@ -118,7 +119,22 @@ export class ActivityFeedComponent extends StatefulComponent<State> implements O
     });
     modal.present();
 
-    await modal.onWillDismiss();
-
+    const { data } = await modal.onWillDismiss();
+    if (data) {
+      this.updatePostComments(post.id, data);
+    }
   }
+
+  private updatePostComments(postId: string, updatedComments: Array<CommentStoreModel>) {
+    this.updateState((state => {
+      const updatedPosts = state.posts.map((post) => {
+        if (post.id === postId) {
+          return { ...post, comments: updatedComments };
+        }
+        return post;
+      });
+      return { ...state, posts: updatedPosts };
+    })(this.state));
+  }
+  
 }

@@ -131,8 +131,9 @@ export class ModalCommentComponent extends StatefulComponent<State> implements O
   }
 
   cancel() {
-    return this.modalCtrl.dismiss(null, 'cancel');
+    return this.modalCtrl.dismiss(this.state.comments, 'cancel');
   }
+  
 
   flag(id: string, button: IonButton) {
     button.disabled = true;
