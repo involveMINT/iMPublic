@@ -28,8 +28,8 @@
             <ion-list class="comment">
               <ion-label class="pointer" (click)="viewProfile(comment.handleId)" > <b>@{{ comment.handleId }}</b> </ion-label>
               <ion-label class="spaced" color="medium"> {{ comment.name }} </ion-label>
-              <ion-label class="ion-text-wrap" *ngIf="!checkUserFlagged(comment)"> {{ comment.text }} </ion-label>
-              <ion-label class="ion-text-wrap removed" *ngIf="checkUserFlagged(comment)">This comment has been removed because it goes against community guidelines.</ion-label>
+              <ion-label class="ion-text-wrap" *ngIf="!checkCommentHidden(comment)"> {{ comment.text }} </ion-label>
+              <ion-label class="ion-text-wrap removed" *ngIf="checkCommentHidden(comment)">This comment has been removed because it goes against community guidelines.</ion-label>
             </ion-list>
           </div>
           <div class="flag-container">
