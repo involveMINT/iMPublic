@@ -1,12 +1,11 @@
-import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
-import { PostStoreModel, UserFacade } from '@involvemint/client/shared/data-access';
+import { ChangeDetectionStrategy, Component, Input, OnInit, ViewChild } from '@angular/core';
+import { ImViewProfileModalService, PostStoreModel, UserFacade } from '@involvemint/client/shared/data-access';
 import { map, tap } from 'rxjs/operators';
 
-import { ModalController } from '@ionic/angular';
+import { IonContent, ModalController } from '@ionic/angular';
 import { Observable } from 'rxjs';
 import { CommentStoreModel } from 'libs/client/shared/data-access/src/lib/+state/comments/comments.reducer';
 import { StatefulComponent } from '@involvemint/client/shared/util';
-import { AdminFacade } from '@involvemint/client/admin/data-access';
 
 interface State {
   comments: Array<CommentStoreModel>;
@@ -16,17 +15,22 @@ interface State {
 @Component({
   selector: 'app-modal-comments',
   templateUrl: 'modal-comments.component.html',
+  styleUrls: ['./modal-comments.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ModalCommentComponent extends StatefulComponent<State> implements OnInit {
+  @ViewChild(IonContent)
+  content!: IonContent;
   @Input() post!: PostStoreModel;
   msg!: string;
-  profilePic$!: Observable<string | null>;
+  profilePicFilePath!: string;
   name$!: Observable<string>;
+  handleID!: string;
+
 constructor(
   private modalCtrl: ModalController,
   private user: UserFacade,
-  private admin: AdminFacade
+  private readonly viewProfileModal: ImViewProfileModalService,
 ) {
   super({ comments: [], loaded: true });
 }
@@ -42,27 +46,10 @@ ngOnInit() {
     )
   );
 
-  this.profilePic$ = this.user.session.selectors.changeMaker$.pipe(
-    map(changeMaker => changeMaker?.profilePicFilePath || null)
-  );
-
-  this.name$ = this.user.session.selectors.changeMaker$.pipe(
-    map(changeMaker => `${changeMaker?.firstName || ''} ${changeMaker?.lastName || ''}` || '')
-  );
-
+  this.handleID = this.getHandleID();
+  this.name$ = this.getName();
+  this.profilePicFilePath = this.getProfilePic();
 }
-
-  comment() {
-    this.user.comments.dispatchers.createComment({
-      postId: this.post.id,
-      text: this.msg,
-      commentsId: '',
-      handleId: '',
-      profilePicFilePath: '',
-      name: ''
-    });
-    this.msg = '';
-  }
 
   hide(id: string) {
     this.user.comments.dispatchers.hideComment({
@@ -82,16 +69,40 @@ ngOnInit() {
     return comment.hidden
   }
 
-  getProfilePic(): Observable<string> {
-    return this.user.session.selectors.changeMaker$.pipe(
+  viewProfile(handle: string) {
+    this.viewProfileModal.open({ handle });
+  }
+
+  getProfilePic() {
+    const profilePicObservable: Observable<string> = this.user.session.selectors.changeMaker$.pipe(
       map(changeMaker => changeMaker?.profilePicFilePath || '')
     );
-  }
+    let profilePic: string = '';
+    profilePicObservable.subscribe(
+      (url: string) => {
+        profilePic = url;
+      }
+    );
+    return profilePic;
+    }
   
   getName(): Observable<string> {
     return this.user.session.selectors.changeMaker$.pipe(
       map(changeMaker => `${changeMaker?.firstName || ''} ${changeMaker?.lastName || ''}` || '')
     );
+  }
+
+  getHandleID() {
+    const handleIDObservable: Observable<string> = this.user.session.selectors.activeProfile$.pipe(
+      map(activeProfile => activeProfile.handle.id)
+    )
+    let handleID: string = '';
+    handleIDObservable.subscribe(
+      (url: string) => {
+        handleID = url;
+      }
+    );
+    return handleID;
   }
 
   cancel() {
