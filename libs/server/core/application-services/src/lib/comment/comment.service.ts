@@ -61,7 +61,7 @@ export class CommentService {
             throw new Error('User has already flagged this comment.');
         }
 
-        this.flagRepo.upsert({
+        await this.flagRepo.upsert({
             id: uuid.v4(),
             dateCreated: new Date(),
             comment: dto.commentId,
