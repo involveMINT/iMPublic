@@ -1,15 +1,19 @@
 import { IOperation } from '@orcha/common';
-import { CreateActivityPostDto, 
+import { RecentActivityPostDto,
+         CreateActivityPostDto, 
+         DigestActivityPostDto, 
          DisableActivityPostDto, 
          DisplayCommentsDto, 
          EnableActivityPostDto, 
          LikeActivityPostDto, 
-         UnlikeActivityPostDto, } from './activity-post.dtos';
+         UnlikeActivityPostDto, 
+         GetActivityPostDto} from './activity-post.dtos';
 import { ActivityPost } from './activity-post.model';
 
 export interface IActivityPostOrchestration {
-  list: IOperation<ActivityPost[]>;
-  /** !May be a need to do get for individual Post in the future! */
+  list: IOperation<ActivityPost[], RecentActivityPostDto>;
+
+  get: IOperation<ActivityPost, GetActivityPostDto>;
   create: IOperation<ActivityPost, CreateActivityPostDto>;
 
   enable: IOperation<ActivityPost, EnableActivityPostDto>;
@@ -17,4 +21,6 @@ export interface IActivityPostOrchestration {
 
   like: IOperation<ActivityPost, LikeActivityPostDto>;
   unlike: IOperation<ActivityPost, UnlikeActivityPostDto>;
+
+  digest: IOperation<ActivityPost[], DigestActivityPostDto>;
 }

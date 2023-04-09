@@ -1,5 +1,5 @@
 import { User } from '@involvemint/shared/domain';
-import { Column, Entity, JoinColumn, OneToMany, OneToOne, PrimaryColumn } from 'typeorm';
+import { Column, Entity, JoinColumn, OneToMany, OneToOne, PrimaryColumn, UpdateDateColumn } from 'typeorm';
 import { ChangeMakerEntity } from '../change-maker/change-maker.entity';
 import { DbTableNames } from '../db-table-names';
 import { EpApplicationEntity } from '../ep-application/ep-application.entity';
@@ -66,4 +66,7 @@ export class UserEntity implements Required<User> {
 
   @OneToMany(() => CommentEntity, (e) => e.user)
   comments!: CommentEntity[];
+
+  @UpdateDateColumn()
+  updatedAt!: Date;
 }

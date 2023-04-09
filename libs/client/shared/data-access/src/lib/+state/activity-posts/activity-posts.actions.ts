@@ -1,6 +1,6 @@
 import { createAction, props } from '@ngrx/store';
 import { OrchaOperationError } from '@orcha/common';
-import { CreateActivityPostDto, LikeActivityPostDto, UnlikeActivityPostDto, DisplayCommentsDto } from '@involvemint/shared/domain';
+import { CreateActivityPostDto, GetActivityPostDto, LikeActivityPostDto, UnlikeActivityPostDto } from '@involvemint/shared/domain';
 import { PostStoreModel } from './activity-posts.reducer';
 
 /**
@@ -9,6 +9,10 @@ import { PostStoreModel } from './activity-posts.reducer';
 export const LOAD_POSTS =  '[Activity Posts] Activity Posts Load';
 export const LOAD_POSTS_SUCCESS = '[Activity Posts] Activity Posts Load Success';
 export const LOAD_POSTS_ERROR = '[Activity Posts] Activity Posts Load Error';
+
+export const GET_POST = '[Activity Posts] Activity Posts Get';
+export const GET_POST_SUCCESS = '[Activity Posts] Activity Posts Get Success';
+export const GET_POST_ERROR = '[Activity Posts] Activity Posts Get Error';
 
 export const CREATE_POST = '[Activity Posts] Activity Posts Create';
 export const CREATE_POST_SUCCESS = '[Activity Posts] Activity Posts Create Success';
@@ -21,6 +25,31 @@ export const LIKE_POST_ERROR = '[Activity Posts] Like Activity Post Error';
 export const UNLIKE_POST = '[Activity Posts] unlike Activity Post';
 export const UNLIKE_POST_SUCCESS = '[Activity Posts] unlike Activity Post Success';
 export const UNLIKE_POST_ERROR = '[Activity Posts] unlike Activity Post Error';
+
+export const LOAD_DIGEST = "[Notification Digest] load digest"
+export const LOAD_DIGEST_SUCCESS = "[Notification Digest] load digest success"
+export const LOAD_DIGEST_ERROR = "[Notification Digest] load digest error"
+
+/**
+ * Actions for loading digest
+ */
+
+export const loadDigest = createAction(
+    LOAD_DIGEST,
+    props<{ page: number }>()
+);
+
+export const loadDigestSuccess = createAction(
+    LOAD_DIGEST_SUCCESS,
+    props<{ posts: PostStoreModel[]; page: number }>()
+);
+
+export const loadDigestError = createAction(
+    LOAD_DIGEST_ERROR,
+    props<{ error: OrchaOperationError }>()
+);
+
+
 
 /**
  * Actions for loading activity post
@@ -55,6 +84,21 @@ export const createPostSuccess = createAction(
 
 export const createPostError = createAction(
     CREATE_POST_ERROR,
+    props<{ error: OrchaOperationError }>()
+);
+
+export const getPost = createAction(
+    GET_POST,
+    props<{ dto: GetActivityPostDto }>()
+);
+
+export const getPostSuccess = createAction(
+    GET_POST_SUCCESS,
+    props<{ post: PostStoreModel }>()
+)
+
+export const getPostError = createAction(
+    GET_POST_ERROR,
     props<{ error: OrchaOperationError }>()
 );
 

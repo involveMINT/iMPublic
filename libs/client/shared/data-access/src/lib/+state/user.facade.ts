@@ -13,6 +13,7 @@ import {
   EditCmProfileDto,
   EditEpProfileDto,
   EditSpProfileDto,
+  GetActivityPostDto,
   GetSuperAdminForExchangePartnerDto,
   ImConfig,
   LikeActivityPostDto,
@@ -649,10 +650,18 @@ export class UserFacade {
 
   readonly posts = {
     dispatchers: {
+      loadDigest: () => {
+        this.store.pipe(select(PostSelectors.getPosts), take(1)).subscribe((state) => {
+          this.store.dispatch(PostActions.loadDigest({ page: state.pagesLoaded + 1}));
+        });
+      },
       loadPosts: () => {
         this.store.pipe(select(PostSelectors.getPosts), take(1)).subscribe((state) => {
           this.store.dispatch(PostActions.loadPosts({ page: state.pagesLoaded + 1}));
         });
+      },
+      get: (dto: GetActivityPostDto) => {
+        this.store.dispatch(PostActions.getPost({ dto }));
       },
       create: (dto: CreateActivityPostDto) => {
         this.store.dispatch(PostActions.createPost({ dto }));
@@ -665,6 +674,13 @@ export class UserFacade {
       },
     },
     selectors: {
+      digest_posts$: this.store.pipe(select(PostSelectors.getPosts)).pipe(
+        tap(({ loaded }) => {
+          if (!loaded) {
+            this.store.dispatch(PostActions.loadDigest({ page: 1 }));
+          }
+        })
+      ),
       posts$: this.store.pipe(select(PostSelectors.getPosts)).pipe(
         tap(({ loaded }) => {
           if (!loaded) {
@@ -673,7 +689,7 @@ export class UserFacade {
         })
       ),
       getPost: (postId: string) =>
-        this.store.pipe(select(PostSelectors.getPost(postId))).pipe(
+        this.store.pipe(select(PostSelectors.selectPost(postId))).pipe(
           tap(({ loaded }) => {
             if (!loaded) {
               this.store.dispatch(PostActions.loadPosts({ page: 1 }));
@@ -685,6 +701,10 @@ export class UserFacade {
       loadPosts: {
         success: this.actions$.pipe(ofType(PostActions.loadPostsSuccess)),
         error: this.actions$.pipe(ofType(PostActions.loadPostsError)),
+      },
+      loadDigest: {
+        success: this.actions$.pipe(ofType(PostActions.loadDigestSuccess)),
+        error: this.actions$.pipe(ofType(PostActions.loadDigestError)),
       }
     }
   }

@@ -1,4 +1,35 @@
-import { IsString } from 'class-validator';
+import { IsBoolean, IsString } from 'class-validator';
+
+
+export abstract class RecentActivityPostDto {
+  /**
+   * Take in POI to create Post.
+   * 
+   * Service Logic:
+   * Enabled => True
+   * DateCreated => now()
+   * ID => UUID
+   * Comments => None yet.
+   * LikesCount => 0.
+   * Likes => None yet. 
+   * User => Fetched via auth + perform checks
+   * Insert Post into the database.
+   */
+  @IsBoolean()
+  recent?: boolean;
+}
+
+export abstract class GetActivityPostDto {
+  /**
+   * Take in a post id to fetch.
+   * 
+   * Service Logic:
+   * Take in the id,
+   * fetch existing post otherwise throw error
+   */
+  @IsString()
+  postId!: string;
+}
 
 export abstract class CreateActivityPostDto {
   /**
@@ -66,6 +97,11 @@ export abstract class UnlikeActivityPostDto {
    */
   @IsString()
   postId!: string;
+}
+
+export abstract class DigestActivityPostDto {
+  @IsString()
+  startDate!: string;
 }
 
 export abstract class DisplayCommentsDto {

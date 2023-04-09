@@ -33,6 +33,42 @@ describe('Activity-Post Actions', () => {
         });
     });
 
+    it('get post', () => {
+        const action = PostsActions.getPost({ dto: { postId: "1"}});
+        expect(action.type).toEqual(PostsActions.GET_POST);
+        expect(action.dto).toEqual({ postId: "1" });
+    });
+
+    it('get post success', () => {
+        const action = PostsActions.getPostSuccess({
+            post: { id: "1" } as any
+        });
+        expect(action.type).toEqual(PostsActions.GET_POST_SUCCESS);
+        expect(action.post).toEqual({
+            id: "1"
+        });
+    });
+
+    it('get post error', () => {
+        const action = PostsActions.getPostError({
+            error: {
+                statusCode: 24,
+                timestamp: "123",
+                operation: "Get Post",
+                message: "Server Failure",
+                response: ""
+            }
+        });
+        expect(action.type).toEqual(PostsActions.GET_POST_ERROR);
+        expect(action.error).toEqual({
+            statusCode: 24,
+            timestamp: "123",
+            operation: "Get Post",
+            message: "Server Failure",
+            response: ""
+        });
+    });
+
     it('create post', () => {
         const action = PostsActions.createPost({ dto: {
             poiId: "3"

@@ -1,20 +1,31 @@
 import { Injectable } from "@nestjs/common";
-import { ActivityPostRepository, LikeRepository } from "@involvemint/server/core/domain-services";
-import { ActivityPost, ActivityPostQuery, CreateActivityPostDto, DisableActivityPostDto, EnableActivityPostDto, LikeActivityPostDto, likeQuery, UnlikeActivityPostDto } from "@involvemint/shared/domain";
-import { IQuery } from "@orcha/common";
+import { ActivityPostRepository, LikeRepository, UserRepository } from "@involvemint/server/core/domain-services";
+import { IPaginate, IParserObject, IQuery } from "@orcha/common";
 import { AuthService } from '../auth/auth.service';
 import * as uuid from 'uuid';
+import { IQueryObject } from "@orcha/common/src/lib/query";
+import { ActivityPost, ActivityPostQuery, CreateActivityPostDto, DigestActivityPostDto, DisableActivityPostDto, EnableActivityPostDto, GetActivityPostDto, LikeActivityPostDto, likeQuery, RecentActivityPostDto, UnlikeActivityPostDto } from "@involvemint/shared/domain";
+import { Cron, CronExpression } from "@nestjs/schedule"
+import { SMSService } from "../sms/sms.service";
+import { UserQuery } from '@involvemint/shared/domain';
 
 @Injectable()
 export class ActivityPostService {
     constructor(
         private readonly auth: AuthService,
         private readonly activityPostRepo: ActivityPostRepository,
-        private readonly likeRepo: LikeRepository
+        private readonly likeRepo: LikeRepository,
+        private readonly sms: SMSService,
+        private readonly user: UserRepository
     ) {}
 
     async list(query: IQuery<ActivityPost[]>, token: string) {
         return this.activityPostRepo.findAll(query);
+    }
+
+    async get(query: IQuery<ActivityPost>, token: string, dto: GetActivityPostDto) {
+        const _user = await this.auth.validateUserToken(token ?? '');
+        return this.activityPostRepo.findOneOrFail(dto.postId, query);
     }
 
     async create(query: IQuery<ActivityPost>, token: string, dto: CreateActivityPostDto) {
@@ -98,4 +109,31 @@ export class ActivityPostService {
         const currentPost = await this.activityPostRepo.findOneOrFail(dto.postId, ActivityPostQuery);
         return this.activityPostRepo.update(dto.postId, {likeCount: currentPost.likeCount - 1}, query);
     }
+
+    async digest(query: IQuery<ActivityPost[]>, token: string, dto: DigestActivityPostDto) {
+        const user = await this.auth.validateUserToken(token ?? '');
+        const startDate = new Date(dto.startDate);
+        const posts = await this.activityPostRepo.query(query, { where: { user: user.id }}); // todo -> way to query for dates here instead??
+        const res: IParserObject<ActivityPost, IQueryObject<ActivityPost> & IPaginate>[] = [];
+        posts.forEach(post => {
+            post.comments = post.comments?.filter(comment => new Date(comment?.dateCreated as any) >= startDate);
+            post.likes = post.likes?.filter(like => new Date(like?.dateCreated as any) >= startDate);
+            if ((post.comments?.length ?? 0 > 0) || (post.likes?.length ?? 0 > 0)) res.push(post);
+        });
+        return res;
+    }
+    // Send digest notificatino every tuesday at 8pm
+    @Cron("0 20 * * 2")
+    async sendNotificationDigestText(): Promise<void> {
+        const allUsers = await this.user.findAll(UserQuery);
+        allUsers.forEach( async (user) => {
+            if (user.changeMaker?.id) {
+                await this.sms.sendInfoSMS({
+                    message: "Your activity posts are getting attention. Check your recent updates on the digest page.",
+                    phone: user.changeMaker.phone,
+                });
+            }
+        });
+    }
+
 }

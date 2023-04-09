@@ -63,6 +63,19 @@ describe('Activity-Post Reducer', () => {
         expect(newState.pagesLoaded).toEqual(1);
     });
 
+    it('should add post on get post success', () => {
+        const action = PostsActions.getPostSuccess({ post: { id: 1 }} as any);
+        const newState = PostsReducer(initialState, action);
+        expect(postsAdapter.upsertOne).toBeCalledTimes(1);
+        expect(newState).toEqual({
+            posts: {
+                entities: {},
+                ids: [ 1 ]
+            },
+            pagesLoaded: 0
+        });
+    });
+
     it('should add post on create post success', () => {
         const action = PostsActions.createPostSuccess({ post: { id: 1 } as any });
         const newState = PostsReducer(initialState, action);

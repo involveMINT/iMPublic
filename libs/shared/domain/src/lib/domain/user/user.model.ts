@@ -30,6 +30,8 @@ export interface User {
   activityPosts: IOneToMany<ActivityPost, 'user'>;
   likes: IOneToMany<Like, 'user'>;
   comments: IOneToMany<Comment, 'user'>;
+
+  updatedAt: Date | string;
 }
 
 export type ISnoopData = User & { token: string };

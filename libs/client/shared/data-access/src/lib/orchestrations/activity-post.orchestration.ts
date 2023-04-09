@@ -8,6 +8,9 @@ export class ActivityPostOrchestration implements IClientOrchestration<IActivity
     list!: IClientOrchestration<IActivityPostOrchestration>['list'];
 
     @ClientOperation()
+    get!: IClientOrchestration<IActivityPostOrchestration>['get'];
+
+    @ClientOperation()
     create!: IClientOrchestration<IActivityPostOrchestration>['create'];
 
     @ClientOperation()
@@ -21,4 +24,7 @@ export class ActivityPostOrchestration implements IClientOrchestration<IActivity
 
     @ClientOperation()
     disable!: IClientOrchestration<IActivityPostOrchestration>['disable'];
+
+    @ClientOperation()
+    digest!: IClientOrchestration<IActivityPostOrchestration>['digest'];
 }
