@@ -106,7 +106,7 @@ ngOnInit() {
   }
 
   cancel() {
-    return this.modalCtrl.dismiss(null, 'cancel');
+    return this.modalCtrl.dismiss(this.state.comments, 'cancel');
   }
 
 }
