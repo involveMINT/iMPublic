@@ -16,7 +16,7 @@ export interface CommentsState {
 
 export const commentsAdapter = createEntityAdapter<CommentStoreModel>();
 
-const initialState: CommentsState = {
+export const initialState: CommentsState = {
     comments: commentsAdapter.getInitialState(),
     pagesLoaded: 0,
 }
