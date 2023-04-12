@@ -1,10 +1,10 @@
 import { createQuery } from '@orcha/common';
 import { CommentQuery } from '../comment';
 import { PoiCmQuery } from '../poi';
-import { UserQuery } from '../user';
+import { ActivityPostUserQuery } from '../user';
 import { ActivityPost } from './activity-post.model';
 
-/** ?Think these are used for validations + data returned? */
+
 export const ActivityPostQuery = createQuery<ActivityPost>()({
   id: true,
   likeCount: true,
@@ -14,7 +14,7 @@ export const ActivityPostQuery = createQuery<ActivityPost>()({
     ...PoiCmQuery
   },
   user: {
-    ...UserQuery
+    ...ActivityPostUserQuery
   },
   comments: {
     ...CommentQuery
@@ -25,5 +25,13 @@ export const ActivityPostQuery = createQuery<ActivityPost>()({
       id: true
     },
     dateCreated: true
+  }
+});
+
+export const ActivityFeedQuery = createQuery<ActivityPost[]>()({
+  ...ActivityPostQuery,
+  __paginate: {
+    limit: 10,
+    page: 1,
   }
 });

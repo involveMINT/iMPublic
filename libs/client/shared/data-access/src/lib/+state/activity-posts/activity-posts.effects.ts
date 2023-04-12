@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 import { StatusService } from "@involvemint/client/shared/util";
-import { ActivityPostQuery } from "@involvemint/shared/domain";
+import { ActivityFeedQuery, ActivityPostQuery } from "@involvemint/shared/domain";
 import { Actions, createEffect, ofType } from "@ngrx/effects";
 import * as PostsActions from './activity-posts.actions';
 import { map, delayWhen, tap } from 'rxjs/operators';
@@ -11,37 +11,24 @@ import { ActivityPostOrchestration } from '../../orchestrations/activity-post.or
 @Injectable()
 export class PostEffects {
 
-    /** Effect when loadDigest is dispatched */
-    readonly loadDigest$ = createEffect(() => 
-        this.actions$.pipe(
-            ofType(PostsActions.loadDigest),
-            fetch({
-                run: ({ page }) =>
-                    this.posts.list(
-                        ActivityPostQuery,
-                       {recent: true}).pipe(
-                        map((posts) => PostsActions.loadDigestSuccess({ posts: posts, page: page}))
-                        ),
-                onError: (action, { error }) => {
-                    this.status.presentNgRxActionAlert(action, error);
-                    return PostsActions.loadDigestError({ error });
-                }
-            })
-        )
-    );
-
-
     /** Effect when loadPosts is dispatched */
     readonly loadPosts$ = createEffect(() => 
         this.actions$.pipe(
             ofType(PostsActions.loadPosts),
             fetch({
-                run: ({ page }) =>
+                run: ({ page, limit }) =>
                     this.posts.list(
-                        ActivityPostQuery,
-                        {recent: false}).pipe(
-                        map((posts) => PostsActions.loadPostsSuccess({ posts: posts, page: page}))
-                        ),
+                    {
+                        ...ActivityFeedQuery,
+                        __paginate: {
+                            ...ActivityFeedQuery.__paginate,
+                            page,
+                            limit,
+                        }
+                    }
+                    ).pipe(
+                        map((posts) => PostsActions.loadPostsSuccess({ posts: posts.items, page, limit}))
+                    ),
                 onError: (action, { error }) => {
                     this.status.presentNgRxActionAlert(action, error);
                     return PostsActions.loadPostsError({ error });

@@ -12,6 +12,8 @@ export type PostStoreModel = IParser<ActivityPost, typeof ActivityPostQuery>;
 export interface PostsState {
     posts: EntityState<PostStoreModel>;
     pagesLoaded: number;
+    limit: number;
+    allPagesLoaded: boolean;
 }
 
 export const postsAdapter = createEntityAdapter<PostStoreModel>();
@@ -19,26 +21,21 @@ export const postsAdapter = createEntityAdapter<PostStoreModel>();
 export const initialState: PostsState = {
     posts: postsAdapter.getInitialState(),
     pagesLoaded: 0,
+    limit: 10,
+    allPagesLoaded: false,
 }
 
 /** Defines the Activity Posts Reducer and how state changes based on actions */
 export const PostsReducer = createReducer(
     initialState,
     on(
-        PostsActions.loadDigestSuccess,
-        (state, { posts, page }): PostsState => {
-            return {
-                posts: postsAdapter.upsertMany(posts, state.posts),
-                pagesLoaded: page,
-            }
-        }
-    ),
-    on(
         PostsActions.loadPostsSuccess,
-        (state, { posts, page }): PostsState => {
+        (state, { posts, page, limit }): PostsState => {
             return {
+                ...state,
                 posts: postsAdapter.upsertMany(posts, state.posts),
                 pagesLoaded: page,
+                allPagesLoaded: (posts.length % limit !== 0) || (posts.length === 0),
             }
         }
     ),

@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, ViewChild } from '@angular/core';
 import {
   ChangeMakerFacade,
   EnrollmentsModalService,
@@ -8,7 +8,7 @@ import { RouteService } from '@involvemint/client/shared/routes';
 import { StatefulComponent, StatusService } from '@involvemint/client/shared/util';
 import { ActivityPostQuery, PoiStatus } from '@involvemint/shared/domain';
 import { parseDate } from '@involvemint/shared/util';
-import { IonButton } from '@ionic/angular';
+import { IonButton, IonInfiniteScroll } from '@ionic/angular';
 import { ModalController } from '@ionic/angular';
 import { ModalCommentComponent } from './comments/modal-comments.component';
 import { compareDesc } from 'date-fns';
@@ -30,6 +30,10 @@ interface State {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ActivityFeedComponent extends StatefulComponent<State> implements OnInit {
+  @ViewChild(IonInfiniteScroll) infiniteScroll!: IonInfiniteScroll;
+  loading = false;
+  event: any = null;
+  allPagesLoaded = false;
 
   get PoiStatus() {
     return PoiStatus;
@@ -52,7 +56,8 @@ export class ActivityFeedComponent extends StatefulComponent<State> implements O
 
     this.effect(() => 
       this.user.posts.selectors.posts$.pipe(
-        tap(({ posts, loaded }) => 
+        tap(({ posts, loaded, allPagesLoaded }) => {
+          this.completeLoad(allPagesLoaded);
           this.updateState({
             posts: posts
               .sort((a, b) => 
@@ -62,15 +67,14 @@ export class ActivityFeedComponent extends StatefulComponent<State> implements O
                 ...post
               })),
             loaded: loaded
-          })
-        )
+          });
+        })
       )
     );
     
     /**
      * Register a new effect which loads the notifications for a user in the background.
      * Add values to the state.
-     * This tests if it will work at all.
      */
     this.user.session.selectors.state$.subscribe(
       session => {
@@ -88,17 +92,6 @@ export class ActivityFeedComponent extends StatefulComponent<State> implements O
       }
     )
 
-  }
-
-  loadMore(event: Event) {
-    this.cf.poi.dispatchers.loadMore();
-    merge(this.cf.poi.actionListeners.loadPois.success, this.cf.poi.actionListeners.loadPois.error)
-      .pipe(take(1))
-      .subscribe(() => (event.target as any).complete());
-  }
-
-  trackPost(_index: number, post: PostStoreModel) {
-    return post.id;
   }
 
   async openDigestModal() {
@@ -141,5 +134,27 @@ export class ActivityFeedComponent extends StatefulComponent<State> implements O
     return filteredObj.length != 0
   }
 
+  completeLoad(allPagesLoaded: boolean): void {
+    this.allPagesLoaded = allPagesLoaded;
+    if (this.loading && this.event) {
+      this.event.target.complete();
+      this.loading = false;
+    }
+    if (this.infiniteScroll) {
+      this.infiniteScroll.disabled = allPagesLoaded;
+    }
+  }
+
+  loadMore(event: Event) {
+    if (!this.allPagesLoaded) {
+      this.user.posts.dispatchers.loadPosts();
+      this.loading = true;
+      this.event = event;
+    }
+  }
+
+  trackPost(_index: number, post: PostStoreModel) {
+    return post.id;
+  }
   
 }

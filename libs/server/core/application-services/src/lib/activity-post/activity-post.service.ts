@@ -20,7 +20,7 @@ export class ActivityPostService {
     ) {}
 
     async list(query: IQuery<ActivityPost[]>, token: string) {
-        return this.activityPostRepo.findAll(query);
+        return this.activityPostRepo.query(query, { where: { enabled: true }});
     }
 
     async get(query: IQuery<ActivityPost>, token: string, dto: GetActivityPostDto) {

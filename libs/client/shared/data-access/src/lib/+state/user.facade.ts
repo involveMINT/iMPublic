@@ -654,14 +654,9 @@ export class UserFacade {
 
   readonly posts = {
     dispatchers: {
-      loadDigest: () => {
-        this.store.pipe(select(PostSelectors.getPosts), take(1)).subscribe((state) => {
-          this.store.dispatch(PostActions.loadDigest({ page: state.pagesLoaded + 1}));
-        });
-      },
       loadPosts: () => {
         this.store.pipe(select(PostSelectors.getPosts), take(1)).subscribe((state) => {
-          this.store.dispatch(PostActions.loadPosts({ page: state.pagesLoaded + 1}));
+          this.store.dispatch(PostActions.loadPosts({ page: state.pagesLoaded + 1, limit: state.limit }));
         });
       },
       get: (dto: GetActivityPostDto) => {
@@ -678,25 +673,18 @@ export class UserFacade {
       },
     },
     selectors: {
-      digest_posts$: this.store.pipe(select(PostSelectors.getPosts)).pipe(
-        tap(({ loaded }) => {
-          if (!loaded) {
-            this.store.dispatch(PostActions.loadDigest({ page: 1 }));
-          }
-        })
-      ),
       posts$: this.store.pipe(select(PostSelectors.getPosts)).pipe(
-        tap(({ loaded }) => {
+        tap(({ loaded, limit }) => {
           if (!loaded) {
-            this.store.dispatch(PostActions.loadPosts({ page: 1 }));
+            this.store.dispatch(PostActions.loadPosts({ page: 1, limit }));
           }
         })
       ),
       getPost: (postId: string) =>
         this.store.pipe(select(PostSelectors.selectPost(postId))).pipe(
-          tap(({ loaded }) => {
+          tap(({ loaded, limit }) => {
             if (!loaded) {
-              this.store.dispatch(PostActions.loadPosts({ page: 1 }));
+              this.store.dispatch(PostActions.loadPosts({ page: 1, limit }));
             }
           })
         ),
@@ -706,10 +694,6 @@ export class UserFacade {
         success: this.actions$.pipe(ofType(PostActions.loadPostsSuccess)),
         error: this.actions$.pipe(ofType(PostActions.loadPostsError)),
       },
-      loadDigest: {
-        success: this.actions$.pipe(ofType(PostActions.loadDigestSuccess)),
-        error: this.actions$.pipe(ofType(PostActions.loadDigestError)),
-      }
     }
   }
 

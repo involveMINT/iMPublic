@@ -9,6 +9,8 @@ export const getPosts = createSelector(getPostsState, (state: PostsState) => ({
     posts: selectAll(state.posts),
     pagesLoaded: state.pagesLoaded,
     loaded: state.pagesLoaded > 0,
+    limit: state.limit,
+    allPagesLoaded: state.allPagesLoaded,
 }));
 
 export const selectPost = (id: string) => 
@@ -16,4 +18,6 @@ export const selectPost = (id: string) =>
         post: selectEntities(state.posts)[id],
         pagesLoaded: state.pagesLoaded,
         loaded: state.pagesLoaded > 0,
+        limit: state.limit,
+        allPagesLoaded: state.allPagesLoaded,
     }));
