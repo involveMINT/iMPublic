@@ -1,12 +1,12 @@
 import { Injectable } from "@angular/core";
 import { StatusService } from "@involvemint/client/shared/util";
-import { ActivityPostQuery } from "@involvemint/shared/domain";
 import { Actions, createEffect, ofType } from "@ngrx/effects";
 import * as CommentsActions from './comments.actions';
 import { map, delayWhen, tap } from 'rxjs/operators';
 import { fetch, pessimisticUpdate } from "@nrwl/angular";
 import { from } from 'rxjs';
 import { CommentOrchestration } from "../../orchestrations/comment.orchestration";
+// eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
 import { CommentQuery } from "libs/shared/domain/src/lib/domain/comment/comment.queries";
 
 @Injectable()
@@ -58,6 +58,88 @@ export class CommentEffects {
         )
     );
 
+    /** Effects when flagComment is dispatched */
+    readonly flagComment$ = createEffect(() =>
+        this.actions$.pipe(
+            ofType(CommentsActions.flagComment),
+            pessimisticUpdate({
+                run: ({ dto }) =>
+                    this.comments.flag(
+                        CommentQuery,
+                        dto
+                    ).pipe(
+                        map((comment) => CommentsActions.flagCommentSuccess({ comment }))
+                    ),
+                onError: (action, { error }) => {
+                    this.status.presentNgRxActionAlert(action, error);
+                    return CommentsActions.flagCommentError({ error });
+                }
+            }),
+        )
+    );
+
+    /** Effects when unflagComment is dispatched */
+    readonly unflagComment$ = createEffect(() =>
+        this.actions$.pipe(
+            ofType(CommentsActions.unflagComment),
+            pessimisticUpdate({
+                run: ({ dto }) =>
+                    this.comments.unflag(
+                        CommentQuery,
+                        dto
+                    ).pipe(
+                        map((comment) => CommentsActions.unflagCommentSuccess({ comment }))
+                    ),
+                onError: (action, { error }) => {
+                    this.status.presentNgRxActionAlert(action, error);
+                    return CommentsActions.unflagCommentError({ error });
+                }
+            }),
+        )
+    );
+
+    /** Effects when hideComment is dispatched */
+readonly hideComment$ = createEffect(() =>
+    this.actions$.pipe(
+        ofType(CommentsActions.hideComment),
+        pessimisticUpdate({
+            run: ({ dto }) =>
+                this.comments.hide(
+                    CommentQuery,
+                    dto
+                ).pipe(
+                    map((comment) => CommentsActions.hideCommentSuccess({ comment }))
+                ),
+            onError: (action, { error }) => {
+                this.status.presentNgRxActionAlert(action, error);
+                return CommentsActions.hideCommentError({ error });
+            }
+        }),
+        tap(() => this.status.dismissLoader())
+    )
+);
+
+/** Effects when unhideComment is dispatched */
+readonly unhideComment$ = createEffect(() =>
+    this.actions$.pipe(
+        ofType(CommentsActions.unhideComment),
+        pessimisticUpdate({
+            run: ({ dto }) =>
+                this.comments.unhide(
+                    CommentQuery,
+                    dto
+                ).pipe(
+                    map((comment) => CommentsActions.unhideCommentSuccess({ comment }))
+                ),
+            onError: (action, { error }) => {
+                this.status.presentNgRxActionAlert(action, error);
+                return CommentsActions.unhideCommentError({ error });
+            }
+        }),
+        tap(() => this.status.dismissLoader())
+    )
+);
+    
     constructor(
         private readonly actions$: Actions,
         private readonly status: StatusService,

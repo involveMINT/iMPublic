@@ -15,25 +15,37 @@
 
   <ion-content id="content">
     <ion-list lines="none">
-        <ion-item *ngFor="let comment of state.comments">
-          <div body class="member-handle">
-            <div
-              class="im-profile-pic medium"
-              *ngIf="comment.profilePicFilePath | imStorageUrl | async as url"
-              [ngStyle]="{ 'background-image': 'url(' + url + ')' }"
-            ></div>
-            <ion-icon
-              *ngIf="!comment.profilePicFilePath"
-              class="im-profile-pic-none medium"
-              name="person-circle"
-            ></ion-icon>
+      <ng-container *ngFor="let comment of state.comments">
+        <ion-item>
+          <div class="comment-container">
+            <div class="member-handle">
+              <div
+                class="im-profile-pic medium"
+                *ngIf="comment.profilePicFilePath | imStorageUrl | async as url"
+                [ngStyle]="{ 'background-image': 'url(' + url + ')' }"
+              ></div>
+            </div>
+            <ion-list class="comment">
+              <ion-label class="pointer" (click)="viewProfile(comment.handleId)" > <b>@{{ comment.handleId }}</b> </ion-label>
+              <ion-label class="spaced" color="medium"> {{ comment.name }} </ion-label>
+              <ion-label class="ion-text-wrap" *ngIf="!checkCommentHidden(comment)"> {{ comment.text }} </ion-label>
+              <ion-label class="ion-text-wrap removed" *ngIf="checkCommentHidden(comment)">This comment has been removed because it goes against community guidelines.</ion-label>
+            </ion-list>
           </div>
-          <ion-list class="comment"> 
-            <ion-label class="pointer" (click)="viewProfile(comment.handleId)" > <b>@{{ comment.handleId }}</b> </ion-label>
-            <ion-label class="spaced" color="medium"> {{ comment.name }} </ion-label>
-            <ion-label class="ion-text-wrap"> {{ comment.text }} </ion-label>
-          </ion-list>
+          <div class="flag-container">
+            <div *ngIf="!checkUserFlagged(comment)">
+              <ion-button #flagButton class="flag-button" fill="clear" (click)="flag(comment.id, flagButton)">
+                <ion-icon name="flag-outline" class="flag-icon"></ion-icon>
+              </ion-button>
+            </div>
+            <div *ngIf="checkUserFlagged(comment)">
+              <ion-button #unflagButton class="flag-button" fill="clear" (click)="unflag(comment.id, unflagButton)">
+                <ion-icon name="flag" class="flag-icon"></ion-icon>
+              </ion-button>
+            </div>
+          </div>
         </ion-item>
+      </ng-container>
     </ion-list>
   </ion-content>
 

@@ -23,9 +23,9 @@
       <app-post
         [post]="post"
         *ngFor="let post of state.posts; trackBy: trackPost"
-        >
+      >
       </app-post>
- 
+
       <ion-infinite-scroll threshold="100px" (ionInfinite)="loadMore($event)">
         <ion-infinite-scroll-content
           loadingSpinner="bubbles"

@@ -18,6 +18,8 @@ export * from './lib/exchange-admin/exchange-admin.entity';
 export * from './lib/exchange-admin/exchange-admin.repository';
 export * from './lib/exchange-partner/exchange-partner.entity';
 export * from './lib/exchange-partner/exchange-partner.repository';
+export * from './lib/flag/flag.entity';
+export * from './lib/flag/flag.repository';
 export * from './lib/handle/handle.entity';
 export * from './lib/handle/handle.repository';
 export * from './lib/like/like.entity';

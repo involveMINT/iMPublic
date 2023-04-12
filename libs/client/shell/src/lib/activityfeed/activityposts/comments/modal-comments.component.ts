@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, Input, OnInit, ViewChild } from '@a
 import { ImViewProfileModalService, PostStoreModel, UserFacade } from '@involvemint/client/shared/data-access';
 import { map, tap } from 'rxjs/operators';
 
-import { AlertController, IonContent, ModalController } from '@ionic/angular';
+import { AlertController, IonContent, IonButton, ModalController } from '@ionic/angular';
 import { Observable } from 'rxjs';
 import { CommentStoreModel } from 'libs/client/shared/data-access/src/lib/+state/comments/comments.reducer';
 import { StatefulComponent } from '@involvemint/client/shared/util';
@@ -131,9 +131,42 @@ export class ModalCommentComponent extends StatefulComponent<State> implements O
   }
 
   cancel() {
-    return this.modalCtrl.dismiss(null, 'cancel');
+    return this.modalCtrl.dismiss(this.state.comments, 'cancel');
+  }
+  
+
+  flag(id: string, button: IonButton) {
+    button.disabled = true;
+    this.user.comments.dispatchers.flagComment({
+      commentId: id,
+    })
   }
 
+  unflag(id: string, button: IonButton) {
+    button.disabled = true;
+    this.user.comments.dispatchers.unflagComment({
+      commentId: id,
+    })
+  }
+
+  checkUserFlagged(comment: CommentStoreModel) {
+    let userId = "";
+    this.user.session.selectors.email$.subscribe(s => userId = s);
+    const filteredObj = comment.flags.filter(obj => obj.user.id === userId);
+    return filteredObj.length != 0
+  }
+
+  checkCommentHidden(comment: CommentStoreModel) {
+    let userId = "";
+    this.user.session.selectors.email$.subscribe(s => userId = s);
+    return comment.hidden
+  }
+
+  trackComment(index: number, comment: CommentStoreModel) {
+    return comment.id;
+
+  }
+  
   async presentErrorMessage(message: string) {
     const alert = await this.alertController.create({
       header: 'Error',

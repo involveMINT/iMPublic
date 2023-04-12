@@ -7,6 +7,7 @@ import { SpApplication } from '../sp-application';
 import { ActivityPost } from '../activity-post';
 import { Like } from '../like';
 import { Comment } from '../comment';
+import { Flag } from '../flag';
 
 export interface User {
   /** `id` is the user's email address. */
@@ -30,6 +31,7 @@ export interface User {
   activityPosts: IOneToMany<ActivityPost, 'user'>;
   likes: IOneToMany<Like, 'user'>;
   comments: IOneToMany<Comment, 'user'>;
+  flags: IOneToMany<Flag, 'user'>;
 
   updatedAt: Date | string;
 }

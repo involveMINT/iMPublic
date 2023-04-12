@@ -77,6 +77,7 @@ export class UserService {
         likes: [],
         comments: [],
         updatedAt: new Date(),
+        flags: []
       },
       {}
     );
@@ -189,6 +190,7 @@ export class UserService {
         activityPosts: [],
         likes: [],
         comments: [],
+        flags: [],
         updatedAt: new Date(),
       },
       { id: true }

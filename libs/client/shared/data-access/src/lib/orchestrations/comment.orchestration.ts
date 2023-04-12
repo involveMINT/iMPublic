@@ -1,6 +1,5 @@
 import { ClientOperation, ClientOrchestration, IClientOrchestration } from '@orcha/angular';
-import { InvolvemintOrchestrations } from '@involvemint/shared/domain';
-import { ICommentOrchestration } from 'libs/shared/domain/src/lib/domain/comment';
+import { InvolvemintOrchestrations, ICommentOrchestration } from '@involvemint/shared/domain';
 
 @ClientOrchestration(InvolvemintOrchestrations.comment)
 export class CommentOrchestration implements IClientOrchestration<ICommentOrchestration> {
@@ -15,4 +14,10 @@ export class CommentOrchestration implements IClientOrchestration<ICommentOrches
 
     @ClientOperation()
     unhide!: IClientOrchestration<ICommentOrchestration>['unhide'];
+
+    @ClientOperation()
+    flag!: IClientOrchestration<ICommentOrchestration>['flag'];
+
+    @ClientOperation()
+    unflag!: IClientOrchestration<ICommentOrchestration>['unflag'];
 }

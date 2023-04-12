@@ -13,14 +13,18 @@ import {
   EditCmProfileDto,
   EditEpProfileDto,
   EditSpProfileDto,
+  FlagCommentDto,
   GetActivityPostDto,
   GetSuperAdminForExchangePartnerDto,
+  HideCommentDto,
   ImConfig,
   LikeActivityPostDto,
   SignUpDto,
   SubmitEpApplicationDto,
   SubmitSpApplicationDto,
   TransactionDto,
+  UnflagCommentDto,
+  UnhideCommentDto,
   UnlikeActivityPostDto,
   UpdateOfferDto,
   UpdateRequestDto,
@@ -723,6 +727,18 @@ export class UserFacade {
       },
       createComment: (dto: CreateCommentDto) => {
         this.store.dispatch(CommentActions.createComment({ dto }));
+      },
+      flagComment: (dto: FlagCommentDto) => {
+        this.store.dispatch(CommentActions.flagComment({ dto }));
+      },
+      unflagComment: (dto: UnflagCommentDto) => {
+        this.store.dispatch(CommentActions.unflagComment({ dto }));
+      },
+      hideComment: (dto: HideCommentDto) => {
+        this.store.dispatch(CommentActions.hideComment({ dto }));
+      },
+      unhideComment: (dto: UnhideCommentDto) => {
+        this.store.dispatch(CommentActions.unhideComment({ dto }));
       },
     },
     selectors: {

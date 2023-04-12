@@ -356,12 +356,22 @@ export class ImAppComponent extends StatefulComponent<State> implements OnInit {
                 inTabs: true,
               };
 
+              const moderation: MenuItem = {
+                title: "Moderation",
+                icon: 'people', // Find moderation icon
+                color:'var(--im-green)',
+                route: this.route.rawRoutes.path.admin.moderation.ROOT,
+                click: () => this.route.to.admin.moderation.ROOT(),
+                inMenu: true,
+                inTabs: true,
+              }
+
               menus.push({
                 title: 'Admin',
                 color: 'var(--im-green)',
                 active: true,
                 uponActivation: () => setImPrimaryColors('none'),
-                items: [applications, snoop, assign, mint, users],
+                items: [applications, snoop, assign, mint, users, moderation],
               });
             }
 

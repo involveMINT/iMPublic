@@ -16,3 +16,4 @@ export const getComment = (id: string) =>
         pagesLoaded: state.pagesLoaded,
         loaded: state.pagesLoaded > 0,
     }));
+

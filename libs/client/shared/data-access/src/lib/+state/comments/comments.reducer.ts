@@ -16,7 +16,7 @@ export interface CommentsState {
 
 export const commentsAdapter = createEntityAdapter<CommentStoreModel>();
 
-const initialState: CommentsState = {
+export const initialState: CommentsState = {
     comments: commentsAdapter.getInitialState(),
     pagesLoaded: 0,
 }
@@ -47,7 +47,43 @@ export const CommentsReducer = createReducer(
         (state, { comments }): CommentsState => {
             return {
                 ...state,
-                comments: commentsAdapter.setAll(comments, state.comments),
+                comments: commentsAdapter.upsertMany(comments, state.comments),
+            }
+        }
+    ),
+    on(
+        CommentsActions.flagCommentSuccess,
+        (state, { comment }): CommentsState => {
+            return {
+                ...state,
+                comments: commentsAdapter.upsertOne(comment, state.comments)
+            }
+        }
+    ),
+    on(
+        CommentsActions.unflagCommentSuccess,
+        (state, { comment }): CommentsState => {
+            return {
+                ...state,
+                comments: commentsAdapter.upsertOne(comment, state.comments)
+            }
+        }
+    ),
+    on(
+        CommentsActions.hideCommentSuccess,
+        (state, { comment }): CommentsState => {
+            return {
+                ...state,
+                comments: commentsAdapter.upsertOne(comment, state.comments)
+            }
+        }
+    ),
+    on(
+        CommentsActions.unhideCommentSuccess,
+        (state, { comment }): CommentsState => {
+            return {
+                ...state,
+                comments: commentsAdapter.upsertOne(comment, state.comments)
             }
         }
     ),

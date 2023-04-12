@@ -53,3 +53,27 @@ export abstract class UnhideCommentDto {
   @IsString()
   commentId!: string;
 }
+
+export abstract class FlagCommentDto {
+  /**
+   * Take in commentId and flags comment
+   * 
+   * Service Logic:
+   * Flagged => Flagged + 1
+   * User auth done by service + perform checks
+   */
+  @IsString()
+  commentId!: string;
+}
+
+export abstract class UnflagCommentDto {
+  /**
+   * Take in commentId and unflags comment
+   * 
+   * Service Logic:
+   * Flagged => Flagged - 1
+   * User auth done by service + perform checks
+   */
+  @IsString()
+  commentId!: string;
+}

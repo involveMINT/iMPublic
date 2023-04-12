@@ -4,7 +4,7 @@
     align-items: flex-start;
     flex: 1;
   }
-  
+
   .flag-container {
     display: flex;
     flex-direction: row;
@@ -12,9 +12,9 @@
     align-items: flex-start;
     padding-right: 12px;
   }
-  
-  /* Other CSS rules remain the same */
-  .comment {
+
+/* Other CSS rules remain the same */
+.comment {
     flex-direction: column;
     padding: 12px;
     margin-top: 12px;
@@ -40,10 +40,5 @@
   
   .spaced {
     padding-bottom: 4px;
-  }
-
-  .ion-text-wrap.removed {
-    color: #ababab;
-    font-style: italic;
   }
   

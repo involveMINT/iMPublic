@@ -172,5 +172,8 @@ export const ImRoutes = {
     users: {
       ROOT: 'users',
     },
+    moderation: {
+      ROOT: 'moderation',
+    }
   },
 };
