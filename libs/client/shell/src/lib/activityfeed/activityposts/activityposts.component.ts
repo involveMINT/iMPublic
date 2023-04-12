@@ -2,12 +2,11 @@ import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import {
   ChangeMakerFacade,
   EnrollmentsModalService,
-  PoiCmStoreModel,
 } from '@involvemint/client/cm/data-access';
-import { UserFacade, PostStoreModel } from '@involvemint/client/shared/data-access';
+import { UserFacade, PostStoreModel, CommentService, ActivityPostOrchestration } from '@involvemint/client/shared/data-access';
 import { RouteService } from '@involvemint/client/shared/routes';
-import { StatefulComponent } from '@involvemint/client/shared/util';
-import { calculatePoiStatus, calculatePoiTimeWorked, PoiStatus } from '@involvemint/shared/domain';
+import { StatefulComponent, StatusService } from '@involvemint/client/shared/util';
+import { ActivityPostQuery, PoiStatus } from '@involvemint/shared/domain';
 import { parseDate } from '@involvemint/shared/util';
 import { IonButton } from '@ionic/angular';
 import { ModalController } from '@ionic/angular';
@@ -15,11 +14,12 @@ import { ModalCommentComponent } from './comments/modal-comments.component';
 import { compareDesc } from 'date-fns';
 import { merge } from 'rxjs';
 import { take, tap } from 'rxjs/operators';
-import { CommentStoreModel } from 'libs/client/shared/data-access/src/lib/+state/comments/comments.reducer';
+import { ModalDigestComponent, CLOSED } from './modal-digest/modal-digest.component';
 
 
 interface State {
-  posts: Array<PostStoreModel & { status: PoiStatus; timeWorked: string; }>;
+  posts: Array<PostStoreModel>;
+  digestPosts: Array<PostStoreModel>;
   loaded: boolean;
 }
 
@@ -40,10 +40,12 @@ export class ActivityFeedComponent extends StatefulComponent<State> implements O
     private readonly route: RouteService,
     private readonly enrollmentsModal: EnrollmentsModalService,
     private readonly user: UserFacade,
-    private modalCtrl: ModalController
-    
+    private readonly commentService: CommentService,
+    private modalCtrl: ModalController,
+    private readonly post: ActivityPostOrchestration,
+    private readonly status: StatusService,
   ) {
-    super({ posts: [], loaded: false });
+    super({ posts: [], digestPosts: [], loaded: false });
   }
 
   ngOnInit(): void {
@@ -57,24 +59,35 @@ export class ActivityFeedComponent extends StatefulComponent<State> implements O
                 compareDesc(parseDate(a.dateCreated ?? new Date()), parseDate(b.dateCreated ?? new Date()))
               )
               .map((post) => ({
-                ...post,
-                status: calculatePoiStatus(post.poi),
-                timeWorked: calculatePoiTimeWorked(post.poi)
+                ...post
               })),
             loaded: loaded
           })
         )
       )
     );
+    
+    /**
+     * Register a new effect which loads the notifications for a user in the background.
+     * Add values to the state.
+     * This tests if it will work at all.
+     */
+    this.user.session.selectors.state$.subscribe(
+      session => {
+        const weekAgo = new Date();
+        weekAgo.setDate(weekAgo.getDate() - 7);
+        const lastLoggedIn = session.dateLastLoggedIn ? new Date(session.dateLastLoggedIn) : weekAgo;
+        const startDate = (lastLoggedIn > weekAgo ? lastLoggedIn : weekAgo).toISOString();
+        this.post.digest(ActivityPostQuery, { startDate }).subscribe(
+          posts => {
+            this.updateState({
+              digestPosts: posts
+            })
+          }
+        )
+      }
+    )
 
-  }
-
-  refresh() {
-    this.cf.poi.dispatchers.refresh();
-  }
-
-  calculatePoiStatus(poi: PoiCmStoreModel) {
-    return calculatePoiStatus(poi);
   }
 
   loadMore(event: Event) {
@@ -82,6 +95,29 @@ export class ActivityFeedComponent extends StatefulComponent<State> implements O
     merge(this.cf.poi.actionListeners.loadPois.success, this.cf.poi.actionListeners.loadPois.error)
       .pipe(take(1))
       .subscribe(() => (event.target as any).complete());
+  }
+
+  trackPost(_index: number, post: PostStoreModel) {
+    return post.id;
+  }
+
+  async openDigestModal() {
+    const modal = await this.modalCtrl.create({
+      component: ModalDigestComponent,
+      componentProps: {
+        'digestPosts': this.state.digestPosts
+      }
+    });
+
+    await modal.present();
+    const { data, role } = await modal.onWillDismiss();
+
+    if (role === CLOSED) {
+      this.updateState({
+        digestPosts: data
+      });
+    }
+
   }
 
   like(id: string, button: IonButton) {
@@ -105,36 +141,5 @@ export class ActivityFeedComponent extends StatefulComponent<State> implements O
     return filteredObj.length != 0
   }
 
-  trackPost(index: number, post: PostStoreModel) {
-    return post.id;
-  }
-
-  async openModal(post: PostStoreModel) {
-    const modal = await this.modalCtrl.create({
-      component: ModalCommentComponent,
-      componentProps: {
-        'post': post,
-        'user': this.user,
-     }
-    });
-    modal.present();
-
-    const { data } = await modal.onWillDismiss();
-    if (data) {
-      this.updatePostComments(post.id, data);
-    }
-  }
-
-  private updatePostComments(postId: string, updatedComments: Array<CommentStoreModel>) {
-    this.updateState((state => {
-      const updatedPosts = state.posts.map((post) => {
-        if (post.id === postId) {
-          return { ...post, comments: updatedComments };
-        }
-        return post;
-      });
-      return { ...state, posts: updatedPosts };
-    })(this.state));
-  }
   
 }

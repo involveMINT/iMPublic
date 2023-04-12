@@ -11,7 +11,7 @@ export const getPosts = createSelector(getPostsState, (state: PostsState) => ({
     loaded: state.pagesLoaded > 0,
 }));
 
-export const getPost = (id: string) => 
+export const selectPost = (id: string) => 
     createSelector(getPostsState, (state: PostsState) => ({
         post: selectEntities(state.posts)[id],
         pagesLoaded: state.pagesLoaded,

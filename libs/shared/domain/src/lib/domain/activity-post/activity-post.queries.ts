@@ -24,5 +24,6 @@ export const ActivityPostQuery = createQuery<ActivityPost>()({
     user: {
       id: true
     },
+    dateCreated: true
   }
 });

@@ -37,6 +37,7 @@ describe('Activity-Post Effects', () => {
                         create: jest.fn(),
                         like: jest.fn(),
                         unlike: jest.fn(),
+                        get: jest.fn(),
                     }
                 }
             ]
@@ -106,6 +107,37 @@ describe('Activity-Post Effects', () => {
         // specify expected output and run test
         const expected = cold('--(b)', { b: completion });
         expect(effects.loadPosts$).toBeObservable(expected);
+    });
+
+    it('should return get post success on happy path', () => {
+        const fakePost = { id: "1" } as any;
+        const action = PostsActions.getPost({ dto: { postId: "1" }});
+        const completion = PostsActions.getPostSuccess({ post: fakePost });
+
+        jest.spyOn(posts, 'get')
+            .mockImplementation((_query: any, _dto: any) => {
+                return of(fakePost);
+            });
+        
+        actions = hot('--a-', { a: action });
+
+        const expected = cold('--(b)', { b: completion });
+        expect(effects.getPost$).toBeObservable(expected);
+    });
+
+    it('should return get post error on unhappy path', () => {
+        const action = PostsActions.getPost({ dto: { postId: "1" }});
+        const completion = PostsActions.getPostError({ error: undefined as any });
+
+        jest.spyOn(posts, 'get')
+            .mockImplementation((_query: any, _dto: any) => {
+                throw throwError("error");
+            });
+        
+        actions = hot('--a-', { a: action });
+
+        const expected = cold('--(b)', { b: completion });
+        expect(effects.getPost$).toBeObservable(expected);
     });
 
     it('should return like post success on happy path', () => {

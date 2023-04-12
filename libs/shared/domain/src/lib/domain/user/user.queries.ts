@@ -10,6 +10,7 @@ export const UserQuery = createQuery<User>()({
   id: true,
   joyride: true,
   baAdmin: true,
+  dateLastLoggedIn: true,
   changeMaker: {
     id: true,
     profilePicFilePath: true,
