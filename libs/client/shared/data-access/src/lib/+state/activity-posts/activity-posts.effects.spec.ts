@@ -67,13 +67,17 @@ describe('Activity-Post Effects', () => {
 
     it('should return load posts success on happy path', () => {
         // provide fake data that will be used in effect
-        const fakePosts = [
-            { id: "1"} as any, {id: "2"} as any
-        ];
-        const action = PostsActions.loadPosts({ page: 1 });
+        const fakePosts = {
+            items: [
+                { id: "1"} as any, {id: "2"} as any
+            ]
+        }
+        
+        const action = PostsActions.loadPosts({ page: 1, limit: 10 });
         const completion = PostsActions.loadPostsSuccess({ 
-            posts: fakePosts, 
-            page: 1
+            posts: fakePosts.items, 
+            page: 1,
+            limit: 10,
         });
 
         // mock `this.posts.list` call and return OBSERVABLE data!
@@ -92,7 +96,7 @@ describe('Activity-Post Effects', () => {
 
     it('should return load posts error on unhappy path', () => {
         // provide fake data that will be used in effect
-        const action = PostsActions.loadPosts({ page: 1 });
+        const action = PostsActions.loadPosts({ page: 1, limit: 10 });
         const completion = PostsActions.loadPostsError({ error: undefined as any });
 
         // mock `this.posts.list` call and return OBSERVABLE data!

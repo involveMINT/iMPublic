@@ -10,8 +10,9 @@ describe('Activity-Post Reducer', () => {
         initialState.pagesLoaded = 0;
         initialState.posts = {
             entities: {},
-            ids: []
+            ids: [],
         };
+        initialState.allPagesLoaded = false;
 
         // spy methods used
         jest.spyOn(postsAdapter, 'upsertMany')
@@ -54,13 +55,46 @@ describe('Activity-Post Reducer', () => {
         expect(newState).toEqual(initialState);
     });
 
-    it('should update posts & page on load posts success', () => {
-        const action = PostsActions.loadPostsSuccess({ posts: [{ id: 1 }, { id: 2 }], page: 1 } as any);
+    it('should update posts & page on load posts success w/ pagination not complete', () => {
+        const action = PostsActions.loadPostsSuccess({ 
+            posts: [{ id: 1 }, { id: 2 },{ id: 3 },{ id: 4 },{ id: 5 },{ id: 6 },{ id: 7 },{ id: 8 },{ id: 9 },{ id: 10 }], 
+            page: 1,
+            limit: initialState.limit,
+        } as any);
         const newState = PostsReducer(initialState, action);
         expect(postsAdapter.upsertMany).toBeCalledTimes(1);
-        expect(newState.posts.ids).toEqual([1, 2].sort());
+        expect(newState.posts.ids.sort()).toEqual([1, 2, 3, 4, 5, 6, 7, 8, 9, 10].sort());
         expect(newState.posts.entities).toEqual({});
         expect(newState.pagesLoaded).toEqual(1);
+        expect(newState.allPagesLoaded).toEqual(false);
+    });
+
+    it('should update posts & page on load posts success w/ pagination complete returning partial', () => {
+        const action = PostsActions.loadPostsSuccess({ 
+            posts: [{ id: 1 }, { id: 2 }, { id: 3 }], 
+            page: 1,
+            limit: initialState.limit,
+        } as any);
+        const newState = PostsReducer(initialState, action);
+        expect(postsAdapter.upsertMany).toBeCalledTimes(1);
+        expect(newState.posts.ids.sort()).toEqual([1, 2, 3].sort());
+        expect(newState.posts.entities).toEqual({});
+        expect(newState.pagesLoaded).toEqual(1);
+        expect(newState.allPagesLoaded).toEqual(true);
+    });
+
+    it('should update posts & page on load posts success w/ pagination complete returning empty', () => {
+        const action = PostsActions.loadPostsSuccess({ 
+            posts: [], 
+            page: 1,
+            limit: initialState.limit,
+        } as any);
+        const newState = PostsReducer(initialState, action);
+        expect(postsAdapter.upsertMany).toBeCalledTimes(1);
+        expect(newState.posts.ids).toEqual([].sort());
+        expect(newState.posts.entities).toEqual({});
+        expect(newState.pagesLoaded).toEqual(1);
+        expect(newState.allPagesLoaded).toEqual(true);
     });
 
     it('should add post on get post success', () => {
@@ -72,7 +106,9 @@ describe('Activity-Post Reducer', () => {
                 entities: {},
                 ids: [ 1 ]
             },
-            pagesLoaded: 0
+            pagesLoaded: 0,
+            allPagesLoaded: false,
+            limit: 10,
         });
     });
 
@@ -85,7 +121,9 @@ describe('Activity-Post Reducer', () => {
                 entities: {},
                 ids: [ 1 ]
             },
-            pagesLoaded: 0
+            pagesLoaded: 0,
+            allPagesLoaded: false,
+            limit: 10,
         });
     });
 
@@ -98,7 +136,9 @@ describe('Activity-Post Reducer', () => {
                 entities: {},
                 ids: [ 1 ]
             },
-            pagesLoaded: 0
+            pagesLoaded: 0,
+            allPagesLoaded: false,
+            limit: 10,
         });
     });
 
@@ -111,7 +151,9 @@ describe('Activity-Post Reducer', () => {
                 entities: {},
                 ids: [ 1 ]
             },
-            pagesLoaded: 0
+            pagesLoaded: 0,
+            allPagesLoaded: false,
+            limit: 10,
         });
     });
 
