@@ -44,7 +44,7 @@ export class PostComponent implements OnInit {
     }
 
     /**
-     * Dispatches a 'like' request for a post using NgRx state management.
+     * Dispatches a 'unlike' request for a post using NgRx state management.
      * The changes resulting from the request can be tracked/re-rendered using post selectors.
      */
     unlike(id: string, button: IonButton) {

@@ -31,9 +31,8 @@ interface State {
  * provide the Activity Post Feed view. It is a stateful component (see state interface above), 
  * which tracks the Activity Posts loaded in the state manager using the posts$ selector
  * view. It provides infiniteScrolling ability to users that will continuously fetch and display
- * more posts as users scroll down until. It also provides functionality to like/unlike, view
- * notifications, and view comments. This component handles mostly tracking/re-rending of post data and 
- * user requests, the rendering of individual posts data is handled mostly by post.component. 
+ * more posts as users scroll down until. This component handles mostly tracking/re-rending of post 
+ * data and user requests, the rendering of individual posts data is handled mostly by post.component. 
  */
 @Component({
   selector: 'involvemint-activityposts',
