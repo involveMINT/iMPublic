@@ -5,7 +5,23 @@ import { PostStoreModel } from './activity-posts.reducer';
 
 
 /**
- * Constant Type Values
+ * Activity Post Actions.
+ * 
+ * An 'action' is a component of Angular state management that sends
+ * out a signal that something happened or needs to be done. They have
+ * similarities to functions in that releasing/invoking an action on the
+ * state management lifecycle will invoke some background action in the system.
+ * With actions you specify the name of the action (so others can listen for it) and
+ * the values that are passed along with that action.
+ * 
+ * Ex: 
+ * loadPosts => signals that Activity Posts need to be loaded + presents params.
+ * loadPostsSuccess => signals that Activity Posts have been fetched successfully + presents outputs.
+ */
+
+
+/**
+ * Constant Action Types.
  */
 export const LOAD_POSTS =  '[Activity Posts] Activity Posts Load';
 export const LOAD_POSTS_SUCCESS = '[Activity Posts] Activity Posts Load Success';
@@ -29,7 +45,7 @@ export const UNLIKE_POST_ERROR = '[Activity Posts] unlike Activity Post Error';
 
 
 /**
- * Actions for loading activity post
+ * Action Specifications.
  */
 export const loadPosts = createAction(
     LOAD_POSTS,
@@ -46,12 +62,9 @@ export const loadPostsError = createAction(
     props<{ error: OrchaOperationError }>()
 );
 
-/**
- * Actions for creating activity post
- */
 export const createPost = createAction(
     CREATE_POST,
-    props<{ dto: CreateActivityPostDto }>() // not entirely sure which should go here...
+    props<{ dto: CreateActivityPostDto }>()
 );
 
 export const createPostSuccess = createAction(

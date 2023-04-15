@@ -5,6 +5,24 @@ import { createReducer, on } from '@ngrx/store';
 import * as PostsActions from './activity-posts.actions';
 
 
+/**
+ * Activity Post Reducer.
+ * 
+ * A 'reducer' is a component of Angular state management that listens for 
+ * actions and performs state change to reduce the incoming data from the action
+ * into the existing state. There is a 'PostState' which defines the structure of
+ * the state for the reducer, and an 'initialState' which defines the initial values
+ * for the state (which is inputted to reduce new state when actions passed).
+ * 
+ * Ex:
+ * loadPostsSuccess => listens for the 'loadPostsSuccess' action (outputted by PostEffects) and 
+ *                     creates a new PostState by taking the existing state and the values passed
+ *                     by the 'loadPostsSuccess' (posts, page, limit) and merging them. This specific
+ *                     reducer does so by adding the new posts to the existing state posts, updating page
+ *                     to be the value of the action passed page, and checking the length of posts list
+ *                     returned.
+ */
+
 export const POSTS_KEY = 'posts';
 
 export type PostStoreModel = IParser<ActivityPost, typeof ActivityPostQuery>;
@@ -25,7 +43,6 @@ export const initialState: PostsState = {
     allPagesLoaded: false,
 }
 
-/** Defines the Activity Posts Reducer and how state changes based on actions */
 export const PostsReducer = createReducer(
     initialState,
     on(

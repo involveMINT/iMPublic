@@ -1,28 +1,40 @@
 import { ChangeDetectionStrategy, Component, OnInit, ViewChild } from '@angular/core';
-import {
-  ChangeMakerFacade,
-  EnrollmentsModalService,
-} from '@involvemint/client/cm/data-access';
-import { UserFacade, PostStoreModel, CommentService, ActivityPostOrchestration } from '@involvemint/client/shared/data-access';
-import { RouteService } from '@involvemint/client/shared/routes';
-import { StatefulComponent, StatusService } from '@involvemint/client/shared/util';
+import { UserFacade, PostStoreModel, ActivityPostOrchestration } from '@involvemint/client/shared/data-access';
+import { StatefulComponent } from '@involvemint/client/shared/util';
 import { ActivityPostQuery, PoiStatus } from '@involvemint/shared/domain';
 import { parseDate } from '@involvemint/shared/util';
 import { IonButton, IonInfiniteScroll } from '@ionic/angular';
 import { ModalController } from '@ionic/angular';
-import { ModalCommentComponent } from './comments/modal-comments.component';
 import { compareDesc } from 'date-fns';
-import { merge } from 'rxjs';
-import { take, tap } from 'rxjs/operators';
+import { tap } from 'rxjs/operators';
 import { ModalDigestComponent, CLOSED } from './modal-digest/modal-digest.component';
 
 
+/**
+ * Defining a 'State' interface for an Angular component and extending the
+ * 'StatefulComponent' allows the component to know what the state being tracked
+ * is and dynamically update/re-render the component when the state is updated.
+ * 
+ * Activity Posts Component state tracks the currently loaded Activity Posts,
+ * the digest posts (notifications), and if the state has been loaded.
+ */
 interface State {
   posts: Array<PostStoreModel>;
   digestPosts: Array<PostStoreModel>;
   loaded: boolean;
 }
 
+/**
+ * Activity Posts Component.
+ * 
+ * The primary component which works in conjunction with activityposts.component.html to 
+ * provide the Activity Post Feed view. It is a stateful component (see state interface above), 
+ * which tracks the Activity Posts loaded in the state manager using the posts$ selector
+ * view. It provides infiniteScrolling ability to users that will continuously fetch and display
+ * more posts as users scroll down until. It also provides functionality to like/unlike, view
+ * notifications, and view comments. This component handles mostly tracking/re-rending of post data and 
+ * user requests, the rendering of individual posts data is handled mostly by post.component. 
+ */
 @Component({
   selector: 'involvemint-activityposts',
   templateUrl: './activityposts.component.html',
@@ -40,14 +52,9 @@ export class ActivityFeedComponent extends StatefulComponent<State> implements O
   }
 
   constructor(
-    private readonly cf: ChangeMakerFacade,
-    private readonly route: RouteService,
-    private readonly enrollmentsModal: EnrollmentsModalService,
     private readonly user: UserFacade,
-    private readonly commentService: CommentService,
     private modalCtrl: ModalController,
     private readonly post: ActivityPostOrchestration,
-    private readonly status: StatusService,
   ) {
     super({ posts: [], digestPosts: [], loaded: false });
   }
@@ -72,10 +79,6 @@ export class ActivityFeedComponent extends StatefulComponent<State> implements O
       )
     );
     
-    /**
-     * Register a new effect which loads the notifications for a user in the background.
-     * Add values to the state.
-     */
     this.user.session.selectors.state$.subscribe(
       session => {
         const weekAgo = new Date();
@@ -94,6 +97,10 @@ export class ActivityFeedComponent extends StatefulComponent<State> implements O
 
   }
 
+  /**
+   * Opens the notification digest modal (modal-digest.component.ts) and waits. 
+   * Updates the digest posts based on posts returned from modal.
+   */
   async openDigestModal() {
     const modal = await this.modalCtrl.create({
       component: ModalDigestComponent,
@@ -113,27 +120,7 @@ export class ActivityFeedComponent extends StatefulComponent<State> implements O
 
   }
 
-  like(id: string, button: IonButton) {
-    button.disabled = true; // prevent click spam
-    this.user.posts.dispatchers.like({
-      postId: id,
-    })
-  }
-
-  unlike(id: string, button: IonButton) {
-    button.disabled = true; // prevent click spam
-    this.user.posts.dispatchers.unlike({
-      postId: id,
-    })
-  }
-
-  checkUserLiked(post: PostStoreModel) {
-    let userId = "";
-    this.user.session.selectors.email$.subscribe(s => userId = s);
-    const filteredObj = post.likes.filter(obj => obj.user.id === userId);
-    return filteredObj.length != 0
-  }
-
+  /** Used on updates to state data to check if infiniteScroll reached end */
   completeLoad(allPagesLoaded: boolean): void {
     this.allPagesLoaded = allPagesLoaded;
     if (this.loading && this.event) {
@@ -145,6 +132,7 @@ export class ActivityFeedComponent extends StatefulComponent<State> implements O
     }
   }
 
+  /** Used by infiniteScroll to issue request to load more posts */
   loadMore(event: Event) {
     if (!this.allPagesLoaded) {
       this.user.posts.dispatchers.loadPosts();
@@ -153,6 +141,7 @@ export class ActivityFeedComponent extends StatefulComponent<State> implements O
     }
   }
 
+  /** Used to track posts and prevent excessive re-rendering */
   trackPost(_index: number, post: PostStoreModel) {
     return post.id;
   }

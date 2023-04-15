@@ -7,6 +7,13 @@ import { LikeEntity } from '../like/like.entity';
 import { CommentEntity } from '../comment/comment.entity';
 
 
+/**
+ * Activity Post Entity.
+ * 
+ * Implements the 'ActivityPost' modal defined in the domain. Specifies the
+ * field values and relationships s.t. typeorm can map a post to an actual 
+ * record in the database ('entity') and provide ORM functionality.
+ */
 @Entity({ name: DbTableNames.ActivityPost })
 export class ActivityPostEntity implements Required<ActivityPost> {
     @PrimaryColumn('text')
