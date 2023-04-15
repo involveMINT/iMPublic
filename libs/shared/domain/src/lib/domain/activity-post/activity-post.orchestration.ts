@@ -11,7 +11,7 @@ import { RecentActivityPostDto,
 import { ActivityPost } from './activity-post.model';
 
 export interface IActivityPostOrchestration {
-  list: IOperation<ActivityPost[], RecentActivityPostDto>;
+  list: IOperation<ActivityPost[]>;
 
   get: IOperation<ActivityPost, GetActivityPostDto>;
   create: IOperation<ActivityPost, CreateActivityPostDto>;

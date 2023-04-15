@@ -3,6 +3,7 @@ import { OrchaOperationError } from '@orcha/common';
 import { CreateActivityPostDto, GetActivityPostDto, LikeActivityPostDto, UnlikeActivityPostDto } from '@involvemint/shared/domain';
 import { PostStoreModel } from './activity-posts.reducer';
 
+
 /**
  * Constant Type Values
  */
@@ -26,42 +27,18 @@ export const UNLIKE_POST = '[Activity Posts] unlike Activity Post';
 export const UNLIKE_POST_SUCCESS = '[Activity Posts] unlike Activity Post Success';
 export const UNLIKE_POST_ERROR = '[Activity Posts] unlike Activity Post Error';
 
-export const LOAD_DIGEST = "[Notification Digest] load digest"
-export const LOAD_DIGEST_SUCCESS = "[Notification Digest] load digest success"
-export const LOAD_DIGEST_ERROR = "[Notification Digest] load digest error"
-
-/**
- * Actions for loading digest
- */
-
-export const loadDigest = createAction(
-    LOAD_DIGEST,
-    props<{ page: number }>()
-);
-
-export const loadDigestSuccess = createAction(
-    LOAD_DIGEST_SUCCESS,
-    props<{ posts: PostStoreModel[]; page: number }>()
-);
-
-export const loadDigestError = createAction(
-    LOAD_DIGEST_ERROR,
-    props<{ error: OrchaOperationError }>()
-);
-
-
 
 /**
  * Actions for loading activity post
  */
 export const loadPosts = createAction(
     LOAD_POSTS,
-    props<{ page: number }>()
+    props<{ page: number; limit: number }>()
 );
 
 export const loadPostsSuccess = createAction(
     LOAD_POSTS_SUCCESS,
-    props<{ posts: PostStoreModel[]; page: number }>()
+    props<{ posts: PostStoreModel[]; page: number; limit: number }>()
 );
 
 export const loadPostsError = createAction(
@@ -131,7 +108,3 @@ export const unlikeError = createAction(
     UNLIKE_POST_ERROR,
     props<{ error: OrchaOperationError }>()
 );
-
-/**
- * Other actions for activity post + Need separate comments NgRx
- */

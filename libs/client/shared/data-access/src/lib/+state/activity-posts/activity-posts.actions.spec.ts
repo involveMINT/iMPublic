@@ -3,16 +3,18 @@ import * as PostsActions from './activity-posts.actions';
 describe('Activity-Post Actions', () => {
 
     it('load posts', () => {
-        const action = PostsActions.loadPosts({ page: 1 })
+        const action = PostsActions.loadPosts({ page: 1, limit: 10 })
         expect(action.type).toEqual(PostsActions.LOAD_POSTS);
         expect(action.page).toEqual(1);
+        expect(action.limit).toEqual(10);
     });
 
     it('load posts success', () => {
-        const action = PostsActions.loadPostsSuccess({ posts: [{ id: 5 } as any], page: 2});
+        const action = PostsActions.loadPostsSuccess({ posts: [{ id: 5 } as any], page: 2, limit: 10 });
         expect(action.type).toEqual(PostsActions.LOAD_POSTS_SUCCESS);
         expect(action.page).toEqual(2);
         expect(action.posts).toEqual([{ id: 5 }])
+        expect(action.limit).toEqual(10);
     });
 
     it('load post error', () => {
