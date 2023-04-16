@@ -5,6 +5,13 @@ import { Comment } from '../comment';
 import { Like } from '../like';
 
 
+/**
+ * Activity Post.
+ * 
+ * Defines the interface for the Activity Post modal. Lays out what the
+ * fields are for a Post, their values, and their relationship to other
+ * modals in InvolveMINT.
+ */
 export interface ActivityPost {
   id: string;
   likeCount: number;

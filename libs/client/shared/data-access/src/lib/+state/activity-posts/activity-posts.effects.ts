@@ -8,10 +8,24 @@ import { fetch, pessimisticUpdate } from "@nrwl/angular";
 import { from } from 'rxjs';
 import { ActivityPostOrchestration } from '../../orchestrations/activity-post.orchestration';
 
+
+/**
+ * Activity Post Effects.
+ * 
+ * An 'effect' is a component of Angular state management that listens for 
+ * actions and perform corresponding effects on the system. 
+ * It is where you define the _logic_ for actions. For the most part, we use
+ * effects as a way to fetch data from the backend and then prepare it to be
+ * presented to the user interface. 
+ * 
+ * Ex:
+ * loadPosts$ => listens for 'loadPosts' action via ofType(..) and then fetches the next page of Activity Posts
+ *               and passes on a either a 'loadPostsSuccess' or 'loadPostsError' action with appropriate values 
+ *               into the state management lifecycle.
+ */
 @Injectable()
 export class PostEffects {
 
-    /** Effect when loadPosts is dispatched */
     readonly loadPosts$ = createEffect(() => 
         this.actions$.pipe(
             ofType(PostsActions.loadPosts),
@@ -37,7 +51,6 @@ export class PostEffects {
         )
     );
 
-    /** Effects when getPost is dispatched */
     readonly getPost$ = createEffect(() =>
         this.actions$.pipe(
             ofType(PostsActions.getPost),
@@ -57,7 +70,6 @@ export class PostEffects {
         )
     );
 
-    /** Effects when createPost is dispatched */
     readonly createPost$ = createEffect(() => 
         this.actions$.pipe(
             ofType(PostsActions.createPost),
@@ -79,7 +91,6 @@ export class PostEffects {
         )
     );
     
-    /** Effects when likePost is dispatched */
     readonly likePost$ = createEffect(() => 
         this.actions$.pipe(
             ofType(PostsActions.like),
@@ -99,7 +110,6 @@ export class PostEffects {
         )
     );
 
-    /** Effects when unlikePost is dispatched */
     readonly unlikePost$ = createEffect(() => 
         this.actions$.pipe(
             ofType(PostsActions.unlike),

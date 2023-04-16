@@ -1,8 +1,17 @@
 import { ServerOrchestration, IServerOrchestration, ServerOperation } from '@orcha/nestjs';
-import { ActivityPost, CreateActivityPostDto, DigestActivityPostDto, DisableActivityPostDto, EnableActivityPostDto, GetActivityPostDto, IActivityPostOrchestration, InvolvemintOrchestrations, LikeActivityPostDto, RecentActivityPostDto, UnlikeActivityPostDto } from '@involvemint/shared/domain';
+import { ActivityPost, CreateActivityPostDto, DigestActivityPostDto, DisableActivityPostDto, EnableActivityPostDto, GetActivityPostDto, IActivityPostOrchestration, InvolvemintOrchestrations, LikeActivityPostDto, UnlikeActivityPostDto } from '@involvemint/shared/domain';
 import { ActivityPostService } from '@involvemint/server/core/application-services';
 import { IQuery } from '@orcha/common';
 
+
+/**
+ * Activity Post Orchestration (server)
+ * 
+ * Implements the orchestration methods defined in 'IActivityPostOrchestration,' but
+ * for the server. The business logic for the method calls are handled by the 
+ * ActivityPostService which gets forwarded the method arguments and returns the
+ * appropriate values.
+ */
 @ServerOrchestration(InvolvemintOrchestrations.activityPost)
 export class ActivityPostOrchestration implements IServerOrchestration<IActivityPostOrchestration> {
     constructor(private readonly activityPostService: ActivityPostService) {}

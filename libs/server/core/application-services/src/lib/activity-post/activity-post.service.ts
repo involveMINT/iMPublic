@@ -4,11 +4,27 @@ import { IPaginate, IParserObject, IQuery } from "@orcha/common";
 import { AuthService } from '../auth/auth.service';
 import * as uuid from 'uuid';
 import { IQueryObject } from "@orcha/common/src/lib/query";
-import { ActivityPost, ActivityPostQuery, CreateActivityPostDto, DigestActivityPostDto, DisableActivityPostDto, EnableActivityPostDto, GetActivityPostDto, LikeActivityPostDto, likeQuery, RecentActivityPostDto, UnlikeActivityPostDto } from "@involvemint/shared/domain";
-import { Cron, CronExpression } from "@nestjs/schedule"
+import { ActivityPost, ActivityPostQuery, CreateActivityPostDto, DigestActivityPostDto, DisableActivityPostDto, EnableActivityPostDto, GetActivityPostDto, LikeActivityPostDto, likeQuery, UnlikeActivityPostDto } from "@involvemint/shared/domain";
+import { Cron } from "@nestjs/schedule"
 import { SMSService } from "../sms/sms.service";
 import { UserQuery } from '@involvemint/shared/domain';
 
+
+/**
+ * Activity Post Service.
+ * 
+ * A 'service' implements the backend logic required for orchestration methods
+ * defined in functions such as 'ActivityPostOrchestration'. They are responsible
+ * for validating inputs, performing checks, and updating the databases as
+ * required. They consume repositories (databases) and other services to implement
+ * the logic required. ActivityPostService is used in Server implementation of 
+ * 'ActivityPostOrchestration' to wrap all the calls.
+ * 
+ * Ex:
+ * like => Logically, adds a like to an activity post... 1) validates user 
+ *         2) checks user already liked  3) adds record to like table
+ *         4) updates like count and returns the like post
+ */
 @Injectable()
 export class ActivityPostService {
     constructor(
@@ -71,15 +87,18 @@ export class ActivityPostService {
         query);
     }
 
+    /**
+     * 1) Validate user
+     * 2) Check if user already liked
+     * 3) insert new record into table
+     * 4) update post and return post 
+     */
     async like(query: IQuery<ActivityPost>, token: string, dto: LikeActivityPostDto) {
         const user = await this.auth.validateUserToken(token ?? '');
-        // did this user already like this post
         const likeRecords = await this.likeRepo.query(likeQuery, { where: { user: user.id, activityPost: dto.postId } });
-
         if (likeRecords.length > 0) {
             throw new Error('User already liked this activity post');
         }
-        // insert new record into 'like' table
        await this.likeRepo.upsert({
             id: uuid.v4(),
             dateCreated: new Date(),
@@ -87,25 +106,23 @@ export class ActivityPostService {
             user: user.id
         },
         likeQuery);
-
-        // update activity post like counter
         const currentPost = await this.activityPostRepo.findOneOrFail(dto.postId, ActivityPostQuery);
         return this.activityPostRepo.update(dto.postId, {likeCount: currentPost.likeCount + 1}, query);
     }
 
+    /**
+     * 1) validate user
+     * 2) check user has liked
+     * 3) remove like from database
+     * 4) update the post and return
+     */
     async unlike(query: IQuery<ActivityPost>, token: string, dto: UnlikeActivityPostDto) {
         const user = await this.auth.validateUserToken(token ?? '');
-        // make sure user liked the post
         const likeRecords = await this.likeRepo.query(likeQuery, { where: { user: user.id, activityPost: dto.postId } });
         if (likeRecords.length == 0) {
             throw new Error('User has not liked this activity post');
         }
-
-        // Remove like record from like repo
-        // We can index into 1st index because we do the check above
         await this.likeRepo.delete(likeRecords[0].id);
-
-        // update activity post like counter
         const currentPost = await this.activityPostRepo.findOneOrFail(dto.postId, ActivityPostQuery);
         return this.activityPostRepo.update(dto.postId, {likeCount: currentPost.likeCount - 1}, query);
     }
@@ -122,7 +139,8 @@ export class ActivityPostService {
         });
         return res;
     }
-    // Send digest notificatino every tuesday at 8pm
+
+    // Send digest notification every tuesday at 8pm
     @Cron("0 20 * * 2")
     async sendNotificationDigestText(): Promise<void> {
         const allUsers = await this.user.findAll(UserQuery);

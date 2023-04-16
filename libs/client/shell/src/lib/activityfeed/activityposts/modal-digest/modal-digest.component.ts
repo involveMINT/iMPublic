@@ -9,6 +9,15 @@ export const OPEN = "open";
 const imagePlaceholder 
         = "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d1/Image_not_available.png/640px-Image_not_available.png";
 
+/**
+ * Digest Modal Component.
+ * 
+ * The component responsible for rendering a modal to view the Activity Feed
+ * notification digest for a user. The modal requires a 'digestPosts' input 
+ * which is a list of the posts with recent activity to generate digest
+ * notifications from. The digest modal also provides the ability to click
+ * on a notification which will fetch and display the corresponding post.
+ */
 @Component({
     selector: 'app-modal-digest',
     templateUrl: './modal-digest.component.html',
@@ -30,12 +39,12 @@ export class ModalDigestComponent implements OnInit {
         return imageFilePaths;
     }
 
+    /** 
+     * Opens a post modal to display individual post. First, fetches
+     * the post into state management. Second, updates the digestPosts
+     * list. Third, creates and displays the modal + passes post to it.
+     */
     async openPost(post: PostStoreModel) {
-        /**
-         * 1. Return the post id that was clicked
-         * 2. Make a call to NgRx such that the state is updated to have the post
-         * 3. ActivtyPosts module needs to be able to find image in state then scroll to it for user (or place at top)
-         */
         this.user.posts.dispatchers.get({ postId: post.id });
         this.digestPosts = this.digestPosts.filter(p => {
             return p.id !== post.id
