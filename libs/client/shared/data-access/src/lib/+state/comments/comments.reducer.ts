@@ -45,6 +45,7 @@ export const CommentsReducer = createReducer(
     on( // reducer to add initial set of comments from post
         CommentsActions.initComments,
         (state, { comments }): CommentsState => {
+            state = initialState;
             return {
                 ...state,
                 comments: commentsAdapter.upsertMany(comments, state.comments),

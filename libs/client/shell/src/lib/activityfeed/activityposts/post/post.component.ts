@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, Input, OnInit } from "@angular/core";
-import { CommentService, PostStoreModel, UserFacade } from "@involvemint/client/shared/data-access";
+import { CommentService, PostStoreModel, PostsReducer, UserFacade } from "@involvemint/client/shared/data-access";
 import { PoiStatus, calculatePoiStatus, calculatePoiTimeWorked } from "@involvemint/shared/domain";
 import { IonButton, ModalController } from "@ionic/angular";
 import { ModalCommentComponent } from "../comments/modal-comments.component";
@@ -86,7 +86,8 @@ export class PostComponent implements OnInit {
         });
         modal.present();
 
-        await modal.onWillDismiss();
+        const { data } = await modal.onWillDismiss();
+        post.comments = data;
     }
 
 }
