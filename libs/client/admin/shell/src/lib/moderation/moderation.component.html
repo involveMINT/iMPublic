@@ -77,13 +77,13 @@
             <div class="timeline-detail-item">
               <ion-buttons slot="start">
                 <div *ngIf="!checkUserLiked(post)">
-                  <ion-button #likeButton (click)="like(post.id, likeButton)">
+                  <ion-button [disabled]="true" #likeButton (click)="like(post.id, likeButton)">
                     <ion-icon name="heart-outline"></ion-icon>
                     <p>{{post.likeCount}}</p>
                   </ion-button>
                 </div>
                 <div *ngIf="checkUserLiked(post)">
-                  <ion-button #unlikeButton (click)="unlike(post.id, unlikeButton)">
+                  <ion-button [disabled]="true" #unlikeButton (click)="unlike(post.id, unlikeButton)">
                     <ion-icon name="heart"></ion-icon>
                     <p>{{post.likeCount}}</p>
                   </ion-button>
