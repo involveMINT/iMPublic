@@ -8,6 +8,32 @@
     flex-direction: column;
     grid-template-columns: auto 1fr;
 
+    .comment-button {
+      color: var(--ion-text-color) !important;
+      margin-left: -7px;
+      width: 22px;
+      height: 20.2px;
+      --ionicon-stroke-width: 40;
+    }
+  
+    .like-button {
+      color: var(--ion-text-color) !important;
+      width: 24px;
+      height: 22px;
+      --ionicon-stroke-width: 40;
+    }
+  
+    .like-text {
+      color: var(--ion-text-color) !important;
+      font-family: 'Inter';
+      font-style: normal;
+      font-weight: 400;
+      font-size: 12px;
+      line-height: 138%;
+      margin-top: -5.5px;
+      padding-left: 8px;
+    }
+
     .multiple {
         margin-top: -33px !important;
         position: relative;
@@ -18,8 +44,8 @@
         position: relative;
     }
 
-    ion-icon {
-        font-size: 1.5em;
+    ion-buttons {
+      grid-column-gap: -20px;
     }
 }
 
@@ -59,30 +85,95 @@
   }
   
   .comment-dropdown {
-    color: black !important;
-    font-size: 14px !important;
+    color: var(--ion-text-color) !important;
+    font-family: 'Inter';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 12px;
+    line-height: 138%;
     left: 0px !important;
     margin-top: -7px;
     padding-top: 0px;
+    padding-left: 8px;
     --padding-start: 0;
     --margin-start: 0;
   }
   
   .date {
-    font-size: small;
+    font-family: 'Inter';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 12px;
+    margin-top: +4px !important;
     padding: 4px;
+    text-align: center;
   }
   
   .handle {
-    padding-left: 2px;
+    font-family: 'Inter';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 12px;
+    line-height: 134%;
+    padding-left: 4px;
     text-decoration-line: underline;
   }
   
   .information-circle {
     display: grid;
+    width: 13.68px !important;
+    height: 13.68px !important;
     grid-template-columns: auto 1fr;
-    cursor: pointer;
+  
+    .comment-button {
+      color: var(--ion-text-color) !important;
+      margin-left: -7px;
+      width: 22px;
+      height: 20.2px;
+      --ionicon-stroke-width: 40;
+    }
+  
+    .like-button {
+      color: var(--ion-text-color) !important;
+      width: 24px;
+      height: 22px;
+      --ionicon-stroke-width: 40;
+    }
+  
+    .like-text {
+      color: var(--ion-text-color) !important;
+      font-family: 'Inter';
+      font-style: normal;
+      font-weight: 400;
+      font-size: 12px;
+      line-height: 138%;
+      margin-top: -5.5px;
+      padding-left: 8px;
+    }
+  
+    .multiple {
+      margin-top: -34px !important;
+      padding-bottom: 2px;
+      padding-top: 2px;
+      position: relative;
+    }
+  
+    .one {
+      margin-top: -17px !important;
+      position: relative;
+    }
+  
+    .spaced {
+      width: 13.68px !important;
+      height: 13.68px !important;
+      padding-left: 4px !important;
+    }
+
+    ion-buttons {
+      grid-column-gap: -20px;
+    }
   }
+  
   
   .name-color {
     color: var(--im-green);
@@ -103,20 +194,36 @@
     align-items: center;
     display: flex;
     font-size: small;
-    margin-bottom: -3px;
+    padding: 0px;
+    margin-bottom: -4.5px;
+    --ion-item-background: var(--ion-toolbar-background);
   }
   
   .project-title {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    padding: 10px;
-    color: white;
+    align-items: center;
+    display: flex;
     font-family: 'Manrope';
     font-style: normal;
     font-weight: 700;
     font-size: 18px;
     line-height: 25px;
+    padding-left: 8px;
+    --ion-item-background: var(--ion-toolbar-background);
+  }
+
+  .project-description {
+    font-family: 'Inter';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 12px;
+    line-height: 138%;
+    overflow-wrap: break-word;
+    padding-left: 8px;
+    word-break: break-all;
+  }
+
+  .separator {
+    margin: 4px 0 4px 0 !important;
   }
   
   .swiper-pagination {

@@ -18,10 +18,6 @@
         <im-block
           *ngFor="let post of state.posts; trackBy: trackPost"
         >
-          <div body class="timeline-details">
-            <ion-label lines="full">
-          </ion-label>
-          </div>
 
           <div body class="user-info">
             <div
@@ -40,12 +36,16 @@
           </div>
 
           <div body class="timeline-details">
-            <ion-label lines="full">
-            </ion-label>
+            <hr class="separator">
           </div>
 
           <div body class="timeline-details">
-            <div id="{{post.id}}" class="timeline-info">{{ post.poi.enrollment.project.description }}</div>
+            <ion-list class="project-title">
+              <ion-label class="label"><b>{{ post.poi.enrollment.project.title }}</b></ion-label>
+              <div class="information-circle">
+                <ion-icon class="spaced" (click)="viewProfile(getUserHandle(post))" name="information-circle"></ion-icon>
+              </div>
+            </ion-list>
           </div>
         
           <!-- Adds Swip-able carousel... still needs images to be sized + desktop version -->
