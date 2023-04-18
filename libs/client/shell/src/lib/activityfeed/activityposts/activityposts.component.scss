@@ -1,13 +1,15 @@
 .timeline-details {
   display: grid;
-  gap: calc(var(--im-padding) / 2);
 }
 
 .timeline-detail-item {
-  display: grid;
+  align-items: flex-start;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  display: flex;
+  flex-direction: column;
   grid-template-columns: auto 1fr;
-  align-items: center;
-  gap: calc(var(--im-padding) / 2);
 
   ion-icon {
     font-size: 1.5em;

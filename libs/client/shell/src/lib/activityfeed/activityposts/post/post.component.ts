@@ -1,11 +1,8 @@
 import { ChangeDetectionStrategy, Component, Input, OnInit } from "@angular/core";
-import { CommentService, PostStoreModel, PostsReducer, UserFacade } from "@involvemint/client/shared/data-access";
+import { ImViewProfileModalService, PostStoreModel, UserFacade } from "@involvemint/client/shared/data-access";
 import { PoiStatus, calculatePoiStatus, calculatePoiTimeWorked } from "@involvemint/shared/domain";
 import { IonButton, ModalController } from "@ionic/angular";
 import { ModalCommentComponent } from "../comments/modal-comments.component";
-
-
-export const CLOSED = "close";
 
 /**
  * Activity Post Component.
@@ -16,6 +13,8 @@ export const CLOSED = "close";
  * within other stateful components that can track and re-render the component when necessary 
  * (see activityposts.component.ts/html for example). 
  */
+export const CLOSED = "close";
+
 @Component({
     selector: 'app-post',
     templateUrl: './post.component.html',
@@ -26,8 +25,8 @@ export class PostComponent implements OnInit {
     @Input() post!: PostStoreModel;
     constructor(
         private readonly user: UserFacade,
-        private modalCtrl: ModalController,
-        private readonly commentService: CommentService
+        private readonly viewCommentsModal: ModalController,
+        private readonly viewProfileModal: ImViewProfileModalService,
     ) { } 
 
     ngOnInit(): void { }
@@ -73,11 +72,36 @@ export class PostComponent implements OnInit {
         return PoiStatus;
     }
 
+    /** Functions to get user values */
+    getUserAvatar(post: PostStoreModel) {
+        return post.user.changeMaker?.profilePicFilePath
+      }
+    getUserFirstName(post: PostStoreModel) {
+        return post.user.changeMaker?.firstName
+    }
+    getUserLastName(post: PostStoreModel) {
+        return post.user.changeMaker?.lastName
+    }
+    getUserHandle(post: PostStoreModel) {
+        if (post.user.changeMaker?.handle.id != undefined) {
+          return post.user.changeMaker?.handle.id
+        } else {
+          return ""
+        }
+    }
+
+    /**
+     * Opens the CM profile modal.
+     */
+    viewProfile(handle: string) {
+        this.viewProfileModal.open({ handle });
+    }
+
     /**
      * Opens the comment modal (modal-comments.component.ts) and waits.
      */
-    async openModal(post: PostStoreModel) {
-        const modal = await this.modalCtrl.create({
+    async viewComments(post: PostStoreModel) {
+        const modal = await this.viewCommentsModal.create({
             component: ModalCommentComponent,
             componentProps: {
             'post': post,
@@ -85,9 +109,8 @@ export class PostComponent implements OnInit {
             }
         });
         modal.present();
-
+        
         const { data } = await modal.onWillDismiss();
         post.comments = data;
     }
-
 }
