@@ -5,11 +5,6 @@
           <ion-menu-button></ion-menu-button>
         </ion-buttons>
         <ion-title>Moderation</ion-title>
-        <ion-buttons slot="end">
-          <ion-button (click)="refresh()">
-            <ion-icon slot="icon-only" name="refresh"></ion-icon>
-          </ion-button>
-        </ion-buttons>
       </ion-toolbar>
       <ion-progress-bar type="indeterminate" [class.hide]="state.loaded"></ion-progress-bar>
     </ion-header>
@@ -138,10 +133,10 @@
           </div>
         </im-block>
 
-        <ion-infinite-scroll threshold="100px" (ionInfinite)="loadMore($event)">
+        <ion-infinite-scroll threshold="100px" *ngIf="!allPagesLoaded" (ionInfinite)="loadMore($event)">
           <ion-infinite-scroll-content
             loadingSpinner="bubbles"
-            loadingText="Loading more POIs..."
+            loadingText="Loading more posts..."
           ></ion-infinite-scroll-content>
         </ion-infinite-scroll>
       </div>

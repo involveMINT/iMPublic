@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, ViewChild } from '@angular/core';
 import {
   ChangeMakerFacade,
   EnrollmentsModalService,
@@ -9,7 +9,7 @@ import { RouteService } from '@involvemint/client/shared/routes';
 import { StatefulComponent } from '@involvemint/client/shared/util';
 import { calculatePoiStatus, calculatePoiTimeWorked, PoiStatus } from '@involvemint/shared/domain';
 import { parseDate } from '@involvemint/shared/util';
-import { IonButton } from '@ionic/angular';
+import { IonButton, IonInfiniteScroll } from '@ionic/angular';
 import { ModalController } from '@ionic/angular';
 import { ModalCommentComponent } from './comments/modal-comments.component';
 import { compareDesc } from 'date-fns';
@@ -30,6 +30,10 @@ interface State {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ModerationComponent extends StatefulComponent<State> implements OnInit {
+  @ViewChild(IonInfiniteScroll) infiniteScroll!: IonInfiniteScroll;
+  loading = false;
+  event: any = null;
+  allPagesLoaded = false;
 
   get PoiStatus() {
     return PoiStatus;
@@ -68,14 +72,19 @@ export class ModerationComponent extends StatefulComponent<State> implements OnI
 
   }
 
-  refresh() {
-    this.cf.poi.dispatchers.refresh();
+  /** Used on updates to state data to check if infiniteScroll reached end */
+  completeLoad(allPagesLoaded: boolean): void {
+    this.allPagesLoaded = allPagesLoaded;
+    if (this.loading && this.event) {
+      this.event.target.complete();
+      this.loading = false;
+    }
+    if (this.infiniteScroll) {
+      this.infiniteScroll.disabled = allPagesLoaded;
+    }
   }
 
-  calculatePoiStatus(poi: PoiCmStoreModel) {
-    return calculatePoiStatus(poi);
-  }
-
+  /** Used by infiniteScroll to issue request to load more posts */
   loadMore(event: Event) {
     this.cf.poi.dispatchers.loadMore();
     merge(this.cf.poi.actionListeners.loadPois.success, this.cf.poi.actionListeners.loadPois.error)
@@ -83,6 +92,10 @@ export class ModerationComponent extends StatefulComponent<State> implements OnI
       .subscribe(() => (event.target as any).complete());
   }
 
+  /**
+     * Dispatches a 'like' request for a post using NgRx state management.
+     * The changes resulting from the request can be tracked/re-rendered using post selectors.
+  */
   like(id: string, button: IonButton) {
     button.disabled = true; // prevent click spam
     this.user.posts.dispatchers.like({
@@ -90,6 +103,10 @@ export class ModerationComponent extends StatefulComponent<State> implements OnI
     })
   }
 
+  /**
+     * Dispatches a 'unlike' request for a post using NgRx state management.
+     * The changes resulting from the request can be tracked/re-rendered using post selectors.
+  */
   unlike(id: string, button: IonButton) {
     button.disabled = true; // prevent click spam
     this.user.posts.dispatchers.unlike({
@@ -97,6 +114,7 @@ export class ModerationComponent extends StatefulComponent<State> implements OnI
     })
   }
 
+  /** Used to check which like button to display */
   checkUserLiked(post: PostStoreModel) {
     let userId = "";
     this.user.session.selectors.email$.subscribe(s => userId = s);
@@ -104,7 +122,8 @@ export class ModerationComponent extends StatefulComponent<State> implements OnI
     return filteredObj.length != 0
   }
 
-  trackPost(index: number, post: PostStoreModel) {
+   /** Used to track posts and prevent excessive re-rendering */
+  trackPost(_index: number, post: PostStoreModel) {
     return post.id;
   }
 
@@ -144,6 +163,11 @@ export class ModerationComponent extends StatefulComponent<State> implements OnI
     })(this.state));
   }
 
+  /** Functions to compute/provide UI values */
+  calculatePoiStatus(poi: PoiCmStoreModel) {
+    return calculatePoiStatus(poi);
+  }
+
   getUserAvatar(post: PostStoreModel) {
     return post.user.changeMaker?.profilePicFilePath
   }
@@ -168,5 +192,4 @@ export class ModerationComponent extends StatefulComponent<State> implements OnI
   viewProfile(handle: string) {
     this.viewProfileModal.open({ handle });
   }
-
 }
