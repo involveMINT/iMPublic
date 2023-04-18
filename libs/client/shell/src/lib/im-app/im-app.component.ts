@@ -385,7 +385,7 @@ export class ImAppComponent extends StatefulComponent<State> implements OnInit {
             if (changeMaker) {
               const activityfeed: MenuItem = {
                 title: 'Activity Feed',
-                icon: 'newspaper',
+                icon: 'pulse',
                 route: this.route.rawRoutes.path.activityfeed.ROOT,
                 click: () => this.route.to.activityfeed.ROOT({ queryParams: { [AP]: changeMaker.id } }),
                 inMenu: true,
