@@ -1,11 +1,9 @@
 import { ChangeDetectionStrategy, Component, OnInit, ViewChild } from '@angular/core';
 import {
   ChangeMakerFacade,
-  EnrollmentsModalService,
   PoiCmStoreModel,
 } from '@involvemint/client/cm/data-access';
 import { UserFacade, PostStoreModel, ImViewProfileModalService } from '@involvemint/client/shared/data-access';
-import { RouteService } from '@involvemint/client/shared/routes';
 import { StatefulComponent } from '@involvemint/client/shared/util';
 import { calculatePoiStatus, calculatePoiTimeWorked, PoiStatus } from '@involvemint/shared/domain';
 import { parseDate } from '@involvemint/shared/util';
@@ -13,8 +11,7 @@ import { IonButton, IonInfiniteScroll } from '@ionic/angular';
 import { ModalController } from '@ionic/angular';
 import { ModalCommentComponent } from './comments/modal-comments.component';
 import { compareDesc } from 'date-fns';
-import { merge } from 'rxjs';
-import { take, tap } from 'rxjs/operators';
+import { tap } from 'rxjs/operators';
 import { CommentStoreModel } from 'libs/client/shared/data-access/src/lib/+state/comments/comments.reducer';
 
 
@@ -40,7 +37,6 @@ export class ModerationComponent extends StatefulComponent<State> implements OnI
   }
 
   constructor(
-    private readonly cf: ChangeMakerFacade,
     private readonly user: UserFacade,
     private modalCtrl: ModalController,
     private readonly viewProfileModal: ImViewProfileModalService,
@@ -53,7 +49,8 @@ export class ModerationComponent extends StatefulComponent<State> implements OnI
 
     this.effect(() => 
       this.user.posts.selectors.posts$.pipe(
-        tap(({ posts, loaded }) => 
+        tap(({ posts, loaded, allPagesLoaded }) => {
+          this.completeLoad(allPagesLoaded); 
           this.updateState({
             posts: posts
               .sort((a, b) => 
@@ -66,7 +63,7 @@ export class ModerationComponent extends StatefulComponent<State> implements OnI
               })),
             loaded: loaded
           })
-        )
+        })
       )
     );
 
@@ -86,10 +83,11 @@ export class ModerationComponent extends StatefulComponent<State> implements OnI
 
   /** Used by infiniteScroll to issue request to load more posts */
   loadMore(event: Event) {
-    this.cf.poi.dispatchers.loadMore();
-    merge(this.cf.poi.actionListeners.loadPois.success, this.cf.poi.actionListeners.loadPois.error)
-      .pipe(take(1))
-      .subscribe(() => (event.target as any).complete());
+    if (!this.allPagesLoaded) {
+      this.user.posts.dispatchers.loadPosts();
+      this.loading = true;
+      this.event = event;
+    }
   }
 
   /**
@@ -164,10 +162,6 @@ export class ModerationComponent extends StatefulComponent<State> implements OnI
   }
 
   /** Functions to compute/provide UI values */
-  calculatePoiStatus(poi: PoiCmStoreModel) {
-    return calculatePoiStatus(poi);
-  }
-
   getUserAvatar(post: PostStoreModel) {
     return post.user.changeMaker?.profilePicFilePath
   }
