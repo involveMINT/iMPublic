@@ -1,0 +1,145 @@
+.timeline-details {
+    display: grid;
+}
+
+.timeline-detail-item {
+    align-items: flex-start;
+    display: flex;
+    flex-direction: column;
+    grid-template-columns: auto 1fr;
+
+    .multiple {
+        margin-top: -33px !important;
+        position: relative;
+    }
+    
+    .one {
+        margin-top: -17px !important;
+        position: relative;
+    }
+
+    ion-icon {
+        font-size: 1.5em;
+    }
+}
+
+.activity-post-carousel {
+    position: relative;
+  }
+  
+  .scroll-left,
+  .scroll-right {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 40px;
+    height: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .scroll-left ion-icon,
+  .scroll-right ion-icon {
+    font-size: 30px;
+    opacity: 0.7;
+    --color: white !important;
+  }
+  
+  .scroll-left {
+    left: 0;
+  }
+  
+  .scroll-right {
+    right: 0;
+  }
+  
+  .black {
+    color: black !important;
+  }
+  
+  .comment-dropdown {
+    color: black !important;
+    font-size: 14px !important;
+    left: 0px !important;
+    margin-top: -7px;
+    padding-top: 0px;
+    --padding-start: 0;
+    --margin-start: 0;
+  }
+  
+  .date {
+    font-size: small;
+    padding: 4px;
+  }
+  
+  .handle {
+    padding-left: 2px;
+    text-decoration-line: underline;
+  }
+  
+  .information-circle {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    cursor: pointer;
+  }
+  
+  .name-color {
+    color: var(--im-green);
+    font-size: medium;
+    padding: 4px;
+  }
+  
+  .name-info {
+    grid-row: 1;
+  }
+  
+  .name-item {
+    display: grid;
+    grid-template-columns: auto;
+  }
+  
+  .name-handle {
+    align-items: center;
+    display: flex;
+    font-size: small;
+    margin-bottom: -3px;
+  }
+  
+  .project-title {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    padding: 10px;
+    color: white;
+    font-family: 'Manrope';
+    font-style: normal;
+    font-weight: 700;
+    font-size: 18px;
+    line-height: 25px;
+  }
+  
+  .swiper-pagination {
+    position: relative;
+    padding-bottom: 20px;
+    --bullet-background: black !important;
+    --bullet-background-active: black !important;
+  
+    ion-button {
+      -webkit-tap-highlight-color: transparent !important;
+      user-select: none !important;
+    }
+  
+    ion-slide {
+      pointer-events: none;
+      user-select: none;
+    }
+  }
+  
+  .user-info {
+    align-items: center;
+    display: grid;
+    flex-direction: column;
+    grid-template-columns: auto 1fr;
+    padding: 2px;
+  }

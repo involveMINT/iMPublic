@@ -4,7 +4,7 @@ import {
   EnrollmentsModalService,
   PoiCmStoreModel,
 } from '@involvemint/client/cm/data-access';
-import { UserFacade, PostStoreModel } from '@involvemint/client/shared/data-access';
+import { UserFacade, PostStoreModel, ImViewProfileModalService } from '@involvemint/client/shared/data-access';
 import { RouteService } from '@involvemint/client/shared/routes';
 import { StatefulComponent } from '@involvemint/client/shared/util';
 import { calculatePoiStatus, calculatePoiTimeWorked, PoiStatus } from '@involvemint/shared/domain';
@@ -37,10 +37,9 @@ export class ModerationComponent extends StatefulComponent<State> implements OnI
 
   constructor(
     private readonly cf: ChangeMakerFacade,
-    private readonly route: RouteService,
-    private readonly enrollmentsModal: EnrollmentsModalService,
     private readonly user: UserFacade,
-    private modalCtrl: ModalController
+    private modalCtrl: ModalController,
+    private readonly viewProfileModal: ImViewProfileModalService,
     
   ) {
     super({ posts: [], loaded: false });
@@ -109,7 +108,10 @@ export class ModerationComponent extends StatefulComponent<State> implements OnI
     return post.id;
   }
 
-  async openModal(post: PostStoreModel) {
+  /**
+     * Opens the comment modal (modal-comments.component.ts) and waits.
+  */
+  async viewComments(post: PostStoreModel) {
     const modal = await this.modalCtrl.create({
       component: ModalCommentComponent,
       componentProps: {
@@ -126,6 +128,10 @@ export class ModerationComponent extends StatefulComponent<State> implements OnI
 
   }
 
+  /**
+     * Updates state of comments within post given by postId (necessary for changes
+     * to be saved after modal is closed)
+  */
   private updatePostComments(postId: string, updatedComments: Array<CommentStoreModel>) {
     this.updateState((state => {
       const updatedPosts = state.posts.map((post) => {
@@ -136,6 +142,31 @@ export class ModerationComponent extends StatefulComponent<State> implements OnI
       });
       return { ...state, posts: updatedPosts };
     })(this.state));
+  }
+
+  getUserAvatar(post: PostStoreModel) {
+    return post.user.changeMaker?.profilePicFilePath
+  }
+
+  getUserFirstName(post: PostStoreModel) {
+    return post.user.changeMaker?.firstName
+  }
+
+  getUserLastName(post: PostStoreModel) {
+    return post.user.changeMaker?.lastName
+}
+
+  // Convert user handle to string in order to pass into profile viewer
+  getUserHandle(post: PostStoreModel) {
+    if (post.user.changeMaker?.handle.id != undefined) {
+      return post.user.changeMaker?.handle.id
+    } else {
+      return ""
+    }
+  }
+
+  viewProfile(handle: string) {
+    this.viewProfileModal.open({ handle });
   }
 
 }
