@@ -44,8 +44,8 @@ interface State {
 export class ActivityFeedComponent extends StatefulComponent<State> implements OnInit {
   @ViewChild(IonInfiniteScroll) infiniteScroll!: IonInfiniteScroll;
   loading = false;
-  event: any = null;
   allPagesLoaded = false;
+  event: any = null;
 
   get PoiStatus() {
     return PoiStatus;
@@ -121,6 +121,9 @@ export class ActivityFeedComponent extends StatefulComponent<State> implements O
       this.user.posts.dispatchers.loadPosts();
       this.loading = true;
       this.event = event;
+    } else {
+      this.event = event;
+      this.event.target.complete();
     }
   }
 
