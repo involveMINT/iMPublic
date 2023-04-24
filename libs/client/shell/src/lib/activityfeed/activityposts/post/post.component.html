@@ -23,7 +23,7 @@
     <ion-list class="project-title">
       <ion-label class="label"><b>{{ post.poi.enrollment.project.title }}</b></ion-label>
       <div class="information-circle">
-        <ion-icon class="spaced" (click)="viewProfile(getUserHandle(post))" name="information-circle"></ion-icon>
+        <ion-icon class="spaced" (click)="viewProject(post.poi.enrollment.project.id)" name="information-circle"></ion-icon>
       </div>
     </ion-list>
   </div>

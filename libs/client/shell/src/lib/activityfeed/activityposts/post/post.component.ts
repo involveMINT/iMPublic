@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component, Input, OnInit } from "@angular/core";
 import { ImViewProfileModalService, PostStoreModel, UserFacade } from "@involvemint/client/shared/data-access";
+import { RouteService } from "@involvemint/client/shared/routes";
 import { PoiStatus, calculatePoiStatus, calculatePoiTimeWorked } from "@involvemint/shared/domain";
 import { IonButton, ModalController } from "@ionic/angular";
 import { ModalCommentComponent } from "../comments/modal-comments.component";
@@ -27,6 +28,7 @@ export class PostComponent implements OnInit {
         private readonly user: UserFacade,
         private readonly viewCommentsModal: ModalController,
         private readonly viewProfileModal: ImViewProfileModalService,
+        public readonly route: RouteService,
     ) { } 
 
     ngOnInit(): void { }
@@ -95,6 +97,13 @@ export class PostComponent implements OnInit {
      */
     viewProfile(handle: string) {
         this.viewProfileModal.open({ handle });
+    }
+
+    /**
+     * Opens the CM profile modal.
+     */
+    viewProject(projectId: string) {
+        this.route.to.projects.COVER(projectId);
     }
 
     /**
