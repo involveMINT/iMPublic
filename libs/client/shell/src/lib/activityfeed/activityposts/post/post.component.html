@@ -38,14 +38,14 @@
       <ion-slides class="swiper-pagination" pager #slides [options]="{ scrollbar: false, loop: false }">
         <ion-slide *ngFor="let image of post.poi.imagesFilePaths">
           <div class="scroll-left">
-            <ion-button (click)="slides.slidePrev()" color="dark" fill="clear" *ngIf="post.poi.imagesFilePaths.length > 1">
-              <ion-icon color="white" name="chevron-back-outline"></ion-icon>
+            <ion-button (click)="slides.slidePrev()" fill="clear" *ngIf="post.poi.imagesFilePaths.length > 1">
+              <ion-icon name="chevron-back-outline"></ion-icon>
             </ion-button>
           </div>
           <img class="img" [src]="image | imStorageUrl | async"/>
           <div class="scroll-right">
-            <ion-button (click)="slides.slideNext()" color="dark" fill="clear" *ngIf="post.poi.imagesFilePaths.length > 1">
-            <ion-icon color="white" name="chevron-forward-outline"></ion-icon>
+            <ion-button (click)="slides.slideNext()" fill="clear" *ngIf="post.poi.imagesFilePaths.length > 1">
+            <ion-icon name="chevron-forward-outline"></ion-icon>
             </ion-button>
           </div>
         </ion-slide>
