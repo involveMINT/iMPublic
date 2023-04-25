@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, Input, OnInit, ViewChild } from "@angular/core";
-import { ImViewProfileModalService, PostStoreModel, UserFacade } from "@involvemint/client/shared/data-access";
+import { ChatService, ImViewProfileModalService, PostStoreModel, UserFacade } from "@involvemint/client/shared/data-access";
 import { RouteService } from "@involvemint/client/shared/routes";
 import { PoiStatus, calculatePoiStatus, calculatePoiTimeWorked } from "@involvemint/shared/domain";
 import { IonButton, IonSlides, ModalController } from "@ionic/angular";
@@ -32,6 +32,7 @@ export class PostComponent implements OnInit {
         private readonly user: UserFacade,
         private readonly viewCommentsModal: ModalController,
         private readonly viewProfileModal: ImViewProfileModalService,
+        private readonly chat: ChatService,
         public readonly route: RouteService,
     ) { } 
 
@@ -61,6 +62,10 @@ export class PostComponent implements OnInit {
                 postId: id,
             });
         }
+    }
+
+    message(handle: string) {
+        this.chat.upsert([{ handleId: handle }]);
     }
 
     /** Used to check which like button to display */

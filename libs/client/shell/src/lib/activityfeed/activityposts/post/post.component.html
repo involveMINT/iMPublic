@@ -16,7 +16,7 @@
         <ion-icon class="information-circle" (click)="viewProfile(getUserHandle(post))" name="information-circle"></ion-icon>
         <ion-label class="date" color="medium">{{ post.poi.dateSubmitted | date: 'longDate' }}</ion-label>
       </ion-list>
-      <ion-label class="handle">@{{ getUserHandle(post) }}</ion-label>
+      <ion-label (click)="message(getUserHandle(post))" class="handle">@{{ getUserHandle(post) }}</ion-label>
     </div>
   </div>
 
