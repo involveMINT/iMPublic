@@ -5,6 +5,11 @@
       *ngIf="getUserAvatar(post) | imStorageUrl | async as url"
       [ngStyle]="{ 'background-image': 'url(' + url + ')' }"
     ></div>
+    <ion-icon
+      *ngIf="!getUserAvatar(post)"
+      class="im-profile-pic-none"
+      name="person-circle"
+    ></ion-icon>
     <div>
       <ion-list class="name-handle">
         <ion-label class="name-color"><b>{{ getUserFirstName(post) }} {{ getUserLastName(post) }}</b></ion-label>
