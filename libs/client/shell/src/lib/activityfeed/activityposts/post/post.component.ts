@@ -166,15 +166,4 @@ export class PostComponent implements OnInit {
         else this.unlike(id);
     }
 
-    onNextSlideClicked(event: any, slides: IonSlides) {
-        console.log()
-        event.stopPropagation();
-        slides.slideNext();
-    }
-
-    onPreviousSlideClicked(event: any, slides: IonSlides) {
-        event.stopPropagation();
-        slides.slidePrev();
-    }
-
 }
