@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, Input, OnInit, ViewChild } from "@a
 import { ImViewProfileModalService, PostStoreModel, UserFacade } from "@involvemint/client/shared/data-access";
 import { RouteService } from "@involvemint/client/shared/routes";
 import { PoiStatus, calculatePoiStatus, calculatePoiTimeWorked } from "@involvemint/shared/domain";
-import { IonButton, ModalController } from "@ionic/angular";
+import { IonButton, IonSlides, ModalController } from "@ionic/angular";
 import { ModalCommentComponent } from "../comments/modal-comments.component";
 
 /**
@@ -26,6 +26,7 @@ export class PostComponent implements OnInit {
     @Input() post!: PostStoreModel;
     @ViewChild('likeButton', { read: IonButton }) likeButton!: IonButton;
     @ViewChild('unlikeButton', { read: IonButton }) unlikeButton!: IonButton;
+    @ViewChild('slides', { read: IonSlides }) slides!: IonSlides;
     private touchTimer: any;
     constructor(
         private readonly user: UserFacade,
@@ -130,15 +131,24 @@ export class PostComponent implements OnInit {
         post.comments = data;
     }
 
-    onTouchStart(_event: any, id: string) {
-        if (!this.touchTimer) {
-            this.touchTimer = setTimeout(() => {
+    onTouchStart(event: any, id: string) {
+        const touched = event.target as HTMLElement;
+        if (touched.classList.contains('slide-next-button')) {
+            this.slides.slideNext();
+        }
+        else if (touched.classList.contains('slide-prev-button')) {
+            this.slides.slidePrev();
+        }
+        else {
+            if (!this.touchTimer) {
+                this.touchTimer = setTimeout(() => {
+                    this.touchTimer = null;
+                }, 250)
+            } else {
+                clearTimeout(this.touchTimer);
                 this.touchTimer = null;
-            }, 250)
-        } else {
-            clearTimeout(this.touchTimer);
-            this.touchTimer = null;
-            this.doubleTouched(id);
+                this.doubleTouched(id);
+            }
         }
     }
 
@@ -149,6 +159,17 @@ export class PostComponent implements OnInit {
     doubleTouched(id: string) {
         if (this.likeButton) this.like(id);
         else this.unlike(id);
+    }
+
+    onNextSlideClicked(event: any, slides: IonSlides) {
+        console.log()
+        event.stopPropagation();
+        slides.slideNext();
+    }
+
+    onPreviousSlideClicked(event: any, slides: IonSlides) {
+        event.stopPropagation();
+        slides.slidePrev();
     }
 
 }
