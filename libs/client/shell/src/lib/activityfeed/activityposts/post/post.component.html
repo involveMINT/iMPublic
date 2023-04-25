@@ -38,7 +38,7 @@
   </div>
 
   <!-- Adds Swip-able carousel... still needs images to be sized + desktop version -->
-  <div body class="activity-post-carousel">
+  <div body (dblclick)="doubleTouched(post.id)" (touchstart)="onTouchStart($event, post.id)" (touchend)="onTouchEnd($event)" class="activity-post-carousel">
     <ion-row *ngIf="post.poi.imagesFilePaths.length > 1">
       <ion-slides class="swiper-pagination" pager #slides [options]="{ scrollbar: false, loop: false }">
         <ion-slide *ngFor="let image of post.poi.imagesFilePaths">
@@ -70,12 +70,12 @@
     <div class="timeline-detail-item" *ngIf="post.poi.imagesFilePaths.length === 1">
       <ion-buttons class="one"slot="start">
         <div *ngIf="!checkUserLiked(post)">
-          <ion-button #likeButton (click)="like(post.id, likeButton)">
+          <ion-button #likeButton (click)="like(post.id)">
             <ion-icon class="like-button" name="heart-outline"></ion-icon>
           </ion-button>
         </div>
         <div *ngIf="checkUserLiked(post)">
-          <ion-button #unlikeButton (click)="unlike(post.id, unlikeButton)">
+          <ion-button #unlikeButton (click)="unlike(post.id)">
             <ion-icon class="like-button" name="heart"></ion-icon>
           </ion-button>
         </div>
@@ -88,12 +88,12 @@
     <div class="timeline-detail-item" *ngIf="post.poi.imagesFilePaths.length > 1">
       <ion-buttons class="multiple" slot="start">
         <div *ngIf="!checkUserLiked(post)">
-          <ion-button #likeButton (click)="like(post.id, likeButton)">
+          <ion-button #likeButton (click)="like(post.id)">
             <ion-icon class="like-button" name="heart-outline"></ion-icon>
           </ion-button>
           </div>
           <div *ngIf="checkUserLiked(post)">
-          <ion-button #unlikeButton (click)="unlike(post.id, unlikeButton)">
+          <ion-button #unlikeButton (click)="unlike(post.id)">
             <ion-icon class="like-button" name="heart"></ion-icon>
           </ion-button>
         </div>

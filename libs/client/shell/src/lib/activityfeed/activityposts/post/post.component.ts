@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Input, OnInit } from "@angular/core";
+import { ChangeDetectionStrategy, Component, Input, OnInit, ViewChild } from "@angular/core";
 import { ImViewProfileModalService, PostStoreModel, UserFacade } from "@involvemint/client/shared/data-access";
 import { RouteService } from "@involvemint/client/shared/routes";
 import { PoiStatus, calculatePoiStatus, calculatePoiTimeWorked } from "@involvemint/shared/domain";
@@ -24,6 +24,9 @@ export const CLOSED = "close";
 })
 export class PostComponent implements OnInit {
     @Input() post!: PostStoreModel;
+    @ViewChild('likeButton', { read: IonButton }) likeButton!: IonButton;
+    @ViewChild('unlikeButton', { read: IonButton }) unlikeButton!: IonButton;
+    private touchTimer: any;
     constructor(
         private readonly user: UserFacade,
         private readonly viewCommentsModal: ModalController,
@@ -37,22 +40,26 @@ export class PostComponent implements OnInit {
      * Dispatches a 'like' request for a post using NgRx state management.
      * The changes resulting from the request can be tracked/re-rendered using post selectors.
      */
-    like(id: string, button: IonButton) {
-        button.disabled = true; // prevent click spam
-        this.user.posts.dispatchers.like({
-            postId: id,
-        })
+    like(id: string) {
+        if (!this.likeButton.disabled) {
+            this.likeButton.disabled = true; // prevent click spam
+            this.user.posts.dispatchers.like({
+                postId: id,
+            });
+        }
     }
 
     /**
      * Dispatches a 'unlike' request for a post using NgRx state management.
      * The changes resulting from the request can be tracked/re-rendered using post selectors.
      */
-    unlike(id: string, button: IonButton) {
-        button.disabled = true; // prevent click spam
-        this.user.posts.dispatchers.unlike({
-            postId: id,
-        })
+    unlike(id: string) {
+        if (!this.unlikeButton.disabled) {
+            this.unlikeButton.disabled = true; // prevent click spam
+            this.user.posts.dispatchers.unlike({
+                postId: id,
+            });
+        }
     }
 
     /** Used to check which like button to display */
@@ -122,4 +129,26 @@ export class PostComponent implements OnInit {
         const { data } = await modal.onWillDismiss();
         post.comments = data;
     }
+
+    onTouchStart(_event: any, id: string) {
+        if (!this.touchTimer) {
+            this.touchTimer = setTimeout(() => {
+                this.touchTimer = null;
+            }, 250)
+        } else {
+            clearTimeout(this.touchTimer);
+            this.touchTimer = null;
+            this.doubleTouched(id);
+        }
+    }
+
+    onTouchEnd(event: any) {
+        event.preventDefault();
+    }
+
+    doubleTouched(id: string) {
+        if (this.likeButton) this.like(id);
+        else this.unlike(id);
+    }
+
 }
