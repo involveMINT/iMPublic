@@ -341,3 +341,7 @@
   grid-template-columns: auto 1fr;
   padding: 2px;
 }
+
+::ng-deep .swiper-wrapper {
+  align-items: center !important;
+}
