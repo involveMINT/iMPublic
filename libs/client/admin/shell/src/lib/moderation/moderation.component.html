@@ -5,7 +5,15 @@
           <ion-menu-button></ion-menu-button>
         </ion-buttons>
         <ion-title>Moderation</ion-title>
-        <ion-toggle [ngModel]="state.onlyPostsWithFlaggedComments" (ngModelChange)="updatePostsDisplayed()"></ion-toggle>
+        <ion-buttons slot="end">
+          <div *ngIf="state.onlyPostsWithFlaggedComments">
+            <div>Only showing posts with flagged comments</div>
+          </div>
+          <div *ngIf="!state.onlyPostsWithFlaggedComments">
+            <div>Showing all posts</div>
+          </div>
+          <ion-toggle [ngModel]="state.onlyPostsWithFlaggedComments" (ngModelChange)="updatePostsDisplayed()"></ion-toggle>
+        </ion-buttons>
       </ion-toolbar>
       <ion-progress-bar type="indeterminate" [class.hide]="state.loaded"></ion-progress-bar>
     </ion-header>

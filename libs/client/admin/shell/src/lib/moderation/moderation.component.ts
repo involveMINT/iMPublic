@@ -162,8 +162,12 @@ export class ModerationComponent extends StatefulComponent<State> implements OnI
     })(this.state));
   }
 
+  /**
+     * Called when admin toggles between all posts and only posts with flagged comments
+  */
   updatePostsDisplayed() {
     this.updateState({ onlyPostsWithFlaggedComments: !this.state.onlyPostsWithFlaggedComments });
+    // Only show posts with flagged comments
     if (this.state.onlyPostsWithFlaggedComments) {
       this.updateState((state => {
         const updatedPosts = state.posts.filter(post => 
@@ -171,7 +175,22 @@ export class ModerationComponent extends StatefulComponent<State> implements OnI
         return { ...state, posts: updatedPosts };
       })(this.state));
     } else {
+      const flaggedState = this.state;
       this.ngOnInit();
+      // Need this to update state of comments when toggling back to displaying all posts
+      this.updateState((state => {
+        var updatedPosts = this.state.posts; 
+        for (let i = 0; i < flaggedState.posts.length; i++) {
+          const flaggedPost = flaggedState.posts[i];
+          updatedPosts = updatedPosts.map((post) => {
+            if (post.id === flaggedPost.id) {
+              return { ...post, comments: flaggedPost.comments };
+            }
+            return post;
+          });
+        }
+        return { ...state, posts: updatedPosts };
+      })(this.state))
     }
   }
 
