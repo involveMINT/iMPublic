@@ -20,12 +20,6 @@
   </div>
 
   <div body class="timeline-details">
-    <ion-list class="project-title">
-      <ion-label class="label"><b>{{ post.poi.enrollment.project.title }}</b></ion-label>
-      <div class="information-circle">
-        <ion-icon class="spaced" (click)="viewProject(post.poi.enrollment.project.id)" name="information-circle"></ion-icon>
-      </div>
-    </ion-list>
   </div>
 
   <div body class="timeline-details">
@@ -42,7 +36,21 @@
               <ion-icon name="chevron-back-outline"></ion-icon>
             </ion-button>
           </div>
-          <img class="img" [src]="image | imStorageUrl | async"/>
+          <div class="relative">
+            <div class="shadow" >
+              <img id="shadow" [src]="image | imStorageUrl | async"/>
+            </div>
+            <ion-list class="projectText">
+              <h2>{{ post.poi.enrollment.project.title }}</h2>
+              <ion-button class="iconSize" (click)="viewProject(post.poi.enrollment.project.id)" fill="clear">
+                <ion-icon class="infoButton" slot="icon-only" name="information-circle"></ion-icon>
+              </ion-button>
+            </ion-list>
+            <div class="statText">
+              <p class="statDescription">Time Worked</p>
+              <h2 class="stat">{{calculateTimeWorked(post.poi)}}</h2>
+            </div>
+          </div>
           <div class="scroll-right">
             <ion-button (click)="slides.slideNext()" fill="clear" *ngIf="post.poi.imagesFilePaths.length > 1">
             <ion-icon name="chevron-forward-outline"></ion-icon>
@@ -55,7 +63,21 @@
     <ion-row *ngIf="post.poi.imagesFilePaths.length === 1">
       <ion-slides class="swiper-pagination" #slides [options]="{ pager: false, scrollbar: false, loop: false }">
         <ion-slide *ngFor="let image of post.poi.imagesFilePaths">
-          <img [src]="image | imStorageUrl | async"/>
+          <div class="relative">
+            <div class="shadow">
+              <img [src]="image | imStorageUrl | async"/>
+            </div>
+            <ion-list class="projectText">
+              <h2>{{ post.poi.enrollment.project.title }}</h2>
+              <ion-button class="iconSize" (click)="viewProject(post.poi.enrollment.project.id)" fill="clear">
+                <ion-icon class="infoButton" slot="icon-only" name="information-circle"></ion-icon>
+              </ion-button>
+            </ion-list>
+            <div class="statText">
+              <p class="statDescription">Time Worked</p>
+              <h2 class="stat">{{calculateTimeWorked(post.poi)}}</h2>
+            </div>
+          </div>
         </ion-slide>
       </ion-slides>
     </ion-row>
