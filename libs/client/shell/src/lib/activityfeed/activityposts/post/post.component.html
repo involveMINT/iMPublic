@@ -68,7 +68,7 @@
 
   <div body class="timeline-details">
     <div class="timeline-detail-item" *ngIf="post.poi.imagesFilePaths.length === 1">
-      <ion-buttons class="one"slot="start">
+      <ion-buttons id="post-buttons" class="one" slot="start">
         <div *ngIf="!checkUserLiked(post)">
           <ion-button #likeButton (click)="like(post.id)">
             <ion-icon class="like-button" name="heart-outline"></ion-icon>
@@ -104,12 +104,12 @@
       </div>
 
     <div class="timeline-item-details">
-      <div *ngIf="!checkUserLiked(post)"> 
+      <div *ngIf="!checkUserLiked(post) && post.likeCount > 0"> 
         <ion-label class="timeline-detail-item" color="dark">
           <p class="like-text">Liked by <b>{{post.likeCount}} others </b></p>
         </ion-label>
       </div>
-      <div *ngIf="checkUserLiked(post)"> 
+      <div *ngIf="checkUserLiked(post) && post.likeCount > 0"> 
         <ion-label class="timeline-detail-item" color="dark">
           <p class="like-text">Liked by <b>you</b> and <b>{{post.likeCount - 1}} others </b></p>
         </ion-label>
