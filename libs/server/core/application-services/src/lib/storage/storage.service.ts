@@ -30,6 +30,13 @@ export class StorageService {
   }
 
   async getDownloadURL(pathWithName: string) {
+    console.log(pathWithName)
+    const paths = pathWithName.split("/");
+    if (paths[0] == "poi-images") {
+      const parts = pathWithName.split(".");
+      pathWithName = parts[0] + "_1080x1080." + parts[1];
+    }
+
     const file = this.bucket.file(pathWithName);
 
     const urlOptions = {
