@@ -7,10 +7,10 @@
         <ion-title>Moderation</ion-title>
         <ion-buttons slot="end">
           <div *ngIf="state.onlyPostsWithFlaggedComments">
-            <div>Only showing posts with flagged comments</div>
+            <div>Showing flagged</div>
           </div>
           <div *ngIf="!state.onlyPostsWithFlaggedComments">
-            <div>Showing all posts</div>
+            <div>Showing all</div>
           </div>
           <ion-toggle class="spaced" [ngModel]="state.onlyPostsWithFlaggedComments" (ngModelChange)="updatePostsDisplayed()"></ion-toggle>
         </ion-buttons>
