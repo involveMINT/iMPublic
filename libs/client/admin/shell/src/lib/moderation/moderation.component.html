@@ -5,6 +5,7 @@
           <ion-menu-button></ion-menu-button>
         </ion-buttons>
         <ion-title>Moderation</ion-title>
+        <ion-toggle [ngModel]="state.onlyPostsWithFlaggedComments" (ngModelChange)="updatePostsDisplayed()"></ion-toggle>
       </ion-toolbar>
       <ion-progress-bar type="indeterminate" [class.hide]="state.loaded"></ion-progress-bar>
     </ion-header>

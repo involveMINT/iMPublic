@@ -12,12 +12,13 @@ import { ModalController } from '@ionic/angular';
 import { ModalCommentComponent } from './comments/modal-comments.component';
 import { compareDesc } from 'date-fns';
 import { tap } from 'rxjs/operators';
-import { CommentStoreModel } from 'libs/client/shared/data-access/src/lib/+state/comments/comments.reducer';
+import { CommentStoreModel, commentsAdapter } from 'libs/client/shared/data-access/src/lib/+state/comments/comments.reducer';
 
 
 interface State {
   posts: Array<PostStoreModel & { status: PoiStatus; timeWorked: string; }>;
   loaded: boolean;
+  onlyPostsWithFlaggedComments: boolean;
 }
 
 @Component({
@@ -42,7 +43,7 @@ export class ModerationComponent extends StatefulComponent<State> implements OnI
     private readonly viewProfileModal: ImViewProfileModalService,
     
   ) {
-    super({ posts: [], loaded: false });
+    super({ posts: [], loaded: false, onlyPostsWithFlaggedComments: false });
   }
 
   ngOnInit(): void {
@@ -159,6 +160,19 @@ export class ModerationComponent extends StatefulComponent<State> implements OnI
       });
       return { ...state, posts: updatedPosts };
     })(this.state));
+  }
+
+  updatePostsDisplayed() {
+    this.updateState({ onlyPostsWithFlaggedComments: !this.state.onlyPostsWithFlaggedComments });
+    if (this.state.onlyPostsWithFlaggedComments) {
+      this.updateState((state => {
+        const updatedPosts = state.posts.filter(post => 
+          post.comments.filter(comment => comment.flagCount > 0).length > 0);
+        return { ...state, posts: updatedPosts };
+      })(this.state));
+    } else {
+      this.ngOnInit();
+    }
   }
 
   /** Functions to compute/provide UI values */
