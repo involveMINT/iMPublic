@@ -113,7 +113,7 @@ export class PostComponent implements OnInit {
     }
 
     /**
-     * Opens the CM profile modal.
+     * Opens the CM project page.
      */
     viewProject(projectId: string) {
         this.route.to.projects.COVER(projectId);

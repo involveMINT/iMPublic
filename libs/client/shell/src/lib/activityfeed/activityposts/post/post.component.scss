@@ -347,6 +347,63 @@
   align-items: center !important;
 }
 
+.shadow {
+  display: inline-block;
+}
+
+.shadow:after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 300px;
+  background-image: linear-gradient(180deg, rgba(0,0,0,0), black);
+}
+
+.projectText {
+  background: none;
+  color:white !important;
+  position: absolute;
+  bottom: 3%;
+  padding: 3%;
+  display: flex;
+  font-family: var(--ion-font-family) !important;
+}
+
+
+
+.infoButton {
+  color: #fff !important;
+  margin: -10%;
+}
+
+.iconSize {
+  margin-top: 9%;
+  padding: -25%;
+}
+
+.statDescription {
+  margin-bottom: 0px !important;
+}
+
+.stat {
+  margin-top: 0px;
+}
+
+.statText {
+  color:white !important;
+  position: absolute;
+  bottom: 3%;
+  left: 50%;
+  font-family: var(--ion-font-family) !important;
+  width: 50%;
+}
+
+.relative {
+  position: relative;
+}
+
 #post-user-handle {
    cursor: pointer;
 }
