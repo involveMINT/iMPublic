@@ -58,6 +58,7 @@
 
 .activity-post-carousel {
   position: relative;
+  padding: 20px 0;
 }
 
 .scroll-left,
@@ -401,4 +402,12 @@
 
 .relative {
   position: relative;
+}
+
+#post-user-handle {
+   cursor: pointer;
+}
+
+#post-buttons {
+  padding-bottom: 5px;
 }
