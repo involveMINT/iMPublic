@@ -58,6 +58,7 @@
 
 .activity-post-carousel {
   position: relative;
+  padding: 20px 0;
 }
 
 .scroll-left,
@@ -344,4 +345,12 @@
 
 ::ng-deep .swiper-wrapper {
   align-items: center !important;
+}
+
+#post-user-handle {
+   cursor: pointer;
+}
+
+#post-buttons {
+  padding-bottom: 5px;
 }
