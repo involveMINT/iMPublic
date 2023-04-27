@@ -81,7 +81,11 @@ export class PostComponent implements OnInit {
         return calculatePoiStatus(poi);
     }
     calculateTimeWorked(poi: any) {
-        return calculatePoiTimeWorked(poi);
+        let tempString = calculatePoiTimeWorked(poi);
+        tempString = tempString.replace("seconds", "sec");
+        tempString = tempString.replace("minutes", "min");
+        tempString = tempString.replace("hours", "hrs");
+        return tempString;
     }
     get PoiStatus() {
         return PoiStatus;
@@ -136,13 +140,16 @@ export class PostComponent implements OnInit {
         post.comments = data;
     }
 
-    onTouchStart(event: any, id: string) {
+    onTouchStart(event: any, id: string, projectId: string) {
         const touched = event.target as HTMLElement;
         if (touched.classList.contains('slide-next-button')) {
             this.slides.slideNext();
         }
         else if (touched.classList.contains('slide-prev-button')) {
             this.slides.slidePrev();
+        }
+        else if (touched.classList.contains('iconSize')) {
+            this.viewProject(projectId);
         }
         else {
             if (!this.touchTimer) {
