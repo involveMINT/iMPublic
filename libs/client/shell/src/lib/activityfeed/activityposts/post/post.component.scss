@@ -1,3 +1,110 @@
+@media screen and (max-width: 480px) {
+  .overflow {
+    inline-size: 65%;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+  }
+
+  .iconSize {
+    margin-top: 9px;
+    padding: -20px;
+    margin-left: -8%;
+  }
+
+  .infoButton {
+    color: #fff !important;
+    margin: -10%;
+  }
+
+  .projectText {
+    background: none;
+    color:white !important;
+    position: absolute;
+    bottom: 3%;
+    padding: 3%;
+    display: flex;
+    font-family: var(--ion-font-family) !important;
+  }
+
+  .statDescription {
+    margin-bottom: 0px !important;
+  }
+  
+  .stat {
+    margin-top: 0px;
+  }
+
+  .statText {
+    color:white !important;
+    position: absolute;
+    bottom: 3%;
+    left: 50%;
+    font-family: var(--ion-font-family) !important;
+    width: 50%;
+  }
+
+}
+
+@media screen and (min-width: 480px) {
+  .overflow {
+    inline-size: 65%;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+    font-size: 2em;  
+  }
+
+  .projectText {
+    background: none;
+    color:white !important;
+    position: absolute;
+    bottom: 3%;
+    padding: 3%;
+    display: flex;
+    font-family: var(--ion-font-family) !important;
+  }
+  
+  .overflow {
+    inline-size: 100%;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+    font-size: 4em;  
+  }
+  
+  .infoButton {
+    color: #fff !important;
+    margin: -10%;
+  }
+  
+  .iconSize {
+    margin-top: 15px;
+    padding: -30%;
+    margin-left: -15px;
+  }
+
+  .statDescription {
+    margin-bottom: 0px !important;
+    font-size: 2em;
+  }
+  
+  .stat {
+    margin-top: 0px;
+    font-size: 4em;
+  }
+  
+  .statText {
+    color:white !important;
+    position: absolute;
+    bottom: 3%;
+    left: 60%;
+    font-family: var(--ion-font-family) !important;
+    width: 50%;
+  }
+
+}
+
 .notification-item {
   max-width: 200%;
   text-align: right !important;
@@ -278,54 +385,6 @@
   right: 0;
   height: 300px;
   background-image: linear-gradient(180deg, rgba(217, 217, 217, 0) 0%, rgba(63, 61, 86, 0.39) 65.1%, #3F3D56 100%);
-}
-
-.projectText {
-  background: none;
-  color:white !important;
-  position: absolute;
-  bottom: 3%;
-  padding: 3%;
-  display: flex;
-  font-family: var(--ion-font-family) !important;
-  
-}
-
-.overflow {
-  inline-size: 65%;
-  text-overflow: ellipsis;
-  overflow: hidden;
-  white-space: nowrap;  
-}
-
-
-
-.infoButton {
-  color: #fff !important;
-  margin: -10%;
-}
-
-.iconSize {
-  margin-top: 8%;
-  padding: -30%;
-  margin-left: -8%;
-}
-
-.statDescription {
-  margin-bottom: 0px !important;
-}
-
-.stat {
-  margin-top: 0px;
-}
-
-.statText {
-  color:white !important;
-  position: absolute;
-  bottom: 3%;
-  left: 50%;
-  font-family: var(--ion-font-family) !important;
-  width: 50%;
 }
 
 .relative {
