@@ -358,13 +358,13 @@ export class ImAppComponent extends StatefulComponent<State> implements OnInit {
 
               const moderation: MenuItem = {
                 title: "Comment Moderation",
-                icon: 'chatbox-ellipses-outline',
+                icon: 'chatbox-ellipses',
                 color:'var(--im-green)',
                 route: this.route.rawRoutes.path.admin.moderation.ROOT,
                 click: () => this.route.to.admin.moderation.ROOT(),
                 inMenu: true,
                 inTabs: true,
-              }
+              };
 
               menus.push({
                 title: 'Admin',
