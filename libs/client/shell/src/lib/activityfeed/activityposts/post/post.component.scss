@@ -168,25 +168,6 @@
   padding: 20px 0;
 }
 
-.scroll-left,
-.scroll-right {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 40px;
-  height: 40px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.scroll-left ion-icon,
-.scroll-right ion-icon {
-  font-size: 30px;
-  opacity: 0.7;
-  --color: white !important;
-}
-
 .comment-dropdown {
   color: var(--ion-text-color) !important;
   font-family: 'Inter';
