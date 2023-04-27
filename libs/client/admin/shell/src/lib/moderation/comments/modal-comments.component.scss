@@ -11,6 +11,7 @@
     justify-content: flex-end;
     align-items: flex-start;
     padding-right: 12px;
+    color: black;
   }
 
 /* Other CSS rules remain the same */
@@ -42,3 +43,7 @@
     padding-bottom: 4px;
   }
   
+  .ion-text-wrap.removed {
+    color: #ababab;
+    font-style: italic;
+  }
