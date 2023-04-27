@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Inject, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { ClientCmApiService, EnrollmentStoreModel } from '@involvemint/client/cm/api';
 import {
@@ -18,6 +18,7 @@ import {
 } from '@involvemint/shared/domain';
 import { combineLatest, EMPTY } from 'rxjs';
 import { switchMap, take, tap } from 'rxjs/operators';
+import { Router } from '@angular/router';
 
 type ButtonState = EnrollmentStatus | 'notApplied' | 'loading' | 'createCmProfile';
 
@@ -50,7 +51,8 @@ export class ProjectCoverPageComponent extends StatefulComponent<State> implemen
     public readonly route: RouteService,
     private readonly cmApi: ClientCmApiService,
     private readonly status: StatusService,
-    private readonly viewProfileModal: ImViewProfileModalService
+    private readonly viewProfileModal: ImViewProfileModalService,
+    private readonly router: Router,
   ) {
     super({ authenticated: false, buttonState: 'loading' });
   }
@@ -132,6 +134,15 @@ export class ProjectCoverPageComponent extends StatefulComponent<State> implemen
 
   login() {
     this.route.to.login.ROOT();
+  }
+
+  getPreviousPage() {
+    let currNav = this.router.getCurrentNavigation()
+    if (currNav) {
+      let prevPage = currNav.previousNavigation?.finalUrl?.root.children.primary.segments[0].path;
+      return prevPage == "activityfeed" ? "Activity Feed" : "Projects";
+    }
+    return "";
   }
 
   createCmProfile() {

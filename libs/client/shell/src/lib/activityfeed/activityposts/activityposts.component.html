@@ -6,8 +6,9 @@
       </ion-buttons>
       <ion-title>Activity Feed</ion-title>
       <ion-buttons slot="end">
-        <ion-button (click)="viewDigest()">
+        <ion-button class="overlap" (click)="viewDigest()">
           <ion-icon slot="icon-only" name="notifications" ></ion-icon>
+          <ion-badge *ngIf="state.digestPosts.length > 0" color="danger" id="red-badge">{{state.digestPosts.length}}</ion-badge>
         </ion-button>
       </ion-buttons>
     </ion-toolbar>
