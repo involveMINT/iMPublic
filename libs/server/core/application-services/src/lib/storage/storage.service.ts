@@ -30,7 +30,6 @@ export class StorageService {
   }
 
   async getDownloadURL(pathWithName: string) {
-    console.log(pathWithName)
     const paths = pathWithName.split("/");
     if (paths[0] == "poi-images") {
       const parts = pathWithName.split(".");
