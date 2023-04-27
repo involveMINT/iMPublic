@@ -52,7 +52,6 @@ export class ActivityFeedComponent extends StatefulComponent<State> implements O
   }
 
   constructor(
-    private readonly cf: ChangeMakerFacade,
     private readonly post: ActivityPostOrchestration,
     private readonly user: UserFacade,
     private readonly viewDigestModal: ModalController,

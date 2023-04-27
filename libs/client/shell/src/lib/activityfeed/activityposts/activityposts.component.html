@@ -27,7 +27,7 @@
       >
       </app-post>
 
-      <ion-infinite-scroll threshold="100px" (ionInfinite)="loadMore($event)">
+      <ion-infinite-scroll threshold="100px" *ngIf="!allPagesLoaded" (ionInfinite)="loadMore($event)">
         <ion-infinite-scroll-content
           loadingSpinner="bubbles"
           loadingText="Loading more posts..."

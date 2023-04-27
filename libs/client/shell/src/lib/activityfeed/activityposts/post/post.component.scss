@@ -79,129 +79,6 @@
   opacity: 0.7;
   --color: white !important;
 }
-  
-.scroll-left {
-  left: 0;
-}
-
-.scroll-right {
-  right: 0;
-}
-
-.comment-dropdown {
-  color: var(--ion-text-color) !important;
-  font-family: 'Inter';
-  font-style: normal;
-  font-weight: 400;
-  font-size: 12px;
-  line-height: 138%;
-  left: 0px !important;
-  margin-top: -7px;
-  padding-top: 0px;
-  padding-left: 8px;
-  --padding-start: 0;
-  --margin-start: 0;
-}
-
-.date {
-  font-family: 'Inter';
-  font-style: normal;
-  font-weight: 400;
-  font-size: 12px;
-  margin-top: +4px !important;
-  padding: 4px;
-  text-align: center;
-}
-
-.handle {
-  font-family: 'Inter';
-  font-style: normal;
-  font-weight: 400;
-  font-size: 12px;
-  line-height: 134%;
-  padding-left: 4px;
-  text-decoration-line: underline;
-}
-
-.information-circle {
-  display: grid;
-  width: 13.68px !important;
-  height: 13.68px !important;
-  grid-template-columns: auto 1fr;
-
-  .comment-button {
-    color: var(--ion-text-color) !important;
-    margin-left: -7px;
-    width: 22px;
-    height: 20.2px;
-    --ionicon-stroke-width: 40;
-  }
-
-  .like-button {
-    color: var(--ion-text-color) !important;
-    width: 24px;
-    height: 22px;
-    --ionicon-stroke-width: 40;
-  }
-
-  .like-text {
-    color: var(--ion-text-color) !important;
-    font-family: 'Inter';
-    font-style: normal;
-    font-weight: 400;
-    font-size: 12px;
-    line-height: 138%;
-    margin-top: -5.5px;
-    padding-left: 8px;
-  }
-
-  .multiple {
-    margin-top: -34px !important;
-    padding-bottom: 2px;
-    padding-top: 2px;
-    position: relative;
-  }
-
-  .one {
-    margin-top: -17px !important;
-    position: relative;
-  }
-
-  ion-buttons {
-    grid-column-gap: -20px;
-  }
-}
-
-.activity-post-carousel {
-  position: relative;
-}
-
-.scroll-left,
-.scroll-right {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 40px;
-  height: 40px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.scroll-left ion-icon,
-.scroll-right ion-icon {
-  font-size: 30px;
-  opacity: 0.7;
-  --color: white !important;
-}
-  
-.scroll-left {
-  left: 0;
-}
-
-.scroll-right {
-  right: 0;
-}
 
 .comment-dropdown {
   color: var(--ion-text-color) !important;
@@ -245,10 +122,52 @@
   grid-template-columns: auto 1fr;
   cursor: pointer;
 
+  .comment-button {
+    color: var(--ion-text-color) !important;
+    margin-left: -7px;
+    width: 22px;
+    height: 20.2px;
+    --ionicon-stroke-width: 40;
+  }
+
+  .like-button {
+    color: var(--ion-text-color) !important;
+    width: 24px;
+    height: 22px;
+    --ionicon-stroke-width: 40;
+  }
+
+  .like-text {
+    color: var(--ion-text-color) !important;
+    font-family: 'Inter';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 12px;
+    line-height: 138%;
+    margin-top: -5.5px;
+    padding-left: 8px;
+  }
+
+  .multiple {
+    margin-top: -34px !important;
+    padding-bottom: 2px;
+    padding-top: 2px;
+    position: relative;
+  }
+
+  .one {
+    margin-top: -17px !important;
+    position: relative;
+  }
+
   .spaced {
     width: 13.68px !important;
     height: 13.68px !important;
     padding-left: 4px !important;
+  }
+
+  ion-buttons {
+    grid-column-gap: -20px;
   }
 }
 
