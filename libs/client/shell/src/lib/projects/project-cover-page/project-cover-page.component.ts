@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, Inject, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Navigation } from '@angular/router';
 import { ClientCmApiService, EnrollmentStoreModel } from '@involvemint/client/cm/api';
 import {
   ImViewProfileModalService,
@@ -37,12 +37,22 @@ interface State {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ProjectCoverPageComponent extends StatefulComponent<State> implements OnInit {
+  from : any = "Projects";
   get EnrollmentStatus() {
     return EnrollmentStatus;
   }
 
   get ProjectStatus() {
     return ProjectStatus;
+  }
+  
+  get previousPage() {
+    const currNav = this.router.getCurrentNavigation()
+    if (currNav) {
+      let prevPage = currNav.previousNavigation?.finalUrl?.root.children.primary.segments[0].path;
+      this.from = prevPage == "activityfeed" ? "Activity" : "Projects";
+    }
+    return this.from;
   }
 
   constructor(
@@ -134,16 +144,7 @@ export class ProjectCoverPageComponent extends StatefulComponent<State> implemen
 
   login() {
     this.route.to.login.ROOT();
-  }
-
-  getPreviousPage() {
-    let currNav = this.router.getCurrentNavigation()
-    if (currNav) {
-      let prevPage = currNav.previousNavigation?.finalUrl?.root.children.primary.segments[0].path;
-      return prevPage == "activityfeed" ? "Activity Feed" : "Projects";
-    }
-    return "";
-  }
+  }  
 
   createCmProfile() {
     this.route.to.applications.cm.ROOT();
