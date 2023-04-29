@@ -34,13 +34,18 @@
               *ngIf="getUserAvatar(post) | imStorageUrl | async as url"
               [ngStyle]="{ 'background-image': 'url(' + url + ')' }"
             ></div>
+            <ion-icon
+              *ngIf="!getUserAvatar(post)"
+              class="im-profile-pic-none"
+              name="person-circle"
+            ></ion-icon>
             <div>
               <ion-list class="name-handle">
                 <ion-label class="name-color"><b>{{ getUserFirstName(post) }} {{ getUserLastName(post) }}</b></ion-label>
                 <ion-icon class="information-circle" (click)="viewProfile(getUserHandle(post))" name="information-circle"></ion-icon>
                 <ion-label class="date" color="medium">{{ post.poi.dateSubmitted | date: 'longDate' }}</ion-label>
               </ion-list>
-              <ion-label class="handle">@{{ getUserHandle(post) }}</ion-label>
+              <ion-label id="post-user-handle" (click)="message(getUserHandle(post))" class="handle">@{{ getUserHandle(post) }}</ion-label>
             </div>
           </div>
 
@@ -67,14 +72,14 @@
               <ion-slides class="swiper-pagination" pager #slides [options]="{ scrollbar: false, loop: false }">
                 <ion-slide *ngFor="let image of post.poi.imagesFilePaths">
                   <div class="scroll-left">
-                    <ion-button (click)="slides.slidePrev()" color="dark" fill="clear" *ngIf="post.poi.imagesFilePaths.length > 1">
-                      <ion-icon color="white" name="chevron-back-outline"></ion-icon>
+                    <ion-button class="slide-prev-button" (click)="slides.slidePrev()" fill="clear" *ngIf="post.poi.imagesFilePaths.length > 1">
+                      <ion-icon name="chevron-back-outline"></ion-icon>
                     </ion-button>
                   </div>
                   <img [src]="image | imStorageUrl | async"/>
                   <div class="scroll-right">
-                    <ion-button (click)="slides.slideNext()" color="dark" fill="clear" *ngIf="post.poi.imagesFilePaths.length > 1">
-                    <ion-icon color="white" name="chevron-forward-outline"></ion-icon>
+                    <ion-button class="slide-next-button" (click)="slides.slideNext()" fill="clear" *ngIf="post.poi.imagesFilePaths.length > 1">
+                    <ion-icon name="chevron-forward-outline"></ion-icon>
                     </ion-button>
                   </div>
                 </ion-slide>
@@ -92,14 +97,14 @@
 
           <div body class="timeline-details">
             <div class="timeline-detail-item" *ngIf="post.poi.imagesFilePaths.length === 1">
-              <ion-buttons class="one"slot="start">
+              <ion-buttons id="post-buttons" class="one"slot="start">
                 <div *ngIf="!checkUserLiked(post)">
-                  <ion-button [disabled]="true" #likeButton (click)="like(post.id, likeButton)">
+                  <ion-button [disabled]="true" #likeButton (click)="like(post.id)">
                     <ion-icon class="like-button" name="heart-outline"></ion-icon>
                   </ion-button>
                 </div>
                 <div *ngIf="checkUserLiked(post)">
-                  <ion-button [disabled]="true" #unlikeButton (click)="unlike(post.id, unlikeButton)">
+                  <ion-button [disabled]="true" #unlikeButton (click)="unlike(post.id)">
                     <ion-icon class="like-button" name="heart"></ion-icon>
                   </ion-button>
                 </div>
@@ -111,12 +116,12 @@
             <div class="timeline-detail-item" *ngIf="post.poi.imagesFilePaths.length > 1">
               <ion-buttons class="multiple" slot="start">
                 <div *ngIf="!checkUserLiked(post)">
-                  <ion-button #likeButton (click)="like(post.id, likeButton)">
+                  <ion-button [disabled]="true" #likeButton (click)="like(post.id)">
                     <ion-icon class="like-button" name="heart-outline"></ion-icon>
                   </ion-button>
                 </div>
                 <div *ngIf="checkUserLiked(post)">
-                  <ion-button #unlikeButton (click)="unlike(post.id, unlikeButton)">
+                  <ion-button [disabled]="true" #unlikeButton (click)="unlike(post.id)">
                     <ion-icon class="like-button" name="heart"></ion-icon>
                   </ion-button>
                 </div>
@@ -127,12 +132,12 @@
             </div>
       
             <div class="timeline-item-details">
-              <div *ngIf="!checkUserLiked(post)"> 
+              <div *ngIf="!checkUserLiked(post) && post.likeCount > 0"> 
                 <ion-label class="timeline-detail-item" color="dark">
                   <p class="like-text">Liked by <b>{{post.likeCount}} others </b></p>
                 </ion-label>
               </div>
-              <div *ngIf="checkUserLiked(post)"> 
+              <div *ngIf="checkUserLiked(post) && post.likeCount > 0"> 
                 <ion-label class="timeline-detail-item" color="dark">
                   <p class="like-text">Liked by <b>you</b> and <b>{{post.likeCount - 1}} others </b></p>
                 </ion-label>

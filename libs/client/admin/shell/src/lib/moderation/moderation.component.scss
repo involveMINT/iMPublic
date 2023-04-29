@@ -51,6 +51,7 @@
 
 .activity-post-carousel {
     position: relative;
+    padding: 20px 0;
   }
   
   .scroll-left,
@@ -254,3 +255,15 @@
     grid-template-columns: auto 1fr;
     padding: 2px;
   }
+
+::ng-deep .swiper-wrapper {
+  align-items: center !important;
+}
+
+#post-user-handle {
+    cursor: pointer;
+ }
+ 
+ #post-buttons {
+   padding-bottom: 5px;
+ }

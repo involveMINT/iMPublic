@@ -3,17 +3,16 @@ import {
   ChangeMakerFacade,
   PoiCmStoreModel,
 } from '@involvemint/client/cm/data-access';
-import { UserFacade, PostStoreModel, ImViewProfileModalService } from '@involvemint/client/shared/data-access';
+import { UserFacade, PostStoreModel, ImViewProfileModalService, ChatService } from '@involvemint/client/shared/data-access';
 import { StatefulComponent } from '@involvemint/client/shared/util';
 import { calculatePoiStatus, calculatePoiTimeWorked, PoiStatus } from '@involvemint/shared/domain';
 import { parseDate } from '@involvemint/shared/util';
-import { IonButton, IonInfiniteScroll } from '@ionic/angular';
+import { IonButton, IonInfiniteScroll, IonSlides } from '@ionic/angular';
 import { ModalController } from '@ionic/angular';
 import { ModalCommentComponent } from './comments/modal-comments.component';
 import { compareDesc } from 'date-fns';
 import { tap } from 'rxjs/operators';
 import { CommentStoreModel, commentsAdapter } from 'libs/client/shared/data-access/src/lib/+state/comments/comments.reducer';
-
 
 interface State {
   posts: Array<PostStoreModel & { status: PoiStatus; timeWorked: string; }>;
@@ -29,6 +28,9 @@ interface State {
 })
 export class ModerationComponent extends StatefulComponent<State> implements OnInit {
   @ViewChild(IonInfiniteScroll) infiniteScroll!: IonInfiniteScroll;
+  @ViewChild('likeButton', { read: IonButton }) likeButton!: IonButton;
+  @ViewChild('unlikeButton', { read: IonButton }) unlikeButton!: IonButton;
+  @ViewChild('slides', { read: IonSlides }) slides!: IonSlides;
   loading = false;
   event: any = null;
   allPagesLoaded = false;
@@ -41,8 +43,8 @@ export class ModerationComponent extends StatefulComponent<State> implements OnI
     private readonly user: UserFacade,
     private modalCtrl: ModalController,
     private readonly viewProfileModal: ImViewProfileModalService,
-    
-  ) {
+    private readonly chat: ChatService
+    ) {
     super({ posts: [], loaded: false, onlyPostsWithFlaggedComments: false });
   }
 
@@ -95,22 +97,30 @@ export class ModerationComponent extends StatefulComponent<State> implements OnI
      * Dispatches a 'like' request for a post using NgRx state management.
      * The changes resulting from the request can be tracked/re-rendered using post selectors.
   */
-  like(id: string, button: IonButton) {
-    button.disabled = true; // prevent click spam
-    this.user.posts.dispatchers.like({
-      postId: id,
-    })
+  like(id: string) {
+    if (!this.likeButton.disabled) {
+        this.likeButton.disabled = true; // prevent click spam
+        this.user.posts.dispatchers.like({
+            postId: id,
+        });
+    }
   }
 
   /**
      * Dispatches a 'unlike' request for a post using NgRx state management.
      * The changes resulting from the request can be tracked/re-rendered using post selectors.
   */
-  unlike(id: string, button: IonButton) {
-    button.disabled = true; // prevent click spam
-    this.user.posts.dispatchers.unlike({
-      postId: id,
-    })
+  unlike(id: string) {
+    if (!this.unlikeButton.disabled) {
+        this.unlikeButton.disabled = true; // prevent click spam
+        this.user.posts.dispatchers.unlike({
+            postId: id,
+        });
+    }
+  }
+
+  message(handle: string) {
+      this.chat.upsert([{ handleId: handle }]);
   }
 
   /** Used to check which like button to display */
