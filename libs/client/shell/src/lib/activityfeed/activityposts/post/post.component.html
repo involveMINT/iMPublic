@@ -107,7 +107,7 @@
   </div>
 
   <div body class="timeline-details">
-    <div class="timeline-detail-item" >
+    <div class="timeline-detail-item" *ngIf="post.poi.imagesFilePaths.length < 2">
       <ion-buttons id="post-buttons" class="one" slot="start">
         <div *ngIf="!checkUserLiked(post)">
           <ion-button #likeButton (click)="like(post.id)">
