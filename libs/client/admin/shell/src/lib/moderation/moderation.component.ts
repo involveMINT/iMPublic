@@ -215,7 +215,15 @@ export class ModerationComponent extends StatefulComponent<State> implements OnI
 
   getUserLastName(post: PostStoreModel) {
     return post.user.changeMaker?.lastName
-}
+  }
+
+  calculateTimeWorked(poi: any) {
+    let tempString = calculatePoiTimeWorked(poi);
+    tempString = tempString.replace("seconds", "sec");
+    tempString = tempString.replace("minutes", "min");
+    tempString = tempString.replace("hours", "hrs");
+    return tempString;
+  }
 
   // Convert user handle to string in order to pass into profile viewer
   getUserHandle(post: PostStoreModel) {
