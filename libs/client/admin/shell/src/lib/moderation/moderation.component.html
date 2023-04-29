@@ -53,22 +53,13 @@
             <hr class="separator">
           </div>
 
-          <!-- <div body class="timeline-details">
-            <ion-list class="project-title">
-              <ion-label class="label"><b>{{ post.poi.enrollment.project.title }}</b></ion-label>
-              <div class="information-circle">
-                <ion-icon class="spaced" (click)="viewProfile(getUserHandle(post))" name="information-circle"></ion-icon>
-              </div>
-            </ion-list>
-          </div> -->
-
           <div body class="timeline-details">
             <div class="project-description">{{ post.poi.enrollment.project.description }}</div>
           </div>
         
           <!-- Adds Swip-able carousel... still needs images to be sized + desktop version -->
           <div body class="activity-post-carousel">
-            <ion-row *ngIf="post.poi.imagesFilePaths.length > 1">
+            <ion-row *ngIf="post.poi.imagesFilePaths.length > 1; else singleImage">
               <ion-slides class="swiper-pagination" pager #slides [options]="{ scrollbar: false, loop: false }">
                 <ion-slide *ngFor="let image of post.poi.imagesFilePaths">
                   <div class="scroll-left">
@@ -81,10 +72,7 @@
                       <img id="shadow" [src]="image | imStorageUrl | async"/>
                     </div>
                     <ion-list class="projectText">
-                      <h2>{{ post.poi.enrollment.project.title }}</h2>
-                      <ion-button class="iconSize" (click)="viewProfile(getUserHandle(post))" fill="clear">
-                        <ion-icon class="infoButton" slot="icon-only" name="information-circle"></ion-icon>
-                      </ion-button>
+                      <h2 class="overflow">{{ post.poi.enrollment.project.title }}</h2>
                     </ion-list>
                     <div class="statText">
                       <p class="statDescription">Time Worked</p>
@@ -100,31 +88,44 @@
               </ion-slides>
             </ion-row>
 
-            <ion-row *ngIf="post.poi.imagesFilePaths.length === 1">
-              <ion-slides class="swiper-pagination" #slides [options]="{ pager: false, scrollbar: false, loop: false }">
-                <ion-slide *ngFor="let image of post.poi.imagesFilePaths">
-                  <div class="relative">
-                    <div class="shadow">
-                      <img [src]="image | imStorageUrl | async"/>
+            <ng-template #singleImage>
+              <ion-row>
+                <ion-slides class="swiper-pagination" #slides [options]="{ pager: false, scrollbar: false, loop: false }">
+                  <ion-slide *ngIf="post.poi.imagesFilePaths.length === 0">
+                    <div class="relative">
+                      <div class="shadow">
+                        <img src="https://drive.google.com/uc?export=view&id=0B_Gw_P6xxHWLdUtoM1pwNHNnX3M"/>
+                      </div>
+                      <ion-list class="projectText">
+                        <h2 class="overflow">{{ post.poi.enrollment.project.title }}</h2>
+                      </ion-list>
+                      <div class="statText">
+                        <p class="statDescription">Time Worked</p>
+                        <h2 class="stat">{{calculateTimeWorked(post.poi)}}</h2>
+                      </div>
                     </div>
-                    <ion-list class="projectText">
-                      <h2>{{ post.poi.enrollment.project.title }}</h2>
-                      <ion-button class="iconSize" (click)="viewProfile(getUserHandle(post))" fill="clear">
-                        <ion-icon class="infoButton" slot="icon-only" name="information-circle"></ion-icon>
-                      </ion-button>
-                    </ion-list>
-                    <div class="statText">
-                      <p class="statDescription">Time Worked</p>
-                      <h2 class="stat">{{calculateTimeWorked(post.poi)}}</h2>
+                  </ion-slide>
+                  <ion-slide *ngFor="let image of post.poi.imagesFilePaths">
+                    <div class="relative">
+                      <div class="shadow">
+                        <img [src]="image | imStorageUrl | async"/>
+                      </div>
+                      <ion-list class="projectText">
+                        <h2 class="overflow">{{ post.poi.enrollment.project.title }}</h2>
+                      </ion-list>
+                      <div class="statText">
+                        <p class="statDescription">Time Worked</p>
+                        <h2 class="stat">{{calculateTimeWorked(post.poi)}}</h2>
+                      </div>
                     </div>
-                  </div>
-                </ion-slide>
-              </ion-slides>
-            </ion-row>
+                  </ion-slide>
+                </ion-slides>
+              </ion-row>
+            </ng-template>
           </div>
 
           <div body class="timeline-details">
-            <div class="timeline-detail-item" *ngIf="post.poi.imagesFilePaths.length === 1">
+            <div class="timeline-detail-item" *ngIf="post.poi.imagesFilePaths.length < 2">
               <ion-buttons id="post-buttons" class="one"slot="start">
                 <div *ngIf="!checkUserLiked(post)">
                   <ion-button [disabled]="true" #likeButton (click)="like(post.id)">
