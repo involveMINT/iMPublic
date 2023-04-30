@@ -1,7 +1,13 @@
 // Mobile styles
 @media screen and (max-width: 480px) {
+  .wrap {
+    inline-size: 75px;
+    overflow: wrap;
+    padding-left: 15px;
+    text-align: left;
+  }
   .overflow {
-    inline-size: 65%;
+    inline-size: 150px;
     text-overflow: ellipsis;
     overflow: hidden;
     white-space: nowrap;
