@@ -10,7 +10,6 @@ import { compareDesc } from 'date-fns';
 import { parseDate } from '@involvemint/shared/util';
 import BadWords from 'bad-words';
 
-const isTooShortErrorMessage = 'You must have a minimum comment length of one character.';
 const isAgainstCommunityGuidelinesErrorMessage = 'This comment goes against our community guidelines.';
 
 interface State {
@@ -57,6 +56,7 @@ export class ModalCommentComponent extends StatefulComponent<State> implements O
       )
     );
 
+    this.msg = '';
     this.handleID = this.getHandleID();
     this.name = this.getName();
     this.profilePicFilePath = this.getProfilePic();
@@ -74,10 +74,9 @@ export class ModalCommentComponent extends StatefulComponent<State> implements O
         name: this.name,
         profilePicFilePath: this.profilePicFilePath
       });
+      // empty the "post comment" field
       this.msg = '';
-    } else if ((this.msg === '')){
-      this.presentErrorMessage(isTooShortErrorMessage);
-    } else {
+    } else if (containsBadWord){
       this.presentErrorMessage(isAgainstCommunityGuidelinesErrorMessage);
     }
     
