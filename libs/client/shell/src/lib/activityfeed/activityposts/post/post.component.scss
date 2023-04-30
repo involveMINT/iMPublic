@@ -173,9 +173,10 @@
     font-style: normal;
     font-weight: 400;
     font-size: 12px;
-    margin-top: +4px !important;
+    margin-top: 0px !important;
     padding: 4px;
-    text-align: right;
+    right: 0px;
+    position: absolute
   }
   
   .handle {
@@ -412,19 +413,14 @@
       font-weight: 400;
       font-size: 12px;
       line-height: 138%;
-      margin-top: -5.5px;
+      margin-top: -17px;
       padding-left: 8px;
     }
   
-    .multiple {
+    .button-spacing {
       margin-top: -50px !important;
       padding-bottom: 2px;
       padding-top: 2px;
-      position: relative;
-    }
-  
-    .one {
-      margin-top: -50px !important;
       position: relative;
     }
   
@@ -438,7 +434,18 @@
     padding: 15px 0;
   }
   
-  .scroll-left,
+  .scroll-left {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 40px;
+    height: 40px;
+    display: flex;
+    left: 10px;
+    justify-content: center;
+    align-items: center;
+  }
+
   .scroll-right {
     position: absolute;
     top: 50%;
@@ -446,6 +453,7 @@
     width: 40px;
     height: 40px;
     display: flex;
+    right: 10px;
     justify-content: center;
     align-items: center;
   }
@@ -471,6 +479,21 @@
     --padding-start: 0;
     --margin-start: 0;
   }
+
+  .comment-dropdown-nolikes {
+    color: var(--ion-text-color) !important;
+    font-family: 'Inter';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 12px;
+    line-height: 138%;
+    left: 0px !important;
+    margin-top: -40px;
+    padding-top: 0px;
+    padding-left: 8px;
+    --padding-start: 0;
+    --margin-start: 0;
+  }
   
   .date {
     font-family: 'Inter';
@@ -480,7 +503,7 @@
     margin-top: +4px !important;
     padding: 4px;
     right: 10px;
-    text-align: right;
+    position: absolute
   }
   
   .handle {
@@ -562,7 +585,7 @@
   
   .swiper-pagination {
     position: relative;
-    padding-bottom: 34px;
+    padding-bottom: 20px;
     --bullet-background: var(--ion-text-color) !important;
     --bullet-background-active: var(--ion-text-color) !important;
   
