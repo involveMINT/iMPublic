@@ -49,7 +49,7 @@ export class ModalCommentComponent extends StatefulComponent<State> implements O
           this.updateState({
             comments: comments
               .sort((a, b) => 
-                compareDesc(parseDate(b.dateCreated ?? new Date()), parseDate(a.dateCreated ?? new Date()))
+                compareDesc(parseDate(a.dateCreated ?? new Date()), parseDate(b.dateCreated ?? new Date()))
               )
           })
         )
@@ -82,7 +82,7 @@ export class ModalCommentComponent extends StatefulComponent<State> implements O
     
     // give time to render comment, then scroll to bottom
     setTimeout(() => {
-      this.content.scrollToBottom(1000);
+      this.content.scrollToTop(1000);
     }, 1000);
   }
 
