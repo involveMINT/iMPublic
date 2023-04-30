@@ -1196,4 +1196,8 @@ export class ImAppComponent extends StatefulComponent<State> implements OnInit {
       }
     });
   }
+
+  isActivityFeedRoute(): boolean {
+    return this.router.url.startsWith('/activityfeed');
+  }
 }
