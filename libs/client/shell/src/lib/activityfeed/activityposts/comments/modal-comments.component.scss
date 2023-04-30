@@ -13,6 +13,7 @@
   margin-top: 12px;
   margin-bottom: 12px;
   border-radius: 25px;
+  background: var(--im-comment-background);
 }
 
 .date {
@@ -39,7 +40,7 @@
   font-size: 12px;
   padding-bottom: 4px;
   text-decoration-line: underline;
-  background: var(--im-block-background);
+  background: var(--im-comment-background);
 }
 
 .information-circle {
@@ -67,6 +68,7 @@
   display: flex;
   font-size: small;
   padding: 0px;
+  background: var(--im-comment-background);
 }
 
 .ion-text-wrap {
