@@ -13,21 +13,31 @@
     </ion-toolbar>
   </ion-header>
 
-  <ion-content id="content">
+  <ion-content id="content" class="modal-content">
+    <ion-label class="empty-comments" *ngIf="state.comments.length === 0">
+      No comments yet.
+    </ion-label>
+    <ion-label class="empty-comments" *ngIf="state.comments.length === 0">
+      Be the first!
+    </ion-label>
     <ion-list lines="none">
         <ion-item *ngFor="let comment of state.comments">
           <div class="comment-container">
             <div class="member-handle">
               <div
-                  class="im-profile-pic medium"
+                  class="im-profile-pic feed"
                   *ngIf="comment.profilePicFilePath | imStorageUrl | async as url"
                   [ngStyle]="{ 'background-image': 'url(' + url + ')' }"
                 ></div>
             </div>
             <ion-list class="comment">
-              <ion-label class="pointer" (click)="viewProfile(comment.handleId)" > <b>@{{ comment.handleId }}</b> </ion-label>
-              <ion-label class="spaced" color="medium"> {{ comment.name }} </ion-label>
-              <ion-label class="ion-text-wrap"> {{ comment.text }} </ion-label>
+              <ion-list class="name-info-handle">
+                <ion-label class="name"><b>{{ comment.name }}</b></ion-label>
+                <ion-icon class="information-circle" (click)="viewProfile(comment.handleId)" name="information-circle"></ion-icon>
+                <ion-label class="date" color="medium">{{ comment.dateCreated | date: 'longDate' }}</ion-label>
+              </ion-list>
+              <ion-label class="handle" color="medium">@{{ comment.handleId }}</ion-label>
+              <ion-label class="ion-text-wrap"> {{ comment.text }} </ion-label>     
             </ion-list>
           </div>
           <div class="flag-container">
