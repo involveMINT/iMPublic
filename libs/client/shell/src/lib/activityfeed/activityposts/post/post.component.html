@@ -36,11 +36,6 @@
     <ion-row *ngIf="post.poi.imagesFilePaths.length > 1; else singleImage">
       <ion-slides class="swiper-pagination" pager #slides [options]="{ scrollbar: false, loop: false }">
         <ion-slide *ngFor="let image of post.poi.imagesFilePaths">
-          <div class="scroll-left">
-            <ion-button class="slide-prev-button" (click)="slides.slidePrev()" fill="clear" *ngIf="post.poi.imagesFilePaths.length > 1">
-              <ion-icon name="chevron-back-outline"></ion-icon>
-            </ion-button>
-          </div>
           <div class="relative">
             <div class="shadow" >
               <img id="shadow" [src]="image | imStorageUrl | async"/>
@@ -55,6 +50,11 @@
               <p class="statDescription">Time Worked</p>
               <h2 class="stat">{{calculateTimeWorked(post.poi)}}</h2>
             </div>
+          </div>
+          <div class="scroll-left">
+            <ion-button class="slide-prev-button" (click)="slides.slidePrev()" fill="clear" *ngIf="post.poi.imagesFilePaths.length > 1">
+              <ion-icon name="chevron-back-outline"></ion-icon>
+            </ion-button>
           </div>
           <div class="scroll-right">
             <ion-button class="slide-next-button" (click)="slides.slideNext()" fill="clear" *ngIf="post.poi.imagesFilePaths.length > 1">
@@ -155,10 +155,18 @@
         </ion-label>
       </div>
       
-      <ion-button slot="start" class="comment-dropdown" (click)="viewComments(post)" fill="clear" >
-        <p>Comments</p>
-        <ion-icon name="chevron-down" fill="clear"></ion-icon>
-      </ion-button>
+      <div *ngIf="post.likeCount === 0"> 
+        <ion-button slot="start" class="comment-dropdown-nolikes" (click)="viewComments(post)" fill="clear" >
+          <p>Comments</p>
+          <ion-icon name="chevron-down" fill="clear"></ion-icon>
+        </ion-button>
+      </div>
+      <div *ngIf="post.likeCount > 0"> 
+        <ion-button slot="start" class="comment-dropdown" (click)="viewComments(post)" fill="clear" >
+          <p>Comments</p>
+          <ion-icon name="chevron-down" fill="clear"></ion-icon>
+        </ion-button>
+      </div>
     </div>
   </div>
 </im-block>
