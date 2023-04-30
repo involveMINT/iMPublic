@@ -17,24 +17,70 @@
   border-style: solid;
   border-radius: 25px;
 }
-  
+
+.date {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 400;
+  font-size: 12px;
+  margin-top: +2px;
+  padding-left: 2px;
+  padding-right: 2px;
+}
+ 
+.empty-comments {
+  align-items: center;
+  display: flex;
+  justify-content: center;
+  transform: translateY(175px);
+}
+
+.handle {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 400;
+  font-size: 12px;
+  padding-bottom: 4px;
+  text-decoration-line: underline;
+}
+
+.information-circle {
+  display: grid;
+  width: 13.68px !important;
+  height: 13.68px !important;
+  grid-template-columns: auto 1fr;
+  padding-left: 3px;
+  padding-right: 2px;
+  cursor: pointer;
+}
+
 .member-handle {
   align-self: flex-start;
   padding-bottom: 8px;
   padding-top: 8px;
 }
   
-.pointer {
-  cursor: pointer;
+.name {
+  color: var(--im-green);
 }
-  
-.spaced {
-  padding-bottom: 4px;
+
+.name-info-handle {
+  align-items: center;
+  display: flex;
+  font-size: small;
+  padding: 0px;
+  --ion-item-background: #f4f5f8;
 }
 
 .ion-text-wrap {
+  color: var(--ion-text-color);
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 400;
+  font-size: 12px;
   word-break: break-word;
   hyphens: auto;
+  cursor: pointer;
 }
 
 .ion-text-wrap.removed {

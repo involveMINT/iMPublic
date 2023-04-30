@@ -14,6 +14,13 @@
   </ion-header>
 
   <ion-content id="content">
+    <ion-label class="empty-comments" *ngIf="state.comments.length === 0">
+      No comments yet.
+    </ion-label>
+    <ion-label class="empty-comments" *ngIf="state.comments.length === 0">
+      Be the first!
+    </ion-label>
+
     <ng-container *ngFor="let comment of state.comments">
       <ion-item lines="none">
         <div class="comment-container">
@@ -25,9 +32,13 @@
             ></div>
           </div>
           <ion-list class="comment">
-            <ion-label class="pointer" (click)="viewProfile(comment.handleId)" > <b>@{{ comment.handleId }}</b> </ion-label>
-            <ion-label class="spaced" color="medium"> {{ comment.name }} </ion-label>
-            <ion-label class="ion-text-wrap" *ngIf="!checkCommentHidden(comment)"> {{ comment.text }} </ion-label>
+            <ion-list class="name-info-handle">
+              <ion-label class="name"><b>{{ comment.name }}</b></ion-label>
+              <ion-icon class="information-circle" (click)="viewProfile(comment.handleId)" name="information-circle"></ion-icon>
+              <ion-label class="date" color="medium">{{ comment.dateCreated | date: 'longDate' }}</ion-label>
+            </ion-list>
+            <ion-label class="handle" color="medium">@{{ comment.handleId }}</ion-label>
+            <ion-label (click)="presentCommentActions(comment.id, comment)" class="ion-text-wrap" *ngIf="!checkCommentHidden(comment)">{{ comment.text }}</ion-label>
             <ion-label class="ion-text-wrap removed" *ngIf="checkCommentHidden(comment)">This comment has been removed because it goes against community guidelines.</ion-label>
           </ion-list>
         </div>
