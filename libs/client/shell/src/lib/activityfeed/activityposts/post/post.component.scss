@@ -90,15 +90,10 @@
       padding-left: 8px;
     }
   
-    .multiple {
+    .button-spacing {
       margin-top: -50px !important;
       padding-bottom: 2px;
       padding-top: 2px;
-      position: relative;
-    }
-  
-    .one {
-      margin-top: -50px !important;
       position: relative;
     }
   
@@ -337,6 +332,7 @@
     position: absolute;
     bottom: 3%;
     padding: 3%;
+    margin-bottom: -25px;
     display: flex;
     font-family: var(--ion-font-family) !important;
   }
@@ -483,7 +479,8 @@
     font-size: 12px;
     margin-top: +4px !important;
     padding: 4px;
-    text-align: center;
+    right: 10px;
+    text-align: right;
   }
   
   .handle {
