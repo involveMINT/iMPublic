@@ -4,6 +4,7 @@
   align-items: flex-start;
   flex: 1;
   padding-right: 10px;
+  --ion-item-background: var(--ion-toolbar-background)
 }
   
 .comment {
@@ -11,10 +12,6 @@
   padding: 12px;
   margin-top: 12px;
   margin-bottom: 12px;
-  background: #f4f5f8;
-  color: #000;
-  border-color: #fff;
-  border-style: solid;
   border-radius: 25px;
 }
 
@@ -42,6 +39,7 @@
   font-size: 12px;
   padding-bottom: 4px;
   text-decoration-line: underline;
+  background: var(--im-block-background);
 }
 
 .information-circle {
@@ -69,7 +67,6 @@
   display: flex;
   font-size: small;
   padding: 0px;
-  --ion-item-background: #f4f5f8;
 }
 
 .ion-text-wrap {
@@ -87,3 +84,13 @@
   color: #ababab;
   font-style: italic;
 }
+
+.comment-input {
+  color: var(--ion-text-color);
+  background: var(--im-input-background);
+}
+
+.modal-content {
+  --ion-item-background: var(--ion-toolbar-background);
+}
+  

@@ -13,7 +13,7 @@
     </ion-toolbar>
   </ion-header>
 
-  <ion-content id="content">
+  <ion-content id="content" class = "modal-content">
     <ion-label class="empty-comments" *ngIf="state.comments.length === 0">
       No comments yet.
     </ion-label>
@@ -46,8 +46,8 @@
     </ng-container>
   </ion-content>
 
-  <ion-footer>
-    <ion-toolbar color="light">
+  <ion-footer class="modal-content">
+    <ion-toolbar class="modal-content">
       <ion-item lines="none">
         <ion-input 
           item-start 
@@ -58,7 +58,8 @@
           minlength="1" 
           maxlength="200" 
           color="medium" 
-          required> 
+          required
+          class="comment-input"> 
         </ion-input>
         <ion-button slot="end" (click)="comment()">Post</ion-button>
       </ion-item>
