@@ -4,13 +4,13 @@
         <ion-buttons slot="start">
           <ion-menu-button></ion-menu-button>
         </ion-buttons>
-        <ion-title>Comment Moderation</ion-title>
+        <ion-title>Moderation</ion-title>
         <ion-buttons slot="end">
           <div *ngIf="state.onlyPostsWithFlaggedComments">
-            <div>Showing flagged</div>
+            <div class="wrap">Showing flagged</div>
           </div>
           <div *ngIf="!state.onlyPostsWithFlaggedComments">
-            <div>Showing all</div>
+            <div class="wrap">Showing all</div>
           </div>
           <ion-toggle class="spaced" [ngModel]="state.onlyPostsWithFlaggedComments" (ngModelChange)="updatePostsDisplayed()"></ion-toggle>
         </ion-buttons>
