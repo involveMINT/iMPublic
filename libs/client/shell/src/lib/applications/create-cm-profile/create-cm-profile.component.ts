@@ -7,6 +7,7 @@ import {
   verifyHandleUniqueness,
 } from '@involvemint/client/shared/data-access';
 import { StatefulComponent } from '@involvemint/client/shared/util';
+import { EnrollmentComponent } from 'libs/client/cm/shell/src/lib/enrollments/enrollment/enrollment.component';
 import { CmOnboardingState, ImConfig } from '@involvemint/shared/domain';
 import { DeepReadonly, STATES } from '@involvemint/shared/util';
 import { IonSlides } from '@ionic/angular';
