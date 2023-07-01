@@ -1,3 +1,17 @@
+.scrollable-container {
+  overflow: auto;
+  height: 500px;
+}
+
+.list-container {
+  text-align: left;
+  list-style-type: none;
+}
+
+.list-container * {
+  padding: 5px;
+}
+
 .cont {
   display: grid;
   grid-template-rows: auto 1fr;
