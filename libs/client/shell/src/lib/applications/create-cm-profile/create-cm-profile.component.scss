@@ -3,17 +3,17 @@
   height: 500px;
 }
 
-.list-container {
+.waiver {
+  text-align: justify;
+}
+
+.list-container * {
   text-align: left;
   list-style-type: none;
 }
 
-.list-container * {
-  padding: 5px;
-}
-
-.waiver {
-  text-align: justify;
+.list-container li {
+  padding-top: 10px;
 }
 
 .cont {
