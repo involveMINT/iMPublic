@@ -8,7 +8,7 @@ import {
 import { UserFacade, UserStoreModel } from '@involvemint/client/shared/data-access';
 import { RouteService } from '@involvemint/client/shared/routes';
 import { StatefulComponent, StatusService } from '@involvemint/client/shared/util';
-import { calculateEnrollmentStatus, EnrollmentStatus } from '@involvemint/shared/domain';
+import { calculateEnrollmentStatus, EnrollmentStatus } from '@involvemint/shared/domain'
 import { UnArray } from '@involvemint/shared/util';
 import { tap } from 'rxjs/operators';
 import { SignWaiverModalService } from '../sign-waiver-modal/sign-waiver-modal.service';
