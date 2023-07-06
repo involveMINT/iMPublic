@@ -5,6 +5,7 @@ import {
   AdminLoginDto,
   AdminUserSearchDto,
   ChangePasswordDto,
+  ForDonationDto,
   ForgotPasswordChangeDto,
   ForgotPasswordDto,
   GrantBaPrivilegesDto,
@@ -38,6 +39,7 @@ export interface IUserOrchestration {
   forgotPassword: IOperation<{}, ForgotPasswordDto>;
   forgotPasswordChange: IOperation<{}, ForgotPasswordChangeDto>;
   changePassword: IOperation<{}, ChangePasswordDto>;
+  changeForDonation: IOperation<{}, ForDonationDto>;
   finishJoyride: IOperation<{}, undefined>;
   adminUserSearch: IOperation<User[], AdminUserSearchDto>;
 }

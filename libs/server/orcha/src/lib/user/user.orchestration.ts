@@ -6,6 +6,7 @@ import {
   AdminLoginQuery,
   AdminUserSearchDto,
   ChangePasswordDto,
+  ForDonationDto,
   ForgotPasswordChangeDto,
   ForgotPasswordDto,
   GrantBaPrivilegesDto,
@@ -121,6 +122,11 @@ export class UserOrchestration implements IServerOrchestration<IUserOrchestratio
   @ServerOperation()
   async changePassword(_: IQuery<{}>, token: string, dto: ChangePasswordDto) {
     return this.user.changePassword(token, dto);
+  }
+
+  @ServerOperation()
+  async changeForDonation(_: IQuery<{}>, token: string, dto: ForDonationDto) {
+    return this.user.changeForDonation(token, dto);
   }
 
   @ServerOperation()

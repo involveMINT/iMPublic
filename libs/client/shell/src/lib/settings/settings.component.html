@@ -24,6 +24,7 @@
           Dark mode is {{ state.darkMode ? 'on' : 'off' }}.
         </div>
       </im-block>
+      <!--  -->
       <im-block>
         <div header class="im-primary-text">Nav Tabs</div>
         <div body class="item">
@@ -32,6 +33,7 @@
           Nav Tabs is {{ state.navTabs ? 'on' : 'off' }}.
         </div>
       </im-block>
+      <!--  -->
       <im-block>
         <div header class="im-primary-text">Side Menu Behavior</div>
         <div body class="item">
@@ -47,7 +49,20 @@
           }}
         </div>
       </im-block>
-
+      <!-- Change for donation -->
+      <ng-container *ngIf="state.authenticated">
+        <div body [formGroup]="changeForDonationForm">
+          <im-block>
+            <div header class="im-primary-text">Raising For Donation?</div>
+            <div body class="item">
+              <div>Toggle between Raising credit for donation and personal use.</div>
+              <ion-toggle [checked]="state.forDonation" (ionChange)="(changeForDonation)"></ion-toggle>
+              {{ state.forDonation ? 'Marked to Donating when On.' : 'For personal use when Off.' }}
+            </div>
+          </im-block>
+        </div>
+      </ng-container>
+      <!--  -->
       <ng-container *ngIf="state.authenticated && !state.isAdmin">
         <im-block>
           <div header class="im-primary-text">Change Password</div>

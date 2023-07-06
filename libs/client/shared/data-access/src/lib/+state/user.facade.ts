@@ -10,6 +10,7 @@ import {
   EditCmProfileDto,
   EditEpProfileDto,
   EditSpProfileDto,
+  ForDonationDto,
   GetSuperAdminForExchangePartnerDto,
   ImConfig,
   SignUpDto,
@@ -206,6 +207,9 @@ export class UserFacade {
       },
       changePassword: (dto: ChangePasswordDto) => {
         this.store.dispatch(UserSessionActions.changePassword({ dto }));
+      },
+      changeForDonation: (dto: ForDonationDto) => {
+        this.store.dispatch(UserSessionActions.changeForDonation({ dto }));
       },
     },
     selectors: {

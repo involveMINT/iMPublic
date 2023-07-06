@@ -846,7 +846,7 @@ export class AppService {
       return JSON.parse(correctJsonSyntax);
     } catch (error) {
       console.error('Could not parse:', correctJsonSyntax);
-      throw new Error(error);
+      throw new Error(error as string); // @TODO :Investigate this, whecn just new Error(error)
     }
   }
 
