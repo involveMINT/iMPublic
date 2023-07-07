@@ -11,9 +11,10 @@ import { PassportEffects } from './passport/passport.effects';
 import { PassportReducer, PASSPORT_KEY } from './passport/passport.reducer';
 import { PoiEffects } from './pois/pois.effects';
 import { PoiReducer, POIS_KEY } from './pois/pois.reducer';
+import { PoiSubmissionModalService } from 'libs/client/cm/shell/src/lib/pois/poi-submission-modal/poi-submission-modal.service';
 
 @NgModule({
-  providers: [ChangeMakerFacade],
+  providers: [ChangeMakerFacade, PoiSubmissionModalService],
   imports: [
     CommonModule,
     PassportModalModule,
@@ -24,4 +25,4 @@ import { PoiReducer, POIS_KEY } from './pois/pois.reducer';
     EffectsModule.forFeature([EnrollmentEffects, PassportEffects, PoiEffects]),
   ],
 })
-export class ClientCmDataAccessModule {}
+export class ClientCmDataAccessModule { }

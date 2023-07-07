@@ -10,6 +10,7 @@ import { from } from 'rxjs';
 import { delayWhen, filter, map, switchMap, take, tap } from 'rxjs/operators';
 import { ChangeMakerFacade } from '../change-maker.facade';
 import * as PoisActions from './pois.actions';
+import { PoiSubmissionModalService } from '../../../../shell/src/lib/pois/poi-submission-modal/poi-submission-modal.service';
 
 @Injectable()
 export class PoiEffects {
@@ -244,6 +245,7 @@ export class PoiEffects {
             filter((body) => !!body),
             map((poi) => {
               if (!poi) throw new Error('No POI Emitted!');
+              this.poiSubmissionModal.open();
               return PoisActions.submitPoiSuccess({ poi });
             })
           ),
@@ -262,6 +264,7 @@ export class PoiEffects {
     private readonly user: UserFacade,
     private readonly status: StatusService,
     private readonly route: RouteService,
-    private readonly cf: ChangeMakerFacade
-  ) {}
+    private readonly cf: ChangeMakerFacade,
+    private readonly poiSubmissionModal: PoiSubmissionModalService
+  ) { }
 }

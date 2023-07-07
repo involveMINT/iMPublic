@@ -12,9 +12,12 @@ import { ConfirmDeactivationGuard } from '@involvemint/client/shared/util';
 import { IonicModule } from '@ionic/angular';
 import { PoiComponent } from './poi/poi.component';
 import { PoisComponent } from './pois/pois.component';
+import { PoiSubmissionModalService } from './poi-submission-modal/poi-submission-modal.service';
+import { PoiSubmissionModalComponent } from './poi-submission-modal/poi-submission-modal.component';
 
 @NgModule({
-  declarations: [PoisComponent, PoiComponent],
+  declarations: [PoisComponent, PoiComponent, PoiSubmissionModalComponent],
+  providers: [PoiSubmissionModalService],
   imports: [
     CommonModule,
     IonicModule,
@@ -37,4 +40,4 @@ import { PoisComponent } from './pois/pois.component';
     ]),
   ],
 })
-export class PoisModule {}
+export class PoisModule { }
