@@ -22,6 +22,7 @@ export interface ChangeMaker {
   dateCreated: Date | string;
   onboardingState: CmOnboardingState;
   profilePicFilePath?: string;
+  waiverSigned: boolean;
 
   handle: IOneToOne<Handle, 'changeMaker'>;
   enrollments: IOneToMany<Enrollment, 'changeMaker'>;

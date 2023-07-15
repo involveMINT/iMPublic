@@ -109,4 +109,13 @@ export class CreateCmProfileComponent extends StatefulComponent<State> implement
       );
     }
   }
+
+  getGeoLocPerm(): void {
+    navigator.geolocation.getCurrentPosition(
+      (p) => {
+        const lat = p.coords.latitude; 
+        const long = p.coords.longitude; 
+      }
+    )
+  }
 }

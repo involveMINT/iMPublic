@@ -51,6 +51,7 @@ export class ChangeMakerService {
         requests: [],
         receivingVouchers: [],
         view: null,
+        waiverSigned: true,
       },
       query
     );
