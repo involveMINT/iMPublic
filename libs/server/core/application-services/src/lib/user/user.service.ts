@@ -6,6 +6,7 @@ import {
   ChangePasswordDto,
   defaultStorefrontListingStatus,
   environment,
+  ForDonationDto,
   GrantBaPrivilegesDto,
   ImConfig,
   ISnoopData,
@@ -13,7 +14,7 @@ import {
   SearchUserDto,
   SignUpDto,
   SnoopDto,
-  User
+  User,
 } from '@involvemint/shared/domain';
 import { HttpException, HttpService, HttpStatus, Injectable } from '@nestjs/common';
 import { IQuery, parseQuery } from '@orcha/common';
@@ -32,7 +33,7 @@ export class UserService {
     private readonly email: EmailService,
     private readonly httpService: HttpService,
     private readonly epRepo: ExchangePartnerRepository
-  ) { }
+  ) {}
 
   async verifyUserEmail(email: string): Promise<boolean> {
     const user = await this.userRepo.findOne(email, { id: true });
@@ -443,6 +444,21 @@ export class UserService {
       forgotPasswordHash: null!,
       passwordHash: newPasswordHash,
       salt: newSalt,
+    });
+    return {};
+  }
+
+  /**
+   * Changes wheter the uer wants to raise the credtis for personal or donation use
+   * @param token
+   * @param dto
+   * @returns
+   */
+  async changeForDonation(token: string, dto: ForDonationDto) {
+    console.log('Should change for donation ', dto);
+    const { id } = await this.auth.validateUserToken(token);
+    await this.userRepo.update(id, {
+      forDonation: dto.forDonation,
     });
     return {};
   }

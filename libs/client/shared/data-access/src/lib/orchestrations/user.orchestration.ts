@@ -40,5 +40,7 @@ export class UserOrchestration implements IClientOrchestration<IUserOrchestratio
   @ClientOperation()
   finishJoyride!: IClientOrchestration<IUserOrchestration>['finishJoyride'];
   @ClientOperation()
+  changeForDonation!: IClientOrchestration<IUserOrchestration>['changeForDonation'];
+  @ClientOperation()
   adminUserSearch!: IClientOrchestration<IUserOrchestration>['adminUserSearch'];
 }

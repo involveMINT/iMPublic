@@ -1,4 +1,4 @@
-import { IsOptional, IsString, Matches } from 'class-validator';
+import { IsBoolean, IsOptional, IsString, Matches } from 'class-validator';
 import { ImConfig } from '../../config';
 
 export abstract class VerifyUserEmailDto {
@@ -112,6 +112,11 @@ export abstract class ChangePasswordDto {
 
   @Matches(ImConfig.regex.password.regex)
   newPassword!: string;
+}
+
+export abstract class ForDonationDto {
+  @IsBoolean()
+  forDonation!: boolean;
 }
 
 export abstract class AdminUserSearchDto {

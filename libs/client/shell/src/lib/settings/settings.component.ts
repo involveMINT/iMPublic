@@ -17,6 +17,7 @@ interface State {
   navTabs: boolean;
   isAdmin: boolean;
   sideMenuBehavior: UserSessionState['sideMenuBehavior'];
+  forDonation: boolean; // UserSessionState['forDonation'];
 }
 
 @Component({
@@ -40,6 +41,9 @@ export class SettingsComponent extends StatefulComponent<State> implements OnIni
     },
     { validators: (ac) => ConfirmPasswordValidator.MatchPassword(ac, 'newPassword', 'confirmPassword') }
   );
+  readonly changeForDonationForm = new FormGroup({
+    forDonation: new FormControl('', (e) => Validators.required(e)),
+  });
 
   readonly pwdValidationText = ImConfig.regex.password.text;
 
@@ -50,10 +54,12 @@ export class SettingsComponent extends StatefulComponent<State> implements OnIni
       navTabs: true,
       isAdmin: false,
       sideMenuBehavior: 'hidden',
+      forDonation: true, // @TODO Check and change to initial user state
     });
   }
 
   ngOnInit(): void {
+    console.log(this.user);
     const theme = localStorage.getItem('theme');
     this.state.darkMode = theme === 'dark';
 
@@ -110,10 +116,22 @@ export class SettingsComponent extends StatefulComponent<State> implements OnIni
     );
   }
 
+  creditForOrgs() {
+    this.user.session.dispatchers.toggleSideMenuBehavior(
+      this.state.sideMenuBehavior === 'hidden' ? 'responsive' : 'hidden'
+    );
+  }
+
   changePassword() {
     this.user.session.dispatchers.changePassword({
       currentPassword: this.changePasswordForm.value.currentPassword,
       newPassword: this.changePasswordForm.value.newPassword,
+    });
+  }
+
+  changeForDonation() {
+    this.user.session.dispatchers.changeForDonation({
+      forDonation: true,
     });
   }
 }

@@ -15,6 +15,7 @@ export interface User {
   active: boolean;
   activationHash?: string;
   forgotPasswordHash?: string;
+  forDonation?: boolean;
   joyride: boolean;
   baAdmin: boolean;
 

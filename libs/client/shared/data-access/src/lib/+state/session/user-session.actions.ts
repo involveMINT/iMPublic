@@ -2,6 +2,7 @@ import {
   BaSubmitEpApplicationDto,
   ChangePasswordDto,
   CreateChangeMakerProfileDto,
+  ForDonationDto,
   GetSuperAdminForExchangePartnerDto,
   SignUpDto,
   SubmitEpApplicationDto,
@@ -329,6 +330,21 @@ export const changePasswordSuccess = createAction('[UserSession] Change Password
 
 export const changePasswordError = createAction(
   '[UserSession] Change Password Error',
+  props<{ error: OrchaOperationError }>()
+);
+
+/**
+ * @TODO Delete this on fail
+ */
+export const changeForDonation = createAction(
+  '[UserSession] Change forDonation',
+  props<{ dto: ForDonationDto }>()
+);
+
+export const changeForDonationSuccess = createAction('[UserSession] Change forDonation Success');
+
+export const changeForDonationError = createAction(
+  '[UserSession] Change forDonation Error',
   props<{ error: OrchaOperationError }>()
 );
 
