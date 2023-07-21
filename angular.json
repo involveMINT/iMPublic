@@ -872,9 +872,6 @@
                   "with": "apps/migrate/src/environments/environment.test.ts"
                 }
               ]
-            },
-            "org": {
-              
             }
           }
         },
