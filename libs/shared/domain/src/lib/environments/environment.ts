@@ -12,11 +12,11 @@ export const environment: Env = {
   storageBucket: 'involvemint-tech',
   adminPasswordHash:
     'sZfCJx5X3sGSwkokIs9IVFxDfxWd2lEKsAhkOSDfEK8u2YS98y5rJAmXmtrJs7AQ29xkHMmz0bDfLkXCKS9/+A==',
-  gcpApiKey: 'AIzaSyBpHd6hfm_WA0Kb7rjcFqJtDaot4xCcU0k',
+  gcpApiKey: 'AIzaSyBmrVarnXPU9Wfdp07kQSna7Qqa5F1jHDw',
   typeOrmConfig: {
     type: 'postgres',
     host: '127.0.0.1',
-    port: 5432,
+    port: 5433,
     username: 'postgres',
     password: '1Qazxsw2',
     database: 'involvemint',

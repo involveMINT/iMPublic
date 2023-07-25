@@ -31,8 +31,6 @@ export class ChangeMakerEntity implements Required<ChangeMaker> {
   onboardingState!: CmOnboardingState;
   @Column({ default: 'NOW()' })
   dateCreated!: Date;
-  @Column({ default: false })
-  hasSignedWaiver!: boolean;
 
   @OneToOne(() => HandleEntity, (e) => e.changeMaker, { cascade: true })
   @JoinColumn()
