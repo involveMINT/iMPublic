@@ -26,12 +26,10 @@
                 <im-item [touched]="true">
                   <ion-icon slot="start" name="person"></ion-icon>
                   <input formControlName="firstName" placeholder="First Name" />
-                  <im-error
-                    *ngIf="
+                  <im-error *ngIf="
                       !createProfileForm.controls.firstName.valid &&
                       createProfileForm.controls.firstName.touched
-                    "
-                  >
+                    ">
                     Please enter a valid first name.
                   </im-error>
                 </im-item>
@@ -39,24 +37,19 @@
                 <im-item [touched]="true">
                   <ion-icon slot="start" name="person"></ion-icon>
                   <input formControlName="lastName" placeholder="Last Name" />
-                  <im-error
-                    *ngIf="
+                  <im-error *ngIf="
                       !createProfileForm.controls.lastName.valid &&
                       createProfileForm.controls.lastName.touched
-                    "
-                  >
+                    ">
                     Please enter a valid last name.
                   </im-error>
                 </im-item>
               </ng-container>
               <div class="im-buttons" footer>
-                <ion-button
-                  (click)="next()"
-                  [disabled]="
+                <ion-button (click)="next()" [disabled]="
                     createProfileForm.controls.firstName.invalid ||
                     createProfileForm.controls.lastName.invalid
-                  "
-                >
+                  ">
                   Next
                 </ion-button>
               </div>
@@ -79,18 +72,11 @@
               <ng-container body>
                 <im-item [touched]="true">
                   <ion-icon slot="start" name="phone-portrait-outline"></ion-icon>
-                  <input
-                    imPhoneMask
-                    formControlName="phone"
-                    placeholder="Mobile Phone Number"
-                    type="tel"
-                    (change)="setPhoneVal($event)"
-                  />
-                  <im-error
-                    *ngIf="
+                  <input imPhoneMask formControlName="phone" placeholder="Mobile Phone Number" type="tel"
+                    (change)="setPhoneVal($event)" />
+                  <im-error *ngIf="
                       !createProfileForm.controls.phone.valid && createProfileForm.controls.phone.touched
-                    "
-                  >
+                    ">
                     Please enter a valid phone number.
                   </im-error>
                 </im-item>
@@ -118,52 +104,144 @@
                 <im-item [touched]="true">
                   <ion-icon slot="start" src="/assets/icons/@.svg"></ion-icon>
                   <input formControlName="handle" placeholder="handle" />
-                  <ion-spinner
-                    slot="end"
-                    name="crescent"
-                    *ngIf="state.verifyingHandle && createProfileForm.controls.handle.valid"
-                  ></ion-spinner>
-                  <ion-icon
-                    slot="end"
-                    *ngIf="
+                  <ion-spinner slot="end" name="crescent"
+                    *ngIf="state.verifyingHandle && createProfileForm.controls.handle.valid"></ion-spinner>
+                  <ion-icon slot="end" *ngIf="
                       !state.verifyingHandle &&
                       createProfileForm.controls.handle.valid &&
                       !createProfileForm.controls.handle.errors?.notUnique
-                    "
-                    color="success"
-                    name="checkmark"
-                  ></ion-icon>
-                  <ion-icon
-                    slot="end"
-                    *ngIf="
+                    " color="success" name="checkmark"></ion-icon>
+                  <ion-icon slot="end" *ngIf="
                       !state.verifyingHandle &&
                       !createProfileForm.controls.handle.valid &&
                       createProfileForm.controls.handle.errors?.notUnique
-                    "
-                    color="danger"
-                    name="close"
-                  ></ion-icon>
+                    " color="danger" name="close"></ion-icon>
                   <im-error *ngIf="createProfileForm.controls.handle.errors?.notUnique">
                     That handle already exists.
                   </im-error>
-                  <im-error
-                    *ngIf="
+                  <im-error *ngIf="
                       !createProfileForm.controls.handle.errors?.notUnique &&
                       !createProfileForm.controls.handle.valid &&
                       createProfileForm.controls.handle.touched
-                    "
-                  >
+                    ">
                     Please enter a valid @handle.
                   </im-error>
                 </im-item>
               </ng-container>
               <div footer class="im-buttons">
                 <ion-button fill="outline" (click)="prev()">Back</ion-button>
-                <ion-button (click)="submit()" [disabled]="!createProfileForm.valid || state.verifyingHandle">
-                  Submit
+                <ion-button (click)="next()" [disabled]="!createProfileForm.valid || state.verifyingHandle">
+                  Next
+                </ion-button>
+              </div>
+
+            </im-block>
+          </div>
+        </ion-slide>
+        <ion-slide class="slide">
+          <div class="im-cont small">
+            <div class="info">
+              <ion-icon src="/assets/icons/waiver.svg" class="header-icon"></ion-icon>
+              <div class="im-primary-text">Waiver</div>
+              <span class="description">
+                <b>Agree and Sign Waiver</b>
+              </span>
+            </div>
+            <im-block>
+              <ng-container body>
+                <div [class]="'waiver scrollable-container'">
+                  <p [style.font-size]="'23px'" [style.text-align]="'center'">
+                    <b>RELEASE AND WAIVER OF LIABILITY AGREEMENT</b>
+                  </p>
+                  <p>
+                    IN CONSIDERATION OF permission to join and participate in Activities and Projects hosted by
+                    InvolveMINT's online services, including the Community Impact Network Software (CIN) and any
+                    related content, functionality and services (collectively, the "Services") and organized by the
+                    Project Admin ("Organization or individual(s) creating, and/or managing the project") and
+                    facilitated through my engagement with involveMINT **Terms of Service** , engaging in any and all
+                    lawful
+                    activities incidental to the forgoing activities, except as restricted in involveMINT **Terms of
+                    Service**.
+
+                    I provide by
+                    involveMINT, the undersigned, both as an individual and on behalf of their legal representatives,
+                    heirs, successors, and assigns, (collectively, the "ChangeMaker"), hereby releases, waives, and
+                    discharges ServePartner, involveMINT, and any/all of their affiliates, subsidiaries, attorneys,
+                    officers, directors, agents, representatives, and employees (collectively "Agents") from any and all
+                    liability for any and all claims, losses or damages on account of injury to ChangeMaker's person or
+                    property, whether caused by the negligence of ServePartner, involveMINT, the aforementioned Agents,
+                    or
+                    otherwise relating to or arising out of ChangeMaker's participant in the Activity.
+                  </p>
+                  <p>
+                    ChangeMaker hereby assumes full responsibility for the risk of bodily injury, death or property
+                    damage
+                    to ChangeMaker.
+                  </p>
+                  <p>ChangeMaker agrees to:</p>
+                  <div>
+                    <ul class="list-container">
+                      <li>
+                        <b>1.</b> Abide by all instructions issued by ServePartner, including, without limitation,
+                        safety and
+                        security measures while participating in the ServePartner Activity,
+                      </li>
+                      <li>
+                        <b>2.</b> Be responsible for all costs and expenses associated with any damage to property or
+                        injury to
+                        person, to ServePartner or any third party, caused by ChangeMaker while participating in the
+                        ServePartner Activity.
+                      </li>
+                      <li>
+                        <b>3.</b> Not drive an automobile in connection to the activities described above unless
+                        ChangeMaker is
+                        fully licensed and insured to do so as required by applicable PA law,
+                      </li>
+                      <li>
+                        <b>4.</b> Not, under any circumstances whatsoever, take or participate in or facilitate the
+                        taking of
+                        or
+                        participation in any photography, videotaping or other recordings of any nature without the
+                        explicit consent of ServePartner, and
+                      </li>
+                      <li>
+                        <b>5.</b> Be responsible for and acknowledges their understanding that any actions in violation
+                        of
+                        sections
+                        (1), (2) or (3) hereof may result in, among other things, the immediate dismissal of ChangeMaker
+                        from the ServePartner Activity and disqualification of ChangeMaker for any previously agreed to
+                        benefit, financial or otherwise, arising out of ChangeMaker's participation in the ServePartner
+                        Activity and provided by involveMINT.
+                      </li>
+                    </ul>
+                  </div>
+                  <p>
+                    ChangeMaker expressly agrees that this Release and Waiver of Liability Agreement (this "Agreement")
+                    is
+                    intended to be as broad and as inclusive as permitted by applicable law and that if any portion
+                    hereof
+                    is held to be invalid, it is agreed that the remaining portion(s) shall continue in full force and
+                    effect. This Agreement contains the entire agreement between the parties hereto. The terms of this
+                    Agreement are contractual and not a mere recital and shall nor terminate or expire after conclusion
+                    of
+                    the ServePartner Activity referenced herein.
+                  </p>
+                  <p>
+                    ChangeMaker states that they (i) have carefully read this Agreement, (ii) understand the contents
+                    hereof agree to abide by them, (iii) are authorized to execute this Agreement for the purposes
+                    stated
+                    herein and on behalf of the persons described herein and (iv) sign this Agreement of their own free
+                    act, deed and volition.
+                  </p>
+                </div>
+              </ng-container>
+              <div footer class="im-buttons">
+                <ion-button (click)="submit()" [disabled]="!createProfileForm.valid" [style.margin]="'0 auto'">
+                  Accept Conditions & Submit
                 </ion-button>
               </div>
             </im-block>
+
           </div>
         </ion-slide>
       </ion-slides>
