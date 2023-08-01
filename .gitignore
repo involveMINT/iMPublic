@@ -2,9 +2,6 @@
 # environment file
 environment.ts
 
-# Ignore package lock files
-package-lock.json
-
 # compiled output
 /dist
 /tmp
