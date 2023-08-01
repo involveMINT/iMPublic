@@ -44,6 +44,7 @@ export class ChangeMakerService {
         enrollments: [],
         passportDocuments: [],
         dateCreated: new Date(),
+        hasSignedWaiver: true, // If a ChangeMaker Profile is being created, then they must have signed the waiver
         credits: [],
         receivingTransactions: [],
         sendingTransactions: [],

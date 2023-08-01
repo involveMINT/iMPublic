@@ -1,5 +1,5 @@
 import { Type } from 'class-transformer';
-import { IsNotEmpty, IsOptional, IsString, Matches, ValidateNested } from 'class-validator';
+import { IsBoolean, IsNotEmpty, IsOptional, IsString, Matches, ValidateNested } from 'class-validator';
 import 'reflect-metadata';
 import { ImConfig } from '../../config/im-config';
 import { CmOnboardingState } from './change-maker.model';
@@ -52,6 +52,10 @@ export abstract class EditCmProfileDto {
   @IsOptional()
   @Matches(ImConfig.regex.phone)
   phone?: string;
+
+  @IsOptional()
+  @IsBoolean()
+  hasSignedWaiver?: boolean;
 
   @IsOptional()
   @IsString()

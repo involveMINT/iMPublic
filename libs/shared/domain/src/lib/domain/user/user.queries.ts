@@ -17,6 +17,7 @@ export const UserQuery = createQuery<User>()({
     firstName: true,
     lastName: true,
     onboardingState: true,
+    hasSignedWaiver: true,
     phone: true,
     handle: {
       id: true,

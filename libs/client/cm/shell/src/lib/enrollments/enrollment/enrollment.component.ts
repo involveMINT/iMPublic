@@ -69,7 +69,15 @@ export class EnrollmentComponent extends StatefulComponent<State> implements OnI
             status: enrollment ? calculateEnrollmentStatus(enrollment) : null,
           });
 
-          if (
+          if ( // if user has signed waiver at sign-up and there is no custom waiver, accept the waiver automatically
+            this.state.enrollment && 
+            !this.state.enrollment?.acceptedWaiver &&
+            this.state.profile?.hasSignedWaiver && !(this.state.enrollment?.project.requireCustomWaiver)
+          ) {
+            this.cf.enrollments.dispatchers.acceptWaiver(this.state.enrollment);
+          }
+
+          else if (
             this.state.enrollment &&
             !this.state.enrollment?.acceptedWaiver &&
             this.state.enrollment?.enrollmentDocuments.length ===
@@ -142,6 +150,7 @@ export class EnrollmentComponent extends StatefulComponent<State> implements OnI
 
   submitApplication(enrollment: EnrollmentStoreModel) {
     this.cf.enrollments.dispatchers.submitApplication({ enrollmentId: enrollment.id });
+    this.user.cmProfile.dispatchers.editCmProfile({ hasSignedWaiver: true });
   }
 
   withdrawEnrollment(enrollment: EnrollmentStoreModel) {
