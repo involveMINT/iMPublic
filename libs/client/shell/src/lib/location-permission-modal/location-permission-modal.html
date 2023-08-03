@@ -1,0 +1,45 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button (click)="close()">
+        <ion-icon slot="icon-only" name="close"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title>Location Permissions</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div class="im-cont">
+    <div *ngIf="permissionState !== 'loading'">
+      <im-block>
+        <div body class="body" *ngIf="permissionState === 'prompt'">
+          <p>
+            To enjoy the full features of our app, please enable location services on your device. Enabling location services will enhance your app usage. Your privacy is important to us, and we assure you that we use location data responsibly to improve your app experience.
+          </p>
+  
+          <ion-button (click)="prompt()">Enable Location Services</ion-button>
+        </div>
+        <div body class="body" *ngIf="permissionState === 'granted'">
+          <p> Thank you for enabling location services. </p>
+          <p>
+            You can change this setting at any time by going to your device settings.
+          </p>
+          <ion-button (click)="close()">Close</ion-button>
+        </div>
+        <div body class="body" *ngIf="permissionState === 'denied'">
+          <p>
+            You have prevented involveMINT from accessing location services on this device. As a result, some of our features will not be fully functional.
+          </p>
+          <p>
+  
+            To enable location services, please go to your device settings and allow our app to access your location. If you need any assistance, feel free to reach out to our support team at <a>hello@involvemint.io</a>.
+          </p>
+          <ion-button (click)="close()">Close</ion-button>
+        </div>
+      </im-block>
+
+
+    </div>
+  </div>
+</ion-content>

@@ -10,6 +10,7 @@ import { calculateEnrollmentStatus, EnrollmentStatus } from '@involvemint/shared
 import { parseDate } from '@involvemint/shared/util';
 import { formatDistanceToNow } from 'date-fns';
 import { tap } from 'rxjs/operators';
+import { LocationPermissionModalService } from '../../location-permission-modal/location-permission-modal.service';
 
 interface State {
   projects: ProjectFeedStoreModel[];
@@ -28,12 +29,13 @@ export class BrowseProjectsComponent extends StatefulComponent<State> implements
   constructor(
     private readonly user: UserFacade,
     private readonly route: RouteService,
-    private readonly viewProfile: ImViewProfileModalService
+    private readonly viewProfile: ImViewProfileModalService,
+    private readonly locationPerms: LocationPermissionModalService
   ) {
     super({ projects: [], loaded: false });
   }
 
-  ngOnInit() {
+  async ngOnInit() {
     this.effect(() =>
       this.user.projects.selectors.projects$.pipe(
         tap(({ projects, loaded }) =>
@@ -46,6 +48,11 @@ export class BrowseProjectsComponent extends StatefulComponent<State> implements
         )
       )
     );
+
+    try { // only show permissions modal if supported and not granted
+      const permissionStatus = await navigator.permissions.query({ name: 'geolocation' });
+      if ('permissions' in navigator && permissionStatus.state != 'granted') this.locationPerms.open();
+    } catch (error) { console.error('Error checking location permission:', error); }
   }
 
   refresh() {

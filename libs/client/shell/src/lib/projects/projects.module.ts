@@ -12,6 +12,8 @@ import {
 import { IonicModule } from '@ionic/angular';
 import { BrowseProjectsComponent } from './browse-projects/browse-projects.component';
 import { ProjectCoverPageComponent } from './project-cover-page/project-cover-page.component';
+import { LocationPermissionModalModule } from '../location-permission-modal/location-permission-modal.module';
+import { LocationPermissionModalService } from '../location-permission-modal/location-permission-modal.service';
 
 @NgModule({
   declarations: [BrowseProjectsComponent],
@@ -25,7 +27,9 @@ import { ProjectCoverPageComponent } from './project-cover-page/project-cover-pa
     ImCardModule,
     ImLoadingRouteDirectiveModule,
     ImViewProfileModalModule,
+
   ],
+  providers: [LocationPermissionModalService]
 })
 export class BrowseProjectsModule {}
 
@@ -41,6 +45,7 @@ export class BrowseProjectsModule {}
     ImLoadingRouteDirectiveModule,
     BrowseProjectsModule,
     ImViewProfileModalModule,
+    LocationPermissionModalModule,
     RouterModule.forChild([
       {
         path: '',
