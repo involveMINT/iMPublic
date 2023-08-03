@@ -1,13 +1,13 @@
 # Official involveMINT Web App Repository
 
-## Setting Up Environment
+## Build Prerequisites
 
 Prerequisites:
 
 - Node.js
 - Docker
 
-### Steps
+## Steps to Set Up Environment
 
 1. Fork and clone this repository. Ensure that you uncheck the "copy main branch only" checkbox. Once you forked the repository, clone it to a directory on your local machine and `cd` into it.
 
@@ -104,34 +104,12 @@ export const environment: Env = {
 
 Under the key "typeOrmConfig", please change the password field to "postgres". Under the key "gcp", please change the fields to match the fields in your service account JSON file that you just downloaded in the previous step.
 
-Open a terminal and run `npm i` to install all the required packages. Once done, run `export NODE_OPTIONS=--openssl-legacy-provider` because otherwise there will be an error with OpenSSL.
+### Starting the Containers
 
-<!-- 1. Clone repository -->
-<!---->
-<!-- ```sh -->
-<!-- git clone git@ssh.dev.azure.com:v3/involvemint/involveMINT/involvemint2.0 -->
-<!-- ``` -->
-<!---->
-<!-- 2. Change directory into repository -->
-<!---->
-<!-- ```sh -->
-<!-- cd involvemint2.0 -->
-<!-- ``` -->
-<!---->
-<!-- 3. Install dependencies -->
-<!---->
-<!-- ```sh -->
-<!-- npm install -->
-<!-- ``` -->
-<!---->
-<!-- 4. Start client -->
-<!---->
-<!-- ```sh -->
-<!-- npx ng s -->
-<!-- ``` -->
-<!---->
-<!-- 5. In another terminal, start server -->
-<!---->
-<!-- ```sh -->
-<!-- npx ng s api -->
-<!-- ``` -->
+Run `docker compose up` in the root directory, which will spin up a PostgreSQL database on port 5432 and a PgAdmin UI on port 8889.
+
+### Starting the Apps
+
+Open a terminal and run `npm i` to install all the required packages. Once done, run `export NODE_OPTIONS=--openssl-legacy-provider` because otherwise there will be an error with OpenSSL. To start the client, run `npm run start:client`. To start the server, open a new terminal, export the same environment variable as before (`export NODE_OPTIONS=--openssl-legacy-provider`), run `npm run build`, and then `npm run start`.
+
+For any issues, or to suggest improvements to this documentation, please contact Anish Sinha <<anish@developforgood.com>>
