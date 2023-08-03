@@ -14,32 +14,44 @@
     <div *ngIf="permissionState !== 'loading'">
       <im-block>
         <div body class="body" *ngIf="permissionState === 'prompt'">
-          <p>
-            To enjoy the full features of our app, please enable location services on your device. Enabling location services will enhance your app usage. Your privacy is important to us, and we assure you that we use location data responsibly to improve your app experience.
-          </p>
-  
+          <div class="img-cont">
+            <img src="/assets/icons/notify!.svg" />
+          </div>
+          <div class="text">
+            <div class="im-primary-text">Enable Location Services</div>
+            <div>
+               Please enable location services on your device to enjoy the full features of our app. Your privacy is important to us, and we assure you that we use location data responsibly to improve your app experience.
+            </div>
+          </div>
           <ion-button (click)="prompt()">Enable Location Services</ion-button>
         </div>
         <div body class="body" *ngIf="permissionState === 'granted'">
-          <p> Thank you for enabling location services. </p>
-          <p>
-            You can change this setting at any time by going to your device settings.
-          </p>
+          <div class="img-cont">
+            <img src="/assets/icons/im-applied-check.svg" />
+          </div>
+          <div class="text">
+            <div class="im-primary-text">Location Services Enabled</div>
+            <div>
+              Thank you for enabling location services. You can change this setting at any time by going to your device settings.
+            </div>
+          </div>
           <ion-button (click)="close()">Close</ion-button>
         </div>
         <div body class="body" *ngIf="permissionState === 'denied'">
-          <p>
-            You have prevented involveMINT from accessing location services on this device. As a result, some of our features will not be fully functional.
-          </p>
-          <p>
-  
-            To enable location services, please go to your device settings and allow our app to access your location. If you need any assistance, feel free to reach out to our support team at <a>hello@involvemint.io</a>.
-          </p>
+          <div class="img-denied">
+            <img src="/assets/icons/notify!.svg" />
+          </div>
+          <div class="text">
+            <div class="im-primary-text">Location Services Denied</div>
+            <div>
+              You have prevented involveMINT from accessing location services on this device. Some of our features will not be fully functional.
+              To enable location services, please go to your device settings and allow our app to access your location. 
+              If you need any assistance, feel free to reach out to our support team at <a>hello@involvemint.io</a>.
+            </div>
+          </div>
           <ion-button (click)="close()">Close</ion-button>
         </div>
       </im-block>
-
-
     </div>
   </div>
 </ion-content>
