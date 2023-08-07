@@ -206,6 +206,10 @@
                 {
                   "replace": "libs/shared/domain/src/lib/environments/environment.ts",
                   "with": "libs/shared/domain/src/lib/environments/environment.prod.ts"
+                },
+                {
+                  "replace": "libs/shared/domain/src/lib/environments/environment.api.ts",
+                  "with": "libs/shared/domain/src/lib/environments/environment.prod.api.ts"
                 }
               ]
             },
@@ -217,6 +221,10 @@
                 {
                   "replace": "libs/shared/domain/src/lib/environments/environment.ts",
                   "with": "libs/shared/domain/src/lib/environments/environment.test.ts"
+                },
+                {
+                  "replace": "libs/shared/domain/src/lib/environments/environment.api.ts",
+                  "with": "libs/shared/domain/src/lib/environments/environment.test.api.ts"
                 }
               ]
             },
@@ -225,6 +233,10 @@
                 {
                   "replace": "libs/shared/domain/src/lib/environments/environment.ts",
                   "with": "libs/shared/domain/src/lib/environments/environment.org.ts"
+                },
+                {
+                  "replace": "libs/shared/domain/src/lib/environments/environment.api.ts",
+                  "with": "libs/shared/domain/src/lib/environments/environment.org.api.ts"
                 }
               ]
             }
