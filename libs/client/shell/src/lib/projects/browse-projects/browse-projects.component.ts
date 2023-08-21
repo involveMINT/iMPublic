@@ -10,7 +10,7 @@ import { calculateEnrollmentStatus, EnrollmentStatus } from '@involvemint/shared
 import { parseDate } from '@involvemint/shared/util';
 import { formatDistanceToNow } from 'date-fns';
 import { tap } from 'rxjs/operators';
-import { LocationPermissionModalService } from '../../location-permission-modal/location-permission-modal.service';
+import { StatusService } from '@involvemint/client/shared/util';
 
 interface State {
   projects: ProjectFeedStoreModel[];
@@ -30,7 +30,7 @@ export class BrowseProjectsComponent extends StatefulComponent<State> implements
     private readonly user: UserFacade,
     private readonly route: RouteService,
     private readonly viewProfile: ImViewProfileModalService,
-    private readonly locationPerms: LocationPermissionModalService
+    private readonly status: StatusService,
   ) {
     super({ projects: [], loaded: false });
   }
@@ -51,7 +51,27 @@ export class BrowseProjectsComponent extends StatefulComponent<State> implements
 
     try { // only show permissions modal if supported and not granted
       const permissionStatus = await navigator.permissions.query({ name: 'geolocation' });
-      if ('permissions' in navigator && permissionStatus.state != 'granted') this.locationPerms.open();
+      if ('permissions' in navigator && permissionStatus.state != 'granted') {
+        if ( permissionStatus.state == 'prompt') {
+          this.status.presentAlertWithAction({
+            alertData: { 
+              title: 'Enable Location Services', 
+              description: 'Please enable location services on your device to enjoy the full features of our app. Your privacy is important to us, and we assure you that we use location data responsibly to improve your app experience.'
+            },
+            buttonText: 'Enable',
+            cancelButtonText: 'Remind me Later',
+            buttonCssClass: 'im-alert-confirm',
+          })
+          .then((res) => { if (res) navigator.geolocation.getCurrentPosition(() => {}) });
+        }
+        
+        else if ( permissionStatus.state == 'denied') {
+          this.status.presentAlert({
+            title: 'Disabled Location Services', 
+            description: "You have prevented involveMINT from accessing location services on this device. Some of our features will not be fully functional. To enable location services, please go to your device settings and allow our app to access your location. If you need any assistance, feel free to reach out to our support team at <a>hello@involvemint.io</a>."
+          });
+        }
+      }
     } catch (error) { console.error('Error checking location permission:', error); }
   }
 
