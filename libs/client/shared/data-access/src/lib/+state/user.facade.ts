@@ -487,7 +487,7 @@ export class UserFacade {
        * @param returnToEpStorefront True to route to EP Storefront route, False to route to marketplace
        * route after create
        */
-      create: (returnToEpStorefront: boolean = false) => {
+      create: (returnToEpStorefront = false) => {
         this.store.dispatch(OffersActions.createOffer({ returnToEpStorefront }));
       },
       update: (dto: UpdateOfferDto) => {
@@ -497,7 +497,7 @@ export class UserFacade {
        * @param returnToEpStorefront True to route back to EP Storefront route, False to route back to
        * marketplace route after delete
        */
-      delete: (offer: OfferStoreModel, returnToEpStorefront: boolean = false) => {
+      delete: (offer: OfferStoreModel, returnToEpStorefront = false) => {
         this.store.dispatch(OffersActions.deleteOffer({ offer, returnToEpStorefront }));
       },
       uploadImages: (offer: OfferStoreModel, images: File[]) => {
@@ -549,7 +549,7 @@ export class UserFacade {
        * @param returnToEpStorefront True to route to EP Storefront route, False to route to marketplace
        * route after create
        */
-      create: (returnToEpStorefront: boolean = false) => {
+      create: (returnToEpStorefront = false) => {
         this.store.dispatch(RequestsActions.createRequest({ returnToEpStorefront }));
       },
       update: (dto: UpdateRequestDto) => {
@@ -559,7 +559,7 @@ export class UserFacade {
        * @param returnToEpStorefront True to route back to EP Storefront route, False to route back to
        * marketplace route after delete
        */
-      delete: (request: RequestStoreModel, returnToEpStorefront: boolean = false) => {
+      delete: (request: RequestStoreModel, returnToEpStorefront = false) => {
         this.store.dispatch(RequestsActions.deleteRequest({ request, returnToEpStorefront }));
       },
       uploadImages: (request: RequestStoreModel, images: File[]) => {
