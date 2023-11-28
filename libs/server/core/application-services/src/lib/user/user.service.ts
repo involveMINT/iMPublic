@@ -104,7 +104,7 @@ export class UserService {
     if (!compare) {
       throw new HttpException(`Incorrect password.`, HttpStatus.UNAUTHORIZED);
     }
-    if (!user.active && environment.production) {
+    if (!user.active && (environment.production || environment.test)) {
       throw new HttpException(`User ${user.id} has not been verified.`, HttpStatus.UNAUTHORIZED);
     }
 
