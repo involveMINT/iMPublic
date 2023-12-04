@@ -25,7 +25,8 @@ import { ProjectCoverPageComponent } from './project-cover-page/project-cover-pa
     ImCardModule,
     ImLoadingRouteDirectiveModule,
     ImViewProfileModalModule,
-  ],
+
+  ]
 })
 export class BrowseProjectsModule {}
 
