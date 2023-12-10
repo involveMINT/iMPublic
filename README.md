@@ -114,7 +114,8 @@ Run `docker compose up` in the root directory, which will spin up a PostgreSQL d
 - Run `export NODE_OPTIONS=--openssl-legacy-provider` because otherwise there will be an error with OpenSSL. 
 - Run `npm run start:client:local` which will start the client app.
 - Leave that terminal open and running and open a new terminal
-- In the new terminal: Run `npm run start:server:local` which will start the server app.
+- In the new terminal: Run `export NODE_OPTIONS=--openssl-legacy-provider`
+- Then Run `npm run start:server:local` which will start the server app.
 
 Once running, the client can be accessed via `http://localhost:4202` and the api/server will be running on `http://127.0.0.1:3335`
 
