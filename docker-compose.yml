@@ -18,10 +18,16 @@ services:
     container_name: pgadmin
     image: dpage/pgadmin4
     environment:
-      PGADMIN_DEFAULT_EMAIL: anish@involvemint.io
-      PGADMIN_DEFAULT_PASSWORD: involvemint
+      - PGADMIN_DEFAULT_EMAIL=localadmin@involvemint.io
+      - PGADMIN_DEFAULT_PASSWORD=involvemintlocal
+      - PGADMIN_CONFIG_SERVER_MODE=False
+      - PGADMIN_CONFIG_MASTER_PASSWORD_REQUIRED=False
     ports:
       - '8889:80'
     hostname: pgadmin
+    entrypoint: /bin/sh -c "chmod 600 /tmp/pgpass; /entrypoint.sh;"
+    volumes:
+      - ./.docker/servers.json:/pgadmin4/servers.json # preconfigured servers/connections
+      - ./.docker/pgpass:/tmp/pgpass # passwords for the connections in this file
     depends_on:
       - postgres
