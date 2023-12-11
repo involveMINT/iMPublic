@@ -31,7 +31,7 @@ Run the following commands.
 
 In order to run this code, you will need to navigate to [firebase](https://console.firebase.google.com/). You will see a screen that looks like ![firebase-landing](/assets/firebase-landing.png) and click "Create a project" (if you don't already have a GCP account and an existing project where you want to use Firebase). Once you have a project, you should see a screen like ![this](assets/firebase-dashboard.png) Once here, click the little gear and you'll see a screen that looks like ![this](assets/firebase-settings.png) Select the "Service accounts" tab and you'll see a screen that looks like ![this](assets/firebase-service-accounts.png) Hit the "Manage service account permissions" hyperlink which will take you to your GCP project. You will see a screen that looks like ![this](/assets/googlecloud-service-accounts.png). Click the account and then hit the "Keys" tab. You should see a screen that looks like ![this](/assets/service-account-keys.png). Click "Add Key" and then choose the "JSON" option to download it as a JSON file.
 
-Ensure you are in the project directory (the directory that this file is in). Run the following command: `cp libs/shared/domain/src/lib/environments/environment.ts libs/shared/domain/src/lib/environments/environment.prod.ts` and open the new file (environment.prod.ts) in your editor. It should look like this at first:
+Ensure you are in the project directory (the directory that this file is in). Run the following command: `cp libs/shared/domain/src/lib/environments/environment.ts libs/shared/domain/src/lib/environments/environment.local.ts` and open the new file (environment.prod.ts) in your editor. It should look like this at first:
 
 ```typescript
 import { Env } from './environment.interface';
@@ -110,6 +110,13 @@ Run `docker compose up` in the root directory, which will spin up a PostgreSQL d
 
 ### Starting the Apps
 
-Open a terminal and run `npm i` to install all the required packages. Once done, run `export NODE_OPTIONS=--openssl-legacy-provider` because otherwise there will be an error with OpenSSL. To start the client, run `npm run start:client`. To start the server, open a new terminal, export the same environment variable as before (`export NODE_OPTIONS=--openssl-legacy-provider`), run `npm run build`, and then `npm run start`.
+- Open a terminal and run `npm i` from root directory to install all the required packages. 
+- Run `export NODE_OPTIONS=--openssl-legacy-provider` because otherwise there will be an error with OpenSSL. 
+- Run `npm run start:client:local` which will start the client app.
+- Leave that terminal open and running and open a new terminal
+- In the new terminal: Run `export NODE_OPTIONS=--openssl-legacy-provider`
+- Then Run `npm run start:server:local` which will start the server app.
+
+Once running, the client can be accessed via `http://localhost:4202` and the api/server will be running on `http://127.0.0.1:3335`
 
 For any issues, or to suggest improvements to this documentation, please contact Anish Sinha <<anish@developforgood.org>>
