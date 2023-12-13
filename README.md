@@ -52,7 +52,7 @@ export const environment: Env = {
   typeOrmConfig: {
     type: 'postgres',
     host: '127.0.0.1',
-    port: 5432,
+    port: 5433,
     username: 'postgres',
     password: '1Qazxsw2',
     database: 'involvemint',
@@ -106,7 +106,11 @@ Under the key "typeOrmConfig", please change the password field to "postgres". U
 
 ### Starting the Containers
 
-Run `docker compose up` in the root directory, which will spin up a PostgreSQL database on port 5432 and a PgAdmin UI on port 8889.
+Run `docker compose up` in the root directory, which will spin up a PostgreSQL database on port 5433 and a PgAdmin UI on port 8889.
+
+If you are prompted for the pasword (below screenshot) when opening PgAdmin at http://localhost:8889 enter `postgres`. 
+![postgres_db_password_required](/assets/postgres_db_password_required.png)
+
 
 ### Starting the Apps
 
@@ -118,5 +122,7 @@ Run `docker compose up` in the root directory, which will spin up a PostgreSQL d
 - Then Run `npm run start:server:local` which will start the server app.
 
 Once running, the client can be accessed via `http://localhost:4202` and the api/server will be running on `http://127.0.0.1:3335`
+
+
 
 For any issues, or to suggest improvements to this documentation, please contact Anish Sinha <<anish@developforgood.org>>
