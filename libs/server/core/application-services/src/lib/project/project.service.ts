@@ -167,6 +167,7 @@ export class ProjectService {
           filename,
         });
         await this.storage.upload(path, file);
+        console.log(path);
         return path;
       })
     );

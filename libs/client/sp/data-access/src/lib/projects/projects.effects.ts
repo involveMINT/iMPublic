@@ -130,6 +130,7 @@ export class ProjectsEffects {
                   }
                   break;
                 case HttpEventType.Response:
+                  console.log(event.body);
                   return event.body;
               }
               return undefined;
@@ -137,6 +138,7 @@ export class ProjectsEffects {
             filter((body) => !!body),
             map((project) => {
               if (!project) throw new Error('No Project Emitted!');
+              console.log(project);
               return SpProjectsActions.updateProjectSuccess({ project });
             })
           );

@@ -31,13 +31,19 @@ export class StorageService {
 
   async getDownloadURL(pathWithName: string) {
     const file = this.bucket.file(pathWithName);
-
     const urlOptions = {
       version: 'v4',
       action: 'read',
       expires: ImConfig.storageExpiration(),
     } as const;
 
+    
+    if (process.env.FIREBASE_STORAGE_EMULATOR_HOST) {
+      console.log('ENV VARIABLE ' + process.env.FIREBASE_STORAGE_EMULATOR_HOST);
+      console.log(file.publicUrl());
+      return file.publicUrl();
+
+    }
     const [url] = await file.getSignedUrl(urlOptions);
     return url;
   }
@@ -59,6 +65,7 @@ export class StorageService {
   }
 
   async authenticateFileRequest(path: string, token: string) {
+    console.log(path);
     path = path.split('?')[0];
 
     const root = path.split('/')[0];
