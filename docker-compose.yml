@@ -11,7 +11,7 @@ services:
       POSTGRES_DB: postgres
       POSTGRES_INITDB_ARGS: '-A md5'
     ports:
-      - '5432:5432'
+      - '5433:5432'
     volumes:
       - ./.docker/init.sql:/docker-entrypoint-initdb.d/init.sql
   pgadmin:

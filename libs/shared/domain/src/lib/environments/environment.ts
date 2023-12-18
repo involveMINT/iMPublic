@@ -16,7 +16,7 @@ export const environment: Env = {
   typeOrmConfig: {
     type: 'postgres',
     host: '127.0.0.1',
-    port: 5432,
+    port: 5433,
     username: 'postgres',
     password: '1Qazxsw2',
     database: 'involvemint',
