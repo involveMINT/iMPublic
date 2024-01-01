@@ -14,7 +14,6 @@ export class StorageOrchestration implements IServerOrchestration<IStorageOrches
   @ServerOperation({ validateQuery: { url: true } })
   async getUrl(query: IQuery<{ url: string }>, token: string, { path }: GetStorageFileDto) {
     const url = await this.storage.authenticateFileRequest(path, token);
-    console.log(url);
     return parseQuery(query, { url });
   }
 }

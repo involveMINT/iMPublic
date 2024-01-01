@@ -65,7 +65,6 @@ export class StorageService {
   }
 
   async authenticateFileRequest(path: string, token: string) {
-    console.log(path);
     path = path.split('?')[0];
 
     const root = path.split('/')[0];
