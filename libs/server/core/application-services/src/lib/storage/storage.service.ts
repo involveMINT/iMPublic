@@ -39,7 +39,6 @@ export class StorageService {
 
     
     if (process.env.FIREBASE_STORAGE_EMULATOR_HOST) {
-      console.log('ENV VARIABLE ' + process.env.FIREBASE_STORAGE_EMULATOR_HOST);
       console.log(file.publicUrl());
       return file.publicUrl();
 
