@@ -4,10 +4,10 @@ import * as mailgun from 'mailgun-js';
 
 @Injectable()
 export class EmailService {
-  mg = environment.production || environment.test ? mailgun.default(environment.mailgun) : null;
+  mg = environment.environment !== 'local' ? mailgun.default(environment.mailgun) : null;
   noreply = 'your no reply <noreply@example.com>';
 
-  shouldNotSendNotification = !environment.production && !environment.test;
+  shouldNotSendNotification = environment.environment === 'local';
 
   constructor(@Inject(FRONTEND_ROUTES_TOKEN) private readonly route: FrontendRoutes) { }
 

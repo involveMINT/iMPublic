@@ -2,8 +2,7 @@ import { TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { FirebaseScryptOptions } from 'firebase-scrypt';
 
 export interface Env {
-  production: boolean;
-  test: boolean;
+  environment: 'production' | 'test' | 'local';
   host: string;
   apiUrl: string;
   appUrl: string;

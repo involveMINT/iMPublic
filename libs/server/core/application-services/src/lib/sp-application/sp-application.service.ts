@@ -19,6 +19,7 @@ import * as uuid from 'uuid';
 import { AuthService } from '../auth/auth.service';
 import { EmailService } from '../email/email.service';
 import { DbTransactionCreator } from '../transaction-creator/transaction-creator.service';
+import { getGeolocationOfAddress } from '@involvemint/client/shared/util';
 
 @Injectable()
 export class SpApplicationService {
@@ -99,11 +100,10 @@ export class SpApplicationService {
       user: { id: true, changeMaker: { firstName: true } },
     });
 
-    const geo = geocoder.default({ provider: 'google', apiKey: environment.gcpApiKey });
-    const res = await geo.geocode(Object.entries(spApp.address).join(' '));
+    const geoResult = await getGeolocationOfAddress(Object.entries(spApp.address).join(' '));
 
-    const lat = Number(res[0]?.latitude?.toFixed(4));
-    const lng = Number(res[0]?.longitude?.toFixed(4));
+    const lat = Number(geoResult?.latitude?.toFixed(4));
+    const lng = Number(geoResult?.longitude?.toFixed(4));
 
     await this.dbTransact.run(async () => {
       await this.spAppRepo.delete(dto.id);

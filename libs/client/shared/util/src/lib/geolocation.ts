@@ -1,4 +1,6 @@
 import { StatusService } from './status.service';
+import * as geocoder from 'node-geocoder';
+import { environment } from '@involvemint/shared/domain';
 
 export interface LatLng {
   lat: number;
@@ -10,6 +12,15 @@ export interface LatLng {
  * @param status StatusService to show loading screen
  */
 export function getPosition(status?: StatusService) {
+
+  if(environment.environment === 'local')
+  {
+    return {
+      lat: 40.444229,
+      lng: -79.943367
+    }
+  }
+
   // eslint-disable-next-line no-async-promise-executor
   return new Promise<LatLng>(async (resolve, reject) => {
     if (status) await status.showLoader('Getting Location...');
@@ -48,4 +59,19 @@ export function coordinateDistance(
   const a = 0.5 - c((lat2 - lat1) * p) / 2 + (c(lat1 * p) * c(lat2 * p) * (1 - c((lon2 - lon1) * p))) / 2;
 
   return 2 * (unit === 'km' ? 6371 : 3958.8) * Math.asin(Math.sqrt(a));
+}
+
+export async function getGeolocationOfAddress(address: string) : Promise<geocoder.Entry | null>
+{
+  if(environment.environment === 'local')
+  {
+    return null;
+  }
+  const geo = geocoder.default({ provider: 'google', apiKey: environment.gcpApiKey });
+  const res = await geo.geocode(address);
+
+  if(res.length === 1)
+    return res[0];
+
+  return null;
 }

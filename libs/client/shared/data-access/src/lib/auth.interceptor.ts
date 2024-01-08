@@ -23,7 +23,7 @@ export class AuthInterceptor implements OrchaInterceptor {
       next
         .handle(authReq)
         // Simulate HTTP delay for development.
-        .pipe(environment.production || environment.test ? tap() : delay(Math.floor(Math.random() * (400 - 50 + 1) + 50)))
+        .pipe(environment.environment !== 'local' ? tap() : delay(Math.floor(Math.random() * (400 - 50 + 1) + 50)))
     );
   }
 }

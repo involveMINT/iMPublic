@@ -4,8 +4,7 @@ const host = 'localhost';
 
 /** Develop environment variables. */
 export const environment: Env = {
-  production: false,
-  test: false,
+  environment: 'local',
   host,
   apiUrl: `http://${host}:3335`,
   appUrl: `http://${host}:4202`,

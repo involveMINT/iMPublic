@@ -6,7 +6,6 @@ import {
 import {
   BaSubmitEpApplicationDto,
   defaultStorefrontListingStatus,
-  environment,
   EpApplication,
   EpOnboardingState,
   ExchangePartner,
@@ -15,10 +14,10 @@ import {
   SubmitEpApplicationDto,
   WithdrawEpApplicationDto,
 } from '@involvemint/shared/domain';
+import { getGeolocationOfAddress } from '@involvemint/client/shared/util';
 import { HttpException, HttpStatus, Injectable, UnauthorizedException } from '@nestjs/common';
 import { IQuery, parseQuery } from '@orcha/common';
 import { addMonths } from 'date-fns';
-import * as geocoder from 'node-geocoder';
 import { Socket } from 'socket.io';
 import * as uuid from 'uuid';
 import { AuthService } from '../auth/auth.service';
@@ -171,12 +170,11 @@ export class EpApplicationService {
       handle: { id: true },
       user: { id: true, changeMaker: { firstName: true } },
     });
+    
+    const addressGeolocation = await getGeolocationOfAddress(Object.entries(epApp.address).join(' '));
 
-    const geo = geocoder.default({ provider: 'google', apiKey: environment.gcpApiKey });
-    const res = await geo.geocode(Object.entries(epApp.address).join(' '));
-
-    const lat = Number(res[0]?.latitude?.toFixed(4));
-    const lng = Number(res[0]?.longitude?.toFixed(4));
+    const lat = Number(addressGeolocation?.latitude?.toFixed(4));
+    const lng = Number(addressGeolocation?.longitude?.toFixed(4));
 
     await this.dbTransact.run(async () => {
       await this.epAppRepo.delete(dto.id);
