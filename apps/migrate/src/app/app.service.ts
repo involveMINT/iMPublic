@@ -49,7 +49,6 @@ import {
   User,
   Voucher,
 } from '@involvemint/shared/domain';
-import { GeoLocator } from '@involvemint/client/shared/util';
 import { Injectable } from '@nestjs/common';
 import { IUpsertEntity } from '@orcha/common';
 import * as cp from 'child_process';
@@ -83,8 +82,7 @@ export class AppService {
     private readonly taskRepo: TaskRepository,
     private readonly offerRepo: OfferRepository,
     private readonly voucherRepo: VoucherRepository,
-    private readonly linkedVoucherOfferRepo: LinkedVoucherOfferRepository,
-    private readonly geolocation: GeoLocator
+    private readonly linkedVoucherOfferRepo: LinkedVoucherOfferRepository
   ) {}
 
   async migrate() {
@@ -856,7 +854,7 @@ export class AppService {
     if (!address) {
       return null;
     }
-    //const t = await this.geolocation.getGeolocationOfAddress('');
+
     const geo = geocoder.default({ provider: 'google', apiKey: environment.gcpApiKey });
     const res = await geo.geocode(address);
 
