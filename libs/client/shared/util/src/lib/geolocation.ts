@@ -1,28 +1,34 @@
 import { StatusService } from './status.service';
 import * as geocoder from 'node-geocoder';
 import { environment } from '@involvemint/shared/domain';
+import { Injectable } from '@angular/core';
 
 export interface LatLng {
   lat: number;
   lng: number;
 }
 
-/**
+export interface IGeoLocation {
+  getPosition(status? : StatusService) : Promise<LatLng>;
+  parseLatLngAsString({ lat, lng }: LatLng) : string;
+  parseLatLngAsObj(latLng: string): LatLng;
+  coordinateDistance(
+    lat1: number,
+    lon1: number,
+    lat2: number,
+    lon2: number,
+    unit: 'km' | 'miles'
+  ) : number;
+  getGeolocationOfAddress(address: string) : Promise<geocoder.Entry | undefined>;
+}
+
+@Injectable({ providedIn: 'root' })
+export class GeoLocator implements IGeoLocation {
+  /**
  * Gets the user's current location with loading screen
  * @param status StatusService to show loading screen
  */
-export function getPosition(status?: StatusService) {
-
-  if(environment.environment === 'local')
-  {
-    return new Promise<LatLng>((resolve, _) => {
-      resolve({
-        lat: 40.444229,
-        lng: -79.943367
-      })
-    });
-  }
-
+  getPosition(status?: StatusService) {
   // eslint-disable-next-line no-async-promise-executor
   return new Promise<LatLng>(async (resolve, reject) => {
     if (status) await status.showLoader('Getting Location...');
@@ -40,16 +46,16 @@ export function getPosition(status?: StatusService) {
   });
 }
 
-export function parseLatLngAsString({ lat, lng }: LatLng) {
+parseLatLngAsString({ lat, lng }: LatLng) {
   return `${lat},${lng}`;
 }
 
-export function parseLatLngAsObj(latLng: string): LatLng {
+parseLatLngAsObj(latLng: string): LatLng {
   const parse = latLng.split(',');
   return { lat: Number(parse[0]), lng: Number(parse[1]) };
 }
 
-export function coordinateDistance(
+coordinateDistance(
   lat1: number,
   lon1: number,
   lat2: number,
@@ -63,17 +69,16 @@ export function coordinateDistance(
   return 2 * (unit === 'km' ? 6371 : 3958.8) * Math.asin(Math.sqrt(a));
 }
 
-export async function getGeolocationOfAddress(address: string) : Promise<geocoder.Entry | null>
+async getGeolocationOfAddress(address: string) : Promise<geocoder.Entry | undefined>
 {
   if(environment.environment === 'local')
   {
-    return null;
+    return undefined;
   }
-  const geo = geocoder.default({ provider: 'google', apiKey: environment.gcpApiKey });
-  const res = await geo.geocode(address);
 
-  if(res.length === 1)
-    return res[0];
+  //const geo = geocoder.default({ provider: 'google', apiKey: environment.gcpApiKey });
+  //const res = await geo.geocode(address);
 
-  return null;
+  return undefined;
+}
 }

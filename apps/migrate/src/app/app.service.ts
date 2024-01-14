@@ -28,6 +28,7 @@ import {
   Credit,
   Enrollment,
   EnrollmentDocument,
+  environment,
   EpApplication,
   EpOnboardingState,
   ExchangeAdmin,
@@ -48,12 +49,13 @@ import {
   User,
   Voucher,
 } from '@involvemint/shared/domain';
-import { getGeolocationOfAddress } from '@involvemint/client/shared/util';
+import { GeoLocator } from '@involvemint/client/shared/util';
 import { Injectable } from '@nestjs/common';
 import { IUpsertEntity } from '@orcha/common';
 import * as cp from 'child_process';
 import { addMonths, parseISO } from 'date-fns';
 import * as fs from 'fs';
+import * as geocoder from 'node-geocoder';
 import { getConnection } from 'typeorm';
 import * as uuid from 'uuid';
 
@@ -81,7 +83,8 @@ export class AppService {
     private readonly taskRepo: TaskRepository,
     private readonly offerRepo: OfferRepository,
     private readonly voucherRepo: VoucherRepository,
-    private readonly linkedVoucherOfferRepo: LinkedVoucherOfferRepository
+    private readonly linkedVoucherOfferRepo: LinkedVoucherOfferRepository,
+    private readonly geolocation: GeoLocator
   ) {}
 
   async migrate() {
@@ -853,8 +856,11 @@ export class AppService {
     if (!address) {
       return null;
     }
-    
-    const a = await getGeolocationOfAddress(address);
+    //const t = await this.geolocation.getGeolocationOfAddress('');
+    const geo = geocoder.default({ provider: 'google', apiKey: environment.gcpApiKey });
+    const res = await geo.geocode(address);
+
+    const a = res[0];
 
     if (!a) {
       return {

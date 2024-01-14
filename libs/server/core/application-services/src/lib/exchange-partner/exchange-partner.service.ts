@@ -2,6 +2,7 @@ import { ExchangePartnerRepository } from '@involvemint/server/core/domain-servi
 import {
   DeleteEpImageDto,
   EditEpProfileDto,
+  environment,
   ExchangePartner,
   ExchangePartnerMarketQueryDto,
   generateExchangePartnerImageFilePath,
@@ -12,9 +13,9 @@ import {
   UpdateEpLogoFileDto,
   UploadEpImagesDto,
 } from '@involvemint/shared/domain';
-import { getGeolocationOfAddress } from '@involvemint/client/shared/util';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { IQuery } from '@orcha/common';
+import * as geocoder from 'node-geocoder';
 import { Raw } from 'typeorm';
 import * as uuid from 'uuid';
 import { AuthService } from '../auth/auth.service';
@@ -78,9 +79,10 @@ export class ExchangePartnerService {
     }
 
     if (dto.changes.address) {
-      const geoResult = await getGeolocationOfAddress(Object.entries(dto.changes.address).join(' '));
-      dto.changes.latitude = Number(geoResult?.latitude?.toFixed(4));
-      dto.changes.longitude = Number(geoResult?.longitude?.toFixed(4));
+      const geo = geocoder.default({ provider: 'google', apiKey: environment.gcpApiKey });
+      const res = await geo.geocode(Object.entries(dto.changes.address).join(' '));
+      dto.changes.latitude = Number(res[0]?.latitude?.toFixed(4));
+      dto.changes.longitude = Number(res[0]?.longitude?.toFixed(4));
     }
 
     return this.epRepo.update(dto.epId, dto.changes, query);
