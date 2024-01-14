@@ -6,7 +6,7 @@ import { ImImagesViewerModalService } from '@involvemint/client/shared/data-acce
 import { RouteService } from '@involvemint/client/shared/routes';
 import {
   ConfirmComponentDeactivation,
-  GeoLocator,
+  getPosition,
   LatLng,
   parseOneImageFile,
   StatefulComponent,
@@ -61,8 +61,7 @@ export class PoiComponent extends StatefulComponent<State> implements OnInit, Co
     private readonly route: RouteService,
     private readonly activatedRoute: ActivatedRoute,
     private readonly status: StatusService,
-    private readonly imgViewer: ImImagesViewerModalService,
-    private readonly geolocation: GeoLocator
+    private readonly imgViewer: ImImagesViewerModalService
   ) {
     super({
       poi: null,
@@ -222,7 +221,7 @@ export class PoiComponent extends StatefulComponent<State> implements OnInit, Co
   async startTimer(poi: PoiCmStoreModel) {
     let latLng: LatLng | undefined;
     try {
-      latLng = await this.geolocation.getPosition(this.status);
+      latLng = await getPosition(this.status);
     } catch (error) {
       console.error(error);
     }
