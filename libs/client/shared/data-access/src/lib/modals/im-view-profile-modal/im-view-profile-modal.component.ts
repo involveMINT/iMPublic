@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
 import { RouteService } from '@involvemint/client/shared/routes';
-import { GeoLocator, StatefulComponent } from '@involvemint/client/shared/util';
+import { coordinateDistance, getPosition, StatefulComponent } from '@involvemint/client/shared/util';
 import {
   calculatePoiStatus,
   calculatePoiTimeWorked,
@@ -64,8 +64,7 @@ export class ImViewProfileModalComponent
     private readonly profileSelect: ImProfileSelectModalService,
     private readonly chat: ChatService,
     private readonly image: ImImagesViewerModalService,
-    private readonly route: RouteService,
-    private readonly geolocation: GeoLocator
+    private readonly route: RouteService
   ) {
     super({ profile: null, address: null });
   }
@@ -84,7 +83,7 @@ export class ImViewProfileModalComponent
           viewProfileCache.set(this.handle, profile);
           this.updateState({ profile });
           if (profile.exchangePartner || profile.servePartner) {
-            this.geolocation.getPosition().then(({ lat, lng }) => {
+            getPosition().then(({ lat, lng }) => {
               this.updateState({
                 distance: this.distance(lat, lng, profile.exchangePartner || profile.servePartner),
               });
@@ -106,7 +105,7 @@ export class ImViewProfileModalComponent
     profile: ProfileStoreModal['exchangePartner'] | ProfileStoreModal['servePartner']
   ) {
     if (profile && profile.latitude && profile.longitude) {
-      return this.geolocation.coordinateDistance(profile.latitude, profile.longitude, lat, lng);
+      return coordinateDistance(profile.latitude, profile.longitude, lat, lng);
     }
     return undefined;
   }

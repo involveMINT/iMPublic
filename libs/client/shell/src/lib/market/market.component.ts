@@ -10,7 +10,7 @@ import {
 } from '@involvemint/client/shared/data-access';
 import { RouteService } from '@involvemint/client/shared/routes';
 import { ImTabsComponent } from '@involvemint/client/shared/ui';
-import { GeoLocator, StatefulComponent } from '@involvemint/client/shared/util';
+import { coordinateDistance, getPosition, StatefulComponent } from '@involvemint/client/shared/util';
 import { parseDate } from '@involvemint/shared/util';
 import { formatDistanceToNow } from 'date-fns';
 import { merge } from 'rxjs';
@@ -37,8 +37,7 @@ export class MarketComponent extends StatefulComponent<State> implements OnInit 
   constructor(
     private readonly user: UserFacade,
     private readonly route: RouteService,
-    private readonly activatedRoute: ActivatedRoute,
-    private readonly geolocation: GeoLocator
+    private readonly activatedRoute: ActivatedRoute
   ) {
     super({
       activeTabIndex: 0,
@@ -84,7 +83,7 @@ export class MarketComponent extends StatefulComponent<State> implements OnInit 
       this.user.market.selectors.exchangePartners$.pipe(
         tap(({ exchangePartners, loaded }) => {
           this.updateState({ exchangePartners, loaded });
-          this.geolocation.getPosition().then(({ lat, lng }) => {
+          getPosition().then(({ lat, lng }) => {
             this.updateState({
               exchangePartners: this.state.exchangePartners.map((ep) => ({
                 ...ep,
@@ -120,7 +119,7 @@ export class MarketComponent extends StatefulComponent<State> implements OnInit 
 
   private distance(lat: number, lng: number, ep: ExchangePartnerMarketStoreModel) {
     if (ep.latitude && ep.longitude) {
-      return this.geolocation.coordinateDistance(ep.latitude, ep.longitude, lat, lng);
+      return coordinateDistance(ep.latitude, ep.longitude, lat, lng);
     }
     return undefined;
   }

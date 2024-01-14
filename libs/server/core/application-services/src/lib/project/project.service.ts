@@ -23,6 +23,7 @@ import * as uuid from 'uuid';
 import { AuthService } from '../auth/auth.service';
 import { StorageService } from '../storage/storage.service';
 import { DbTransactionCreator } from '../transaction-creator/transaction-creator.service';
+import { getDefaultAddress } from '@involvemint/shared/domain';
 
 @Injectable()
 export class ProjectService {
@@ -87,6 +88,7 @@ export class ProjectService {
 
   async create(query: IQuery<Project[]>, token: string, dto: CreateProjectDto) {
     await this.permissions.userIsServeAdmin(token, dto.spId);
+
     return this.projectRepo.upsert(
       {
         id: uuid.v4(),
