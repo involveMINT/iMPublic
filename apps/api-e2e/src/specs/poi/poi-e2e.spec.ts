@@ -61,7 +61,6 @@ describe('POI Orchestration Integration Tests', () => {
 
   const spQuery = createQuery<ServePartner>()({ id: true });
   let sp: IParser<ServePartner, typeof spQuery>;
-  let approverDenierSP: IParser<ServePartner, typeof spQuery>;
   const poiQuery = createQuery<Poi>()({
     id: true,
     dateApproved: true,
@@ -140,16 +139,14 @@ describe('POI Orchestration Integration Tests', () => {
       },
       {}
     );
-
-    approverDenierSP = await createServePartner(spQuery, spRepo, { id: uuid.v4(), handle: 'approverDenierHandle' });
     
     await saRepo.upsert(
       {
         id: uuid.v4(),
         datePermitted: new Date(),
-        servePartner: approverDenierSP.id,
+        servePartner: sp.id,
         superAdmin: true,
-        user: creds.id,
+        user: poiApproverOrDenierCreds.id,
       },
       {}
     );
@@ -648,7 +645,7 @@ describe('POI Orchestration Integration Tests', () => {
       let { body: poi } = await poiOrcha.create(poiQuery, auth.body.token, { enrollmentId: enrollment.id });
       poi = await poiRepo.update(poi.id, { dateSubmitted: new Date() }, poiQuery);
       expect(calculatePoiStatus(poi)).toBe(PoiStatus.submitted);
-      const { body } = await poiOrcha.deny(poiQuery, auth.body.token, { poiId: poi.id });
+      const { body } = await poiOrcha.deny(poiQuery, poiApproverOrDenyer.body.token, { poiId: poi.id });
       expect(calculatePoiStatus(body)).toBe(PoiStatus.denied);
     });
   });
