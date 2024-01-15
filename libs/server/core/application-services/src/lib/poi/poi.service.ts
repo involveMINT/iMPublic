@@ -75,7 +75,7 @@ export class PoiService {
     const project = await this.posRepo.findOneOrFail(dto.projectId, { servePartner: { id: true } });
 
     if (
-      this.posService.permissions.userIsServeAdmin(token, project.servePartner.id) ||
+      await this.posService.permissions.userIsServeAdmin(token, project.servePartner.id) ||
       user.changeMaker?.enrollments.some((e) => e.project.id === dto.projectId)
     ) {
       return this.poiRepo.findPoisByProject(dto.projectId, query);

@@ -19,7 +19,7 @@ describe('ChangeMaker Orchestration Integration Tests', () => {
 
   let cmRepo: ChangeMakerRepository;
 
-  const creds = { id: 'email@email.com', password: 'GoodPwd341' };
+  const creds = { id: 'email@email.com', password: 'GoodPwd@341' };
   let auth: { body: { token: string }; statusCode: HttpStatus };
 
   const cmQuery = createQuery<ChangeMaker>()({ id: true, firstName: true, handle: { id: true } });

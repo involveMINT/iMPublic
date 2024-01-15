@@ -36,7 +36,7 @@ import { createServePartner } from '../serve-partner/serve-partner.helpers';
 import { createUserOrchestration } from '../user/user.orchestration';
 import { createPoiOrchestration } from './poi.orchestration';
 
-describe('User Orchestration Integration Tests', () => {
+describe('POI Orchestration Integration Tests', () => {
   let app: INestApplication;
   let db: DatabaseService;
 
@@ -54,12 +54,14 @@ describe('User Orchestration Integration Tests', () => {
 
   let storage: StorageService;
 
-  const creds = { id: 'email@email.com', password: 'GoodPwd341' };
+  const creds = { id: 'email@email.com', password: 'GoodPwd@341' };
   let auth: { body: { token: string }; statusCode: HttpStatus };
+  const poiApproverOrDenierCreds = { id: 'email2@email.com', password: 'GoodPwd@341' };
+  let poiApproverOrDenyer: { body: { token: string }; statusCode: HttpStatus };
 
   const spQuery = createQuery<ServePartner>()({ id: true });
   let sp: IParser<ServePartner, typeof spQuery>;
-
+  let approverDenierSP: IParser<ServePartner, typeof spQuery>;
   const poiQuery = createQuery<Poi>()({
     id: true,
     dateApproved: true,
@@ -125,7 +127,7 @@ describe('User Orchestration Integration Tests', () => {
   beforeEach(async () => {
     await db.clearDb();
     auth = await userOrcha.signUp({ token: true }, '', creds);
-
+    poiApproverOrDenyer = await userOrcha.signUp({ token: true }, '', poiApproverOrDenierCreds);
     sp = await createServePartner(spQuery, spRepo, { id: uuid.v4(), handle: 'spHandle' });
 
     await saRepo.upsert(
@@ -133,6 +135,19 @@ describe('User Orchestration Integration Tests', () => {
         id: uuid.v4(),
         datePermitted: new Date(),
         servePartner: sp.id,
+        superAdmin: true,
+        user: creds.id,
+      },
+      {}
+    );
+
+    approverDenierSP = await createServePartner(spQuery, spRepo, { id: uuid.v4(), handle: 'approverDenierHandle' });
+    
+    await saRepo.upsert(
+      {
+        id: uuid.v4(),
+        datePermitted: new Date(),
+        servePartner: approverDenierSP.id,
         superAdmin: true,
         user: creds.id,
       },
@@ -209,14 +224,16 @@ describe('User Orchestration Integration Tests', () => {
           enrollmentId: enrollment.id,
         });
         expect(calculatePoiStatus(poi)).toBe(PoiStatus.created);
-        const { error } = await poiOrcha.create(poiQuery, auth.body.token, {
+        const temp = await poiOrcha.create(poiQuery, auth.body.token, {
           enrollmentId: enrollment.id,
         });
-        expect(error).toBe(
-          `You have an unsubmitted Proof of Impact to the Project Enrollment:
-        ${poi.enrollment.project.title}. Please submit or withdraw this Proof of Impact
-        before creating a new one.`
-        );
+
+        const responseText =JSON.parse(temp.text)['response']['text'];
+
+        expect(responseText).toBe('You have an unsubmitted Proof of Impact to the Project Enrollment:\n' +
+        `            ${poi.enrollment.project.title}. Please submit or withdraw this Proof of Impact\n` +
+        '            before creating a new one.');
+
       });
       it('should not create if preexisting started poi already exists', async () => {
         const { body } = await poiOrcha.create(poiQuery, auth.body.token, {
@@ -224,14 +241,14 @@ describe('User Orchestration Integration Tests', () => {
         });
         const poi = await poiRepo.update(body.id, { dateStarted: new Date() }, poiQuery);
         expect(calculatePoiStatus(poi)).toBe(PoiStatus.started);
-        const { error } = await poiOrcha.create(poiQuery, auth.body.token, {
+        const result = await poiOrcha.create(poiQuery, auth.body.token, {
           enrollmentId: enrollment.id,
         });
-        expect(error).toBe(
-          `You have an unsubmitted Proof of Impact to the Project Enrollment:
-        ${poi.enrollment.project.title}. Please submit or withdraw this Proof of Impact
-        before creating a new one.`
-        );
+        const responseText =JSON.parse(result.text)['response']['text'];
+
+        expect(responseText).toBe('You have an unsubmitted Proof of Impact to the Project Enrollment:\n' +
+        `            ${poi.enrollment.project.title}. Please submit or withdraw this Proof of Impact\n` +
+        '            before creating a new one.');
       });
       it('should not create if preexisting paused poi already exists', async () => {
         const { body } = await poiOrcha.create(poiQuery, auth.body.token, {
@@ -243,14 +260,15 @@ describe('User Orchestration Integration Tests', () => {
           poiQuery
         );
         expect(calculatePoiStatus(poi)).toBe(PoiStatus.paused);
-        const { error } = await poiOrcha.create(poiQuery, auth.body.token, {
+        const result = await poiOrcha.create(poiQuery, auth.body.token, {
           enrollmentId: enrollment.id,
         });
-        expect(error).toBe(
-          `You have an unsubmitted Proof of Impact to the Project Enrollment:
-        ${poi.enrollment.project.title}. Please submit or withdraw this Proof of Impact
-        before creating a new one.`
-        );
+
+        const responseText =JSON.parse(result.text)['response']['text'];
+
+        expect(responseText).toBe('You have an unsubmitted Proof of Impact to the Project Enrollment:\n' +
+        `            ${poi.enrollment.project.title}. Please submit or withdraw this Proof of Impact\n` +
+        '            before creating a new one.');
       });
       it('should not create if preexisting stopped poi already exists', async () => {
         const { body } = await poiOrcha.create(poiQuery, auth.body.token, {
@@ -262,14 +280,14 @@ describe('User Orchestration Integration Tests', () => {
           poiQuery
         );
         expect(calculatePoiStatus(poi)).toBe(PoiStatus.stopped);
-        const { error } = await poiOrcha.create(poiQuery, auth.body.token, {
+        const result = await poiOrcha.create(poiQuery, auth.body.token, {
           enrollmentId: enrollment.id,
         });
-        expect(error).toBe(
-          `You have an unsubmitted Proof of Impact to the Project Enrollment:
-        ${poi.enrollment.project.title}. Please submit or withdraw this Proof of Impact
-        before creating a new one.`
-        );
+        const responseText =JSON.parse(result.text)['response']['text'];
+
+        expect(responseText).toBe('You have an unsubmitted Proof of Impact to the Project Enrollment:\n' +
+        `            ${poi.enrollment.project.title}. Please submit or withdraw this Proof of Impact\n` +
+        '            before creating a new one.');
       });
     });
     describe('create preexisting', () => {
@@ -423,6 +441,7 @@ describe('User Orchestration Integration Tests', () => {
       const { body: poi } = await poiOrcha.create(poiQuery, auth.body.token, { enrollmentId: enrollment.id });
       expect(calculatePoiStatus(poi)).toBe(PoiStatus.created);
       const { error } = await poiOrcha.resume({}, auth.body.token, { poiId: poi.id });
+      
       expect(error).toBe('This Proof of Impact is not in a valid state to be resumed.');
     });
     it('should resume if in paused state', async () => {
@@ -515,42 +534,42 @@ describe('User Orchestration Integration Tests', () => {
     it('should not approve if in created state', async () => {
       const { body: poi } = await poiOrcha.create(poiQuery, auth.body.token, { enrollmentId: enrollment.id });
       expect(calculatePoiStatus(poi)).toBe(PoiStatus.created);
-      const { error } = await poiOrcha.approve({}, auth.body.token, { poiId: poi.id });
+      const { error } = await poiOrcha.approve({}, poiApproverOrDenyer.body.token, { poiId: poi.id });
       expect(error).toBe('This Proof of Impact must first be submitted to be approved.');
     });
     it('should not approve if in started state', async () => {
       let { body: poi } = await poiOrcha.create(poiQuery, auth.body.token, { enrollmentId: enrollment.id });
       poi = await poiRepo.update(poi.id, { dateStarted: new Date() }, poiQuery);
       expect(calculatePoiStatus(poi)).toBe(PoiStatus.started);
-      const { error } = await poiOrcha.approve({}, auth.body.token, { poiId: poi.id });
+      const { error } = await poiOrcha.approve({}, poiApproverOrDenyer.body.token, { poiId: poi.id });
       expect(error).toBe('This Proof of Impact must first be submitted to be approved.');
     });
     it('should not approve if in paused state', async () => {
       let { body: poi } = await poiOrcha.create(poiQuery, auth.body.token, { enrollmentId: enrollment.id });
       poi = await poiRepo.update(poi.id, { pausedTimes: [new Date()] }, poiQuery);
       expect(calculatePoiStatus(poi)).toBe(PoiStatus.paused);
-      const { error } = await poiOrcha.approve({}, auth.body.token, { poiId: poi.id });
+      const { error } = await poiOrcha.approve({}, poiApproverOrDenyer.body.token, { poiId: poi.id });
       expect(error).toBe('This Proof of Impact must first be submitted to be approved.');
     });
     it('should not approve if in resumed state', async () => {
       let { body: poi } = await poiOrcha.create(poiQuery, auth.body.token, { enrollmentId: enrollment.id });
       poi = await poiRepo.update(poi.id, { pausedTimes: [new Date()], resumedTimes: [new Date()] }, poiQuery);
       expect(calculatePoiStatus(poi)).toBe(PoiStatus.started);
-      const { error } = await poiOrcha.approve({}, auth.body.token, { poiId: poi.id });
+      const { error } = await poiOrcha.approve({}, poiApproverOrDenyer.body.token, { poiId: poi.id });
       expect(error).toBe('This Proof of Impact must first be submitted to be approved.');
     });
     it('should not approve if in stopped state', async () => {
       let { body: poi } = await poiOrcha.create(poiQuery, auth.body.token, { enrollmentId: enrollment.id });
       poi = await poiRepo.update(poi.id, { dateStopped: new Date() }, poiQuery);
       expect(calculatePoiStatus(poi)).toBe(PoiStatus.stopped);
-      const { error } = await poiOrcha.approve({}, auth.body.token, { poiId: poi.id });
+      const { error } = await poiOrcha.approve({}, poiApproverOrDenyer.body.token, { poiId: poi.id });
       expect(error).toBe('This Proof of Impact must first be submitted to be approved.');
     });
     it('should not approve if in denied state', async () => {
       let { body: poi } = await poiOrcha.create(poiQuery, auth.body.token, { enrollmentId: enrollment.id });
       poi = await poiRepo.update(poi.id, { dateDenied: new Date() }, poiQuery);
       expect(calculatePoiStatus(poi)).toBe(PoiStatus.denied);
-      const { error } = await poiOrcha.approve({}, auth.body.token, { poiId: poi.id });
+      const { error } = await poiOrcha.approve({}, poiApproverOrDenyer.body.token, { poiId: poi.id });
       expect(error).toBe('This Proof of Impact must first be submitted to be approved.');
     });
     it('should approve if in submitted state', async () => {
@@ -561,7 +580,7 @@ describe('User Orchestration Integration Tests', () => {
         poiQuery
       );
       expect(calculatePoiStatus(poi)).toBe(PoiStatus.submitted);
-      const { body } = await poiOrcha.approve(poiQuery, auth.body.token, { poiId: poi.id });
+      const { body } = await poiOrcha.approve(poiQuery, poiApproverOrDenyer.body.token, { poiId: poi.id });
       expect(calculatePoiStatus(body)).toBe(PoiStatus.approved);
     });
     it('should create if in submitted state with correct amount of credits', async () => {
@@ -576,7 +595,7 @@ describe('User Orchestration Integration Tests', () => {
         poiQuery
       );
       expect(calculatePoiStatus(poi)).toBe(PoiStatus.submitted);
-      const { body } = await poiOrcha.approve(poiQuery, auth.body.token, { poiId: poi.id });
+      const { body } = await poiOrcha.approve(poiQuery, poiApproverOrDenyer.body.token, { poiId: poi.id });
       expect(calculatePoiStatus(body)).toBe(PoiStatus.approved);
       const credits = await creditRepo.findAll();
       expect(credits[0].amount).toBe(ImConfig.creditsPerHour / 6);
@@ -586,42 +605,42 @@ describe('User Orchestration Integration Tests', () => {
     it('should not deny if in created state', async () => {
       const { body: poi } = await poiOrcha.create(poiQuery, auth.body.token, { enrollmentId: enrollment.id });
       expect(calculatePoiStatus(poi)).toBe(PoiStatus.created);
-      const { error } = await poiOrcha.deny({}, auth.body.token, { poiId: poi.id });
+      const { error } = await poiOrcha.deny({}, poiApproverOrDenyer.body.token, { poiId: poi.id });
       expect(error).toBe('This Proof of Impact must first be submitted to be denied.');
     });
     it('should not deny if in started state', async () => {
       let { body: poi } = await poiOrcha.create(poiQuery, auth.body.token, { enrollmentId: enrollment.id });
       poi = await poiRepo.update(poi.id, { dateStarted: new Date() }, poiQuery);
       expect(calculatePoiStatus(poi)).toBe(PoiStatus.started);
-      const { error } = await poiOrcha.deny({}, auth.body.token, { poiId: poi.id });
+      const { error } = await poiOrcha.deny({}, poiApproverOrDenyer.body.token, { poiId: poi.id });
       expect(error).toBe('This Proof of Impact must first be submitted to be denied.');
     });
     it('should not deny if in paused state', async () => {
       let { body: poi } = await poiOrcha.create(poiQuery, auth.body.token, { enrollmentId: enrollment.id });
       poi = await poiRepo.update(poi.id, { pausedTimes: [new Date()] }, poiQuery);
       expect(calculatePoiStatus(poi)).toBe(PoiStatus.paused);
-      const { error } = await poiOrcha.deny({}, auth.body.token, { poiId: poi.id });
+      const { error } = await poiOrcha.deny({}, poiApproverOrDenyer.body.token, { poiId: poi.id });
       expect(error).toBe('This Proof of Impact must first be submitted to be denied.');
     });
     it('should not deny if in resumed state', async () => {
       let { body: poi } = await poiOrcha.create(poiQuery, auth.body.token, { enrollmentId: enrollment.id });
       poi = await poiRepo.update(poi.id, { pausedTimes: [new Date()], resumedTimes: [new Date()] }, poiQuery);
       expect(calculatePoiStatus(poi)).toBe(PoiStatus.started);
-      const { error } = await poiOrcha.deny({}, auth.body.token, { poiId: poi.id });
+      const { error } = await poiOrcha.deny({}, poiApproverOrDenyer.body.token, { poiId: poi.id });
       expect(error).toBe('This Proof of Impact must first be submitted to be denied.');
     });
     it('should not deny if in stopped state', async () => {
       let { body: poi } = await poiOrcha.create(poiQuery, auth.body.token, { enrollmentId: enrollment.id });
       poi = await poiRepo.update(poi.id, { dateStopped: new Date() }, poiQuery);
       expect(calculatePoiStatus(poi)).toBe(PoiStatus.stopped);
-      const { error } = await poiOrcha.deny({}, auth.body.token, { poiId: poi.id });
+      const { error } = await poiOrcha.deny({}, poiApproverOrDenyer.body.token, { poiId: poi.id });
       expect(error).toBe('This Proof of Impact must first be submitted to be denied.');
     });
     it('should not deny if in denied state', async () => {
       let { body: poi } = await poiOrcha.create(poiQuery, auth.body.token, { enrollmentId: enrollment.id });
       poi = await poiRepo.update(poi.id, { dateDenied: new Date() }, poiQuery);
       expect(calculatePoiStatus(poi)).toBe(PoiStatus.denied);
-      const { error } = await poiOrcha.deny({}, auth.body.token, { poiId: poi.id });
+      const { error } = await poiOrcha.deny({}, poiApproverOrDenyer.body.token, { poiId: poi.id });
       expect(error).toBe('This Proof of Impact must first be submitted to be denied.');
     });
 

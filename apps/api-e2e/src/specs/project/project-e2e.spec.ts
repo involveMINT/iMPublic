@@ -28,7 +28,7 @@ describe('ChangeMaker Orchestration Integration Tests', () => {
   let saRepo: ServeAdminRepository;
   let projectRepo: ProjectRepository;
 
-  const creds = { id: 'email@email.com', password: 'GoodPwd341' };
+  const creds = { id: 'email@email.com', password: 'GoodPwd@341' };
   let auth: { body: { token: string }; statusCode: HttpStatus };
 
   const spQuery = createQuery<ServePartner>()({ id: true });
