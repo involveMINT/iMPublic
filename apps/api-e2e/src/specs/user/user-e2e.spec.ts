@@ -86,7 +86,7 @@ describe('User Orchestration Integration Tests', () => {
       environment.environment = 'production';
       const { statusCode } = await userOrcha.getUserData({}, auth.body.token);
       expect(statusCode).toBe(HttpStatus.UNAUTHORIZED);
-      environment.environment = 'production';
+      environment.environment = 'local';
     });
   });
 
@@ -105,7 +105,6 @@ describe('User Orchestration Integration Tests', () => {
     it('should verify email address', async () => {
       let user = await userRepo.findOneOrFail(creds.id);
       expect(user.active).toBe(false);
-      console.log(user);
       await userOrcha.verifyEmail({}, '', { email: user.id, hash: user.activationHash ?? '' });
       user = await userRepo.findOneOrFail(creds.id);
       expect(user.active).toBe(true);
