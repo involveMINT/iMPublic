@@ -25,6 +25,7 @@ import { AuthService } from '../auth/auth.service';
 import { EmailService } from '../email/email.service';
 import { DbTransactionCreator } from '../transaction-creator/transaction-creator.service';
 import { UserService } from '../user/user.service';
+import { getDefaultAddress } from '@involvemint/shared/domain';
 
 @Injectable()
 export class EpApplicationService {
@@ -53,6 +54,25 @@ export class EpApplicationService {
     const user = await this.auth.validateUserToken(token);
     await this.handle.verifyHandleUniqueness(dto.handle);
     const epAppId = uuid.v4();
+    
+    let address;
+
+    if(environment.environment === 'local')
+    {
+      address = getDefaultAddress();
+    }
+    else
+    {
+      address = {
+        id: uuid.v4(),
+        address1: dto.address1,
+        address2: dto.address2,
+        city: dto.city,
+        state: dto.state,
+        zip: dto.zip,
+      };
+    }
+
     const epApp = await this.epAppRepo.upsert(
       {
         id: epAppId,
@@ -64,14 +84,7 @@ export class EpApplicationService {
         phone: dto.phone,
         website: dto.website,
         dateCreated: new Date(),
-        address: {
-          id: uuid.v4(),
-          address1: dto.address1,
-          address2: dto.address2,
-          city: dto.city,
-          state: dto.state,
-          zip: dto.zip,
-        },
+        address: address
       },
       query
     );
@@ -104,6 +117,25 @@ export class EpApplicationService {
       dto.email,
       epAppId
     );
+
+    let address;
+
+    if(environment.environment === 'local')
+    {
+      address = getDefaultAddress();
+    }
+    else
+    {
+      address = {
+        id: uuid.v4(),
+        address1: dto.address1,
+        address2: dto.address2,
+        city: dto.city,
+        state: dto.state,
+        zip: dto.zip,
+      };
+    }
+
     await this.epAppRepo.upsert({
       id: epAppId,
       handle: { id: dto.handle },
@@ -114,14 +146,7 @@ export class EpApplicationService {
       phone: dto.phone,
       website: dto.website,
       dateCreated: new Date(),
-      address: {
-        id: uuid.v4(),
-        address1: dto.address1,
-        address2: dto.address2,
-        city: dto.city,
-        state: dto.state,
-        zip: dto.zip,
-      },
+      address: address,
     });
 
     await this.process({}, '', { allow: true, id: epAppId }, false, true);
@@ -172,8 +197,17 @@ export class EpApplicationService {
       user: { id: true, changeMaker: { firstName: true } },
     });
 
-    const geo = geocoder.default({ provider: 'google', apiKey: environment.gcpApiKey });
-    const res = await geo.geocode(Object.entries(epApp.address).join(' '));
+    let res: geocoder.Entry[];
+
+    if(environment.environment === 'local')
+    {
+      res = environment.defaultLocalAddress;
+    }
+    else
+    {
+      const geo = geocoder.default({ provider: 'google', apiKey: environment.gcpApiKey });
+      res = await geo.geocode(Object.entries(epApp.address).join(' '));
+    }
 
     const lat = Number(res[0]?.latitude?.toFixed(4));
     const lng = Number(res[0]?.longitude?.toFixed(4));
@@ -194,7 +228,7 @@ export class EpApplicationService {
           longitude: isNaN(lng) ? undefined : lng,
           offers: [],
           requests: [],
-          address: epApp.address,
+          address: environment.environment !== 'local' ? epApp.address : getDefaultAddress(),
           onboardingState: EpOnboardingState.profile,
           admins: [
             {

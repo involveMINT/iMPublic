@@ -31,3 +31,28 @@ services:
       - ./.docker/pgpass:/tmp/pgpass # passwords for the connections in this file
     depends_on:
       - postgres
+  firebase_emulators:
+    container_name: firebase_emulators
+    build:
+      context: .docker/firebase-emulators
+      args:
+        - FIREBASE_TOOLS_VERSION=12.9.1
+        - HOME=/home/node=value
+    ports:
+      - 4000:4000
+      - 5000:5000
+      - 5001:5001
+      - 8080:8080
+      - 8085:8085
+      - 9000:9000
+      - 9005:9005
+      - 9099:9099
+      - 9199:9199
+      - 4400:4400
+    volumes:
+      - .docker/firebase-emulators/firebase.json:/firebase.json
+      - .docker/firebase-emulators/storage.rules:/storage.rules
+      - .docker/firebase-emulators/.firebaserc:/.firebaserc
+    command: >
+      sh -c "firebase emulators:start"
+

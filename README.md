@@ -24,8 +24,8 @@ Run the following commands.
 3. `[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"`
 4. Refresh your shell (close and reopen). If you're using zsh, here's a shortcut: `source ~/.zshrc`
 5. If the following command does not throw an error, you're good so far: `nvm -v`
-6. `nvm install --lts`
-7. `nvm use --lts`
+6. `nvm install lts/gallium`
+7. `nvm use lts/gallium`
 
 ### Configuring Firebase
 
@@ -99,6 +99,18 @@ export const environment: Env = {
     saltSeparator: 'Bw==',
     signerKey: 'de/PQ/Gy53mgslvUgDUKDCgHJPArYqbFnGILLQZNe5My/CvqIThVL/CsndU8oudZ9lc4B7PT8w3sAar2/luQxA==',
   },
+  defaultLocalAddress: [{
+    streetNumber: '5000',
+    streetName: 'Forbes Ave',
+    formattedAddress: '5000 Forbes Ave, Pittsburgh, PA 15213',
+    city: 'Pittsburgh',
+    administrativeLevels: {
+      level1short: 'PA'
+    },
+    zipcode: '15213',
+    latitude: 40.444229,
+    longitude: -79.943367
+  }]
 };
 ```
 
@@ -106,7 +118,7 @@ Under the key "typeOrmConfig", please change the password field to "postgres". U
 
 ### Starting the Containers
 
-Run `docker compose up` in the root directory, which will spin up a PostgreSQL database on port 5433 and a PgAdmin UI on port 8889.
+Run `docker compose up` in the root directory, which will spin up a PostgreSQL database on port 5433, a PgAdmin UI on port 8889, and a firestore emulator available at http://127.0.0.1:4000.
 
 If you are prompted for the pasword (below screenshot) when opening PgAdmin at http://localhost:8889 enter `postgres`. 
 ![postgres_db_password_required](/assets/postgres_db_password_required.png)
@@ -115,10 +127,12 @@ If you are prompted for the pasword (below screenshot) when opening PgAdmin at h
 ### Starting the Apps
 
 - Open a terminal and run `npm i` from root directory to install all the required packages. 
-- Run `export NODE_OPTIONS=--openssl-legacy-provider` because otherwise there will be an error with OpenSSL. 
+- Run `export FIREBASE_STORAGE_EMULATOR_HOST=localhost:9199`. 
+- Run `export FIRESTORE_EMULATOR_HOST='localhost:8080'`. 
 - Run `npm run start:client:local` which will start the client app.
 - Leave that terminal open and running and open a new terminal
-- In the new terminal: Run `export NODE_OPTIONS=--openssl-legacy-provider`
+- In the new terminal: Run `export FIREBASE_STORAGE_EMULATOR_HOST=localhost:9199`. 
+- In the new terminal: Run `export FIRESTORE_EMULATOR_HOST='localhost:8080'`. 
 - Then Run `npm run start:server:local` which will start the server app.
 
 Once running, the client can be accessed via `http://localhost:4202` and the api/server will be running on `http://127.0.0.1:3335`

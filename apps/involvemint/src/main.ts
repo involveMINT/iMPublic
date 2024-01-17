@@ -3,7 +3,7 @@ import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
 import { environment } from '@involvemint/shared/domain';
 import { AppModule } from './app/app.module';
 
-if (environment.production) {
+if (environment.environment === 'production') {
   enableProdMode();
 }
 

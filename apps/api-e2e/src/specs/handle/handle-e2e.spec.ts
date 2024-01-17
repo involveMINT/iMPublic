@@ -7,7 +7,7 @@ import { AppTestModule } from '../../core/app-test.module';
 import { DatabaseService } from '../../core/database.service';
 import { createHandleOrchestration } from './handle.orchestration';
 
-describe('User Orchestration Integration Tests', () => {
+describe('Handle Orchestration Integration Tests', () => {
   let app: INestApplication;
   let db: DatabaseService;
 

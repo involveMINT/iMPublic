@@ -53,6 +53,10 @@
       "pre-commit": "pretty-quick --staged"
     }
   },
+  "engines": {
+    "npm": "8.19.4",
+    "node": "16.20.2"
+  },
   "private": true,
   "dependencies": {
     "@angular/animations": "^12.0.3",
@@ -102,6 +106,7 @@
     "firebase": "8.6.5",
     "firebase-admin": "9.9.0",
     "firebase-scrypt": "2.1.0",
+    "husky": "6.0.0",
     "lodash": "4.17.21",
     "mailgun-js": "0.22.0",
     "nestjs-typeorm-paginate": "2.6.2",
@@ -122,7 +127,6 @@
     "tslib": "2.2.0",
     "twilio": "3.63.1",
     "typeorm": "0.2.37",
-    "husky": "6.0.0",
     "typeorm-transactional-cls-hooked": "0.1.21",
     "uuid": "8.3.2",
     "zone.js": "~0.11.4"
@@ -162,6 +166,7 @@
     "@types/passport-local": "1.0.33",
     "@types/socket.io": "3.0.1",
     "@types/socket.io-client": "1.4.36",
+    "@types/supertest": "^6.0.2",
     "@types/uuid": "8.3.0",
     "@typescript-eslint/eslint-plugin": "4.26.1",
     "@typescript-eslint/parser": "4.26.1",
@@ -169,8 +174,9 @@
     "codelyzer": "6.0.2",
     "eslint": "7.28.0",
     "eslint-config-prettier": "8.3.0",
-    "firebase-tools": "9.12.1",
+    "firebase-tools": "^9.12.1",
     "jest": "26.6.3",
+    "jest-junit": "^16.0.0",
     "jest-preset-angular": "8.4.0",
     "jest-when": "3.3.1",
     "prettier": "2.3.1",

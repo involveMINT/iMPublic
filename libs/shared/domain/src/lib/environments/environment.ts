@@ -4,8 +4,7 @@ const host = 'localhost';
 
 /** Develop environment variables. */
 export const environment: Env = {
-  production: false,
-  test: false,
+  environment: 'local',
   host,
   apiUrl: `http://${host}:3335`,
   appUrl: `http://${host}:4202`,
@@ -65,4 +64,16 @@ export const environment: Env = {
     saltSeparator: 'Bw==',
     signerKey: 'de/PQ/Gy53mgslvUgDUKDCgHJPArYqbFnGILLQZNe5My/CvqIThVL/CsndU8oudZ9lc4B7PT8w3sAar2/luQxA==',
   },
+  defaultLocalAddress: [{
+    streetNumber: '5000',
+    streetName: 'Forbes Ave',
+    formattedAddress: '5000 Forbes Ave, Pittsburgh, PA 15213',
+    city: 'Pittsburgh',
+    administrativeLevels: {
+      level1short: 'PA'
+    },
+    zipcode: '15213',
+    latitude: 40.444229,
+    longitude: -79.943367
+  }] 
 };

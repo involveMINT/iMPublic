@@ -46,3 +46,6 @@ Thumbs.db
 
 gcp-service-key-prod.json
 gcp-api-key-prod.json
+
+reports/*
+!reports/readme.md
