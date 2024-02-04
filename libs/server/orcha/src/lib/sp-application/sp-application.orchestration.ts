@@ -1,6 +1,6 @@
 import { SpApplicationService } from '@involvemint/server/core/application-services';
 import {
-  InvolvemintOrchestrations,
+  InvolvemintRoutes,
   ISpApplicationOrchestration,
   ProcessSpApplicationDto,
   SpApplication,
@@ -12,7 +12,7 @@ import {
 import { IQuery } from '@orcha/common';
 import { IServerOrchestration, ServerOperation, ServerOrchestration } from '@orcha/nestjs';
 
-@ServerOrchestration(InvolvemintOrchestrations.spApplication)
+@ServerOrchestration(InvolvemintRoutes.spApplication)
 export class SpApplicationOrchestration implements IServerOrchestration<ISpApplicationOrchestration> {
   constructor(private readonly spApp: SpApplicationService) {}
 

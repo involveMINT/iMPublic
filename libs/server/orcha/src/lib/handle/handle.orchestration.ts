@@ -5,7 +5,7 @@ import {
   Handle,
   HandleChatQuery,
   IHandleOrchestration,
-  InvolvemintOrchestrations,
+  InvolvemintRoutes,
   SearchHandleDto,
   VerifyHandleDto,
   VerifyHandleQuery,
@@ -15,7 +15,7 @@ import {
 import { IQuery, parseQuery } from '@orcha/common';
 import { IServerOrchestration, ServerOperation, ServerOrchestration } from '@orcha/nestjs';
 
-@ServerOrchestration(InvolvemintOrchestrations.handle)
+@ServerOrchestration(InvolvemintRoutes.handle)
 export class HandleOrchestration implements IServerOrchestration<IHandleOrchestration> {
   constructor(private readonly handle: HandleService) {}
 

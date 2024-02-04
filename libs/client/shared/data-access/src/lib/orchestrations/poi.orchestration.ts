@@ -1,7 +1,7 @@
-import { InvolvemintOrchestrations, IPoiOrchestration } from '@involvemint/shared/domain';
+import { InvolvemintRoutes, IPoiOrchestration } from '@involvemint/shared/domain';
 import { ClientOperation, ClientOrchestration, IClientOrchestration } from '@orcha/angular';
 
-@ClientOrchestration(InvolvemintOrchestrations.poi)
+@ClientOrchestration(InvolvemintRoutes.poi)
 export class PoiOrchestration implements IClientOrchestration<IPoiOrchestration> {
   @ClientOperation()
   get!: IClientOrchestration<IPoiOrchestration>['get'];

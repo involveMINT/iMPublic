@@ -1,7 +1,7 @@
-import { InvolvemintOrchestrations, IPassportDocumentOrchestration } from '@involvemint/shared/domain';
+import { InvolvemintRoutes, IPassportDocumentOrchestration } from '@involvemint/shared/domain';
 import { ClientOperation, ClientOrchestration, IClientOrchestration } from '@orcha/angular';
 
-@ClientOrchestration(InvolvemintOrchestrations.passport)
+@ClientOrchestration(InvolvemintRoutes.passport)
 export class PassportDocumentOrchestration implements IClientOrchestration<IPassportDocumentOrchestration> {
   @ClientOperation()
   get!: IClientOrchestration<IPassportDocumentOrchestration>['get'];

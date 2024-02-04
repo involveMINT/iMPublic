@@ -4,13 +4,13 @@ import {
   CreateChangeMakerProfileDto,
   EditCmProfileDto,
   IChangeMakerOrchestration,
-  InvolvemintOrchestrations,
+  InvolvemintRoutes,
   UserQuery,
 } from '@involvemint/shared/domain';
 import { IQuery } from '@orcha/common';
 import { IServerOrchestration, ServerOperation, ServerOrchestration } from '@orcha/nestjs';
 
-@ServerOrchestration(InvolvemintOrchestrations.changeMaker)
+@ServerOrchestration(InvolvemintRoutes.changeMaker)
 export class ChangeMakerOrchestration implements IServerOrchestration<IChangeMakerOrchestration> {
   constructor(private readonly cmService: ChangeMakerService) {}
 

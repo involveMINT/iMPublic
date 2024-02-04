@@ -7,13 +7,13 @@ import {
   GetExchangeAdminsForExchangePartnerDto,
   GetSuperAdminForExchangePartnerDto,
   IExchangeAdminOrchestration,
-  InvolvemintOrchestrations,
+  InvolvemintRoutes,
   RemoveExchangeAdminDto,
 } from '@involvemint/shared/domain';
 import { IQuery } from '@orcha/common';
 import { IServerOrchestration, ServerOperation, ServerOrchestration } from '@orcha/nestjs';
 
-@ServerOrchestration(InvolvemintOrchestrations.epAdmin)
+@ServerOrchestration(InvolvemintRoutes.epAdmin)
 export class ExchangeAdminOrchestration implements IServerOrchestration<IExchangeAdminOrchestration> {
   constructor(private readonly epAdmin: ExchangeAdminService) {}
 

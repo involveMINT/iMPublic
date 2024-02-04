@@ -2,7 +2,7 @@ import { ServeAdminService } from '@involvemint/server/core/application-services
 import {
   AddServeAdminDto,
   GetServeAdminsForServePartnerDto,
-  InvolvemintOrchestrations,
+  InvolvemintRoutes,
   IServeAdminOrchestration,
   RemoveServeAdminDto,
   ServeAdmin,
@@ -11,7 +11,7 @@ import {
 import { IQuery } from '@orcha/common';
 import { IServerOrchestration, ServerOperation, ServerOrchestration } from '@orcha/nestjs';
 
-@ServerOrchestration(InvolvemintOrchestrations.spAdmin)
+@ServerOrchestration(InvolvemintRoutes.spAdmin)
 export class ServeAdminOrchestration implements IServerOrchestration<IServeAdminOrchestration> {
   constructor(private readonly spAdmin: ServeAdminService) {}
 

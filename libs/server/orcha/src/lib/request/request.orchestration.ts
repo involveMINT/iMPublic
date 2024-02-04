@@ -5,7 +5,7 @@ import {
   DeleteRequestImageDto,
   GetOneRequestDto,
   GetRequestsForProfileDto,
-  InvolvemintOrchestrations,
+  InvolvemintRoutes,
   IRequestOrchestration,
   QueryRequestsDto,
   Request,
@@ -17,7 +17,7 @@ import {
 import { IQuery } from '@orcha/common';
 import { IServerOrchestration, ServerOperation, ServerOrchestration } from '@orcha/nestjs';
 
-@ServerOrchestration(InvolvemintOrchestrations.request)
+@ServerOrchestration(InvolvemintRoutes.request)
 export class RequestOrchestration implements IServerOrchestration<IRequestOrchestration> {
   constructor(private readonly request: RequestService) {}
 

@@ -1,7 +1,7 @@
 import { TransactionService } from '@involvemint/server/core/application-services';
 import {
   GetTransactionsForProfileDto,
-  InvolvemintOrchestrations,
+  InvolvemintRoutes,
   ITransactionOrchestration,
   Transaction,
   TransactionDto,
@@ -10,7 +10,7 @@ import {
 import { IQuery } from '@orcha/common';
 import { IServerOrchestration, ServerOperation, ServerOrchestration } from '@orcha/nestjs';
 
-@ServerOrchestration(InvolvemintOrchestrations.transaction)
+@ServerOrchestration(InvolvemintRoutes.transaction)
 export class TransactionOrchestration implements IServerOrchestration<ITransactionOrchestration> {
   constructor(private readonly transactionService: TransactionService) {}
   @ServerOperation({ validateQuery: TransactionQuery })

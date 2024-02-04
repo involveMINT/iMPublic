@@ -13,7 +13,6 @@ import {
 import { Enrollment } from './enrollment.model';
 
 export interface IEnrollmentOrchestration {
-  get: IOperation<Enrollment[]>;
   getBySpProject: IOperation<Enrollment[], GetEnrollmentsBySpProject>;
   startApplication: IOperation<Enrollment, StartEnrollmentApplicationDto>;
   withdraw: IOperation<{ deletedId: string }, WithdrawEnrollmentApplicationDto>;

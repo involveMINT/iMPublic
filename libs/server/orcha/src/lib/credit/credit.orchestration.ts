@@ -4,13 +4,13 @@ import {
   CreditQuery,
   GetCreditsForProfileDto,
   ICreditOrchestration,
-  InvolvemintOrchestrations,
+  InvolvemintRoutes,
   MintDto,
 } from '@involvemint/shared/domain';
 import { IQuery } from '@orcha/common';
 import { IServerOrchestration, ServerOperation, ServerOrchestration } from '@orcha/nestjs';
 
-@ServerOrchestration(InvolvemintOrchestrations.credit)
+@ServerOrchestration(InvolvemintRoutes.credit)
 export class CreditOrchestration implements IServerOrchestration<ICreditOrchestration> {
   constructor(private readonly credit: CreditService) {}
 

@@ -4,7 +4,7 @@ import {
   DeleteProjectDto,
   DeleteProjectImageDto,
   GetProjectDto,
-  InvolvemintOrchestrations,
+  InvolvemintRoutes,
   IProjectOrchestration,
   Project,
   ProjectFeedQuery,
@@ -18,7 +18,7 @@ import {
 import { IQuery } from '@orcha/common';
 import { IServerOrchestration, ServerOperation, ServerOrchestration } from '@orcha/nestjs';
 
-@ServerOrchestration(InvolvemintOrchestrations.project)
+@ServerOrchestration(InvolvemintRoutes.project)
 export class ProjectOrchestration implements IServerOrchestration<IProjectOrchestration> {
   constructor(private readonly projectService: ProjectService) {}
 

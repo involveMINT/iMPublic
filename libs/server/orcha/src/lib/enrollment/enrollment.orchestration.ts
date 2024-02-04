@@ -6,7 +6,7 @@ import {
   EnrollmentsSpQuery,
   GetEnrollmentsBySpProject,
   IEnrollmentOrchestration,
-  InvolvemintOrchestrations,
+  InvolvemintRoutes,
   LinkPassportDocumentDto,
   ProcessEnrollmentApplicationDto,
   Project,
@@ -19,14 +19,9 @@ import {
 import { IQuery } from '@orcha/common';
 import { IServerOrchestration, ServerOperation, ServerOrchestration } from '@orcha/nestjs';
 
-@ServerOrchestration(InvolvemintOrchestrations.enrollment)
+@ServerOrchestration(InvolvemintRoutes.enrollment)
 export class EnrollmentOrchestration implements IServerOrchestration<IEnrollmentOrchestration> {
   constructor(private readonly enrollmentService: EnrollmentService) {}
-
-  @ServerOperation({ validateQuery: EnrollmentsQuery })
-  get(query: IQuery<Enrollment[]>, token: string) {
-    return this.enrollmentService.get(query, token);
-  }
 
   @ServerOperation({ validateQuery: EnrollmentsSpQuery })
   getBySpProject(query: IQuery<Enrollment[]>, token: string, dto: GetEnrollmentsBySpProject) {

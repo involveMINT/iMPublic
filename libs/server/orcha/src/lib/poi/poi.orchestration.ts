@@ -4,7 +4,7 @@ import {
   CreatePoiDto,
   DenyPoiDto,
   GetPoisByProjectDto,
-  InvolvemintOrchestrations,
+  InvolvemintRoutes,
   IPoiOrchestration,
   PausePoiTimerDto,
   Poi,
@@ -19,7 +19,7 @@ import {
 import { IQuery } from '@orcha/common';
 import { IServerOrchestration, ServerOperation, ServerOrchestration } from '@orcha/nestjs';
 
-@ServerOrchestration(InvolvemintOrchestrations.poi)
+@ServerOrchestration(InvolvemintRoutes.poi)
 export class PoiOrchestration implements IServerOrchestration<IPoiOrchestration> {
   constructor(private readonly poiService: PoiService) {}
 

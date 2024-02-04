@@ -9,7 +9,7 @@ import {
   ForgotPasswordChangeDto,
   ForgotPasswordDto,
   GrantBaPrivilegesDto,
-  InvolvemintOrchestrations,
+  InvolvemintRoutes,
   ISnoopData,
   IUserOrchestration,
   LoginDto,
@@ -34,7 +34,7 @@ import {
 import { IQuery, parseQuery } from '@orcha/common';
 import { IServerOrchestration, ServerOperation, ServerOrchestration } from '@orcha/nestjs';
 
-@ServerOrchestration(InvolvemintOrchestrations.user)
+@ServerOrchestration(InvolvemintRoutes.user)
 export class UserOrchestration implements IServerOrchestration<IUserOrchestration> {
   constructor(private readonly auth: AuthService, private readonly user: UserService) {}
 

@@ -1,7 +1,7 @@
-import { IEpApplicationOrchestration, InvolvemintOrchestrations } from '@involvemint/shared/domain';
+import { IEpApplicationOrchestration, InvolvemintRoutes } from '@involvemint/shared/domain';
 import { ClientOperation, ClientOrchestration, IClientOrchestration } from '@orcha/angular';
 
-@ClientOrchestration(InvolvemintOrchestrations.epApplication)
+@ClientOrchestration(InvolvemintRoutes.epApplication)
 export class EpApplicationOrchestration implements IClientOrchestration<IEpApplicationOrchestration> {
   @ClientOperation()
   submit!: IClientOrchestration<IEpApplicationOrchestration>['submit'];

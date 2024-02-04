@@ -5,7 +5,7 @@ import {
   DeleteOfferImageDto,
   GetOffersForProfileDto,
   GetOneOfferDto,
-  InvolvemintOrchestrations,
+  InvolvemintRoutes,
   IOfferOrchestration,
   Offer,
   OfferMarketQuery,
@@ -17,7 +17,7 @@ import {
 import { IQuery } from '@orcha/common';
 import { IServerOrchestration, ServerOperation, ServerOrchestration } from '@orcha/nestjs';
 
-@ServerOrchestration(InvolvemintOrchestrations.offer)
+@ServerOrchestration(InvolvemintRoutes.offer)
 export class OfferOrchestration implements IServerOrchestration<IOfferOrchestration> {
   constructor(private readonly offer: OfferService) {}
 

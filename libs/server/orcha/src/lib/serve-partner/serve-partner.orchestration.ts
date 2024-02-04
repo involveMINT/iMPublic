@@ -2,7 +2,7 @@ import { ServePartnerService } from '@involvemint/server/core/application-servic
 import {
   DeleteSpImageDto,
   EditSpProfileDto,
-  InvolvemintOrchestrations,
+  InvolvemintRoutes,
   IServePartnerOrchestration,
   ServePartner,
   UpdateSpLogoFileDto,
@@ -12,7 +12,7 @@ import {
 import { IQuery } from '@orcha/common';
 import { IServerOrchestration, ServerOperation, ServerOrchestration } from '@orcha/nestjs';
 
-@ServerOrchestration(InvolvemintOrchestrations.servePartner)
+@ServerOrchestration(InvolvemintRoutes.servePartner)
 export class ServePartnerOrchestration implements IServerOrchestration<IServePartnerOrchestration> {
   constructor(private readonly sp: ServePartnerService) {}
 

@@ -3,7 +3,7 @@ import {
   DeletePassportDocumentDto,
   DeletePassportDocumentQuery,
   EditPassportDocumentDto,
-  InvolvemintOrchestrations,
+  InvolvemintRoutes,
   IPassportDocumentOrchestration,
   PassportDocument,
   PassportDocumentQuery,
@@ -12,7 +12,7 @@ import {
 import { IQuery } from '@orcha/common';
 import { IServerOrchestration, ServerOperation, ServerOrchestration } from '@orcha/nestjs';
 
-@ServerOrchestration(InvolvemintOrchestrations.passport)
+@ServerOrchestration(InvolvemintRoutes.passport)
 export class PassportDocumentOrchestration implements IServerOrchestration<IPassportDocumentOrchestration> {
   constructor(private readonly passport: PassportService) {}
 

@@ -1,13 +1,13 @@
 import { ChatService } from '@involvemint/server/core/application-services';
 import {
   IChatOrchestration,
-  InvolvemintOrchestrations,
+  InvolvemintRoutes,
   SendChatMessageDto,
 } from '@involvemint/shared/domain';
 import { IQuery } from '@orcha/common';
 import { IServerOrchestration, ServerOperation, ServerOrchestration } from '@orcha/nestjs';
 
-@ServerOrchestration(InvolvemintOrchestrations.chat)
+@ServerOrchestration(InvolvemintRoutes.chat)
 export class ChatOrchestration implements IServerOrchestration<IChatOrchestration> {
   constructor(private readonly chat: ChatService) {}
 

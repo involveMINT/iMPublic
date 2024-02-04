@@ -1,7 +1,7 @@
-import { InvolvemintOrchestrations, IVoucherOrchestration } from '@involvemint/shared/domain';
+import { InvolvemintRoutes, IVoucherOrchestration } from '@involvemint/shared/domain';
 import { ClientOperation, ClientOrchestration, IClientOrchestration } from '@orcha/angular';
 
-@ClientOrchestration(InvolvemintOrchestrations.voucher)
+@ClientOrchestration(InvolvemintRoutes.voucher)
 export class VoucherOrchestration implements IClientOrchestration<IVoucherOrchestration> {
   @ClientOperation()
   getForProfile!: IClientOrchestration<IVoucherOrchestration>['getForProfile'];

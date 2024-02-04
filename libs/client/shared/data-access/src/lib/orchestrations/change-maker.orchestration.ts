@@ -1,7 +1,7 @@
-import { IChangeMakerOrchestration, InvolvemintOrchestrations } from '@involvemint/shared/domain';
+import { IChangeMakerOrchestration, InvolvemintRoutes } from '@involvemint/shared/domain';
 import { ClientOperation, ClientOrchestration, IClientOrchestration } from '@orcha/angular';
 
-@ClientOrchestration(InvolvemintOrchestrations.changeMaker)
+@ClientOrchestration(InvolvemintRoutes.changeMaker)
 export class ChangeMakerOrchestration implements IClientOrchestration<IChangeMakerOrchestration> {
   @ClientOperation()
   createProfile!: IClientOrchestration<IChangeMakerOrchestration>['createProfile'];

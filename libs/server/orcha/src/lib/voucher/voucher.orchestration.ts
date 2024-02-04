@@ -5,7 +5,7 @@ import {
   EpVoucherQuery,
   GetVouchersBySellerDto,
   GetVouchersForProfileDto,
-  InvolvemintOrchestrations,
+  InvolvemintRoutes,
   IVoucherOrchestration,
   RedeemVoucherDto,
   RefundVoucherDto,
@@ -16,7 +16,7 @@ import {
 import { IQuery } from '@orcha/common';
 import { IServerOrchestration, ServerOperation, ServerOrchestration } from '@orcha/nestjs';
 
-@ServerOrchestration(InvolvemintOrchestrations.voucher)
+@ServerOrchestration(InvolvemintRoutes.voucher)
 export class VoucherOrchestration implements IServerOrchestration<IVoucherOrchestration> {
   constructor(private readonly voucher: VoucherService) {}
 

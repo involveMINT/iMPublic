@@ -6,7 +6,7 @@ import {
   EpApplicationQuery,
   ExchangePartner,
   IEpApplicationOrchestration,
-  InvolvemintOrchestrations,
+  InvolvemintRoutes,
   ProcessEpApplicationDto,
   SubmitEpApplicationDto,
   UserQuery,
@@ -15,7 +15,7 @@ import {
 import { IQuery } from '@orcha/common';
 import { IServerOrchestration, ServerOperation, ServerOrchestration } from '@orcha/nestjs';
 
-@ServerOrchestration(InvolvemintOrchestrations.epApplication)
+@ServerOrchestration(InvolvemintRoutes.epApplication)
 export class EpApplicationOrchestration implements IServerOrchestration<IEpApplicationOrchestration> {
   constructor(private readonly epApp: EpApplicationService) {}
 

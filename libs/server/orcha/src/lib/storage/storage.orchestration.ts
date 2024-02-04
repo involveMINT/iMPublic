@@ -1,13 +1,13 @@
 import { StorageService } from '@involvemint/server/core/application-services';
 import {
   GetStorageFileDto,
-  InvolvemintOrchestrations,
+  InvolvemintRoutes,
   IStorageOrchestration,
 } from '@involvemint/shared/domain';
 import { IQuery, parseQuery } from '@orcha/common';
 import { IServerOrchestration, ServerOperation, ServerOrchestration } from '@orcha/nestjs';
 
-@ServerOrchestration(InvolvemintOrchestrations.storage)
+@ServerOrchestration(InvolvemintRoutes.storage)
 export class StorageOrchestration implements IServerOrchestration<IStorageOrchestration> {
   constructor(private readonly storage: StorageService) {}
 

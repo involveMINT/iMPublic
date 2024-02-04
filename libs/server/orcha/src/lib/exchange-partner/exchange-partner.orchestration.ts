@@ -8,7 +8,7 @@ import {
   ExchangePartnerSearchQuery,
   GetOneExchangePartnerDto,
   IExchangePartnerOrchestration,
-  InvolvemintOrchestrations,
+  InvolvemintRoutes,
   SearchEpDto,
   UpdateEpLogoFileDto,
   UploadEpImagesDto,
@@ -17,7 +17,7 @@ import {
 import { IQuery } from '@orcha/common';
 import { IServerOrchestration, ServerOperation, ServerOrchestration } from '@orcha/nestjs';
 
-@ServerOrchestration(InvolvemintOrchestrations.exchangePartner)
+@ServerOrchestration(InvolvemintRoutes.exchangePartner)
 export class ExchangePartnerOrchestration implements IServerOrchestration<IExchangePartnerOrchestration> {
   constructor(private readonly ep: ExchangePartnerService) {}
 
