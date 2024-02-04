@@ -1,6 +1,6 @@
-import { IExactQuery } from './query';
-import { IPagination } from './pagination';
-import { parseQuery } from  './transform'
+import { IExactQuery } from '../../../../../../shared/domain/src/lib/domain/repository/query';
+import { IPagination } from '../../../../../../shared/domain/src/lib/domain/repository/pagination';
+import { parseQuery } from  '../../../../../../shared/domain/src/lib/domain/repository/transform'
 import { Socket } from 'socket.io';
 
 interface ISubscription<Entity> {

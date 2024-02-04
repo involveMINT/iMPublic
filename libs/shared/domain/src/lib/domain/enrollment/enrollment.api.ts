@@ -1,4 +1,4 @@
-import { IQuery } from '@orcha/common';
+import { IQuery } from '../repository';
 import { Enrollment } from './enrollment.model';
 
 export interface IEnrollmentAPI {

@@ -5,9 +5,9 @@ import {
   EditCmProfileDto,
   generateChangeMakerProfileImageFilePath,
   ImStorageFileRoots,
+  IQuery
 } from '@involvemint/shared/domain';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { IQuery } from '@orcha/common';
 import * as uuid from 'uuid';
 import { AuthService } from '../auth/auth.service';
 import { FirestoreService } from '../firestore/firestore.service';

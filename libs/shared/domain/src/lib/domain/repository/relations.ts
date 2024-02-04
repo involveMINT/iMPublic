@@ -5,8 +5,6 @@
 /**
  * Creates a One-to-One relationship with another entity.
  *
- * @template Relation - The type representing the related entity.
- * @template SelfKey - The key in the related entity that points back to the original entity.
  * @example
  * ```ts
  * interface User {
@@ -27,8 +25,6 @@ export type IOneToOne<Relation, SelfKey extends keyof Relation> = {
 /**
  * Creates a One-to-Many relationship with another entity.
  *
- * @template Relation - The type representing the related entity.
- * @template SelfKey - The key in the related entity that points back to the original entity.
  * @example
  * ```ts
  * interface User {
@@ -49,8 +45,6 @@ export type IOneToMany<Relation, SelfKey extends keyof Relation> = {
 /**
  * Creates a Many-to-One relationship with another entity.
  *
- * @template Relation - The type representing the related entity.
- * @template SelfKey - The key in the related entity that points back to the original entity.
  * @example
  * ```ts
  * interface Post {
@@ -71,8 +65,6 @@ export type IManyToOne<Relation, SelfKey extends keyof Relation> = {
 /**
  * Creates a Many-to-Many relationship with another entity.
  *
- * @template Relation - The type representing the related entity.
- * @template SelfKey - The key in the related entity that points back to the original entity.
  * @example
  * ```ts
  * interface Todo {
@@ -130,9 +122,6 @@ export type IManyToMany<Relation, SelfKey extends keyof Relation> = {
 
 /**
  * Utility type for any relation.
- *
- * @template Relation - The type representing the related entity.
- * @template SelfKey - The key in the related entity that points back to the original entity.
  */
 export type IAnyRelation<Relation, SelfKey extends keyof Relation> =
   | IOneToOne<Relation, SelfKey>
@@ -142,8 +131,6 @@ export type IAnyRelation<Relation, SelfKey extends keyof Relation> =
 
 /**
  * Filter an entity to only have its fields (no relations).
- *
- * @template T - The type of the entity.
  */
 export type IProps<T> = {
   [K in keyof T as NonNullable<T[K]> extends object
@@ -159,8 +146,6 @@ export type IProps<T> = {
 
 /**
  * Filter an entity to only have relations (no fields).
- *
- * @template T - The type of the entity.
  */
 export type IRelations<T> = {
   [K in keyof T as NonNullable<T[K]> extends object
@@ -176,8 +161,6 @@ export type IRelations<T> = {
 
 /**
  * Utility type when upserting an entity to a database function.
- *
- * @template T - The type of the entity.
  */
 export type IUpsertEntity<T> = {
   [K in keyof T]: NonNullable<T[K]> extends object
@@ -195,7 +178,5 @@ export type IUpsertEntity<T> = {
 
 /**
  * Utility type when updating an entity to a database function.
- *
- * @template T - The type of the entity.
  */
 export type IUpdateEntity<T> = Partial<IUpsertEntity<T>>;

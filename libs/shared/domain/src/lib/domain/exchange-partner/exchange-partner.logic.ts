@@ -1,4 +1,4 @@
-import { createLogic } from '@orcha/common';
+import { createLogic } from '../repository';
 import { ExchangePartner } from './exchange-partner.model';
 
 export const transactionAmountExceedsEpBudget = createLogic<

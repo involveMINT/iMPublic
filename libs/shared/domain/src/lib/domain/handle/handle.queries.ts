@@ -1,4 +1,4 @@
-import { createQuery } from '@orcha/common';
+import { createQuery } from '../repository';
 import { Handle } from './handle.model';
 
 export const HandleQuery = createQuery<Handle>()({

@@ -1,4 +1,4 @@
-import { IManyToOne, IOneToOne } from '@orcha/common';
+import { IManyToOne, IOneToOne } from '../repository';
 import { Address } from '../address';
 import { Handle } from '../handle';
 import { User } from '../user';

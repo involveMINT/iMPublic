@@ -2,21 +2,15 @@ import {
   IExactQuery,
   IPaginate,
   IQuery,
-} from './query';
-import {
   IUpdateEntity,
   IUpsertEntity,
-  IProps
-} from './relations';
-import { parseQuery } from './transform'
-import {
+  IProps,
+  parseQuery,
   IParser,
-} from './parser';
-import { 
   PAGINATE_KEY,
   PAGINATE_PAGE,
   PAGINATE_LIMIT
-} from './constants'
+} from '@involvemint/shared/domain';
 import { paginate, Pagination } from 'nestjs-typeorm-paginate';
 import { Socket } from 'socket.io';
 import { DeepPartial, FindManyOptions, Repository } from 'typeorm';
