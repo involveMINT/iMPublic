@@ -4,12 +4,12 @@ import { IExactQuery, IQuery } from '../../../../../../shared/domain/src/lib/dom
 export function createTypeormRelationsArray<T, Q extends IQuery<T>>(query: IExactQuery<T, Q>) {
   const arr: string[] = [];
 
-  const parse = (q: any, root: string) => {
-    for (const k in q) {
-      if (typeof q[k] === 'object' && k !== PAGINATE_KEY) {
-        const newRoot = `${root}${root ? '.' : ''}${k}`;
+  const parse = (query: any, root: string) => {
+    for (const key in query) {
+      if (typeof query[key] === 'object' && key !== PAGINATE_KEY) {
+        const newRoot = `${root}${root ? '.' : ''}${key}`;
         arr.push(newRoot);
-        parse(q[k], newRoot);
+        parse(query[key], newRoot);
       }
     }
     return arr;

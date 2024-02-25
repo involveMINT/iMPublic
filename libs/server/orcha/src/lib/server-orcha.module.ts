@@ -4,7 +4,7 @@ import { OrchaModule } from '@orcha/nestjs';
 import { ChangeMakerOrchestration } from './change-maker/change-maker.orchestration';
 import { ChatOrchestration } from './chat/chat.orchestration';
 import { CreditOrchestration } from './credit/credit.orchestration';
-import { EnrollmentOrchestration } from './enrollment/enrollment.orchestration';
+import { EnrollmentController } from './api/enrollment/enrollment.controller';
 import { EpApplicationGateway } from './ep-application/ep-application.gateway';
 import { EpApplicationOrchestration } from './ep-application/ep-application.orchestration';
 import { ExchangeAdminOrchestration } from './exchange-admin/exchange-admin.orchestration';
@@ -27,12 +27,12 @@ import { VoucherOrchestration } from './voucher/voucher.orchestration';
 @Module({
   imports: [
     ServerCoreApplicationServicesModule,
+    EnrollmentController,
     OrchaModule.forFeature({
       orchestrations: [
         ChangeMakerOrchestration,
         ChatOrchestration,
         CreditOrchestration,
-        EnrollmentOrchestration,
         ExchangeAdminOrchestration,
         EpApplicationOrchestration,
         ExchangePartnerOrchestration,
