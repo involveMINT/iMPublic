@@ -25,7 +25,7 @@ export class ChangeMakerService {
 
   /**
    * Creates a ChangeMaker profile and verifies handle is unique.
-   * @param query Orcha query of the newly created ChangeMaker profile.
+   * @param query query of the newly created ChangeMaker profile.
    * @param token User's auth token.
    * @param dto Essential ChangeMaker profile data.
    */

@@ -1,63 +1,121 @@
 import { EnrollmentService } from '@involvemint/server/core/application-services';
-import { InvolvemintRoutes, EnrollmentsQuery, EnrollmentsSpQuery, GetEnrollmentsBySpProject, StartEnrollmentApplicationDto, WithdrawEnrollmentApplicationDto, LinkPassportDocumentDto, SubmitEnrollmentApplicationDto, AcceptWaiverDto, ProcessEnrollmentApplicationDto, RevertEnrollmentApplicationDto, RetireEnrollmentDto } from '@involvemint/shared/domain';
+import {
+  AcceptWaiverDto,
+  Enrollment,
+  EnrollmentsQuery,
+  EnrollmentsSpQuery,
+  GetEnrollmentsBySpProject,
+  StartEnrollmentApplicationDto,
+  WithdrawEnrollmentApplicationDto,
+  LinkPassportDocumentDto,
+  SubmitEnrollmentApplicationDto,
+  ProcessEnrollmentApplicationDto,
+  RevertEnrollmentApplicationDto,
+  RetireEnrollmentDto,
+  InvolvemintRoutes,
+  IQuery,
+  QUERY_KEY,
+  TOKEN_KEY,
+  DTO_KEY,
+  Project,
+} from '@involvemint/shared/domain';
 import {
     Controller,
     Post,
-    Body
+    Body,
   } from '@nestjs/common';
+import { QueryValidationPipe, ValidationPipe } from '../pipes';
 
 @Controller(InvolvemintRoutes.enrollment)
 export class EnrollmentController {
     constructor(private readonly enrollmentService: EnrollmentService) {}
 
   @Post('get')
-  get(@Body() token: string) {
-      return this.enrollmentService.get(EnrollmentsQuery, token);
+  get(
+    @Body(QUERY_KEY, new QueryValidationPipe(EnrollmentsQuery)) query: IQuery<Enrollment[]>, 
+    @Body(TOKEN_KEY) token: string 
+  ){
+      return this.enrollmentService.get(query, token);
   }
 
-  @Post()
-  getBySpProject(@Body() body : { token: string, dto: GetEnrollmentsBySpProject }) {
-    return this.enrollmentService.getBySpProject(EnrollmentsSpQuery, body.token, body.dto);
+  @Post('getBySpProject')
+  getBySpProject(
+    @Body(QUERY_KEY, new QueryValidationPipe(EnrollmentsSpQuery)) query: IQuery<Enrollment[]>, 
+    @Body(TOKEN_KEY) token: string, 
+    @Body(DTO_KEY, new ValidationPipe()) dto: GetEnrollmentsBySpProject
+  ) {
+    return this.enrollmentService.getBySpProject(query, token, dto);
   }
 
-  @Post()
-  startApplication(@Body() body : { token: string, dto: StartEnrollmentApplicationDto }) {
-    return this.enrollmentService.startApplication(EnrollmentsQuery, body.token, body.dto);
+  @Post('startApplication')
+  startApplication(
+    @Body(QUERY_KEY, new QueryValidationPipe(EnrollmentsQuery)) query: IQuery<Enrollment>, 
+    @Body(TOKEN_KEY) token: string, 
+    @Body(DTO_KEY, new ValidationPipe()) dto: StartEnrollmentApplicationDto
+  ) {
+    return this.enrollmentService.startApplication(query, token, dto);
   }
 
-  @Post()
-  withdraw(@Body() body : { token: string, dto: WithdrawEnrollmentApplicationDto }) {
-    return this.enrollmentService.withdraw({ deletedId: true }, body.token, body.dto);
+  @Post('withdraw')
+  withdraw(
+    @Body(QUERY_KEY, new QueryValidationPipe({ deletedId: true })) query: IQuery<{ deletedId: string }>, 
+    @Body(TOKEN_KEY) token: string, 
+    @Body(DTO_KEY, new ValidationPipe()) dto: WithdrawEnrollmentApplicationDto
+    ) {
+    return this.enrollmentService.withdraw(query, token, dto);
   }
 
-  @Post()
-  linkPassportDocument(@Body() body : { token: string, dto: LinkPassportDocumentDto }) {
-    return this.enrollmentService.linkPassportDocument(EnrollmentsQuery, body.token, body.dto);
+  @Post('linkPassportDocument')
+  linkPassportDocument(
+    @Body(QUERY_KEY, new QueryValidationPipe(EnrollmentsQuery)) query: IQuery<Enrollment>, 
+    @Body(TOKEN_KEY) token: string, 
+    @Body(DTO_KEY, new ValidationPipe()) dto: LinkPassportDocumentDto
+  ) {
+    return this.enrollmentService.linkPassportDocument(query, token, dto);
   }
 
-  @Post()
-  submitApplication(@Body() body : { token: string, dto: SubmitEnrollmentApplicationDto }) {
-    return this.enrollmentService.submitApplication(EnrollmentsQuery, body.token, body.dto);
+  @Post('submitApplication')
+  submitApplication(
+    @Body(QUERY_KEY, new QueryValidationPipe(EnrollmentsQuery)) query: IQuery<Enrollment>, 
+    @Body(TOKEN_KEY) token: string, 
+    @Body(DTO_KEY, new ValidationPipe()) dto: SubmitEnrollmentApplicationDto
+  ) {
+    return this.enrollmentService.submitApplication(query, token, dto);
   }
 
-  @Post()
-  acceptWaiver(@Body() body : { token: string, dto: AcceptWaiverDto }) {
-    return this.enrollmentService.acceptWaiver(EnrollmentsQuery, body.token, body.dto);
+  @Post('acceptWaiver')
+  acceptWaiver(
+    @Body(QUERY_KEY, new QueryValidationPipe(EnrollmentsQuery)) query: IQuery<Enrollment>, 
+    @Body(TOKEN_KEY) token: string, 
+    @Body(DTO_KEY, new ValidationPipe()) dto: AcceptWaiverDto
+  ) {
+    return this.enrollmentService.acceptWaiver(query, token, dto);
   }
 
-  @Post()
-  processEnrollmentApplication(@Body() body : { token: string, dto: ProcessEnrollmentApplicationDto }) {
-    return this.enrollmentService.processEnrollmentApplication(EnrollmentsSpQuery, body.token, body.dto);
+  @Post('processEnrollmentApplication')
+  processEnrollmentApplication(
+    @Body(QUERY_KEY, new QueryValidationPipe(EnrollmentsSpQuery)) query: IQuery<Project>, 
+    @Body(TOKEN_KEY) token: string, 
+    @Body(DTO_KEY, new ValidationPipe()) dto: ProcessEnrollmentApplicationDto
+  ) {
+    return this.enrollmentService.processEnrollmentApplication(query, token, dto);
   }
 
-  @Post()
-  revertEnrollmentApplication(@Body() body : { token: string, dto: RevertEnrollmentApplicationDto }) {
-    return this.enrollmentService.revertEnrollmentApplication(EnrollmentsSpQuery, body.token, body.dto);
+  @Post('revertEnrollmentApplication')
+  revertEnrollmentApplication(
+    @Body(QUERY_KEY, new QueryValidationPipe(EnrollmentsSpQuery)) query: IQuery<Project>, 
+    @Body(TOKEN_KEY) token: string, 
+    @Body(DTO_KEY, new ValidationPipe()) dto: RevertEnrollmentApplicationDto
+  ) {
+    return this.enrollmentService.revertEnrollmentApplication(query, token, dto);
   }
 
-  @Post()
-  retireEnrollment(@Body() body : { token: string, dto: RetireEnrollmentDto }) {
-    return this.enrollmentService.retireEnrollment(EnrollmentsSpQuery, body.token, body.dto);
+  @Post('retireEnrollment')
+  retireEnrollment(
+    @Body(QUERY_KEY, new QueryValidationPipe(EnrollmentsSpQuery)) query: IQuery<Project>, 
+    @Body(TOKEN_KEY) token: string, 
+    @Body(DTO_KEY, new ValidationPipe()) dto: RetireEnrollmentDto
+  ) {
+    return this.enrollmentService.retireEnrollment(query, token, dto);
   }
-
 }

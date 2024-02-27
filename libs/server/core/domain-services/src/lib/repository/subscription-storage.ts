@@ -1,6 +1,4 @@
-import { IExactQuery } from '../../../../../../shared/domain/src/lib/domain/repository/query';
-import { IPagination } from '../../../../../../shared/domain/src/lib/domain/repository/pagination';
-import { parseQuery } from  '../../../../../../shared/domain/src/lib/domain/repository/transform'
+import { IExactQuery, IPagination, parseQuery } from '@involvemint/shared/domain';
 import { Socket } from 'socket.io';
 
 interface ISubscription<Entity> {

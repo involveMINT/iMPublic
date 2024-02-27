@@ -13,60 +13,115 @@ import {
   InvolvemintRoutes,
   IQuery,
   ResumePoiTimerDto,
+  QUERY_KEY,
+  PoiCmQuery,
+  TOKEN_KEY,
+  DTO_KEY,
+  FILES_KEY,
+  PoiSpQuery
 } from '@involvemint/shared/domain';
 import {
     Controller,
     Post,
-    Body
+    Body,
+    UseInterceptors,
+    UploadedFiles
   } from '@nestjs/common';
+import { FilesInterceptor } from '@nestjs/platform-express';
+import { QueryValidationPipe, ValidationPipe } from '../pipes';
 
 @Controller(InvolvemintRoutes.poi)
 export class PoiController {
     constructor(private readonly poiService: PoiService) {}
 
   @Post('get')
-  get(@Body() body: { query: IQuery<Poi[]>, token: string }) {
-      return this.poiService.get(body.query, body.token);
+  get(
+    @Body(QUERY_KEY, new QueryValidationPipe(PoiCmQuery)) query: IQuery<Poi[]>, 
+    @Body(TOKEN_KEY) token: string 
+  ){
+      return this.poiService.get(query, token);
   }
 
   @Post('create')
-  create(@Body() body: { query: IQuery<Poi>, token: string, dto: CreatePoiDto }) {
-    return this.poiService.create(body.query, body.token, body.dto);
+  create(
+    @Body(QUERY_KEY, new QueryValidationPipe(PoiCmQuery)) query: IQuery<Poi>, 
+    @Body(TOKEN_KEY) token: string, 
+    @Body(DTO_KEY, new ValidationPipe()) dto: CreatePoiDto
+  ) {
+      return this.poiService.create(query, token, dto);
   }
 
   @Post('start')
-  start(@Body() body: { query: IQuery<Poi>, token: string, dto: StartPoiTimerDto }) {
-    return this.poiService.start(body.query, body.token, body.dto);
+  start(
+    @Body(QUERY_KEY, new QueryValidationPipe(PoiCmQuery)) query: IQuery<Poi>, 
+    @Body(TOKEN_KEY) token: string, 
+    @Body(DTO_KEY, new ValidationPipe()) dto: StartPoiTimerDto
+  ) {
+    return this.poiService.start(query, token, dto);
   }
 
   @Post('stop')
-  stop(@Body() body: { query: IQuery<Poi>, token: string, dto: StopPoiTimerDto }) {
-    return this.poiService.stop(body.query, body.token, body.dto);
+  stop(
+    @Body(QUERY_KEY, new QueryValidationPipe(PoiCmQuery)) query: IQuery<Poi>, 
+    @Body(TOKEN_KEY) token: string, 
+    @Body(DTO_KEY, new ValidationPipe()) dto: StopPoiTimerDto
+  ) {
+    return this.poiService.stop(query, token, dto);
   }
 
   @Post('withdraw')
-  withdraw(@Body() body: { query: IQuery<{ deletedId: string }>, token: string, dto: WithdrawPoiDto }) {
-    return this.poiService.withdraw(body.query, body.token, body.dto);
+  withdraw(
+    @Body(QUERY_KEY, new QueryValidationPipe({ deletedId: true })) query: IQuery<{ deletedId: string }>, 
+    @Body(TOKEN_KEY) token: string, 
+    @Body(DTO_KEY, new ValidationPipe()) dto: WithdrawPoiDto
+    ) {
+    return this.poiService.withdraw(query, token, dto);
   }
 
   @Post('pause')
-  pause(@Body() body: { query: IQuery<Poi>, token: string, dto: PausePoiTimerDto }) {
-    return this.poiService.pause(body.query, body.token, body.dto);
+  pause(
+    @Body(QUERY_KEY, new QueryValidationPipe(PoiCmQuery)) query: IQuery<Poi>, 
+    @Body(TOKEN_KEY) token: string, 
+    @Body(DTO_KEY, new ValidationPipe()) dto: PausePoiTimerDto
+  ) {
+    return this.poiService.pause(query, token, dto);
   }
 
   @Post('resume')
-  resume(@Body() body: { query: IQuery<Poi>, token: string, dto: ResumePoiTimerDto }) {
-    return this.poiService.resume(body.query, body.token, body.dto);
+  resume(
+    @Body(QUERY_KEY, new QueryValidationPipe(PoiCmQuery)) query: IQuery<Poi>, 
+    @Body(TOKEN_KEY) token: string, 
+    @Body(DTO_KEY, new ValidationPipe()) dto: ResumePoiTimerDto
+  ) {
+    return this.poiService.resume(query, token, dto);
   }
 
   @Post('submit')
-  submit(@Body() body: { query: IQuery<Poi>, token: string, dto: SubmitPoiDto, files: Express.Multer.File[] }) {
-    return this.poiService.submit(body.query, body.token, body.dto, body.files);
+  @UseInterceptors(FilesInterceptor(FILES_KEY))
+  submit(
+    @Body(QUERY_KEY, new QueryValidationPipe(PoiCmQuery)) query: IQuery<Poi>, 
+    @Body(TOKEN_KEY) token: string, 
+    @Body(DTO_KEY, new ValidationPipe()) dto: SubmitPoiDto, 
+    @UploadedFiles() files: Express.Multer.File[]
+  ) {
+    return this.poiService.submit(query, token, dto, files);
   }
 
+  /*
+      ___                  ___          _                
+     / __| ___ _ ___ _____| _ \__ _ _ _| |_ _ _  ___ _ _ 
+     \__ \/ -_) '_\ V / -_)  _/ _` | '_|  _| ' \/ -_) '_|
+     |___/\___|_|  \_/\___|_| \__,_|_|  \__|_||_\___|_|  
+                                                         
+  */
+
   @Post('getByProject')
-  getByProject(@Body() body: { query: IQuery<Poi[]>, token: string, dto: GetPoisByProjectDto }) {
-    return this.poiService.getByProject(body.query, body.token, body.dto);
+  getByProject(
+    @Body(QUERY_KEY, new QueryValidationPipe(PoiSpQuery)) query: IQuery<Poi[]>, 
+    @Body(TOKEN_KEY) token: string,
+    @Body(DTO_KEY, new ValidationPipe()) dto: GetPoisByProjectDto
+  ) {
+    return this.poiService.getByProject(query, token, dto);
   }
 
   @Post('approve')
@@ -75,7 +130,11 @@ export class PoiController {
   }
 
   @Post('deny')
-  deny(@Body() body: { query: IQuery<Poi>, token: string, dto: DenyPoiDto }) {
-    return this.poiService.deny(body.query, body.token, body.dto);
+  deny(
+    @Body(QUERY_KEY, new QueryValidationPipe(PoiSpQuery)) query: IQuery<Poi>, 
+    @Body(TOKEN_KEY) token: string, 
+    @Body(DTO_KEY, new ValidationPipe()) dto: DenyPoiDto
+  ) {
+    return this.poiService.deny(query, token, dto);
   }
 }

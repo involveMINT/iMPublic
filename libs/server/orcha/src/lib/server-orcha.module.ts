@@ -1,57 +1,51 @@
 import { ServerCoreApplicationServicesModule } from '@involvemint/server/core/application-services';
 import { Module } from '@nestjs/common';
-import { OrchaModule } from '@orcha/nestjs';
-import { ChangeMakerOrchestration } from './change-maker/change-maker.orchestration';
-import { ChatOrchestration } from './chat/chat.orchestration';
-import { CreditOrchestration } from './credit/credit.orchestration';
 import { EnrollmentController } from './api/enrollment/enrollment.controller';
-import { EpApplicationGateway } from './ep-application/ep-application.gateway';
-import { EpApplicationOrchestration } from './ep-application/ep-application.orchestration';
-import { ExchangeAdminOrchestration } from './exchange-admin/exchange-admin.orchestration';
-import { ExchangePartnerOrchestration } from './exchange-partner/exchange-partner.orchestration';
-import { HandleOrchestration } from './handle/handle.orchestration';
-import { OfferOrchestration } from './offer/offer.orchestration';
-import { PassportDocumentOrchestration } from './passport-document/passport-document.orchestration';
-import { PoiOrchestration } from './poi/poi.orchestration';
-import { ProjectOrchestration } from './project/project.orchestration';
-import { RequestOrchestration } from './request/request.orchestration';
-import { ServeAdminOrchestration } from './serve-admin/serve-admin.orchestration';
-import { ServePartnerOrchestration } from './serve-partner/serve-partner.orchestration';
-import { SpApplicationGateway } from './sp-application/sp-application.gateway';
-import { SpApplicationOrchestration } from './sp-application/sp-application.orchestration';
-import { StorageOrchestration } from './storage/storage.orchestration';
-import { TransactionOrchestration } from './transaction/transaction.orchestration';
-import { UserOrchestration } from './user/user.orchestration';
-import { VoucherOrchestration } from './voucher/voucher.orchestration';
+import { ChangeMakerController } from './api/change-maker/change-maker.controller';
+import { ChatController } from './api/chat/chat.controller';
+import { CreditController } from './api/credit/credit.controller';
+import { ExchangeAdminController } from './api/exchange-admin/exchange-admin.controller';
+import { EpApplicationController } from './api/ep-application/ep-application.controller';
+import { ExchangePartnerController } from './api/exchange-partner/exchange-partner.controller';
+import { HandleController } from './api/handle/handle.controller';
+import { OfferController } from './api/offer/offer.controller';
+import { PassportDocumentController } from './api/passport-document/passport-document.controller';
+import { PoiController } from './api/poi/poi.controller';
+import { ProjectController } from './api/project/project.controller';
+import { RequestController } from './api/request/request.controller';
+import { ServeAdminController } from './api/serve-admin/serve-admin.controller';
+import { ServePartnerController } from './api/serve-partner/serve-partner.controller';
+import { SpApplicationController } from './api/sp-application/sp-application.controller';
+import { StorageController } from './api/storage/storage.controller';
+import { TransactionController } from './api/transaction/transaction.controller';
+import { UserController } from './api/user/user.controller';
+import { VoucherController } from './api/voucher/voucher.controller';
 
 @Module({
   imports: [
     ServerCoreApplicationServicesModule,
-    EnrollmentController,
-    OrchaModule.forFeature({
-      orchestrations: [
-        ChangeMakerOrchestration,
-        ChatOrchestration,
-        CreditOrchestration,
-        ExchangeAdminOrchestration,
-        EpApplicationOrchestration,
-        ExchangePartnerOrchestration,
-        HandleOrchestration,
-        OfferOrchestration,
-        PassportDocumentOrchestration,
-        PoiOrchestration,
-        ProjectOrchestration,
-        RequestOrchestration,
-        ServeAdminOrchestration,
-        ServePartnerOrchestration,
-        SpApplicationOrchestration,
-        StorageOrchestration,
-        TransactionOrchestration,
-        UserOrchestration,
-        VoucherOrchestration,
-      ],
-      gateways: [EpApplicationGateway, SpApplicationGateway],
-    }),
   ],
+  controllers: [
+    EnrollmentController,
+    ChangeMakerController,
+    ChatController,
+    CreditController,
+    ExchangeAdminController,
+    EpApplicationController,
+    ExchangePartnerController,
+    HandleController,
+    OfferController,
+    PassportDocumentController,
+    PoiController,
+    ProjectController,
+    RequestController,
+    ServeAdminController,
+    ServePartnerController,
+    SpApplicationController,
+    StorageController,
+    TransactionController,
+    UserController,
+    VoucherController
+  ]
 })
-export class ServerOrchaModule {}
+export class ServerAPIModule {}
