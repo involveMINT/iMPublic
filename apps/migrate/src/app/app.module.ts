@@ -1,5 +1,5 @@
 import { ServerCoreDomainServicesModule } from '@involvemint/server/core/domain-services';
-import { ServerAPIModule } from '@involvemint/server/orcha';
+import { ServerAPIModule } from '@involvemint/server/api';
 import { environment } from '@involvemint/shared/domain';
 import { Module } from '@nestjs/common';
 import { ScheduleModule } from '@nestjs/schedule';

@@ -30,7 +30,6 @@ export class ProjectController {
   @Post('getAll')
   getAll(
     @Body(QUERY_KEY, new QueryValidationPipe(ProjectFeedQuery)) query: IQuery<Project[]>, 
-    @Body(TOKEN_KEY) token: string, 
     @Body(DTO_KEY, new ValidationPipe()) dto: ProjectsQueryDto
   ) {
     return this.projectService.getAll(query, dto);
