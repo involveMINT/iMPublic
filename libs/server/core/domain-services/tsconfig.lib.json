@@ -8,5 +8,5 @@
     "target": "es6"
   },
   "exclude": ["**/*.spec.ts"],
-  "include": ["**/*.ts", "../../../shared/domain/src/lib/domain/repository/constants.ts", "../../../shared/domain/src/lib/domain/repository/pagination.ts", "../../../shared/domain/src/lib/domain/repository/parser.ts", "../../../shared/domain/src/lib/domain/repository/query.ts", "../../../shared/domain/src/lib/domain/repository/relations.ts", "../../../shared/domain/src/lib/domain/repository/transform.ts"]
+  "include": ["**/*.ts"]
 }

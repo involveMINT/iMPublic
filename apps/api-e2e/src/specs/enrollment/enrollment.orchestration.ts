@@ -10,6 +10,8 @@ import {
 @TestOrchestration(InvolvemintRoutes.enrollment)
 export class EnrollmentOrchestration implements ITestOrchestration<IEnrollmentOrchestration> {
   @TestOperation()
+  get!: ITestOrchestration<IEnrollmentOrchestration>['get'];
+  @TestOperation()
   startApplication!: ITestOrchestration<IEnrollmentOrchestration>['startApplication'];
   @TestOperation()
   withdraw!: ITestOrchestration<IEnrollmentOrchestration>['withdraw'];
