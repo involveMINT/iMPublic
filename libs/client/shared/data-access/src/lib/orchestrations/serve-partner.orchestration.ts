@@ -1,7 +1,7 @@
-import { InvolvemintOrchestrations, IServePartnerOrchestration } from '@involvemint/shared/domain';
+import { InvolvemintRoutes, IServePartnerOrchestration } from '@involvemint/shared/domain';
 import { ClientOperation, ClientOrchestration, IClientOrchestration } from '@orcha/angular';
 
-@ClientOrchestration(InvolvemintOrchestrations.servePartner)
+@ClientOrchestration(InvolvemintRoutes.servePartner)
 export class ServePartnerOrchestration implements IClientOrchestration<IServePartnerOrchestration> {
   @ClientOperation()
   editProfile!: IClientOrchestration<IServePartnerOrchestration>['editProfile'];

@@ -1,7 +1,7 @@
-import { InvolvemintOrchestrations, IRequestOrchestration } from '@involvemint/shared/domain';
+import { InvolvemintRoutes, IRequestOrchestration } from '@involvemint/shared/domain';
 import { ClientOperation, ClientOrchestration, IClientOrchestration } from '@orcha/angular';
 
-@ClientOrchestration(InvolvemintOrchestrations.request)
+@ClientOrchestration(InvolvemintRoutes.request)
 export class RequestOrchestration implements IClientOrchestration<IRequestOrchestration> {
   @ClientOperation()
   query!: IClientOrchestration<IRequestOrchestration>['query'];

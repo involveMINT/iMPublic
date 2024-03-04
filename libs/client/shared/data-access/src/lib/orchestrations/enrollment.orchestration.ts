@@ -1,7 +1,7 @@
-import { IEnrollmentOrchestration, InvolvemintOrchestrations } from '@involvemint/shared/domain';
+import { IEnrollmentOrchestration, InvolvemintRoutes } from '@involvemint/shared/domain';
 import { ClientOperation, ClientOrchestration, IClientOrchestration } from '@orcha/angular';
 
-@ClientOrchestration(InvolvemintOrchestrations.enrollment)
+@ClientOrchestration(InvolvemintRoutes.enrollment)
 export class EnrollmentOrchestration implements IClientOrchestration<IEnrollmentOrchestration> {
   @ClientOperation()
   get!: IClientOrchestration<IEnrollmentOrchestration>['get'];

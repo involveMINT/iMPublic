@@ -1,4 +1,4 @@
-export const enum InvolvemintOrchestrations {
+export const enum InvolvemintRoutes {
   changeMaker = 'changeMaker',
   chat = 'chat',
   credit = 'credit',

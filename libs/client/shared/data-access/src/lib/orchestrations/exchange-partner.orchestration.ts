@@ -1,7 +1,7 @@
-import { IExchangePartnerOrchestration, InvolvemintOrchestrations } from '@involvemint/shared/domain';
+import { IExchangePartnerOrchestration, InvolvemintRoutes } from '@involvemint/shared/domain';
 import { ClientOperation, ClientOrchestration, IClientOrchestration } from '@orcha/angular';
 
-@ClientOrchestration(InvolvemintOrchestrations.exchangePartner)
+@ClientOrchestration(InvolvemintRoutes.exchangePartner)
 export class ExchangePartnerOrchestration implements IClientOrchestration<IExchangePartnerOrchestration> {
   @ClientOperation()
   query!: IClientOrchestration<IExchangePartnerOrchestration>['query'];

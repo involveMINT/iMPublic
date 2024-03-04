@@ -1,7 +1,7 @@
-import { InvolvemintOrchestrations, IUserOrchestration } from '@involvemint/shared/domain';
+import { InvolvemintRoutes, IUserOrchestration } from '@involvemint/shared/domain';
 import { ClientOperation, ClientOrchestration, IClientOrchestration } from '@orcha/angular';
 
-@ClientOrchestration(InvolvemintOrchestrations.user)
+@ClientOrchestration(InvolvemintRoutes.user)
 export class UserOrchestration implements IClientOrchestration<IUserOrchestration> {
   @ClientOperation()
   verifyUserEmail!: IClientOrchestration<IUserOrchestration>['verifyUserEmail'];

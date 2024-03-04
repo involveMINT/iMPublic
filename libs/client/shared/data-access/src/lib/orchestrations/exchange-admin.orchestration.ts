@@ -1,7 +1,7 @@
-import { IExchangeAdminOrchestration, InvolvemintOrchestrations } from '@involvemint/shared/domain';
+import { IExchangeAdminOrchestration, InvolvemintRoutes } from '@involvemint/shared/domain';
 import { ClientOperation, ClientOrchestration, IClientOrchestration } from '@orcha/angular';
 
-@ClientOrchestration(InvolvemintOrchestrations.epAdmin)
+@ClientOrchestration(InvolvemintRoutes.epAdmin)
 export class ExchangeAdminOrchestration implements IClientOrchestration<IExchangeAdminOrchestration> {
   @ClientOperation()
   getForExchangePartner!: IClientOrchestration<IExchangeAdminOrchestration>['getForExchangePartner'];

@@ -1,7 +1,7 @@
-import { InvolvemintOrchestrations, IProjectOrchestration } from '@involvemint/shared/domain';
+import { InvolvemintRoutes, IProjectOrchestration } from '@involvemint/shared/domain';
 import { ClientOperation, ClientOrchestration, IClientOrchestration } from '@orcha/angular';
 
-@ClientOrchestration(InvolvemintOrchestrations.project)
+@ClientOrchestration(InvolvemintRoutes.project)
 export class ProjectOrchestration implements IClientOrchestration<IProjectOrchestration> {
   @ClientOperation()
   getAll!: IClientOrchestration<IProjectOrchestration>['getAll'];
