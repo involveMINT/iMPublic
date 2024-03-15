@@ -9,6 +9,7 @@ import { AppTestModule } from '../../core/app-test.module';
 import { DatabaseService } from '../../core/database.service';
 import { createUserOrchestration } from '../user/user.orchestration';
 import { createChangeMakerOrchestration } from './change-maker.orchestration';
+const { default: axios, AxiosResponse } = require('axios');
 
 describe('ChangeMaker Orchestration Integration Tests', () => {
   let app: NestFastifyApplication;
@@ -67,11 +68,21 @@ describe('ChangeMaker Orchestration Integration Tests', () => {
     });
 
     it('should verify handle uniqueness', async () => {
-      const { error } = await cmOrcha.createProfile(cmQuery, auth.body.token, {
-        firstName: 'Bobby',
-        lastName: 'Smith',
-        handle: 'bobby',
-        phone: '(412) 232-2953',
+      // const { error } = await cmOrcha.createProfile(cmQuery, auth.body.token, {
+      //   firstName: 'Bobby',
+      //   lastName: 'Smith',
+      //   handle: 'bobby',
+      //   phone: '(412) 232-2953',
+      // });
+      const { error } = await axios.post('http://localhost:3335/changeMaker/createProfile', {
+        query: cmQuery,
+        token: auth.body.token,
+        dto: {
+          firstName: 'Bobby',
+          lastName: 'Smith',
+          handle: 'bobby',
+          phone: '(412) 232-2953',
+        },
       });
       expect(error).toBe(`Handle @bobby already exists.`);
     });

@@ -1,6 +1,6 @@
 import { ServePartnerRepository } from '@involvemint/server/core/domain-services';
 import { ServePartner } from '@involvemint/shared/domain';
-import { IExactQuery, IQuery } from '@orcha/common';
+import { IExactQuery, IQuery } from '@involvemint/shared/domain';
 import * as uuid from 'uuid';
 
 export function createServePartner<Q extends IQuery<ServePartner>>(
