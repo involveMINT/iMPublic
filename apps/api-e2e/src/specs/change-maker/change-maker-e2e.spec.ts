@@ -3,20 +3,19 @@ import { ChangeMaker, IChangeMakerOrchestration, IUserOrchestration, User } from
 import { HttpStatus } from '@nestjs/common';
 import { NestFastifyApplication } from '@nestjs/platform-fastify';
 import { Test } from '@nestjs/testing';
-import { createQuery, IParser } from '@involvemint/shared/domain';
+import { createQuery, IParser } from '@orcha/common';
 import { ITestOrchestration } from '@orcha/testing';
 import { AppTestModule } from '../../core/app-test.module';
 import { DatabaseService } from '../../core/database.service';
 import { createUserOrchestration } from '../user/user.orchestration';
 import { createChangeMakerOrchestration } from './change-maker.orchestration';
-const { default: axios, AxiosResponse } = require('axios');
 
 describe('ChangeMaker Orchestration Integration Tests', () => {
   let app: NestFastifyApplication;
   let db: DatabaseService;
 
-  //let userOrcha: ITestOrchestration<IUserOrchestration>;
-  //let cmOrcha: ITestOrchestration<IChangeMakerOrchestration>;
+  let userOrcha: ITestOrchestration<IUserOrchestration>;
+  let cmOrcha: ITestOrchestration<IChangeMakerOrchestration>;
 
   let cmRepo: ChangeMakerRepository;
 
@@ -37,8 +36,8 @@ describe('ChangeMaker Orchestration Integration Tests', () => {
     app = moduleRef.createNestApplication();
     db = moduleRef.get(DatabaseService);
 
-    // userOrcha = createUserOrchestration(app);
-    // cmOrcha = createChangeMakerOrchestration(app);
+    userOrcha = createUserOrchestration(app);
+    cmOrcha = createChangeMakerOrchestration(app);
 
     cmRepo = moduleRef.get(ChangeMakerRepository);
 
@@ -47,30 +46,13 @@ describe('ChangeMaker Orchestration Integration Tests', () => {
 
   beforeEach(async () => {
     await db.clearDb();
-    //auth = await userOrcha.signUp({ token: true }, '', creds); // conver to axios
-
-    auth = axios.post('http://localhost:3335/user/signUp', {
-      query: { token: true },
-      dto: creds,
+    auth = await userOrcha.signUp({ token: true }, '', creds);
+    const { body, statusCode } = await cmOrcha.createProfile(cmQuery, auth.body.token, {
+      handle: 'bobby',
+      firstName: 'fn',
+      lastName: 'ln',
+      phone: '(555) 555-5555',
     });
-    // const { body, statusCode } = await cmOrcha.createProfile(cmQuery, auth.body.token, {
-    //   handle: 'bobby',
-    //   firstName: 'fn',
-    //   lastName: 'ln',
-    //   phone: '(555) 555-5555',
-    // });
-
-    const {body, statusCode } = axios.post('http://localhost:3335/changeMaker/createProfile', {
-      query: cmQuery,
-      token: auth.body.token,
-      dto: {
-        handle: 'bobby',
-        firstName: 'fn',
-        lastName: 'ln',
-        phone: '(555) 555-5555',
-      },
-    });
-
     cmProfile = body;
     expect(statusCode).toBe(HttpStatus.CREATED);
   });
@@ -79,44 +61,18 @@ describe('ChangeMaker Orchestration Integration Tests', () => {
 
   describe('createProfile', () => {
     it('should create profile', async () => {
-      // const res = await userOrcha.getUserData(userQuery, auth.body.token); // instead of userOrcha use axios
-      
-      const res = axios.post('http://localhost:3335/user/getUserData', {
-        query: userQuery,
-        token: auth.body.token
-      });
-      
+      const res = await userOrcha.getUserData(userQuery, auth.body.token);
       const cmEntity = await cmRepo.findOneOrFail(cmProfile.id, cmQuery);
       expect(res.body.changeMaker).toMatchObject(cmEntity);
     });
 
     it('should verify handle uniqueness', async () => {
-      // const { error } = await cmOrcha.createProfile(cmQuery, auth.body.token, {
-      //   firstName: 'Bobby',
-      //   lastName: 'Smith',
-      //   handle: 'bobby',
-      //   phone: '(412) 232-2953',
-      // });
-
-      const { error } = axios.post('http://localhost:3335/changeMaker/createProfile', {
-        query: cmQuery,
-        token: auth.body.token,
-        dto: {
-          firstName: 'Bobby',
-          lastName: 'Smith',
-          handle: 'bobby',
-          phone: '(412) 232-2953',
-        },
+      const { error } = await cmOrcha.createProfile(cmQuery, auth.body.token, {
+        firstName: 'Bobby',
+        lastName: 'Smith',
+        handle: 'bobby',
+        phone: '(412) 232-2953',
       });
-      const firstName = "bob"
-      axios.post('http://localhost:3335/changeMaker/editProfile', {
-        query: cmQuery,
-        token: auth.body.token,
-        dto: {
-          firstName
-        },
-      });
-
       expect(error).toBe(`Handle @bobby already exists.`);
     });
   });
@@ -124,17 +80,8 @@ describe('ChangeMaker Orchestration Integration Tests', () => {
   describe('editProfile', () => {
     it('should edit profile', async () => {
       const firstName = 'Jessie';
-      // await cmOrcha.editProfile(cmQuery, auth.body.token, { firstName });
-      axios.post('http://localhost:3335/changeMaker/editProfile', {
-        query: userQuery,
-        token: auth.body.token
-      });
-      // const res = await userOrcha.getUserData(userQuery, auth.body.token); // change to axios
-      const res = axios.post('http://localhost:3335/user/getUserData', {
-        query: userQuery,
-        token: auth.body.token
-      });
-
+      await cmOrcha.editProfile(cmQuery, auth.body.token, { firstName });
+      const res = await userOrcha.getUserData(userQuery, auth.body.token);
       expect(res.body.changeMaker?.firstName).toBe(firstName);
     });
   });
