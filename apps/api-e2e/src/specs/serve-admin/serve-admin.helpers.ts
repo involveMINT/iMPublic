@@ -1,6 +1,6 @@
 import { ServeAdminRepository } from '@involvemint/server/core/domain-services';
 import { ServeAdmin } from '@involvemint/shared/domain';
-import { IExactQuery, IQuery } from '@orcha/common';
+import { IExactQuery, IQuery } from '@involvemint/shared/domain';
 import * as uuid from 'uuid';
 
 export function createServeAdmin<Q extends IQuery<ServeAdmin>>(
