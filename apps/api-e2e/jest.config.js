@@ -6,8 +6,9 @@ module.exports = {
   coverageDirectory: '../../coverage/apps/api-e2e',
   displayName: 'api-e2e',
   setupFiles: ['<rootDir>/global-mocks.ts'],
-  reporters: [
-    "default",
-    ['jest-junit', {outputDirectory: 'reports', outputName: 'api-e2e.xml'}]
-  ],
+  reporters: ['default', ['jest-junit', { outputDirectory: 'reports', outputName: 'api-e2e.xml' }]],
+  transformIgnorePatterns: ['node_modules/(?!axios)'],
+  moduleNameMapper: {
+    axios: 'axios/dist/node/axios.cjs',
+  },
 };

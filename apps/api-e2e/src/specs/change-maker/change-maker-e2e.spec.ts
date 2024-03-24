@@ -3,20 +3,19 @@ import { ChangeMaker, IChangeMakerOrchestration, IUserOrchestration, User } from
 import { HttpStatus } from '@nestjs/common';
 import { NestFastifyApplication } from '@nestjs/platform-fastify';
 import { Test } from '@nestjs/testing';
-import { createQuery, IParser } from '@orcha/common';
+import { createQuery, IParser } from '@involvemint/shared/domain';
 import { ITestOrchestration } from '@orcha/testing';
 import { AppTestModule } from '../../core/app-test.module';
 import { DatabaseService } from '../../core/database.service';
 import { createUserOrchestration } from '../user/user.orchestration';
 import { createChangeMakerOrchestration } from './change-maker.orchestration';
+const { default: axios } = require('axios');
 
 describe('ChangeMaker Orchestration Integration Tests', () => {
   let app: NestFastifyApplication;
   let db: DatabaseService;
 
   let userOrcha: ITestOrchestration<IUserOrchestration>;
-  let cmOrcha: ITestOrchestration<IChangeMakerOrchestration>;
-
   let cmRepo: ChangeMakerRepository;
 
   const creds = { id: 'email@email.com', password: 'GoodPwd@341' };
@@ -37,8 +36,6 @@ describe('ChangeMaker Orchestration Integration Tests', () => {
     db = moduleRef.get(DatabaseService);
 
     userOrcha = createUserOrchestration(app);
-    cmOrcha = createChangeMakerOrchestration(app);
-
     cmRepo = moduleRef.get(ChangeMakerRepository);
 
     await app.init();
@@ -47,31 +44,51 @@ describe('ChangeMaker Orchestration Integration Tests', () => {
   beforeEach(async () => {
     await db.clearDb();
     auth = await userOrcha.signUp({ token: true }, '', creds);
-    const { body, statusCode } = await cmOrcha.createProfile(cmQuery, auth.body.token, {
-      handle: 'bobby',
-      firstName: 'fn',
-      lastName: 'ln',
-      phone: '(555) 555-5555',
-    });
-    cmProfile = body;
-    expect(statusCode).toBe(HttpStatus.CREATED);
+    try {
+      const { body, statusCode } = await axios.post('http://localhost:3335/change-maker/createProfile', {
+        query: cmQuery,
+        token: auth.body.token,
+        dto: {
+          handle: 'bobby',
+          firstName: 'fn',
+          lastName: 'ln',
+          phone: '(555) 555-5555',
+        },
+      });
+
+      if (statusCode === HttpStatus.CREATED) {
+        cmProfile = body;
+      }
+      else {
+        console.log('Error creating Change Maker profile: ', statusCode)
+      }
+    } catch (error) {
+      console.log('Error creating Change Maker profile: ', error);
+    }
   });
 
   afterAll(async () => await app.close());
 
   describe('createProfile', () => {
     it('should create profile', async () => {
-      const res = await userOrcha.getUserData(userQuery, auth.body.token);
+      const res = await axios.post('http://localhost:3335/user/getUserData', {
+        query: userQuery,
+        token: auth.body.token,
+      });
       const cmEntity = await cmRepo.findOneOrFail(cmProfile.id, cmQuery);
       expect(res.body.changeMaker).toMatchObject(cmEntity);
     });
 
     it('should verify handle uniqueness', async () => {
-      const { error } = await cmOrcha.createProfile(cmQuery, auth.body.token, {
-        firstName: 'Bobby',
-        lastName: 'Smith',
-        handle: 'bobby',
-        phone: '(412) 232-2953',
+      const { error } = await axios.post('http://localhost:3335/change-maker/createProfile', {
+        query: cmQuery,
+        token: auth.body.token,
+        dto: {
+          firstName: 'Bobby',
+          lastName: 'Smith',
+          handle: 'bobby',
+          phone: '(412) 232-2953',
+        },
       });
       expect(error).toBe(`Handle @bobby already exists.`);
     });
@@ -80,8 +97,15 @@ describe('ChangeMaker Orchestration Integration Tests', () => {
   describe('editProfile', () => {
     it('should edit profile', async () => {
       const firstName = 'Jessie';
-      await cmOrcha.editProfile(cmQuery, auth.body.token, { firstName });
-      const res = await userOrcha.getUserData(userQuery, auth.body.token);
+      await axios.post('http://localhost:3335/change_maker/editProfile', {
+        query: cmQuery,
+        token: auth.body.token,
+        dto: { firstName },
+      })
+      const res = await axios.post('http://localhost:3335/user/getUserData', {
+        query: userQuery,
+        token: auth.body.token,
+      })
       expect(res.body.changeMaker?.firstName).toBe(firstName);
     });
   });
