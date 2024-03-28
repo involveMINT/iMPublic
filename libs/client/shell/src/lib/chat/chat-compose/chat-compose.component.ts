@@ -1,9 +1,8 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { ActiveProfile, HandleOrchestration } from '@involvemint/client/shared/data-access';
 import { StatefulComponent } from '@involvemint/client/shared/util';
-import { ChatMember, Handle, HandleChatQuery, ImConfig } from '@involvemint/shared/domain';
+import { ChatMember, Handle, HandleChatQuery, ImConfig, IParser } from '@involvemint/shared/domain';
 import { ModalController } from '@ionic/angular';
-import { IParser } from '@orcha/common';
 import { Subject } from 'rxjs';
 import { debounceTime, filter, switchMap, tap } from 'rxjs/operators';
 

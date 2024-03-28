@@ -1,9 +1,8 @@
 import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
 import { StatefulComponent } from '@involvemint/client/shared/util';
-import { ImConfig, User, UserSearchQuery } from '@involvemint/shared/domain';
+import { ImConfig, User, UserSearchQuery, IParser } from '@involvemint/shared/domain';
 import { ModalController } from '@ionic/angular';
 import { FormControl } from '@ngneat/reactive-forms';
-import { IParser } from '@orcha/common';
 import { debounceTime, filter, switchMap, tap } from 'rxjs/operators';
 import { UserOrchestration } from '../../orchestrations';
 

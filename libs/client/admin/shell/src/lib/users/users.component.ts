@@ -1,9 +1,8 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { UserOrchestration } from '@involvemint/client/shared/data-access';
 import { RxJSBaseClass } from '@involvemint/client/shared/util';
-import { AdminUserSearchQuery, ImConfig, User } from '@involvemint/shared/domain';
+import { AdminUserSearchQuery, ImConfig, User, IParser } from '@involvemint/shared/domain';
 import { FormControl } from '@ngneat/reactive-forms';
-import { IParser } from '@orcha/common';
 import { debounceTime, filter, switchMap, tap } from 'rxjs/operators';
 
 @Component({

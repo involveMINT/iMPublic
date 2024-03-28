@@ -14,9 +14,9 @@ import {
   ViewProfileInfoOfferQuery,
   ViewProfileInfoQuery,
   ViewProfileInfoRequestQuery,
+  IParser
 } from '@involvemint/shared/domain';
 import { ModalController } from '@ionic/angular';
-import { IParser } from '@orcha/common';
 import { of } from 'rxjs';
 import { switchMap, tap } from 'rxjs/operators';
 import { UserFacade } from '../../+state/user.facade';

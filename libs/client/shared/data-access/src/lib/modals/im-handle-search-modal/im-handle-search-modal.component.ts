@@ -1,9 +1,8 @@
 import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
 import { StatefulComponent } from '@involvemint/client/shared/util';
-import { GenericHandleSearchQuery, Handle, ImConfig } from '@involvemint/shared/domain';
+import { GenericHandleSearchQuery, Handle, ImConfig, IParser } from '@involvemint/shared/domain';
 import { ModalController } from '@ionic/angular';
 import { FormControl } from '@ngneat/reactive-forms';
-import { IParser } from '@orcha/common';
 import { debounceTime, filter, map, switchMap } from 'rxjs/operators';
 import { HandleOrchestration } from '../../orchestrations';
 

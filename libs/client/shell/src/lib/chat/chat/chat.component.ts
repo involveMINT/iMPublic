@@ -16,10 +16,9 @@ import {
 } from '@involvemint/client/shared/data-access';
 import { RouteService } from '@involvemint/client/shared/routes';
 import { StatefulComponent } from '@involvemint/client/shared/util';
-import { FormattedChatRoom, Handle, Message, ViewProfileInfoQuery } from '@involvemint/shared/domain';
+import { FormattedChatRoom, Handle, Message, ViewProfileInfoQuery, IParser } from '@involvemint/shared/domain';
 import { tapOnce } from '@involvemint/shared/util';
 import { IonContent } from '@ionic/angular';
-import { IParser } from '@orcha/common';
 import { combineLatest, forkJoin, of } from 'rxjs';
 import { switchMap, tap } from 'rxjs/operators';
 

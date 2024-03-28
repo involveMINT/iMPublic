@@ -2,9 +2,8 @@ import { ChangeDetectionStrategy, Component, ElementRef, OnInit, ViewChild } fro
 import { Validators } from '@angular/forms';
 import { HandleOrchestration, UserFacade, UserStoreModel } from '@involvemint/client/shared/data-access';
 import { parseOneImageFile, StatefulComponent, StatusService } from '@involvemint/client/shared/util';
-import { ChangeMaker, ImConfig, VerifyHandleQuery } from '@involvemint/shared/domain';
+import { ChangeMaker, ImConfig, VerifyHandleQuery, IParser } from '@involvemint/shared/domain';
 import { FormControl, FormGroup } from '@ngneat/reactive-forms';
-import { IParser } from '@orcha/common';
 import { merge } from 'rxjs';
 import { debounceTime, distinctUntilChanged, filter, map, skip, switchMap, tap } from 'rxjs/operators';
 
