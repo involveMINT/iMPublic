@@ -1,8 +1,5 @@
-import { IChatOrchestration, InvolvemintRoutes } from '@involvemint/shared/domain';
-import { ClientOperation, ClientOrchestration, IClientOrchestration } from '@orcha/angular';
+import { SendChatMessageDto } from '@involvemint/shared/domain';
 
-@ClientOrchestration(InvolvemintRoutes.chat)
-export class ChatOrchestration implements IClientOrchestration<IChatOrchestration> {
-  @ClientOperation()
-  sendMessage!: IClientOrchestration<IChatOrchestration>['sendMessage'];
+export interface ChatRestClientInterface {
+  sendMessage(dto: SendChatMessageDto): void;
 }

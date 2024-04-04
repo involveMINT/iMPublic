@@ -10,19 +10,19 @@ import {
   FILES_KEY,
   IQueryObject,
   IExactQueryObject,
-  IExactQuery
+  IExactQuery,
+  UserQuery
  } from '@involvemint/shared/domain';
-import { ChangeMakerRestClientInterface } from './change-maker.rest-client.interface';
 import { Observable } from 'rxjs';
 import { HttpClient, HttpEvent, HttpEventType } from '@angular/common/http';
 import { filter, map } from 'rxjs/operators';
 
-export class ChangeMakerRestClient implements ChangeMakerRestClientInterface {
+export class ChangeMakerRestClient {
   apiUrl = `${environment.apiUrl}/${InvolvemintRoutes.changeMaker}/`;
 
   constructor(private http: HttpClient) { }
   
-  createProfile(changeMakerQuery: IQuery<ChangeMaker>, dto: CreateChangeMakerProfileDto): Observable<IParser<ChangeMaker, IQuery<ChangeMaker>>>
+  createProfile(changeMakerQuery: IQuery<ChangeMaker>, dto: CreateChangeMakerProfileDto): Observable<IParser<ChangeMaker, typeof UserQuery.changeMaker>>
   {
     const body = {
       QUERY_KEY: changeMakerQuery,
@@ -30,7 +30,7 @@ export class ChangeMakerRestClient implements ChangeMakerRestClientInterface {
     };
 
     return this.http
-          .post<IParser<ChangeMaker, IQuery<ChangeMaker>>>(`${this.apiUrl}/createProfile`, body, {
+          .post<IParser<ChangeMaker, typeof UserQuery.changeMaker>>(`${this.apiUrl}/createProfile`, body, {
             reportProgress: true,
             observe: 'events',
           })
@@ -47,7 +47,7 @@ export class ChangeMakerRestClient implements ChangeMakerRestClientInterface {
             filter(this.inputIsNotNullOrUndefined)
           );
   }
-  editProfile(changeMakerQuery: IExactQuery<ChangeMaker, IQueryObject<ChangeMaker>>, dto: EditCmProfileDto)
+  editProfile(changeMakerQuery: IExactQuery<ChangeMaker, typeof UserQuery.changeMaker>, dto: EditCmProfileDto)
   {
     const body = {
       QUERY_KEY: changeMakerQuery,
@@ -55,7 +55,7 @@ export class ChangeMakerRestClient implements ChangeMakerRestClientInterface {
     };
 
     return this.http
-          .post<IParser<ChangeMaker, IQuery<ChangeMaker>>>(`${this.apiUrl}/editProfile`, body, {
+          .post<IParser<ChangeMaker, IExactQuery<ChangeMaker, typeof UserQuery.changeMaker>>>(`${this.apiUrl}/editProfile`, body, {
             reportProgress: true,
             observe: 'events',
           })
@@ -66,13 +66,13 @@ export class ChangeMakerRestClient implements ChangeMakerRestClientInterface {
             map((event) => {
               switch (event.type) {
                 case HttpEventType.Response:
-                  return event.body as IParser<ChangeMaker, IQuery<ChangeMaker>>;
+                  return event.body
               }
             }),
             filter(this.inputIsNotNullOrUndefined)
           );
   }
-  updateProfileImage(changeMakerQuery: IQuery<ChangeMaker>, image: File): Observable<HttpEvent<IParser<ChangeMaker, IQuery<ChangeMaker>>>>
+  updateProfileImage(changeMakerQuery: IQuery<ChangeMaker>, image: File): Observable<HttpEvent<IParser<ChangeMaker, typeof UserQuery.changeMaker>>>
   {
     const body = {
       QUERY_KEY: changeMakerQuery,
@@ -80,7 +80,7 @@ export class ChangeMakerRestClient implements ChangeMakerRestClientInterface {
     };
 
     return this.http
-          .post<IParser<ChangeMaker, IQuery<ChangeMaker>>>(`${this.apiUrl}/editProfile`, body, {
+          .post<IParser<ChangeMaker, typeof UserQuery.changeMaker>>(`${this.apiUrl}/editProfile`, body, {
             reportProgress: true,
             observe: 'events',
           })

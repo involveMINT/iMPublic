@@ -9,7 +9,6 @@ import { delayWhen, filter, map, switchMap, take, tap } from 'rxjs/operators';
 import { ChangeMakerRestClient } from '../../../rest-clients';
 import { UserFacade } from '../../user.facade';
 import * as CmProfileActions from './cm-profile.actions';
-import { ChangeMakerOrchestration } from '../../../orchestrations';
 
 @Injectable()
 export class CmProfileEffects {
@@ -80,7 +79,7 @@ export class CmProfileEffects {
 
   constructor(
     private readonly actions$: Actions,
-    private readonly cm: ChangeMakerOrchestration,
+    private readonly cm: ChangeMakerRestClient,
     private readonly uf: UserFacade,
     private readonly status: StatusService,
     private readonly infoModal: InfoModalService
