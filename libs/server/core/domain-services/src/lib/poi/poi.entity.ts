@@ -1,5 +1,5 @@
 import { Poi } from '@involvemint/shared/domain';
-import { Column, Entity, ManyToOne, OneToMany, OneToOne, PrimaryColumn } from 'typeorm';
+import { Column, Entity, ManyToMany, ManyToOne, OneToMany, OneToOne, PrimaryColumn } from 'typeorm';
 import { CreditEntity } from '../credit/credit.entity';
 import { DbTableNames } from '../db-table-names';
 import { EnrollmentEntity } from '../enrollment/enrollment.entity';
@@ -44,8 +44,8 @@ export class PoiEntity implements Required<Poi> {
   @Column('float8', { nullable: true })
   latitude!: number;
 
-  @ManyToOne(() => EnrollmentEntity, (p) => p.pois)
-  enrollment!: EnrollmentEntity;
+  @ManyToMany(() => EnrollmentEntity, (p) => p.pois)
+  enrollments!: EnrollmentEntity[];
 
   @OneToMany(() => QuestionAnswerEntity, (qa) => qa.poi)
   answers!: QuestionAnswerEntity[];

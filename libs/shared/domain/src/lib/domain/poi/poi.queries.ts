@@ -23,7 +23,7 @@ export const PoiCmQuery = createQuery<Poi[]>()({
       text: true,
     },
   },
-  enrollment: {
+  enrollments: {
     id: true,
     project: {
       id: true,
@@ -70,7 +70,7 @@ export const PoiSpQuery = createQuery<Poi>()({
       text: true,
     },
   },
-  enrollment: {
+  enrollments: {
     id: true,
     project: {
       id: true,

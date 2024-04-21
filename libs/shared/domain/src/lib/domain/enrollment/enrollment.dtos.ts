@@ -1,5 +1,13 @@
 import { IsBoolean, IsString } from 'class-validator';
 
+export abstract class SearchForEnrollmentsDto {
+  @IsString()
+  query!: string;
+
+  @IsString()
+  projectId!: string;
+}
+
 export abstract class StartEnrollmentApplicationDto {
   @IsString()
   projectId!: string;

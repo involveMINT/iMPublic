@@ -54,6 +54,33 @@ export class EnrollmentService {
     return this.enrollmentRepo.query(query, { where: { changeMaker: { id: user.changeMaker.id } } });
   }
 
+  async searchEnrollments(query: IQuery<Enrollment[]>, token: string, startsWith: string) {
+    const user = await this.auth.validateUserToken(token ?? '', { id: true, changeMaker: { id: true } });
+
+    if (!user?.changeMaker) {
+      throw new HttpException(
+        `No associated ChangeMaker Profile found with user "${user.id}".`,
+        HttpStatus.NOT_FOUND
+      );
+    }
+
+    const whereClause = {
+      or: [
+        { changeMaker: { firstName: { startsWith: startsWith } } }, // First name starts with the provided string
+        { changeMaker: { lastName: { startsWith: startsWith } } }, // Last name starts with the provided string
+        {
+          changeMaker: {
+            handle: {
+              startsWith: startsWith, // This filters user IDs that start with the provided string
+            },
+          },
+        },
+      ],
+    };
+
+    return this.enrollmentRepo.query(query, { where: whereClause });
+  }
+
   async getBySpProject(query: IQuery<Enrollment[]>, token: string, dto: GetEnrollmentsBySpProject) {
     const project = await this.projectsRepo.findOneOrFail(dto.projectId, { servePartner: { id: true } });
     await this.projectService.permissions.userIsServeAdmin(token, project.servePartner.id);

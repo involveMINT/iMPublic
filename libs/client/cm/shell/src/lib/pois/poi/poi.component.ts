@@ -103,7 +103,7 @@ export class PoiComponent extends StatefulComponent<State> implements OnInit, Co
         }),
         filter(({ poi }) => !!poi),
         tapOnce(({ poi }) => {
-          poi?.enrollment.project.questions.forEach((_, i) => {
+          poi?.enrollments[0].project.questions.forEach((_, i) => {
             this.questions.insert(
               i,
               new FormControl(poi?.answers[i]?.answer || '', (e) => Validators.required(e))
@@ -240,11 +240,17 @@ export class PoiComponent extends StatefulComponent<State> implements OnInit, Co
     this.cf.poi.dispatchers.resume(poi);
   }
 
+  // Add search method here
+  searchForEnrollments(search: string) {
+    this.cf.poi.dispatchers.searchForEnrollments(search);
+  }
+
+  // Either adding enrollments before dispatching or passing enrollment ids and fetching them in the backend.
   submit(poi: PoiCmStoreModel) {
     this.cf.poi.dispatchers.submit(
       poi,
       this.state.files,
-      poi.enrollment.project.questions.map(
+      poi.enrollments[0].project.questions.map(
         (question, i): QuestionAnswersDto => ({
           answer: this.questions.value[i],
           questionId: question.id,
