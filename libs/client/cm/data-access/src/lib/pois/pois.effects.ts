@@ -53,7 +53,9 @@ export class PoiEffects {
             take(1),
             filter(({ pois }) => {
               const hasOneCreated = pois.find(
-                (poi) => calculatePoiStatus(poi) === PoiStatus.created && poi.enrollment.id === enrollment.id
+                (poi) =>
+                  calculatePoiStatus(poi) === PoiStatus.created &&
+                  poi.enrollments.map((obj) => obj.id).includes(enrollment.id)
               );
               if (hasOneCreated) {
                 this.route.to.cm.pois.POI(hasOneCreated.id);
@@ -124,7 +126,7 @@ export class PoiEffects {
             this.status.presentAlertWithAction({
               alertData: {
                 title: `Confirm Withdrawal`,
-                description: `This withdraws and <b>permanently deletes</b> your POI to <b>${poi.enrollment.project.title}</b>.`,
+                description: `This withdraws and <b>permanently deletes</b> your POI to <b>${poi.enrollments[0].project.title}</b>.`,
               },
               buttonText: 'WITHDRAW',
               buttonCssClass: 'im-alert-deny',
@@ -219,7 +221,7 @@ export class PoiEffects {
             this.status.presentAlertWithAction({
               alertData: {
                 title: `Confirm Submission`,
-                description: `This submits your POI to <b>${poi.enrollment.project.title}</b>.`,
+                description: `This submits your POI to <b>${poi.enrollments[0].project.title}</b>.`,
               },
               buttonText: 'SUBMIT',
               buttonCssClass: 'im-alert-confirm',

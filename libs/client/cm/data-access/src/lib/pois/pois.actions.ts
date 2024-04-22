@@ -62,6 +62,11 @@ export const startPoiError = createAction(
   props<{ error: OrchaOperationError }>()
 );
 
+export const searchForEnrollments = createAction(
+  '[Pois|ChangeMaker] Search for Enrollments',
+  props<{ search: string }>()
+);
+
 /*
    __      ___ _   _       _                 
    \ \    / (_) |_| |_  __| |_ _ __ ___ __ __

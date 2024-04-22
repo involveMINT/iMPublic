@@ -2,6 +2,7 @@ import { EnrollmentService } from '@involvemint/server/core/application-services
 import {
   AcceptWaiverDto,
   Enrollment,
+  SearchForEnrollmentsQuery,
   EnrollmentsQuery,
   EnrollmentsSpQuery,
   GetEnrollmentsBySpProject,
@@ -12,6 +13,7 @@ import {
   Project,
   RetireEnrollmentDto,
   RevertEnrollmentApplicationDto,
+  SearchForEnrollmentsDto,
   StartEnrollmentApplicationDto,
   SubmitEnrollmentApplicationDto,
   WithdrawEnrollmentApplicationDto,
@@ -22,6 +24,11 @@ import { IServerOrchestration, ServerOperation, ServerOrchestration } from '@orc
 @ServerOrchestration(InvolvemintOrchestrations.enrollment)
 export class EnrollmentOrchestration implements IServerOrchestration<IEnrollmentOrchestration> {
   constructor(private readonly enrollmentService: EnrollmentService) {}
+
+  @ServerOperation({ validateQuery: SearchForEnrollmentsQuery })
+  searchForEnrollments(query: IQuery<Enrollment[]>, token: string, dto: SearchForEnrollmentsDto) {
+    return this.enrollmentService.searchForEnrollments(query, token, dto);
+  }
 
   @ServerOperation({ validateQuery: EnrollmentsQuery })
   get(query: IQuery<Enrollment[]>, token: string) {
