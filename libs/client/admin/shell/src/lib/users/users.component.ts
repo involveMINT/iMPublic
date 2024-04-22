@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
-import { UserOrchestration } from '@involvemint/client/shared/data-access';
+import { UserRestClient } from '@involvemint/client/shared/data-access';
 import { RxJSBaseClass } from '@involvemint/client/shared/util';
 import { AdminUserSearchQuery, ImConfig, User, IParser } from '@involvemint/shared/domain';
 import { FormControl } from '@ngneat/reactive-forms';
@@ -18,7 +18,7 @@ export class UsersComponent extends RxJSBaseClass implements OnInit {
 
   loading = false;
 
-  constructor(private readonly userOrcha: UserOrchestration, private readonly change: ChangeDetectorRef) {
+  constructor(private readonly userClient: UserRestClient, private readonly change: ChangeDetectorRef) {
     super();
   }
 
@@ -36,7 +36,7 @@ export class UsersComponent extends RxJSBaseClass implements OnInit {
           return true;
         }),
         debounceTime(ImConfig.formDebounceTime),
-        switchMap((s) => this.userOrcha.adminUserSearch(AdminUserSearchQuery, { searchStr: s })),
+        switchMap((s) => this.userClient.adminUserSearch(AdminUserSearchQuery, { searchStr: s })),
         tap((c) => {
           this.users = c;
           this.loading = false;

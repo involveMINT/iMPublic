@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
-import { ActiveProfile, HandleOrchestration } from '@involvemint/client/shared/data-access';
+import { ActiveProfile, HandleRestClient } from '@involvemint/client/shared/data-access';
 import { StatefulComponent } from '@involvemint/client/shared/util';
 import { ChatMember, Handle, HandleChatQuery, ImConfig, IParser } from '@involvemint/shared/domain';
 import { ModalController } from '@ionic/angular';
@@ -24,7 +24,7 @@ interface State {
 export class ChatComposeComponent extends StatefulComponent<State> implements OnInit {
   private readonly _val = new Subject<string>();
 
-  constructor(private readonly modal: ModalController, private readonly handleOrcha: HandleOrchestration) {
+  constructor(private readonly modal: ModalController, private readonly handleRestClient: HandleRestClient) {
     super({ status: 'init', activeProfile: null, handles: [], members: [] });
   }
 
@@ -40,7 +40,7 @@ export class ChatComposeComponent extends StatefulComponent<State> implements On
           return true;
         }),
         debounceTime(ImConfig.formDebounceTime),
-        switchMap((s) => this.handleOrcha.searchHandles(HandleChatQuery, { handleSearchString: s })),
+        switchMap((s) => this.handleRestClient.searchHandles(HandleChatQuery, { handleSearchString: s })),
         tap((handles) => this.updateState({ handles, status: 'found' }))
       )
     );

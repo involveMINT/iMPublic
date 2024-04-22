@@ -4,8 +4,8 @@ import { CreditQuery } from '@involvemint/shared/domain';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { fetch } from '@nrwl/angular';
 import { map } from 'rxjs/operators';
-import { CreditOrchestration } from '../../orchestrations';
 import * as CreditsActions from './credits.actions';
+import { CreditRestClient } from '../../rest-clients';
 
 @Injectable()
 export class CreditsEffects {
@@ -31,7 +31,7 @@ export class CreditsEffects {
 
   constructor(
     private readonly actions$: Actions,
-    private readonly credit: CreditOrchestration,
+    private readonly credit: CreditRestClient,
     private readonly status: StatusService
   ) {}
 }

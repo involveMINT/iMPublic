@@ -29,7 +29,7 @@ export * from './lib/handle';
 export * from './lib/im-colors';
 export * from './lib/im-init-loader/im-init-loader.module';
 export * from './lib/modals';
-export * from './lib/orchestrations';
+export * from './lib/rest-clients';
 export * from './lib/pipes';
 export * from './lib/shared-routes';
 export * from './lib/smart-components';

@@ -9,7 +9,7 @@ import { FormControl, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import {
   ChatService,
-  HandleOrchestration,
+  HandleRestClient,
   ImViewProfileModalService,
   UserFacade,
   viewProfileCache,
@@ -54,7 +54,7 @@ export class ChatComponent extends StatefulComponent<State> implements AfterView
     private readonly change: ChangeDetectorRef,
     private readonly route: RouteService,
     private readonly viewProfileModal: ImViewProfileModalService,
-    private readonly handle: HandleOrchestration
+    private readonly handle: HandleRestClient
   ) {
     super({ loaded: false, myHandle: '', sending: false, profiles: [] });
   }
