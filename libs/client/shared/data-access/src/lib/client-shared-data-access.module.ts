@@ -1,4 +1,5 @@
 import { CommonModule } from '@angular/common';
+import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { InfoModalModule } from '@involvemint/client/shared/util';
 import { IonicModule } from '@ionic/angular';
@@ -35,6 +36,7 @@ import { StorageRestClient } from './rest-clients/storage.rest-client';
     CommonModule,
     IonicModule,
     InfoModalModule,
+    HttpClientModule,
     ImProfileSelectModalModule,
     ConfirmVoucherPurchaseModalModule,
     StoreModule.forFeature(CREDITS_KEY, CreditReducer),
@@ -60,8 +62,12 @@ import { StorageRestClient } from './rest-clients/storage.rest-client';
     ]),
   ],
   providers: [
-    UserFacade, 
-    AuthInterceptor,
+    UserFacade,
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: AuthInterceptor,
+      multi: true,
+    },
     ChangeMakerRestClient,
     ChatRestClient,
     CreditRestClient,
