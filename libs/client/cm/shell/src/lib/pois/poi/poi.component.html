@@ -135,10 +135,49 @@
                 *ngFor="let _ of maxImagesPerItem; index as i"
                 [imgUrl]="state.imgLocalUrls[i]"
                 [disable]="state.files.length < i"
+                [hidden]="state.files.length < i"
                 (uploadImg)="uploadImage($event)"
                 (deleteImg)="deleteImage(i)"
               ></im-image>
             </ng-container>
+          </div>
+        </im-block>
+        <im-block icon="people-circle-outline" [join]="true">
+          <div header class="im-primary-text">3. Add Collaborators</div>
+          <div footer class="im-buttons">
+            
+              <!-- From sp-admins component - as example.
+              <im-block
+                *ngFor="let admin of state.spAdmins"
+                [icon]="admin.user.changeMaker?.profilePicFilePath | imStorageUrl | async"
+              >
+              <div header class="im-primary-text">{{ admin.user.id }}</div>
+              <i body *ngIf="admin.superAdmin">SuperAdmin</i>
+              <div body *ngIf="admin.user.changeMaker as cm">
+                <div>{{ cm.firstName }} {{ cm.lastName }}</div>
+                <im-handle [handle]="cm.handle.id"></im-handle>
+              </div>
+              <i body *ngIf="!admin.user.changeMaker">
+                No ChangeMaker Profile associated with user email {{ admin.user.id }}.
+              </i>
+              <div footer class="im-buttons">
+                <ion-button (click)="removeAdmin(admin)" color="danger">
+                  <ion-icon slot="start" name="close"></ion-icon>
+                  Revoke
+                </ion-button>
+              </div>
+              </im-block>
+              -->
+              <ion-button fill="outline" [disabled]="true">
+                <ion-icon name="person-outline"></ion-icon>
+                <span>{{state.exampleUserFirst}} {{state.exampleUserLast}} (@{{state.exampleUserHandle}})</span>
+              </ion-button>
+
+              <ion-button (click)="addCm(poi)" fill="outline">
+                <ion-icon name="person-add-outline"></ion-icon>
+                <span> Add a ChangeMaker</span>
+              </ion-button>
+            
           </div>
         </im-block>
         <im-block icon="/assets/icons/cc-menu.svg" [join]="true" *ngIf="state.status! >= PoiStatus.stopped">
