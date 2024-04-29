@@ -4,6 +4,8 @@ import { ClientOperation, ClientOrchestration, IClientOrchestration } from '@orc
 @ClientOrchestration(InvolvemintOrchestrations.enrollment)
 export class EnrollmentOrchestration implements IClientOrchestration<IEnrollmentOrchestration> {
   @ClientOperation()
+  searchForEnrollments!: IClientOrchestration<IEnrollmentOrchestration>['searchForEnrollments'];
+  @ClientOperation()
   get!: IClientOrchestration<IEnrollmentOrchestration>['get'];
   @ClientOperation()
   getBySpProject!: IClientOrchestration<IEnrollmentOrchestration>['getBySpProject'];

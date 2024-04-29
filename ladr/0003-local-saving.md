@@ -4,7 +4,7 @@ Date: 2024-04-27
 
 ## Status
 
-Accepted
+Proposed
 
 ## Context
 
@@ -12,7 +12,7 @@ Our project requires a saving feature for users as they fill out a proof of impa
 
 ## Decision
 
-After careful consideration, we decided to implement local saving to save poi forms. 
+After careful consideration, we decided to implement local saving to save poi forms, which saves form fields in the browser.
 
 ## Justification
 
@@ -21,3 +21,5 @@ Local Saving only involves a browser-side implementation that is less complex th
 ## Consequences
 
 Local Saving has negligible consequences on the involveMINT application and the user's device. Users will now be able to recover their poi form inputs when they reload the application. 
+
+This significantly improves ease of use of the POI forms, as it prevents data from being lost during the POI process in case of interruption.
