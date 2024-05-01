@@ -171,3 +171,22 @@ export const submitPoiError = createAction(
   '[Pois|ChangeMaker] Submit Proof of Impact Error',
   props<{ error: OrchaOperationError }>()
 );
+
+/*                    _     
+  ___ ___ __ _ _ _ __| |_   
+ (_-</ -_) _` | '_/ _| ' \  
+ /__/\___\__,_|_| \__|_||_|    
+                 
+*/
+export const searchForEnrollments = createAction(
+  '[Pois|ChangeMaker] Search for Enrollments',
+  props<{ search: string }>()
+);
+export const searchForEnrollmentsSuccess = createAction(
+  '[Pois|ChangeMaker] Search for Enrollments Success',
+  props<{ enrollments: EnrollmentStoreModel[] }>()
+);
+export const searchForEnrollmentsError = createAction(
+  '[Pois|ChangeMaker] Search for Enrollments Error',
+  props<{ error: OrchaOperationError }>()
+);

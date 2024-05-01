@@ -1,5 +1,5 @@
 import { Enrollment } from '@involvemint/shared/domain';
-import { Column, Entity, ManyToOne, OneToMany, PrimaryColumn } from 'typeorm';
+import { Column, Entity, ManyToMany, ManyToOne, OneToMany, PrimaryColumn } from 'typeorm';
 import { ChangeMakerEntity } from '../change-maker/change-maker.entity';
 import { DbTableNames } from '../db-table-names';
 import { EnrollmentDocumentEntity } from '../enrollment-document/enrollment-document.entity';
@@ -35,7 +35,7 @@ export class EnrollmentEntity implements Required<Enrollment> {
   @ManyToOne(() => ProjectEntity, (e) => e.enrollments)
   project!: ProjectEntity;
 
-  @OneToMany(() => PoiEntity, (e) => e.enrollment)
+  @ManyToMany(() => PoiEntity, (e) => e.enrollments)
   pois!: PoiEntity[];
 
   @OneToMany(() => EnrollmentDocumentEntity, (doc) => doc.enrollment, { cascade: true })

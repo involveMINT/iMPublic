@@ -106,6 +106,9 @@ export class ChangeMakerFacade {
 
   readonly poi = {
     dispatchers: {
+      searchForEnrollments: (search: string) => {
+        this.store.dispatch(PoiActions.searchForEnrollments({ search }));
+      },
       refresh: () => {
         this.store.dispatch(PoiActions.refreshPois());
       },

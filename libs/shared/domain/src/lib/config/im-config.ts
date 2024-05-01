@@ -13,7 +13,7 @@ export const ImConfig = convertDeepReadonly({
   walletHeight: '70vh',
   adminEmail: 'admin@admin.com',
   maxNeedLength: 15,
-  maxImagesPerItem: 4,
+  maxImagesPerItem: 40,
   maxDescriptionLength: 500,
   maxTitleLength: 60,
   browseProjectsPaginateItemsLoad: 30,

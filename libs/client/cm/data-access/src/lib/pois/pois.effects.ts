@@ -1,9 +1,18 @@
 import { HttpEventType } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { PoiOrchestration, UserFacade } from '@involvemint/client/shared/data-access';
+import {
+  EnrollmentOrchestration,
+  PoiOrchestration,
+  UserFacade,
+} from '@involvemint/client/shared/data-access';
 import { RouteService } from '@involvemint/client/shared/routes';
 import { StatusService } from '@involvemint/client/shared/util';
-import { calculatePoiStatus, PoiCmQuery, PoiStatus } from '@involvemint/shared/domain';
+import {
+  calculatePoiStatus,
+  PoiCmQuery,
+  PoiStatus,
+  SearchForEnrollmentsQuery,
+} from '@involvemint/shared/domain';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { fetch, pessimisticUpdate } from '@nrwl/angular';
 import { from } from 'rxjs';
@@ -53,7 +62,9 @@ export class PoiEffects {
             take(1),
             filter(({ pois }) => {
               const hasOneCreated = pois.find(
-                (poi) => calculatePoiStatus(poi) === PoiStatus.created && poi.enrollment.id === enrollment.id
+                (poi) =>
+                  calculatePoiStatus(poi) === PoiStatus.created &&
+                  poi.enrollments.map((obj) => obj.id).includes(enrollment.id)
               );
               if (hasOneCreated) {
                 this.route.to.cm.pois.POI(hasOneCreated.id);
@@ -124,7 +135,7 @@ export class PoiEffects {
             this.status.presentAlertWithAction({
               alertData: {
                 title: `Confirm Withdrawal`,
-                description: `This withdraws and <b>permanently deletes</b> your POI to <b>${poi.enrollment.project.title}</b>.`,
+                description: `This withdraws and <b>permanently deletes</b> your POI to <b>${poi.enrollments[0].project.title}</b>.`,
               },
               buttonText: 'WITHDRAW',
               buttonCssClass: 'im-alert-deny',
@@ -219,7 +230,7 @@ export class PoiEffects {
             this.status.presentAlertWithAction({
               alertData: {
                 title: `Confirm Submission`,
-                description: `This submits your POI to <b>${poi.enrollment.project.title}</b>.`,
+                description: `This submits your POI to <b>${poi.enrollments[0].project.title}</b>.`,
               },
               buttonText: 'SUBMIT',
               buttonCssClass: 'im-alert-confirm',
@@ -256,12 +267,31 @@ export class PoiEffects {
     )
   );
 
+  readonly searchForEnrollments$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(PoisActions.searchForEnrollments),
+      fetch({
+        run: ({ search }) =>
+          this.enrollments
+            .searchForEnrollments(SearchForEnrollmentsQuery, {
+              query: search,
+            })
+            .pipe(map((enrollments) => PoisActions.searchForEnrollmentsSuccess({ enrollments }))),
+        onError: (action, { error }) => {
+          this.status.presentNgRxActionAlert(action, error);
+          return PoisActions.searchForEnrollmentsError({ error });
+        },
+      })
+    )
+  );
+
   constructor(
     private readonly actions$: Actions,
     private readonly pois: PoiOrchestration,
     private readonly user: UserFacade,
     private readonly status: StatusService,
     private readonly route: RouteService,
-    private readonly cf: ChangeMakerFacade
+    private readonly cf: ChangeMakerFacade,
+    private readonly enrollments: EnrollmentOrchestration
   ) {}
 }

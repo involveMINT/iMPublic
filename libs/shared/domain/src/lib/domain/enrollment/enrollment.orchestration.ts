@@ -6,6 +6,7 @@ import {
   ProcessEnrollmentApplicationDto,
   RetireEnrollmentDto,
   RevertEnrollmentApplicationDto,
+  SearchForEnrollmentsDto,
   StartEnrollmentApplicationDto,
   SubmitEnrollmentApplicationDto,
   WithdrawEnrollmentApplicationDto,
@@ -13,6 +14,7 @@ import {
 import { Enrollment } from './enrollment.model';
 
 export interface IEnrollmentOrchestration {
+  searchForEnrollments: IOperation<Enrollment[], SearchForEnrollmentsDto>;
   get: IOperation<Enrollment[]>;
   getBySpProject: IOperation<Enrollment[], GetEnrollmentsBySpProject>;
   startApplication: IOperation<Enrollment, StartEnrollmentApplicationDto>;
