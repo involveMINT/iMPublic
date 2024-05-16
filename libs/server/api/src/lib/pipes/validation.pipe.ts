@@ -5,7 +5,13 @@ import { validate } from 'class-validator';
 
 @Injectable()
 export class ValidationPipe implements PipeTransform<unknown> {
-  async transform(value: unknown, { metatype }: ArgumentMetadata): Promise<unknown> {
+  async transform(value: any, { metatype }: ArgumentMetadata): Promise<unknown> {
+    try {
+      value = JSON.parse(value);
+    } catch (e) {
+      //Ignore error since the value could be a JSON Object already instead
+    }
+
     if (!metatype || !this.toValidate(metatype)) {
       return value;
     }

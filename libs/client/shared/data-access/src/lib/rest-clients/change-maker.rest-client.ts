@@ -44,10 +44,9 @@ export class ChangeMakerRestClient {
   }
   updateProfileImage(changeMakerQuery: IQuery<ChangeMaker>, image: File): Observable<HttpEvent<IParser<ChangeMaker, typeof UserQuery.changeMaker>>>
   {
-    const body = {
-      [QUERY_KEY]:changeMakerQuery,
-      [FILES_KEY]: image
-    };
+    const body = new FormData();
+    body.set(QUERY_KEY, JSON.stringify(changeMakerQuery));
+    body.set(FILES_KEY, image, image.name);
 
     return this.http
           .post<IParser<ChangeMaker, typeof UserQuery.changeMaker>>(`${this.apiUrl}/updateProfileImage`, body, {

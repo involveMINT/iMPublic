@@ -13,7 +13,8 @@ import {
   QUERY_KEY,
   FILES_KEY,
 } from '@involvemint/shared/domain';
-import { Controller, Post, Body, UploadedFile, UseInterceptors } from '@nestjs/common';
+import { Controller, Post, Body, UploadedFile, UseInterceptors,
+  Headers } from '@nestjs/common';
 import { QueryValidationPipe, ValidationPipe } from '../pipes';
 import { FileInterceptor } from '@nestjs/platform-express';
 
@@ -24,7 +25,7 @@ export class PassportDocumentController {
   @Post('get')
   get(
     @Body(QUERY_KEY, new QueryValidationPipe(PassportDocumentQuery)) query: IQuery<PassportDocument[]>, 
-    @Body(TOKEN_KEY) token: string
+    @Headers(TOKEN_KEY) token: string
   ) {
     return this.passport.get(query, token);
   }
@@ -33,7 +34,7 @@ export class PassportDocumentController {
   @UseInterceptors(FileInterceptor(FILES_KEY))
   create(
     @Body(QUERY_KEY, new QueryValidationPipe(PassportDocumentQuery)) query: IQuery<PassportDocument>, 
-    @Body(TOKEN_KEY) token: string, 
+    @Headers(TOKEN_KEY) token: string, 
     @UploadedFile() file: Express.Multer.File
   ) {
     return this.passport.create(query, token, file);
@@ -42,7 +43,7 @@ export class PassportDocumentController {
   @Post('edit')
   edit(
     @Body(QUERY_KEY, new QueryValidationPipe(PassportDocumentQuery)) query: IQuery<PassportDocument>, 
-    @Body(TOKEN_KEY) token: string, 
+    @Headers(TOKEN_KEY) token: string, 
     @Body(DTO_KEY, new ValidationPipe()) dto: EditPassportDocumentDto
   ) {
     return this.passport.edit(query, token, dto);
@@ -52,7 +53,7 @@ export class PassportDocumentController {
   @UseInterceptors(FileInterceptor(FILES_KEY))
   replace(
     @Body(QUERY_KEY, new QueryValidationPipe(PassportDocumentQuery)) query: IQuery<PassportDocument>, 
-    @Body(TOKEN_KEY) token: string, 
+    @Headers(TOKEN_KEY) token: string, 
     @Body(DTO_KEY, new ValidationPipe()) dto: ReplacePassportDocumentDto, 
     @UploadedFile() file: Express.Multer.File
   ) {
@@ -62,7 +63,7 @@ export class PassportDocumentController {
   @Post('delete')
   delete(
     @Body(QUERY_KEY, new QueryValidationPipe(DeletePassportDocumentQuery)) query: IQuery<{ deletedId: string }>, 
-    @Body(TOKEN_KEY) token: string, 
+    @Headers(TOKEN_KEY) token: string, 
     @Body(DTO_KEY, new ValidationPipe()) dto: DeletePassportDocumentDto
   ) {
     return this.passport.delete(query, token, dto);

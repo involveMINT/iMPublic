@@ -90,11 +90,10 @@ export class PoiRestClient {
   }
 
   submit(query: IQuery<Poi>, dto: SubmitPoiDto, files: File[]) {
-    const body = {
-      [QUERY_KEY]: query,
-      [DTO_KEY]: dto,
-      [FILES_KEY]: files
-    };
+    const body = new FormData();
+    body.set(QUERY_KEY, JSON.stringify(query));
+    body.set(DTO_KEY, JSON.stringify(dto));
+    files.forEach((file) => body.append(FILES_KEY, file, file.name));
 
     return this.http
           .post<IParser<Poi, typeof PoiCmQuery>>(`${this.apiUrl}/submit`, body, {

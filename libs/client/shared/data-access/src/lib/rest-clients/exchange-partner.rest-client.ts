@@ -49,11 +49,10 @@ export class ExchangePartnerRestClient {
   }
 
   updateLogoFile(query: IQuery<ExchangePartner>, dto: UpdateEpLogoFileDto, image: File) {
-    const body = {
-      [QUERY_KEY]: query,
-      [FILES_KEY]: image,
-      [DTO_KEY]: dto
-    };
+    const body = new FormData();
+    body.set(QUERY_KEY, JSON.stringify(query));
+    body.set(DTO_KEY, JSON.stringify(dto));
+    body.set(FILES_KEY, image, image.name);
 
     return this.http
           .post<IParser<ExchangePartner, typeof UserQuery.exchangeAdmins.exchangePartner>>(`${this.apiUrl}/updateLogoFile`, body, {
@@ -63,11 +62,10 @@ export class ExchangePartnerRestClient {
   }
 
   uploadImages(query: IQuery<ExchangePartner>, dto: UpdateEpLogoFileDto, images: File[]) {
-    const body = {
-      [QUERY_KEY]: query,
-      [FILES_KEY]: images,
-      [DTO_KEY]: dto
-    };
+    const body = new FormData();
+    body.set(QUERY_KEY, JSON.stringify(query));
+    body.set(DTO_KEY, JSON.stringify(dto));
+    images.forEach((file) => body.append(FILES_KEY, file, file.name));
 
     return this.http
           .post<IParser<ExchangePartner, typeof UserQuery.exchangeAdmins.exchangePartner>>(`${this.apiUrl}/uploadImages`, body, {

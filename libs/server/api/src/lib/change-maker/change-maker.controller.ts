@@ -16,7 +16,8 @@ import {
     Post,
     Body,
     UseInterceptors,
-    UploadedFile
+    UploadedFile,
+    Headers
   } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { QueryValidationPipe, ValidationPipe } from '../pipes';
@@ -28,7 +29,7 @@ export class ChangeMakerController {
   @Post('createProfile')
   createProfile(
     @Body(QUERY_KEY, new QueryValidationPipe(UserQuery.changeMaker)) query: IQuery<ChangeMaker>, 
-    @Body(TOKEN_KEY) token: string, 
+    @Headers(TOKEN_KEY) token: string, 
     @Body(DTO_KEY, new ValidationPipe()) dto: CreateChangeMakerProfileDto
   ) {
       return this.cmService.createProfile(query, token, dto);
@@ -37,7 +38,7 @@ export class ChangeMakerController {
   @Post('editProfile')
   async editProfile(
     @Body(QUERY_KEY, new QueryValidationPipe(UserQuery.changeMaker)) query: IQuery<ChangeMaker>, 
-    @Body(TOKEN_KEY) token: string, 
+    @Headers(TOKEN_KEY) token: string, 
     @Body(DTO_KEY, new ValidationPipe()) dto: EditCmProfileDto
   ) {
     return this.cmService.editProfile(query, token, dto);
@@ -47,7 +48,7 @@ export class ChangeMakerController {
   @UseInterceptors(FileInterceptor(FILES_KEY))
   async updateProfileImage(
     @Body(QUERY_KEY, new QueryValidationPipe(UserQuery.changeMaker)) query: IQuery<ChangeMaker>, 
-    @Body(TOKEN_KEY) token: string, 
+    @Headers(TOKEN_KEY) token: string, 
     @UploadedFile() file: Express.Multer.File
   ) {
     return this.cmService.updateProfileImage(query, token, file);

@@ -19,10 +19,9 @@ export class PassportDocumentRestClient {
   }
 
   create(query: IQuery<PassportDocument>, document: File) {
-    const body = {
-      [QUERY_KEY]: query,
-      [FILES_KEY]: document
-    };
+    const body = new FormData();
+    body.set(QUERY_KEY, JSON.stringify(query));
+    body.set(FILES_KEY, document, document.name);
 
     return this.http
           .post<IParser<PassportDocument, typeof PassportDocumentQuery>>(`${this.apiUrl}/create`, body, {
@@ -43,11 +42,10 @@ export class PassportDocumentRestClient {
 
   replace(query: IQuery<PassportDocument>, dto: ReplacePassportDocumentDto, document: File)
   {
-    const body = {
-      [QUERY_KEY]: query,
-      [DTO_KEY]: dto,
-      [FILES_KEY]: document
-    };
+    const body = new FormData();
+    body.set(QUERY_KEY, JSON.stringify(query));
+    body.set(DTO_KEY, JSON.stringify(dto));
+    body.set(FILES_KEY, document, document.name);
 
     return this.http
           .post<IParser<PassportDocument, typeof PassportDocumentQuery>>(`${this.apiUrl}/replace`, body, {

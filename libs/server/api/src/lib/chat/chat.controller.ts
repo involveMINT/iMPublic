@@ -8,7 +8,8 @@ import {
 import {
     Controller,
     Post,
-    Body
+    Body,
+    Headers,
   } from '@nestjs/common';
 import { ValidationPipe } from '../pipes';
 
@@ -18,7 +19,7 @@ export class ChatController {
 
   @Post('sendMessage')
   async sendMessage(
-    @Body(TOKEN_KEY) token: string, 
+    @Headers(TOKEN_KEY) token: string, 
     @Body(DTO_KEY, new ValidationPipe()) dto: SendChatMessageDto
   ) {
     return this.chat.sendMessage(token, dto);

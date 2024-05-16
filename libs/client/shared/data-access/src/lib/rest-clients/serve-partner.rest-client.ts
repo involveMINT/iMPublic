@@ -21,11 +21,10 @@ export class ServePartnerRestClient {
   }
 
   updateLogoFile(query: IQuery<ServePartner>, dto: UpdateSpLogoFileDto, logo: File) {
-    const body = {
-      [QUERY_KEY]: query,
-      [DTO_KEY]: dto,
-      [FILES_KEY]: logo
-    };
+    const body = new FormData();
+    body.set(QUERY_KEY, JSON.stringify(query));
+    body.set(DTO_KEY, JSON.stringify(dto));
+    body.set(FILES_KEY, logo, logo.name);
 
     return this.http
           .post<IParser<ServePartner, typeof UserQuery.serveAdmins.servePartner>>(`${this.apiUrl}/updateLogoFile`, body, {
@@ -35,11 +34,10 @@ export class ServePartnerRestClient {
   }
 
   uploadImages(query: IQuery<ServePartner>, dto: UploadSpImagesDto, files: File[]) {
-    const body = {
-      [QUERY_KEY]: query,
-      [DTO_KEY]: dto,
-      [FILES_KEY]: files
-    };
+    const body = new FormData();
+    body.set(QUERY_KEY, JSON.stringify(query));
+    body.set(DTO_KEY, JSON.stringify(dto));
+    files.forEach((file) => body.append(FILES_KEY, file, file.name));
 
     return this.http
           .post<IParser<ServePartner, typeof UserQuery.serveAdmins.servePartner>>(`${this.apiUrl}/uploadImages`, body, {

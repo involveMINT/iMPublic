@@ -7,16 +7,11 @@ import { ImAuthTokenStorage } from './+state/session/user-session.storage';
 
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
-  intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    const headers = req.headers;
+  intercept(req: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
 
     const userToken = ImAuthTokenStorage.getValue();
 
-    const authReq = req.clone({
-      headers,
-      body: { ...req.body, ...{ [TOKEN_KEY]: userToken?.token ?? '' } }
-    });
-
+    const authReq = req.clone({ headers: req.headers.set(TOKEN_KEY, userToken?.token ?? '') });
     return (
       next
         .handle(authReq)

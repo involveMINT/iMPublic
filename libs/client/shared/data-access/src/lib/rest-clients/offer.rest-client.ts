@@ -70,11 +70,10 @@ export class OfferRestClient {
 
   uploadImages(query: IQuery<Offer>, dto: UploadOfferImageDto, images: File[])
   {
-    const body = {
-      [QUERY_KEY]: query,
-      [DTO_KEY]: dto,
-      [FILES_KEY]: images
-    };
+    const body = new FormData();
+    body.set(QUERY_KEY, JSON.stringify(query));
+    body.set(DTO_KEY, JSON.stringify(dto));
+    images.forEach((file) => body.append(FILES_KEY, file, file.name));
 
     return this.http
           .post<IParser<Offer, typeof OfferQuery>>(`${this.apiUrl}/uploadImages`, body, {

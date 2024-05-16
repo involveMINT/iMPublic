@@ -13,7 +13,8 @@ import {
   QUERY_KEY,
   FILES_KEY,
 } from '@involvemint/shared/domain';
-import { Controller, Post, Body, UseInterceptors, UploadedFiles, UploadedFile } from '@nestjs/common';
+import { Controller, Post, Body, UseInterceptors, UploadedFiles, UploadedFile,
+  Headers } from '@nestjs/common';
 import { QueryValidationPipe, ValidationPipe } from '../pipes';
 import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
 
@@ -24,7 +25,7 @@ export class ServePartnerController {
   @Post('editProfile')
   async editProfile(
     @Body(QUERY_KEY, new QueryValidationPipe(UserQuery.serveAdmins.servePartner)) query: IQuery<ServePartner>, 
-    @Body(TOKEN_KEY) token: string, 
+    @Headers(TOKEN_KEY) token: string, 
     @Body(DTO_KEY, new ValidationPipe()) dto: EditSpProfileDto
   ) {
     return this.servePartnerService.editProfile(query, token, dto);
@@ -34,7 +35,7 @@ export class ServePartnerController {
   @UseInterceptors(FileInterceptor(FILES_KEY))
   async updateLogoFile(
     @Body(QUERY_KEY, new QueryValidationPipe(UserQuery.serveAdmins.servePartner)) query: IQuery<ServePartner>, 
-    @Body(TOKEN_KEY) token: string, 
+    @Headers(TOKEN_KEY) token: string, 
     @Body(DTO_KEY, new ValidationPipe()) dto: UpdateSpLogoFileDto, 
     @UploadedFile() file: Express.Multer.File
   ) {
@@ -45,7 +46,7 @@ export class ServePartnerController {
   @UseInterceptors(FilesInterceptor(FILES_KEY))
   async uploadImages(
     @Body(QUERY_KEY, new QueryValidationPipe(UserQuery.serveAdmins.servePartner)) query: IQuery<ServePartner>, 
-    @Body(TOKEN_KEY) token: string, 
+    @Headers(TOKEN_KEY) token: string, 
     @Body(DTO_KEY, new ValidationPipe()) dto: UploadSpImagesDto, 
     @UploadedFiles() files: Express.Multer.File[]
   ) {
@@ -55,7 +56,7 @@ export class ServePartnerController {
   @Post('deleteImage')
   async deleteImage(
     @Body(QUERY_KEY, new QueryValidationPipe(UserQuery.serveAdmins.servePartner)) query: IQuery<ServePartner>, 
-    @Body(TOKEN_KEY) token: string, 
+    @Headers(TOKEN_KEY) token: string, 
     @Body(DTO_KEY, new ValidationPipe()) dto: DeleteSpImageDto
   ) {
     return this.servePartnerService.deleteImage(query, token, dto);

@@ -74,11 +74,10 @@ export class RequestRestClient {
   }
 
   uploadImages(query: IQuery<Request>, dto: UploadRequestImageDto, files: File[]) {
-    const body = {
-      [QUERY_KEY]: query,
-      [DTO_KEY]: dto,
-      [FILES_KEY]: files
-    };
+    const body = new FormData();
+    body.set(QUERY_KEY, JSON.stringify(query));
+    body.set(DTO_KEY, JSON.stringify(dto));
+    files.forEach((file) => body.append(FILES_KEY, file, file.name));
 
     return this.http
           .post<IParser<Request, typeof RequestQuery>>(`${this.apiUrl}/uploadImages`, body, {

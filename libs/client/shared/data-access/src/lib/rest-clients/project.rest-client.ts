@@ -60,11 +60,10 @@ export class ProjectRestClient {
   }
 
   uploadImages(query: IQuery<Project>, dto: UploadProjectImageDto, images: File[]) {
-    const body = {
-      [QUERY_KEY]: query,
-      [DTO_KEY]: dto,
-      [FILES_KEY]: images
-    };
+    const body = new FormData();
+    body.set(QUERY_KEY, JSON.stringify(query));
+    body.set(DTO_KEY, JSON.stringify(dto));
+    images.forEach((file) => body.append(FILES_KEY, file, file.name));
 
     return this.http
           .post<IParser<Project, typeof ProjectSpQuery>>(`${this.apiUrl}/uploadImages`, body, {
@@ -94,11 +93,10 @@ export class ProjectRestClient {
   }
 
   uploadCustomWaiver(query: IQuery<Project>, dto: UploadCustomWaiverDto, waiver: File) {
-    const body = {
-      [QUERY_KEY]: query,
-      [DTO_KEY]: dto,
-      [FILES_KEY]: waiver
-    };
+    const body = new FormData();
+    body.set(QUERY_KEY, JSON.stringify(query));
+    body.set(DTO_KEY, JSON.stringify(dto));
+    body.append(FILES_KEY, waiver, waiver.name);
 
     return this.http
           .post<IParser<Project, typeof ProjectSpQuery>>(`${this.apiUrl}/uploadCustomWaiver`, body, {

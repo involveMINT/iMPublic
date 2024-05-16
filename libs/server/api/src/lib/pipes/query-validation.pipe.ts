@@ -11,7 +11,13 @@ export class QueryValidationPipe implements PipeTransform<unknown> {
     this.query = query;
   }
 
-  async transform(value: unknown): Promise<unknown> {
+  async transform(value: any): Promise<unknown> {
+    try {
+      value = JSON.parse(value);
+    } catch (e) {
+      //Ignore error since the value could be a JSON Object already instead
+    }
+    
     const recurse = (val: IQueryModel, query: IQueryModel) => {
       for (const k of Object.keys(val)) {
         if (k === PAGINATE_KEY) {
@@ -29,7 +35,6 @@ export class QueryValidationPipe implements PipeTransform<unknown> {
     };
 
     recurse(value as IQueryModel, this.query);
-
     return value;
   }
 }
