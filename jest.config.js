@@ -26,7 +26,7 @@ module.exports = {
     '<rootDir>/libs/client/cm/api',
     '<rootDir>/libs/client/ba/shell',
     '<rootDir>/libs/client/ba/data-access',
-    '<rootDir>/libs/server/orcha',
+    '<rootDir>/libs/server/api',
     '<rootDir>/apps/migrate',
   ],
 };

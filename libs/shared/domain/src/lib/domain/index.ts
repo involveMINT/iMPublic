@@ -29,3 +29,4 @@ export * from './transaction';
 export * from './user';
 export * from './voucher';
 export * from './wallet';
+export * from './repository';

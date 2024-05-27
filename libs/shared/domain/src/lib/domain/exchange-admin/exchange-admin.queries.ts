@@ -1,4 +1,4 @@
-import { createQuery } from '@orcha/common';
+import { createQuery } from '../repository';
 import { ExchangeAdmin } from './exchange-admin.model';
 
 export const EpAdminQuery = createQuery<ExchangeAdmin[]>()({

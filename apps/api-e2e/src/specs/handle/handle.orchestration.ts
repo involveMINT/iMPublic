@@ -1,4 +1,4 @@
-import { IHandleOrchestration, InvolvemintOrchestrations } from '@involvemint/shared/domain';
+import { IHandleOrchestration, InvolvemintRoutes } from '@involvemint/shared/domain';
 import { INestApplication } from '@nestjs/common';
 import {
   createNestjsTestOrchestration,
@@ -7,7 +7,7 @@ import {
   TestOrchestration,
 } from '@orcha/testing';
 
-@TestOrchestration(InvolvemintOrchestrations.handle)
+@TestOrchestration(InvolvemintRoutes.handle)
 class HandleOrchestration implements ITestOrchestration<IHandleOrchestration> {
   @TestOperation()
   verifyHandle!: ITestOrchestration<IHandleOrchestration>['verifyHandle'];

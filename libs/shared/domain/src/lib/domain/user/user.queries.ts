@@ -1,4 +1,4 @@
-import { createQuery } from '@orcha/common';
+import { createQuery } from '../repository';
 import { User } from './user.model';
 
 export const LoginQuery = createQuery<{ token: string }>()({ token: true });

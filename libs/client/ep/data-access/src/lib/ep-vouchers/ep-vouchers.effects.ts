@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { UserFacade, VoucherOrchestration } from '@involvemint/client/shared/data-access';
+import { UserFacade, VoucherRestClient } from '@involvemint/client/shared/data-access';
 import { InfoModalService, StatusService } from '@involvemint/client/shared/util';
 import { EpVoucherQuery } from '@involvemint/shared/domain';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
@@ -174,7 +174,7 @@ export class EpVouchersEffects {
 
   constructor(
     private readonly actions$: Actions,
-    private readonly voucher: VoucherOrchestration,
+    private readonly voucher: VoucherRestClient,
     private readonly user: UserFacade,
     private readonly status: StatusService,
     private readonly info: InfoModalService

@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, HostListener, OnInit } from '@angular/core';
 import { Validators } from '@angular/forms';
 import {
-  HandleOrchestration,
+  HandleRestClient,
   UserFacade,
   verifyHandleUniqueness,
 } from '@involvemint/client/shared/data-access';
@@ -45,7 +45,7 @@ export class SpApplicationComponent
 
   readonly USStates = STATES;
 
-  constructor(private readonly user: UserFacade, private readonly handleOrcha: HandleOrchestration) {
+  constructor(private readonly user: UserFacade, private readonly handleRestClient: HandleRestClient) {
     super({ verifyingHandle: false });
   }
 
@@ -55,7 +55,7 @@ export class SpApplicationComponent
   }
 
   ngOnInit(): void {
-    this.effect(() => verifyHandleUniqueness(this.spForm, this.handleOrcha, this));
+    this.effect(() => verifyHandleUniqueness(this.spForm, this.handleRestClient, this));
 
     this.effect(() =>
       this.user.session.actionListeners.submitSpApplication.success.pipe(tap(() => this.spForm.reset()))
