@@ -24,7 +24,6 @@ export * from './lib/chat.service';
 export * from './lib/client-shared-data-access.module';
 export * from './lib/directives';
 export * from './lib/email';
-export * from './lib/gateways';
 export * from './lib/handle';
 export * from './lib/im-colors';
 export * from './lib/im-init-loader/im-init-loader.module';

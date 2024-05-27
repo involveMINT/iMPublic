@@ -1,7 +1,6 @@
-import { DeleteEpImageDto, EditEpProfileDto } from '@involvemint/shared/domain';
+import { DeleteEpImageDto, EditEpProfileDto, APIOperationError } from '@involvemint/shared/domain';
 import { UnArray } from '@involvemint/shared/util';
 import { createAction, props } from '@ngrx/store';
-import { OrchaOperationError } from '@orcha/common';
 import { UserStoreModel } from '../user-session.reducer';
 
 /*
@@ -23,7 +22,7 @@ export const editEpProfileSuccess = createAction(
 
 export const editEpProfileError = createAction(
   '[UserSession] Edit EP Profile Error',
-  props<{ error: OrchaOperationError }>()
+  props<{ error: APIOperationError }>()
 );
 
 /*
@@ -43,7 +42,7 @@ export const changeEpLogoFileSuccess = createAction(
 
 export const changeEpLogoFileError = createAction(
   '[UserSession] Change EP Logo File Error',
-  props<{ error: OrchaOperationError }>()
+  props<{ error: APIOperationError }>()
 );
 
 /*
@@ -63,7 +62,7 @@ export const uploadEpImagesSuccess = createAction(
 
 export const uploadEpImagesError = createAction(
   '[UserSession] Upload EP Images Error',
-  props<{ error: OrchaOperationError }>()
+  props<{ error: APIOperationError }>()
 );
 
 /*
@@ -87,5 +86,5 @@ export const deleteEpImageSuccess = createAction(
 
 export const deleteEpImageError = createAction(
   '[UserSession] Delete EP Image Error',
-  props<{ error: OrchaOperationError }>()
+  props<{ error: APIOperationError }>()
 );

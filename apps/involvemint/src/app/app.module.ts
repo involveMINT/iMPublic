@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { AngularFireModule } from '@angular/fire';
-import { AngularFirestoreModule } from '@angular/fire/firestore';
+import { AngularFirestoreModule, USE_EMULATOR as USE_FIRESTORE_EMULATOR } from '@angular/fire/firestore';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouteReuseStrategy, RouterModule } from '@angular/router';
@@ -105,6 +105,12 @@ const ngrxDebugFactory = <T>() => {
           provide: USER_PROVIDED_META_REDUCERS,
           useFactory: () => [ngrxDebugFactory()],
         },
+    environment.environment !== 'local' ?
+        []:
+        {
+          provide: USE_FIRESTORE_EMULATOR,
+          useValue: ['localhost', 8080]
+        }
   ],
   bootstrap: [AppComponent],
 })

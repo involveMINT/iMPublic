@@ -5,6 +5,7 @@ import { StatefulComponent, StatusService } from '@involvemint/client/shared/uti
 import {
   ChatRoom,
   createChatMember,
+  environment,
   FormattedChatRoom,
   getUnreadMessagesCount,
   NewChatMember,

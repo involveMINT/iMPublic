@@ -203,7 +203,6 @@ export class ProjectService {
     dto: UploadCustomWaiverDto,
     file: Express.Multer.File
   ) {
-    console.log(file);
     const project = await this.projectRepo.findOneOrFail(dto.projectId, {
       servePartner: { id: true },
       imagesFilePaths: true,

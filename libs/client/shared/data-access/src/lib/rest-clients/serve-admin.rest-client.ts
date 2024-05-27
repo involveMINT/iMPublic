@@ -1,7 +1,6 @@
 import { HttpClient } from '@angular/common/http';
-import { AddServeAdminDto, DTO_KEY, environment, GetServeAdminsForServePartnerDto, InvolvemintRoutes, IParser, IQuery, QUERY_KEY, RemoveServeAdminDto, ServeAdmin, SpAdminQuery } from '@involvemint/shared/domain';
+import { AddServeAdminDto, DTO_KEY, environment, GetServeAdminsForServePartnerDto, IExactQuery, InvolvemintRoutes, IParser, IQuery, QUERY_KEY, RemoveServeAdminDto, ServeAdmin, SpAdminQuery } from '@involvemint/shared/domain';
 import { Injectable } from '@angular/core';
-import { IExactQuery } from '@orcha/common';
 
 @Injectable()
 export class ServeAdminRestClient {

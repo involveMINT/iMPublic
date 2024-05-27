@@ -1,7 +1,7 @@
 /**
  * An Operation's error response schema.
  */
-export interface OrchaOperationError {
+export interface APIOperationError {
   statusCode: number;
   /** ISO string. */
   timestamp: string;
