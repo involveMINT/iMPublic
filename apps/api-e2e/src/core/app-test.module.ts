@@ -21,7 +21,7 @@ patchTypeORMRepositoryWithBaseRepository();
       port: 5433,
       username: 'postgres',
       password: 'postgres',
-      database: 'involvemint',
+      database: 'involvemint-e2e',
       synchronize: true,
       autoLoadEntities: true,
       ssl: false,
