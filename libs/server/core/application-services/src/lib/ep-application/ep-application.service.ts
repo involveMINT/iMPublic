@@ -30,16 +30,6 @@ import { getDefaultAddress } from '@involvemint/shared/domain';
 
 @Injectable()
 export class EpApplicationService {
-  readonly subs = {
-    handleDisconnect: (client: Socket) => {
-      this.epAppRepo.subscriptions.onDisconnect(client);
-    },
-
-    subAll: async (socket: Socket, channel: string, token: string, query: IQuery<EpApplication[]>) => {
-      await this.auth.validateAdminToken(token);
-      return this.epAppRepo.subscriptions.querySubscription(socket, channel, query);
-    },
-  };
 
   constructor(
     private readonly epAppRepo: EpApplicationRepository,

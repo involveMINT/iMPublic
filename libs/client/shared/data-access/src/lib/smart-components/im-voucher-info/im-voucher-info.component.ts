@@ -1,6 +1,5 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnChanges } from '@angular/core';
-import { calculateVoucherStatus, Voucher, VoucherStatus } from '@involvemint/shared/domain';
-import { IParser } from '@orcha/common';
+import { calculateVoucherStatus, Voucher, VoucherStatus, IParser } from '@involvemint/shared/domain';
 import { ImImagesViewerModalService } from '../../modals/im-images-viewer-modal/im-images-viewer-modal.module';
 
 type VoucherStoreModel = IParser<

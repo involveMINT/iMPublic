@@ -10,7 +10,8 @@ import {
   TOKEN_KEY,
   DTO_KEY
 } from '@involvemint/shared/domain';
-import { Controller, Post, Body } from '@nestjs/common';
+import { Controller, Post, Body,
+  Headers } from '@nestjs/common';
 import { QueryValidationPipe, ValidationPipe } from '../pipes';
 
 @Controller(InvolvemintRoutes.transaction)
@@ -20,7 +21,7 @@ export class TransactionController {
   @Post('getForProfile')
   getForProfile(
     @Body(QUERY_KEY, new QueryValidationPipe(TransactionQuery)) query: IQuery<Transaction>, 
-    @Body(TOKEN_KEY) token: string, 
+    @Headers(TOKEN_KEY) token: string, 
     @Body(DTO_KEY, new ValidationPipe()) dto: GetTransactionsForProfileDto
   ) {
     return this.transactionService.getForProfile(query, token, dto);
@@ -29,7 +30,7 @@ export class TransactionController {
   @Post('transaction')
   transaction(
     @Body(QUERY_KEY, new QueryValidationPipe(TransactionQuery)) query: IQuery<Transaction>, 
-    @Body(TOKEN_KEY) token: string, 
+    @Headers(TOKEN_KEY) token: string, 
     @Body(DTO_KEY, new ValidationPipe()) dto: TransactionDto
   ) {
     return this.transactionService.transactionP2p(query, token, dto, true);

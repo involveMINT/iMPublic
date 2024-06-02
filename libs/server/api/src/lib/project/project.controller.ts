@@ -19,9 +19,10 @@ import {
   QUERY_KEY,
   FILES_KEY,
 } from '@involvemint/shared/domain';
-import { Controller, Post, Body, UploadedFiles, UploadedFile, UseInterceptors } from '@nestjs/common';
+import { Controller, Post, Body, UploadedFiles, UploadedFile, UseInterceptors,
+  Headers } from '@nestjs/common';
 import { QueryValidationPipe, ValidationPipe } from '../pipes';
-import { FilesInterceptor } from '@nestjs/platform-express';
+import { FilesInterceptor, FileInterceptor } from '@nestjs/platform-express';
 
 @Controller(InvolvemintRoutes.project)
 export class ProjectController {
@@ -38,7 +39,7 @@ export class ProjectController {
   @Post('getOne')
   getOne(
     @Body(QUERY_KEY, new QueryValidationPipe(ProjectFeedQuery)) query: IQuery<Project>, 
-    @Body(TOKEN_KEY) token: string, 
+    @Headers(TOKEN_KEY) token: string, 
     @Body(DTO_KEY, new ValidationPipe()) dto: GetProjectDto
   ) {
     return this.projectService.getOne(query, token, dto);
@@ -47,7 +48,7 @@ export class ProjectController {
   @Post('getAllOwnedBySp')
   getAllOwnedBySp(
     @Body(QUERY_KEY, new QueryValidationPipe(ProjectSpQuery)) query: IQuery<Project[]>, 
-    @Body(TOKEN_KEY) token: string, 
+    @Headers(TOKEN_KEY) token: string, 
     @Body(DTO_KEY, new ValidationPipe()) dto: ProjectsSpDto
   ) {
     return this.projectService.getAllOwnedBySp(query, token, dto);
@@ -56,7 +57,7 @@ export class ProjectController {
   @Post('create')
   create(
     @Body(QUERY_KEY, new QueryValidationPipe(ProjectSpQuery)) query: IQuery<Project>, 
-    @Body(TOKEN_KEY) token: string, 
+    @Headers(TOKEN_KEY) token: string, 
     @Body(DTO_KEY, new ValidationPipe()) dto: CreateProjectDto
   ) {
     return this.projectService.create(query, token, dto);
@@ -65,7 +66,7 @@ export class ProjectController {
   @Post('update')
   update(
     @Body(QUERY_KEY, new QueryValidationPipe(ProjectSpQuery)) query: IQuery<Project>, 
-    @Body(TOKEN_KEY) token: string, 
+    @Headers(TOKEN_KEY) token: string, 
     @Body(DTO_KEY, new ValidationPipe()) dto: UpdateProjectDto
   ) {
     return this.projectService.update(query, token, dto);
@@ -75,7 +76,7 @@ export class ProjectController {
   @UseInterceptors(FilesInterceptor(FILES_KEY))
   uploadImages(
     @Body(QUERY_KEY, new QueryValidationPipe(ProjectSpQuery)) query: IQuery<Project>, 
-    @Body(TOKEN_KEY) token: string, 
+    @Headers(TOKEN_KEY) token: string, 
     @Body(DTO_KEY, new ValidationPipe()) dto: UploadProjectImageDto, 
     @UploadedFiles() files: Express.Multer.File[]
   ) {
@@ -85,7 +86,7 @@ export class ProjectController {
   @Post('deleteImage')
   deleteImage(
     @Body(QUERY_KEY, new QueryValidationPipe(ProjectSpQuery)) query: IQuery<Project>, 
-    @Body(TOKEN_KEY) token: string, 
+    @Headers(TOKEN_KEY) token: string, 
     @Body(DTO_KEY, new ValidationPipe()) dto: DeleteProjectImageDto
   ) {
     return this.projectService.deleteImage(query, token, dto);
@@ -94,16 +95,17 @@ export class ProjectController {
   @Post('delete')
   delete(
     @Body(QUERY_KEY, new QueryValidationPipe({ deletedId: true })) query: IQuery<{ deletedId: string }>, 
-    @Body(TOKEN_KEY) token: string, 
+    @Headers(TOKEN_KEY) token: string, 
     @Body(DTO_KEY, new ValidationPipe()) dto: DeleteProjectDto
   ) {
     return this.projectService.delete(query, token, dto);
   }
 
   @Post('uploadCustomWaiver')
+  @UseInterceptors(FileInterceptor(FILES_KEY))
   uploadCustomWaiver(
     @Body(QUERY_KEY, new QueryValidationPipe(ProjectSpQuery)) query: IQuery<Project>, 
-    @Body(TOKEN_KEY) token: string, 
+    @Headers(TOKEN_KEY) token: string, 
     @Body(DTO_KEY, new ValidationPipe()) dto: UploadCustomWaiverDto, 
     @UploadedFile() file: Express.Multer.File
   ) {

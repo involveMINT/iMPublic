@@ -1,7 +1,6 @@
-import { Project, ProjectSpQuery } from '@involvemint/shared/domain';
+import { Project, ProjectSpQuery, IParser } from '@involvemint/shared/domain';
 import { createEntityAdapter, EntityState } from '@ngrx/entity';
 import { createReducer, on } from '@ngrx/store';
-import { IParser } from '@orcha/common';
 import * as ProjectsSpActions from './projects.actions';
 
 export const PROJECTS_SP_FEATURE_KEY = 'projectsSp';
