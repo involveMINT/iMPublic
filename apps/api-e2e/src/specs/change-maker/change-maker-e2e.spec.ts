@@ -42,24 +42,24 @@ describe('ChangeMaker Orchestration Integration Tests', () => {
     const signUpResult = await supertest(app.getHttpServer())
       .post('/user/signUp')
       .send({
-        query: { [TOKEN_KEY]: true },
-        dto: creds,
+        [QUERY_KEY]: { [TOKEN_KEY]: true },
+        [DTO_KEY]: creds,
       });
     token = signUpResult.body[TOKEN_KEY];
     const profileCreationResult = await supertest(app.getHttpServer())
-      .post('/changeMaker/createProfile')
-      .set('token', token)
-      .set('Content-Type', 'application/json')
-      .set('Accept', 'application/json')
-      .send({
-        query: cmQuery,
-        dto: {
-          handle: 'bobby',
-          firstName: 'fn',
-          lastName: 'ln',
-          phone: '(555) 555-5555',
-        }
-      });
+    .post('/changeMaker/createProfile')
+    .set('token', token)
+    .set('Content-Type', 'application/json')
+    .set('Accept', 'application/json')
+    .send({
+      [QUERY_KEY]: cmQuery,
+      [DTO_KEY]: {
+        handle: 'bobby',
+        firstName: 'fn',
+        lastName: 'ln',
+        phone: '(555) 555-5555',
+      }
+    });
     
     cmProfile = profileCreationResult.body as IParser<ChangeMaker, typeof cmQuery>;
     expect(profileCreationResult.statusCode).toBe(HttpStatus.CREATED);
@@ -73,7 +73,7 @@ describe('ChangeMaker Orchestration Integration Tests', () => {
         .post('/user/getUserData')
         .set(TOKEN_KEY, token)
         .send({
-          query: userQuery
+          [QUERY_KEY]: userQuery
         });
       
       const cmEntity = await cmRepo.findOneOrFail(cmProfile.id, cmQuery);
@@ -89,8 +89,8 @@ describe('ChangeMaker Orchestration Integration Tests', () => {
       .set('Content-Type', 'application/json')
       .set('Accept', 'application/json')
       .send({
-        query: cmQuery,
-        dto: {
+        [QUERY_KEY]: cmQuery,
+        [DTO_KEY]: {
           firstName: 'Bobby',
           lastName: 'Smith',
           handle: 'bobby',
