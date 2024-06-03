@@ -17,6 +17,7 @@ import {
   Controller,
   Post,
   Body,
+  Headers
 } from '@nestjs/common';
 import { QueryValidationPipe, ValidationPipe } from '../pipes';
 
@@ -27,7 +28,7 @@ export class ExchangeAdminController {
   @Post('getForExchangePartner')
   getForExchangePartner(
     @Body(QUERY_KEY, new QueryValidationPipe(EpAdminQuery)) query: IQuery<ExchangeAdmin>,
-    @Body(TOKEN_KEY) token: string,
+    @Headers(TOKEN_KEY) token: string,
     @Body(DTO_KEY, new ValidationPipe()) dto: GetExchangeAdminsForExchangePartnerDto
   ) {
     return this.epAdmin.getForExchangePartner(query, token, dto);
@@ -36,7 +37,7 @@ export class ExchangeAdminController {
   @Post('getSuperAdminForExchangePartner')
   async getSuperAdminForExchangePartner(
     @Body(QUERY_KEY, new QueryValidationPipe(BaDownloadEpAdminsQuery)) query: IQuery<ExchangeAdmin>,
-    @Body(TOKEN_KEY) token: string,
+    @Headers(TOKEN_KEY) token: string,
     @Body(DTO_KEY, new ValidationPipe()) dto: GetSuperAdminForExchangePartnerDto
   ) {
     return this.epAdmin.getSuperAdminForExchangePartner(query, token, dto);
@@ -45,7 +46,7 @@ export class ExchangeAdminController {
   @Post('addAdmin')
   addAdmin(
     @Body(QUERY_KEY, new QueryValidationPipe(EpAdminQuery)) query: IQuery<ExchangeAdmin>,
-    @Body(TOKEN_KEY) token: string,
+    @Headers(TOKEN_KEY) token: string,
     @Body(DTO_KEY, new ValidationPipe()) dto: AddExchangeAdminDto
   ) {
     return this.epAdmin.addAdmin(query, token, dto);
@@ -54,7 +55,7 @@ export class ExchangeAdminController {
   @Post('removeAdmin')
   removeAdmin(
     @Body(QUERY_KEY, new QueryValidationPipe({ deletedId: true })) query: IQuery<{ deletedId: true }>,
-    @Body(TOKEN_KEY) token: string,
+    @Headers(TOKEN_KEY) token: string,
     @Body(DTO_KEY, new ValidationPipe()) dto: RemoveExchangeAdminDto
   ) {
     return this.epAdmin.removeAdmin(query, token, dto);

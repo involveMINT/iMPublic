@@ -2,7 +2,7 @@ import { AfterViewInit, ChangeDetectionStrategy, Component, OnInit, ViewChild } 
 import { Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import {
-  HandleOrchestration,
+  HandleRestClient,
   UserFacade,
   verifyHandleUniqueness,
 } from '@involvemint/client/shared/data-access';
@@ -57,14 +57,14 @@ export class CreateCmProfileComponent extends StatefulComponent<State> implement
 
   constructor(
     private readonly uf: UserFacade,
-    private readonly handleOrcha: HandleOrchestration,
+    private readonly handleRestClient: HandleRestClient,
     private readonly route: ActivatedRoute
   ) {
     super({ verifyingHandle: false });
   }
 
   ngOnInit(): void {
-    this.effect(() => verifyHandleUniqueness(this.createProfileForm, this.handleOrcha, this));
+    this.effect(() => verifyHandleUniqueness(this.createProfileForm, this.handleRestClient, this));
     this.route.queryParams
       .pipe(
         tap((q) => {

@@ -13,14 +13,10 @@ import { fetch, pessimisticUpdate } from '@nrwl/angular';
 import { from, of } from 'rxjs';
 import { delayWhen, filter, map, switchMap, take, tap } from 'rxjs/operators';
 import { ImInitLoaderService } from '../../im-init-loader/im-init-loader.service';
-import { ChangeMakerOrchestration } from '../../orchestrations/change-maker.orchestration';
-import { EpApplicationOrchestration } from '../../orchestrations/ep-application.orchestration';
-import { ExchangeAdminOrchestration } from '../../orchestrations/exchange-admin.orchestration';
-import { ExchangePartnerOrchestration } from '../../orchestrations/exchange-partner.orchestration';
-import { SpApplicationOrchestration } from '../../orchestrations/sp-application.orchestration';
-import { UserOrchestration } from '../../orchestrations/user.orchestration';
+import { ChangeMakerRestClient } from '../../rest-clients/change-maker.rest-client';
 import * as UserSessionActions from './user-session.actions';
 import { ImAuthTokenStorage } from './user-session.storage';
+import { EpApplicationRestClient, ExchangeAdminRestClient, SpApplicationRestClient, UserRestClient } from '../../rest-clients';
 
 @Injectable()
 export class UserSessionEffects {
@@ -543,15 +539,14 @@ export class UserSessionEffects {
 
   constructor(
     private readonly actions$: Actions,
-    private readonly user: UserOrchestration,
-    private readonly exchangeAdmin: ExchangeAdminOrchestration,
-    private readonly exchangePartner: ExchangePartnerOrchestration,
+    private readonly user: UserRestClient,
+    private readonly exchangeAdmin: ExchangeAdminRestClient,
     private readonly route: RouteService,
-    private readonly cm: ChangeMakerOrchestration,
+    private readonly cm: ChangeMakerRestClient,
     private readonly status: StatusService,
     private readonly windowRef: WindowRefService,
-    private readonly epApp: EpApplicationOrchestration,
-    private readonly spApp: SpApplicationOrchestration,
+    private readonly epApp: EpApplicationRestClient,
+    private readonly spApp: SpApplicationRestClient,
     private readonly infoModal: InfoModalService,
     private readonly initLoader: ImInitLoaderService
   ) {}

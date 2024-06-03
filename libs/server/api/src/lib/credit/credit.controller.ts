@@ -13,7 +13,8 @@ import {
 import {
     Controller,
     Post,
-    Body
+    Body,
+    Headers
   } from '@nestjs/common';
 import { QueryValidationPipe, ValidationPipe } from '../pipes';
 
@@ -24,7 +25,7 @@ export class CreditController {
   @Post('getCreditsForProfile')
   getCreditsForProfile(
     @Body(QUERY_KEY, new QueryValidationPipe(CreditQuery)) query: IQuery<Credit>, 
-    @Body(TOKEN_KEY) token: string, 
+    @Headers(TOKEN_KEY) token: string, 
     @Body(DTO_KEY, new ValidationPipe()) dto: GetCreditsForProfileDto
   ) {
     return this.credit.getCreditsForProfile(query, token, dto);
@@ -32,7 +33,7 @@ export class CreditController {
 
   @Post('mint')
   mint(
-    @Body(TOKEN_KEY) token: string, 
+    @Headers(TOKEN_KEY) token: string, 
     @Body(DTO_KEY, new ValidationPipe()) dto: MintDto
   ) {
     return this.credit.mint(token, dto);

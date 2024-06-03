@@ -18,9 +18,9 @@ import {
   QUERY_KEY,
   FILES_KEY,
 } from '@involvemint/shared/domain';
-import { Controller, Post, Body, UploadedFiles, UseInterceptors } from '@nestjs/common';
+import { Controller, Post, Body, UploadedFiles, UseInterceptors, Headers } from '@nestjs/common';
 import { QueryValidationPipe, ValidationPipe } from '../pipes';
-import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
+import { FilesInterceptor } from '@nestjs/platform-express';
 
 @Controller(InvolvemintRoutes.offer)
 export class OfferController {
@@ -45,7 +45,7 @@ export class OfferController {
   @Post('getForProfile')
   getForProfile(
     @Body(QUERY_KEY, new QueryValidationPipe(OfferQuery)) query: IQuery<Offer[]>, 
-    @Body(TOKEN_KEY) token: string, 
+    @Headers(TOKEN_KEY) token: string, 
     @Body(DTO_KEY, new ValidationPipe()) dto: GetOffersForProfileDto
   ) {
     return this.offer.getForProfile(query, token, dto);
@@ -54,7 +54,7 @@ export class OfferController {
   @Post('create')
   create(
     @Body(QUERY_KEY, new QueryValidationPipe(OfferQuery)) query: IQuery<Offer>, 
-    @Body(TOKEN_KEY) token: string, 
+    @Headers(TOKEN_KEY) token: string, 
     @Body(DTO_KEY, new ValidationPipe()) dto: CreateOfferDto
   ) {
     return this.offer.create(query, token, dto);
@@ -63,7 +63,7 @@ export class OfferController {
   @Post('update')
   update(
     @Body(QUERY_KEY, new QueryValidationPipe(OfferQuery)) query: IQuery<Offer>, 
-    @Body(TOKEN_KEY) token: string, 
+    @Headers(TOKEN_KEY) token: string, 
     @Body(DTO_KEY, new ValidationPipe()) dto: UpdateOfferDto
   ) {
     return this.offer.update(query, token, dto);
@@ -72,7 +72,7 @@ export class OfferController {
   @Post('delete')
   delete(
     @Body(QUERY_KEY, new QueryValidationPipe({ deletedId: true })) query: IQuery<{ deletedId: string }>, 
-    @Body(TOKEN_KEY) token: string, 
+    @Headers(TOKEN_KEY) token: string, 
     @Body(DTO_KEY, new ValidationPipe()) dto: DeleteOfferDto
   ) {
     return this.offer.delete(query, token, dto);
@@ -82,7 +82,7 @@ export class OfferController {
   @UseInterceptors(FilesInterceptor(FILES_KEY))
   uploadImages(
     @Body(QUERY_KEY, new QueryValidationPipe(OfferQuery)) query: IQuery<Offer>, 
-    @Body(TOKEN_KEY) token: string, 
+    @Headers(TOKEN_KEY) token: string, 
     @Body(DTO_KEY, new ValidationPipe()) dto: UploadOfferImageDto, 
     @UploadedFiles() files: Express.Multer.File[]
   ) {
@@ -92,7 +92,7 @@ export class OfferController {
   @Post('deleteImage')
   deleteImage(
     @Body(QUERY_KEY, new QueryValidationPipe(OfferQuery)) query: IQuery<Offer>, 
-    @Body(TOKEN_KEY) token: string, 
+    @Headers(TOKEN_KEY) token: string, 
     @Body(DTO_KEY, new ValidationPipe()) dto: DeleteOfferImageDto
   ) {
     return this.offer.deleteImage(query, token, dto);

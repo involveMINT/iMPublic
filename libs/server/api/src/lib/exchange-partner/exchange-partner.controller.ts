@@ -23,7 +23,8 @@ import {
   Post,
   Body,
   UseInterceptors,
-  UploadedFiles
+  UploadedFiles,
+  Headers
 } from '@nestjs/common';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { QueryValidationPipe, ValidationPipe } from '../pipes';
@@ -59,7 +60,7 @@ export class ExchangePartnerController {
   @Post('editProfile')
   async editProfile(
     @Body(QUERY_KEY, new QueryValidationPipe(UserQuery.exchangeAdmins.exchangePartner)) query: IQuery<ExchangePartner>, 
-    @Body(TOKEN_KEY) token: string, 
+    @Headers(TOKEN_KEY) token: string, 
     @Body(DTO_KEY, new ValidationPipe()) dto: EditEpProfileDto
   ) {
     return this.ep.editProfile(query, token, dto);
@@ -69,7 +70,7 @@ export class ExchangePartnerController {
   @UseInterceptors(FilesInterceptor(FILES_KEY))
   async updateLogoFile(
     @Body(QUERY_KEY, new QueryValidationPipe(UserQuery.exchangeAdmins.exchangePartner)) query: IQuery<ExchangePartner>, 
-    @Body(TOKEN_KEY) token: string, 
+    @Headers(TOKEN_KEY) token: string, 
     @Body(DTO_KEY, new ValidationPipe()) dto: UpdateEpLogoFileDto, 
     @UploadedFiles() files: Express.Multer.File[]
   ) {
@@ -80,7 +81,7 @@ export class ExchangePartnerController {
   @UseInterceptors(FilesInterceptor(FILES_KEY))
   async uploadImages(
     @Body(QUERY_KEY, new QueryValidationPipe(UserQuery.exchangeAdmins.exchangePartner)) query: IQuery<ExchangePartner>, 
-    @Body(TOKEN_KEY) token: string, 
+    @Headers(TOKEN_KEY) token: string, 
     @Body(DTO_KEY, new ValidationPipe()) dto: UploadEpImagesDto, 
     @UploadedFiles() files: Express.Multer.File[]
   ) {
@@ -90,7 +91,7 @@ export class ExchangePartnerController {
   @Post('deleteImage')
   async deleteImage(
     @Body(QUERY_KEY, new QueryValidationPipe(UserQuery.exchangeAdmins.exchangePartner)) query: IQuery<ExchangePartner>, 
-    @Body(TOKEN_KEY) token: string, 
+    @Headers(TOKEN_KEY) token: string, 
     @Body(DTO_KEY, new ValidationPipe()) dto: DeleteEpImageDto
   ) {
     return this.ep.deleteImage(query, token, dto);

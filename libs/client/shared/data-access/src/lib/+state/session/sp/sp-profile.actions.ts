@@ -1,7 +1,6 @@
-import { DeleteSpImageDto, EditSpProfileDto } from '@involvemint/shared/domain';
+import { DeleteSpImageDto, EditSpProfileDto, APIOperationError } from '@involvemint/shared/domain';
 import { UnArray } from '@involvemint/shared/util';
 import { createAction, props } from '@ngrx/store';
-import { OrchaOperationError } from '@orcha/common';
 import { UserStoreModel } from '../user-session.reducer';
 
 /*
@@ -23,7 +22,7 @@ export const editSpProfileSuccess = createAction(
 
 export const editSpProfileError = createAction(
   '[UserSession] Edit SP Profile Error',
-  props<{ error: OrchaOperationError }>()
+  props<{ error: APIOperationError }>()
 );
 
 /*
@@ -42,7 +41,7 @@ export const changeSpLogoFileSuccess = createAction(
 
 export const changeSpLogoFileError = createAction(
   '[UserSession] Change SP Logo File Error',
-  props<{ error: OrchaOperationError }>()
+  props<{ error: APIOperationError }>()
 );
 
 /*
@@ -61,7 +60,7 @@ export const uploadSpImagesSuccess = createAction(
 
 export const uploadSpImagesError = createAction(
   '[UserSession] Upload SP Images Error',
-  props<{ error: OrchaOperationError }>()
+  props<{ error: APIOperationError }>()
 );
 
 /*
@@ -84,5 +83,5 @@ export const deleteSpImageSuccess = createAction(
 
 export const deleteSpImageError = createAction(
   '[UserSession] Delete SP Image Error',
-  props<{ error: OrchaOperationError }>()
+  props<{ error: APIOperationError }>()
 );

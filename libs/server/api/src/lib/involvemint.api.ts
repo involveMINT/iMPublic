@@ -1,5 +1,6 @@
 import { ServerCoreApplicationServicesModule } from '@involvemint/server/core/application-services';
 import { Module } from '@nestjs/common';
+import { APP_FILTER } from '@nestjs/core';
 import { EnrollmentController } from './enrollment/enrollment.controller';
 import { ChangeMakerController } from './change-maker/change-maker.controller';
 import { ChatController } from './chat/chat.controller';
@@ -20,8 +21,12 @@ import { StorageController } from './storage/storage.controller';
 import { TransactionController } from './transaction/transaction.controller';
 import { UserController } from './user/user.controller';
 import { VoucherController } from './voucher/voucher.controller';
+import {  APIOperationErrorFilter } from './api-operation-error.filter';
 
 @Module({
+  providers:[
+    { provide: APP_FILTER, useClass:  APIOperationErrorFilter }
+  ],
   imports: [
     ServerCoreApplicationServicesModule,
   ],

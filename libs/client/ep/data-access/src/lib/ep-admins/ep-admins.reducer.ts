@@ -1,7 +1,6 @@
-import { EpAdminQuery, ExchangeAdmin } from '@involvemint/shared/domain';
+import { EpAdminQuery, ExchangeAdmin, IParser } from '@involvemint/shared/domain';
 import { createEntityAdapter, EntityState } from '@ngrx/entity';
 import { createReducer, on } from '@ngrx/store';
-import { IParser } from '@orcha/common';
 import * as EpAdminsActions from './ep-admins.actions';
 
 export const EP_ADMINS_KEY = 'epAdmins';

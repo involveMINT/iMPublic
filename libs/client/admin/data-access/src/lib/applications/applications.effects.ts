@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import {
-  EpApplicationOrchestration,
-  SpApplicationOrchestration,
+  EpApplicationRestClient,
+  SpApplicationRestClient,
 } from '@involvemint/client/shared/data-access';
 import { StatusService } from '@involvemint/client/shared/util';
 import { EpApplicationQuery, SpApplicationQuery } from '@involvemint/shared/domain';
@@ -77,8 +77,8 @@ export class ApplicationsEffects {
 
   constructor(
     private readonly actions$: Actions,
-    private readonly epApp: EpApplicationOrchestration,
-    private readonly spApp: SpApplicationOrchestration,
+    private readonly epApp: EpApplicationRestClient,
+    private readonly spApp: SpApplicationRestClient,
     private readonly status: StatusService
   ) {}
 }

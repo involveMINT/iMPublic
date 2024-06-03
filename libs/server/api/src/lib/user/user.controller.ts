@@ -39,6 +39,7 @@ import {
   Controller,
   Post,
   Body,
+  Headers
 } from '@nestjs/common';
 import { QueryValidationPipe, ValidationPipe } from '../pipes';
 
@@ -89,7 +90,7 @@ export class UserController {
   @Post('getUserData')
   async getUserData(
     @Body(QUERY_KEY, new QueryValidationPipe(UserQuery)) query: IQuery<User>, 
-    @Body(TOKEN_KEY) token: string
+    @Headers(TOKEN_KEY) token: string
   ) {
     return this.user.getUserData(query, token);
   }
@@ -97,7 +98,7 @@ export class UserController {
   @Post('snoop')
   async snoop(
     @Body(QUERY_KEY, new QueryValidationPipe(SnoopQuery)) query: IQuery<ISnoopData>, 
-    @Body(TOKEN_KEY) token: string, 
+    @Headers(TOKEN_KEY) token: string, 
     @Body(DTO_KEY, new ValidationPipe()) dto: SnoopDto
   ) {
     return this.user.snoop(query, token, dto);
@@ -106,7 +107,7 @@ export class UserController {
   @Post('getAllUserPrivileges')
   async getAllUserPrivileges(
     @Body(QUERY_KEY, new QueryValidationPipe(UserPrivilegeQuery)) query: IQuery<User[]>, 
-    @Body(TOKEN_KEY) token: string
+    @Headers(TOKEN_KEY) token: string
   ) {
     return this.user.getAllUserPrivileges(query, token);
   }
@@ -114,7 +115,7 @@ export class UserController {
   @Post('grantBAPrivilege')
   async grantBAPrivilege(
     @Body(QUERY_KEY, new QueryValidationPipe(UserQuery)) query: IQuery<User>, 
-    @Body(TOKEN_KEY) token: string, 
+    @Headers(TOKEN_KEY) token: string, 
     @Body(DTO_KEY, new ValidationPipe()) dto: GrantBaPrivilegesDto
   ) {
     return this.user.grantBAPrivilege(query, token, dto);
@@ -123,7 +124,7 @@ export class UserController {
   @Post('revokeBAPrivilege')
   async revokeBAPrivilege(
     @Body(QUERY_KEY, new QueryValidationPipe(UserQuery)) query: IQuery<User>, 
-    @Body(TOKEN_KEY) token: string, 
+    @Headers(TOKEN_KEY) token: string, 
     @Body(DTO_KEY, new ValidationPipe()) dto: RevokeBaPrivilegesDto
   ) {
     return this.user.revokeBAPrivilege(query, token, dto);
@@ -132,7 +133,7 @@ export class UserController {
   @Post('searchUsers')
   async searchUsers(
     @Body(QUERY_KEY, new QueryValidationPipe(UserSearchQuery)) query: IQuery<User[]>, 
-    @Body(TOKEN_KEY) _: string, 
+    @Headers(TOKEN_KEY) _: string, 
     @Body(DTO_KEY, new ValidationPipe()) dto: SearchUserDto
   ) {
     return this.user.searchUsers(query, dto);
@@ -176,7 +177,7 @@ export class UserController {
   @Post('changePassword')
   async changePassword(
     @Body(QUERY_KEY, new QueryValidationPipe({})) _: IQuery<{}>, 
-    @Body(TOKEN_KEY) token: string, 
+    @Headers(TOKEN_KEY) token: string, 
     @Body(DTO_KEY, new ValidationPipe()) dto: ChangePasswordDto
   ) {
     return this.user.changePassword(token, dto);
@@ -185,7 +186,7 @@ export class UserController {
   @Post('finishJoyride')
   async finishJoyride(
     @Body(QUERY_KEY, new QueryValidationPipe({})) _: IQuery<{}>, 
-    @Body(TOKEN_KEY) token: string
+    @Headers(TOKEN_KEY) token: string
   ) {
     return this.user.finishJoyride(token);
   }
@@ -193,7 +194,7 @@ export class UserController {
   @Post('adminUserSearch')
   async adminUserSearch(
     @Body(QUERY_KEY, new QueryValidationPipe(UserQuery)) query: IQuery<User[]>, 
-    @Body(TOKEN_KEY) token: string, 
+    @Headers(TOKEN_KEY) token: string, 
     @Body(DTO_KEY, new ValidationPipe()) dto: AdminUserSearchDto
   ) {
     return this.user.adminUserSearch(query, token, dto);
