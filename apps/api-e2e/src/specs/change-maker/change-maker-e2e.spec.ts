@@ -9,7 +9,7 @@ import { createQuery, IParser } from '@involvemint/shared/domain';
 import { AppTestModule } from '../../core/app-test.module';
 import { DatabaseService } from '../../core/database.service';
 
-describe('ChangeMaker Orchestration Integration Tests', () => {
+describe('ChangeMaker Integration Tests', () => {
   let app: INestApplication;
   let db: DatabaseService;
 
