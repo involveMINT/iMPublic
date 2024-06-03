@@ -3,6 +3,7 @@ import { IPaginate } from './query';
 
 /**
  * Creates a parsed model type based on an Query type.
+
  *
  * @example
  * type IUserModel = IParser<
