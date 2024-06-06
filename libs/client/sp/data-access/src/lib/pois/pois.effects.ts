@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import { PoiOrchestration } from '@involvemint/client/shared/data-access';
 import { StatusService } from '@involvemint/client/shared/util';
 import { calculateCreditsEarnedForPoi, PoiSpQuery } from '@involvemint/shared/domain';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
@@ -7,6 +6,7 @@ import { fetch, pessimisticUpdate } from '@nrwl/angular';
 import { from } from 'rxjs';
 import { delayWhen, filter, map, switchMap, tap } from 'rxjs/operators';
 import * as PoisActions from './pois.actions';
+import { PoiRestClient } from '@involvemint/client/shared/data-access';
 
 @Injectable()
 export class PoiEffects {
@@ -59,7 +59,7 @@ export class PoiEffects {
 
   constructor(
     private readonly actions$: Actions,
-    private readonly pois: PoiOrchestration,
+    private readonly pois: PoiRestClient,
     private readonly status: StatusService
   ) {}
 }

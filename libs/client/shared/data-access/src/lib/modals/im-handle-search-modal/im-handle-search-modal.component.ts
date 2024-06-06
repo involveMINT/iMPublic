@@ -1,11 +1,10 @@
 import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
 import { StatefulComponent } from '@involvemint/client/shared/util';
-import { GenericHandleSearchQuery, Handle, ImConfig } from '@involvemint/shared/domain';
+import { GenericHandleSearchQuery, Handle, ImConfig, IParser } from '@involvemint/shared/domain';
 import { ModalController } from '@ionic/angular';
 import { FormControl } from '@ngneat/reactive-forms';
-import { IParser } from '@orcha/common';
 import { debounceTime, filter, map, switchMap } from 'rxjs/operators';
-import { HandleOrchestration } from '../../orchestrations';
+import { HandleRestClient } from '../../rest-clients';
 
 export enum ImHandleSearchModalType {
   handle = 'handle',
@@ -40,7 +39,7 @@ export class ImHandleSearchModalComponent
 
   readonly search = new FormControl('');
 
-  constructor(private readonly handleOrcha: HandleOrchestration, private readonly modal: ModalController) {
+  constructor(private readonly handleRestClient: HandleRestClient, private readonly modal: ModalController) {
     super({
       searchResult: [],
       status: 'init',
@@ -67,7 +66,7 @@ export class ImHandleSearchModalComponent
         }),
         debounceTime(ImConfig.formDebounceTime),
         switchMap((s) =>
-          this.handleOrcha.genericSearch(GenericHandleSearchQuery, { search: s }).pipe(
+          this.handleRestClient.genericSearch(GenericHandleSearchQuery, { search: s }).pipe(
             map((handles) => {
               this.updateState({
                 searchResult: handles.filter((h) => {

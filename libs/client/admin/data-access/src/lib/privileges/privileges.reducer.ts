@@ -1,7 +1,6 @@
-import { User, UserPrivilegeQuery } from '@involvemint/shared/domain';
+import { User, UserPrivilegeQuery, IParser } from '@involvemint/shared/domain';
 import { createEntityAdapter, EntityState } from '@ngrx/entity';
 import { createReducer, on } from '@ngrx/store';
-import { IParser } from '@orcha/common';
 import * as PrivilegesActions from './privileges.actions';
 
 export const PRIVILEGES_FEATURE_KEY = 'adminPrivileges';

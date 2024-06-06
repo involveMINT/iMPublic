@@ -1,7 +1,7 @@
 import {
   EnrollmentDocumentRepository,
   EnrollmentRepository,
-  ProjectRepository,
+  ProjectRepository
 } from '@involvemint/server/core/domain-services';
 import {
   AcceptWaiverDto,
@@ -19,9 +19,10 @@ import {
   StartEnrollmentApplicationDto,
   SubmitEnrollmentApplicationDto,
   WithdrawEnrollmentApplicationDto,
+  IQuery, 
+  parseQuery
 } from '@involvemint/shared/domain';
 import { HttpException, HttpStatus, Inject, Injectable, InternalServerErrorException } from '@nestjs/common';
-import { IQuery, parseQuery } from '@orcha/common';
 import * as uuid from 'uuid';
 import { AuthService } from '../auth/auth.service';
 import { EmailService } from '../email/email.service';

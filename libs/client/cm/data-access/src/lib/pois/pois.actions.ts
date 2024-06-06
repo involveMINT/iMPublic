@@ -1,7 +1,6 @@
 import { LatLng } from '@involvemint/client/shared/util';
-import { QuestionAnswersDto } from '@involvemint/shared/domain';
+import { APIOperationError, QuestionAnswersDto } from '@involvemint/shared/domain';
 import { createAction, props } from '@ngrx/store';
-import { OrchaOperationError } from '@orcha/common';
 import { EnrollmentStoreModel } from '../enrollments/enrollments.reducer';
 import { PoiCmStoreModel } from './pois.reducer';
 
@@ -15,7 +14,7 @@ export const loadPoisSuccess = createAction(
 
 export const loadPoisError = createAction(
   '[Pois|ChangeMaker] Proofs of Impact Load Error',
-  props<{ error: OrchaOperationError }>()
+  props<{ error: APIOperationError }>()
 );
 
 /*
@@ -37,7 +36,7 @@ export const createPoiSuccess = createAction(
 
 export const createPoiError = createAction(
   '[Pois|ChangeMaker] Create Proof of Impact Error',
-  props<{ error: OrchaOperationError }>()
+  props<{ error: APIOperationError }>()
 );
 
 /*
@@ -59,7 +58,7 @@ export const startPoiSuccess = createAction(
 
 export const startPoiError = createAction(
   '[Pois|ChangeMaker] Start Proof of Impact Error',
-  props<{ error: OrchaOperationError }>()
+  props<{ error: APIOperationError }>()
 );
 
 /*
@@ -81,7 +80,7 @@ export const withdrawPoiSuccess = createAction(
 
 export const withdrawPoiError = createAction(
   '[Pois|ChangeMaker] Withdraw Proof of Impact Error',
-  props<{ error: OrchaOperationError }>()
+  props<{ error: APIOperationError }>()
 );
 
 /*
@@ -103,7 +102,7 @@ export const pausePoiSuccess = createAction(
 
 export const pausePoiError = createAction(
   '[Pois|ChangeMaker] Pause Proof of Impact Error',
-  props<{ error: OrchaOperationError }>()
+  props<{ error: APIOperationError }>()
 );
 
 /*
@@ -125,7 +124,7 @@ export const resumePoiSuccess = createAction(
 
 export const resumePoiError = createAction(
   '[Pois|ChangeMaker] Resume Proof of Impact Error',
-  props<{ error: OrchaOperationError }>()
+  props<{ error: APIOperationError }>()
 );
 
 /*
@@ -147,7 +146,7 @@ export const stopPoiSuccess = createAction(
 
 export const stopPoiError = createAction(
   '[Pois|ChangeMaker] Stop Proof of Impact Error',
-  props<{ error: OrchaOperationError }>()
+  props<{ error: APIOperationError }>()
 );
 
 /*
@@ -169,5 +168,5 @@ export const submitPoiSuccess = createAction(
 
 export const submitPoiError = createAction(
   '[Pois|ChangeMaker] Submit Proof of Impact Error',
-  props<{ error: OrchaOperationError }>()
+  props<{ error: APIOperationError }>()
 );

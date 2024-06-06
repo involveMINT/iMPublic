@@ -1,4 +1,4 @@
-import { IOneToMany, IOneToOne } from '@orcha/common';
+import { IOneToMany, IOneToOne } from '../repository';
 import { ChangeMaker } from '../change-maker';
 import { EpApplication } from '../ep-application';
 import { ExchangeAdmin } from '../exchange-admin';

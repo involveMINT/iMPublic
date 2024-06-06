@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-import { UserOrchestration } from '@involvemint/client/shared/data-access';
+import { UserRestClient } from '@involvemint/client/shared/data-access';
 import { RouteService } from '@involvemint/client/shared/routes';
 import { ConfirmPasswordValidator, StatusService } from '@involvemint/client/shared/util';
 import { ImConfig } from '@involvemint/shared/domain';
@@ -41,7 +41,7 @@ export class ActivateUserAccountComponent implements OnInit {
   constructor(
     private readonly activatedRoute: ActivatedRoute,
     private readonly route: RouteService,
-    private readonly userOrcha: UserOrchestration,
+    private readonly userClient: UserRestClient,
     private readonly status: StatusService
   ) {}
 
@@ -75,7 +75,7 @@ export class ActivateUserAccountComponent implements OnInit {
   async submit() {
     await this.status.showLoader();
     try {
-      await this.userOrcha
+      await this.userClient
         .activateUserAccount(
           {},
           {
