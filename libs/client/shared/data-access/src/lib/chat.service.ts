@@ -5,6 +5,7 @@ import { StatefulComponent, StatusService } from '@involvemint/client/shared/uti
 import {
   ChatRoom,
   createChatMember,
+  environment,
   FormattedChatRoom,
   getUnreadMessagesCount,
   NewChatMember,
@@ -17,7 +18,7 @@ import { map, switchMap, take, tap } from 'rxjs/operators';
 import * as uuid from 'uuid';
 import { ActiveProfile } from './+state/session/user-session.reducer';
 import { UserFacade } from './+state/user.facade';
-import { ChatOrchestration } from './orchestrations';
+import { ChatRestClient } from './rest-clients';
 
 interface State {
   myChats: FormattedChatRoom[];
@@ -35,7 +36,7 @@ export class ChatService extends StatefulComponent<State> {
     private readonly uf: UserFacade,
     private readonly route: RouteService,
     private readonly status: StatusService,
-    private readonly chatOrcha: ChatOrchestration
+    private readonly chatRestClient: ChatRestClient
   ) {
     super({ myChats: [], unreadMessages: 0 });
 
@@ -122,8 +123,8 @@ export class ChatService extends StatefulComponent<State> {
   async sendMessage(chatRoomId: string, content: string) {
     const me = await this.uf.session.selectors.activeProfile$.pipe(take(1)).toPromise();
 
-    await this.chatOrcha
-      .sendMessage(undefined, { chatRoomId: chatRoomId, content, senderHandleId: me.handle.id })
+    await this.chatRestClient
+      .sendMessage({ chatRoomId: chatRoomId, content, senderHandleId: me.handle.id })
       .pipe(take(1))
       .toPromise();
   }

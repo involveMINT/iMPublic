@@ -1,17 +1,14 @@
 import { HandleRepository } from '@involvemint/server/core/domain-services';
-import { IHandleOrchestration } from '@involvemint/shared/domain';
 import { INestApplication } from '@nestjs/common';
 import { Test } from '@nestjs/testing';
-import { ITestOrchestration } from '@orcha/testing';
 import { AppTestModule } from '../../core/app-test.module';
 import { DatabaseService } from '../../core/database.service';
-import { createHandleOrchestration } from './handle.orchestration';
+import supertest from 'supertest';
+import { DTO_KEY, QUERY_KEY } from '@involvemint/shared/domain';
 
-describe('Handle Orchestration Integration Tests', () => {
+describe('Handle Integration Tests', () => {
   let app: INestApplication;
   let db: DatabaseService;
-
-  let handleOrcha: ITestOrchestration<IHandleOrchestration>;
 
   let handleRepo: HandleRepository;
 
@@ -25,8 +22,6 @@ describe('Handle Orchestration Integration Tests', () => {
     db = moduleRef.get(DatabaseService);
     handleRepo = moduleRef.get(HandleRepository);
 
-    handleOrcha = createHandleOrchestration(app);
-
     await app.init();
   });
 
@@ -38,13 +33,29 @@ describe('Handle Orchestration Integration Tests', () => {
 
   describe('verifyHandle', () => {
     it('should verify handle is unique', async () => {
-      const { body } = await handleOrcha.verifyHandle({ isUnique: true }, '', { handle: 'myHandle' });
-      expect(body.isUnique).toBe(true);
+      const verifyHandleResult = await supertest(app.getHttpServer())
+      .post('/handle/verifyHandle')
+      .set('Content-Type', 'application/json')
+      .set('Accept', 'application/json')
+      .send({
+        [QUERY_KEY]: { isUnique: true },
+        [DTO_KEY]: { handle: 'myHandle' }
+      });
+
+      expect(verifyHandleResult.body.isUnique).toBe(true);
     });
     it('should verify handle is not unique', async () => {
       await handleRepo.upsert({ id: 'myHandle' });
-      const { body } = await handleOrcha.verifyHandle({ isUnique: true }, '', { handle: 'myHandle' });
-      expect(body.isUnique).toBe(false);
+      const verifyHandleResult = await supertest(app.getHttpServer())
+      .post('/handle/verifyHandle')
+      .set('Content-Type', 'application/json')
+      .set('Accept', 'application/json')
+      .send({
+        [QUERY_KEY]: { isUnique: true },
+        [DTO_KEY]: { handle: 'myHandle' }
+      });
+
+      expect(verifyHandleResult.body.isUnique).toBe(false);
     });
   });
 });

@@ -14,16 +14,16 @@ import {
   ViewProfileInfoOfferQuery,
   ViewProfileInfoQuery,
   ViewProfileInfoRequestQuery,
+  IParser
 } from '@involvemint/shared/domain';
 import { ModalController } from '@ionic/angular';
-import { IParser } from '@orcha/common';
 import { of } from 'rxjs';
 import { switchMap, tap } from 'rxjs/operators';
 import { UserFacade } from '../../+state/user.facade';
 import { ChatService } from '../../chat.service';
-import { HandleOrchestration } from '../../orchestrations';
 import { ImImagesViewerModalService } from '../im-images-viewer-modal/im-images-viewer-modal.module';
 import { ImProfileSelectModalService } from '../im-profile-select-modal/im-profile-select-modal.service';
+import { HandleRestClient } from '../../rest-clients';
 
 export const viewProfileCache = new Map<string, ProfileStoreModal>();
 
@@ -60,7 +60,7 @@ export class ImViewProfileModalComponent
   constructor(
     private readonly user: UserFacade,
     private readonly modal: ModalController,
-    private readonly handleOrcha: HandleOrchestration,
+    private readonly handleRestClient: HandleRestClient,
     private readonly profileSelect: ImProfileSelectModalService,
     private readonly chat: ChatService,
     private readonly image: ImImagesViewerModalService,
@@ -76,7 +76,7 @@ export class ImViewProfileModalComponent
           if (profile) {
             return of(profile);
           } else {
-            return this.handleOrcha.viewProfile(ViewProfileInfoQuery, { handle: this.handle });
+            return this.handleRestClient.viewProfile(ViewProfileInfoQuery, { handle: this.handle });
           }
         }),
         tap((profile) => {

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { UserOrchestration } from '@involvemint/client/shared/data-access';
+import { UserRestClient } from '@involvemint/client/shared/data-access';
 import { StatusService } from '@involvemint/client/shared/util';
 import { UserPrivilegeQuery } from '@involvemint/shared/domain';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
@@ -87,7 +87,7 @@ export class PrivilegesEffects {
 
   constructor(
     private readonly actions$: Actions,
-    private readonly user: UserOrchestration,
+    private readonly user: UserRestClient,
     private readonly status: StatusService
   ) {}
 }

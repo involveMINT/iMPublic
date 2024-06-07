@@ -99,8 +99,8 @@
       "@involvemint/client/ba/data-access": [
         "libs/client/ba/data-access/src/index.ts"
       ],
-      "@involvemint/server/orcha": [
-        "libs/server/orcha/src/index.ts"
+      "@involvemint/server/api": [
+        "libs/server/api/src/index.ts"
       ]
     }
   },

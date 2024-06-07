@@ -1,4 +1,4 @@
-import { createLogic } from '@orcha/common';
+import { createLogic } from '../repository';
 import { Enrollment } from './enrollment.model';
 
 export enum EnrollmentStatus {

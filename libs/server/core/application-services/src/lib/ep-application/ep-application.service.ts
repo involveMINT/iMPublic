@@ -14,9 +14,10 @@ import {
   ProcessEpApplicationDto,
   SubmitEpApplicationDto,
   WithdrawEpApplicationDto,
+  IQuery,
+  parseQuery
 } from '@involvemint/shared/domain';
 import { HttpException, HttpStatus, Injectable, UnauthorizedException } from '@nestjs/common';
-import { IQuery, parseQuery } from '@orcha/common';
 import { addMonths } from 'date-fns';
 import * as geocoder from 'node-geocoder';
 import { Socket } from 'socket.io';
@@ -29,16 +30,6 @@ import { getDefaultAddress } from '@involvemint/shared/domain';
 
 @Injectable()
 export class EpApplicationService {
-  readonly subs = {
-    handleDisconnect: (client: Socket) => {
-      this.epAppRepo.subscriptions.onDisconnect(client);
-    },
-
-    subAll: async (socket: Socket, channel: string, token: string, query: IQuery<EpApplication[]>) => {
-      await this.auth.validateAdminToken(token);
-      return this.epAppRepo.subscriptions.querySubscription(socket, channel, query);
-    },
-  };
 
   constructor(
     private readonly epAppRepo: EpApplicationRepository,
