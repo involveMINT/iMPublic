@@ -5,10 +5,12 @@ import {
   Credit,
   GetCreditsForProfileDto,
   MintDto,
+  createQuery, 
+  IParser, 
+  IQuery
 } from '@involvemint/shared/domain';
 import { isDecimal } from '@involvemint/shared/util';
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
-import { createQuery, IParser, IQuery } from '@orcha/common';
 import { compareAsc } from 'date-fns';
 import * as uuid from 'uuid';
 import { AuthService } from '../auth/auth.service';
@@ -49,7 +51,7 @@ export class CreditService {
   /**
    * Admin only.
    */
-  async mint(_: IQuery<{}>, token: string, dto: MintDto) {
+  async mint(token: string, dto: MintDto) {
     await this.auth.validateAdminToken(token);
     const handle = await this.handle.findOneOrFail(dto.handle, {
       id: true,

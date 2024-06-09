@@ -1,0 +1,941 @@
+{
+	"info": {
+		"_postman_id": "ed7e37b9-d0ff-4488-88d7-8402a1559d82",
+		"name": "InvolveMINT API v1",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "20247067"
+	},
+	"item": [
+		{
+			"name": "Projects",
+			"item": [
+				{
+					"name": "Projects - GetAll",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "query",
+									"value": "{\"id\":true,\"title\":true,\"imagesFilePaths\":true,\"description\":true,\"creditsEarned\":true,\"preferredScheduleOfWork\":true,\"startDate\":true,\"endDate\":true,\"listingStatus\":true,\"requireLocation\":true,\"requireImages\":true,\"maxChangeMakers\":true,\"dateCreated\":true,\"enrollments\":{\"dateApplied\":true,\"dateApproved\":true,\"dateDenied\":true,\"dateRetired\":true,\"dateSubmitted\":true},\"projectDocuments\":{\"title\":true,\"description\":true},\"address\":{\"id\":true,\"address1\":true,\"address2\":true,\"address3\":true,\"city\":true,\"state\":true,\"zip\":true,\"country\":true},\"questions\":{\"id\":true,\"text\":true},\"servePartner\":{\"id\":true,\"handle\":{\"id\":true},\"name\":true},\"__paginate\":{\"limit\":2,\"page\":2}}",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{BASE_URL}}project/getAll",
+							"host": [
+								"{{BASE_URL}}project"
+							],
+							"path": [
+								"getAll"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Projects - GetOne",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "query",
+									"value": "{\"id\":true,\"title\":true,\"imagesFilePaths\":true,\"description\":true,\"creditsEarned\":true,\"preferredScheduleOfWork\":true,\"startDate\":true,\"endDate\":true,\"listingStatus\":true,\"requireLocation\":true,\"requireImages\":true,\"maxChangeMakers\":true,\"dateCreated\":true,\"enrollments\":{\"dateApplied\":true,\"dateApproved\":true,\"dateDenied\":true,\"dateRetired\":true,\"dateSubmitted\":true},\"projectDocuments\":{\"title\":true,\"description\":true},\"address\":{\"id\":true,\"address1\":true,\"address2\":true,\"address3\":true,\"city\":true,\"state\":true,\"zip\":true,\"country\":true},\"questions\":{\"id\":true,\"text\":true},\"servePartner\":{\"id\":true,\"handle\":{\"id\":true},\"name\":true},\"__paginate\":{\"limit\":100,\"page\":1}}",
+									"type": "text"
+								},
+								{
+									"key": "dto",
+									"value": "{\"projectId\": \"0b8ed79b-8084-4fe8-83af-15a1413525e3\"}",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{BASE_URL}}project/getOne",
+							"host": [
+								"{{BASE_URL}}project"
+							],
+							"path": [
+								"getOne"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Projects - Get All Owned By SP",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "query",
+									"value": "{\"id\":true,\"title\":true,\"imagesFilePaths\":true,\"description\":true,\"listingStatus\":true,\"creditsEarned\":true,\"preferredScheduleOfWork\":true,\"startDate\":true,\"endDate\":true,\"requireLocation\":true,\"requireImages\":true,\"maxChangeMakers\":true,\"dateCreated\":true,\"customWaiverFilePath\":true,\"requireCustomWaiver\":true,\"servePartner\":{\"id\":true,\"name\":true},\"address\":{\"id\":true,\"address1\":true,\"address2\":true,\"address3\":true,\"city\":true,\"state\":true,\"zip\":true,\"country\":true},\"projectDocuments\":{\"id\":true,\"description\":true,\"infoUrl\":true,\"title\":true,\"enrollmentDocuments\":{\"id\":true}},\"questions\":{\"id\":true,\"text\":true,\"answers\":{\"id\":true,\"answer\":true}}}",
+									"type": "text"
+								},
+								{
+									"key": "token",
+									"value": "",
+									"description": "Must be Serve Admin",
+									"type": "text"
+								},
+								{
+									"key": "dto",
+									"value": "{ \"spId\": \"\"}",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{BASE_URL}}project/getAllOwnedBySp",
+							"host": [
+								"{{BASE_URL}}project"
+							],
+							"path": [
+								"getAllOwnedBySp"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Projects - Create",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "query",
+									"value": "{\"id\":true,\"title\":true,\"imagesFilePaths\":true,\"description\":true,\"listingStatus\":true,\"creditsEarned\":true,\"preferredScheduleOfWork\":true,\"startDate\":true,\"endDate\":true,\"requireLocation\":true,\"requireImages\":true,\"maxChangeMakers\":true,\"dateCreated\":true,\"customWaiverFilePath\":true,\"requireCustomWaiver\":true,\"servePartner\":{\"id\":true,\"name\":true},\"address\":{\"id\":true,\"address1\":true,\"address2\":true,\"address3\":true,\"city\":true,\"state\":true,\"zip\":true,\"country\":true},\"projectDocuments\":{\"id\":true,\"description\":true,\"infoUrl\":true,\"title\":true,\"enrollmentDocuments\":{\"id\":true}},\"questions\":{\"id\":true,\"text\":true,\"answers\":{\"id\":true,\"answer\":true}}}",
+									"type": "text"
+								},
+								{
+									"key": "token",
+									"value": "",
+									"description": "Must be serve admin",
+									"type": "text"
+								},
+								{
+									"key": "dto",
+									"value": "{ \"spId\": \"\"}",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{BASE_URL}}project/create",
+							"host": [
+								"{{BASE_URL}}project"
+							],
+							"path": [
+								"create"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Projects - Update",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "query",
+									"value": "{\"id\":true,\"title\":true,\"imagesFilePaths\":true,\"description\":true,\"listingStatus\":true,\"creditsEarned\":true,\"preferredScheduleOfWork\":true,\"startDate\":true,\"endDate\":true,\"requireLocation\":true,\"requireImages\":true,\"maxChangeMakers\":true,\"dateCreated\":true,\"customWaiverFilePath\":true,\"requireCustomWaiver\":true,\"servePartner\":{\"id\":true,\"name\":true},\"address\":{\"id\":true,\"address1\":true,\"address2\":true,\"address3\":true,\"city\":true,\"state\":true,\"zip\":true,\"country\":true},\"projectDocuments\":{\"id\":true,\"description\":true,\"infoUrl\":true,\"title\":true,\"enrollmentDocuments\":{\"id\":true}},\"questions\":{\"id\":true,\"text\":true,\"answers\":{\"id\":true,\"answer\":true}}}",
+									"type": "text"
+								},
+								{
+									"key": "token",
+									"value": "",
+									"description": "Must be serve admin",
+									"type": "text"
+								},
+								{
+									"key": "dto",
+									"value": "{ \"projectId\": \"\", \"changes\": {\"id\":\"\",\"title\":\"\",\"imagesFilePaths\":[],\"description\":\"\",\"listingStatus\":\"\",\"creditsEarned\":0,\"preferredScheduleOfWork\":\"\",\"startDate\":\"\",\"endDate\":\"\",\"requireLocation\":false,\"requireImages\":false,\"maxChangeMakers\":0,\"dateCreated\":\"\",\"dateUpdated\":\"\",\"requireCustomWaiver\":false,\"customWaiverFilePath\":\"\",\"address\":{\"id\":\"\",\"address1\":\"\",\"address2\":\"\",\"address3\":\"\",\"city\":\"\",\"state\":\"\",\"zip\":\"\",\"country\":\"\"}} }",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{BASE_URL}}project/update",
+							"host": [
+								"{{BASE_URL}}project"
+							],
+							"path": [
+								"update"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Storage",
+			"item": [
+				{
+					"name": "GetUrl",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"query\": \"{ \\\"url\\\": true }\",\n    \"dto\": \"{\\\"path\\\": \\\"project-images/0b8ed79b-8084-4fe8-83af-15a1413525e3/497182bd-7f79-4488-ac75-f4c0ea33b739.jpeg\\\"}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BASE_URL}}storage/getUrl",
+							"host": [
+								"{{BASE_URL}}storage"
+							],
+							"path": [
+								"getUrl"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "User",
+			"item": [
+				{
+					"name": "User - verifyUserEmail",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "query",
+									"value": "{ \"isUnique\": true }",
+									"type": "text"
+								},
+								{
+									"key": "dto",
+									"value": "{ \"email\": \"qheffern@gmail.com\" }",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{BASE_URL}}user/verifyUserEmail",
+							"host": [
+								"{{BASE_URL}}user"
+							],
+							"path": [
+								"verifyUserEmail"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "User - Login",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "query",
+									"value": "{\"token\": true }",
+									"type": "text"
+								},
+								{
+									"key": "dto",
+									"value": "{\"id\":\"YOUR_EMAIL\",\"password\":\"YOUR_PASSWORD\"}",
+									"description": "Enter Your Username and Password",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{BASE_URL}}user/login",
+							"host": [
+								"{{BASE_URL}}user"
+							],
+							"path": [
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "User - Sign Up",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "query",
+									"value": "{\"token\": true }",
+									"type": "text"
+								},
+								{
+									"key": "dto",
+									"value": "{ \"id\": \"YOUR_EMAIL\", \"password\": \"PASSWORD\", \"registerAs\" : \"cm\" }",
+									"description": "id is email. registerAs is optional with values of 'cm' | 'sp' | 'ep' | 'market'.",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{BASE_URL}}user/signUp",
+							"host": [
+								"{{BASE_URL}}user"
+							],
+							"path": [
+								"signUp"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "User- Admin Login",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "query",
+									"value": "{ \"token\": true }",
+									"type": "text"
+								},
+								{
+									"key": "dto",
+									"value": "{ \"password\": \"\"}",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{BASE_URL}}user/adminLogin",
+							"host": [
+								"{{BASE_URL}}user"
+							],
+							"path": [
+								"adminLogin"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "User - Validate Admin Token",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "query",
+									"value": "{ \"token\": true }",
+									"type": "text"
+								},
+								{
+									"key": "dto",
+									"value": "{ \"token\": \"\" }",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{BASE_URL}}user/validateAdminToken",
+							"host": [
+								"{{BASE_URL}}user"
+							],
+							"path": [
+								"validateAdminToken"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "User - Get User Data",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "query",
+									"value": "{\"id\":true,\"joyride\":true,\"baAdmin\":true,\"changeMaker\":{\"id\":true,\"profilePicFilePath\":true,\"bio\":true,\"firstName\":true,\"lastName\":true,\"onboardingState\":true,\"phone\":true,\"handle\":{\"id\":true},\"address\":{\"id\":true,\"address1\":true,\"address2\":true,\"address3\":true,\"city\":true,\"state\":true,\"zip\":true,\"country\":true},\"view\":{\"earnedCredits\":true,\"poiApproved\":true,\"secondsCompleted\":true,\"spentCredits\":true}},\"exchangeAdmins\":{\"id\":true,\"exchangePartner\":{\"id\":true,\"handle\":{\"id\":true},\"onboardingState\":true,\"name\":true,\"description\":true,\"logoFilePath\":true,\"website\":true,\"address\":{\"id\":true,\"address1\":true,\"city\":true,\"state\":true,\"zip\":true,\"country\":true},\"phone\":true,\"email\":true,\"ein\":true,\"imagesFilePaths\":true,\"budget\":true,\"budgetEndDate\":true,\"listStoreFront\":true,\"view\":{\"receivedThisMonth\":true}}},\"serveAdmins\":{\"id\":true,\"servePartner\":{\"id\":true,\"name\":true,\"description\":true,\"logoFilePath\":true,\"website\":true,\"address\":{\"id\":true,\"address1\":true,\"city\":true,\"state\":true,\"zip\":true,\"country\":true},\"phone\":true,\"email\":true,\"imagesFilePaths\":true,\"handle\":{\"id\":true}}},\"epApplications\":{\"id\":true,\"name\":true,\"handle\":{\"id\":true}},\"spApplications\":{\"id\":true,\"name\":true,\"handle\":{\"id\":true}}}",
+									"type": "text"
+								},
+								{
+									"key": "token",
+									"value": "",
+									"description": "Enter just token string",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{BASE_URL}}user/getUserData",
+							"host": [
+								"{{BASE_URL}}user"
+							],
+							"path": [
+								"getUserData"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "User - Snoop",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "query",
+									"value": "{\"id\":true,\"joyride\":true,\"baAdmin\":true,\"changeMaker\":{\"id\":true,\"profilePicFilePath\":true,\"bio\":true,\"firstName\":true,\"lastName\":true,\"onboardingState\":true,\"phone\":true,\"handle\":{\"id\":true},\"address\":{\"id\":true,\"address1\":true,\"address2\":true,\"address3\":true,\"city\":true,\"state\":true,\"zip\":true,\"country\":true},\"view\":{\"earnedCredits\":true,\"poiApproved\":true,\"secondsCompleted\":true,\"spentCredits\":true}},\"exchangeAdmins\":{\"id\":true,\"exchangePartner\":{\"id\":true,\"handle\":{\"id\":true},\"onboardingState\":true,\"name\":true,\"description\":true,\"logoFilePath\":true,\"website\":true,\"address\":{\"id\":true,\"address1\":true,\"city\":true,\"state\":true,\"zip\":true,\"country\":true},\"phone\":true,\"email\":true,\"ein\":true,\"imagesFilePaths\":true,\"budget\":true,\"budgetEndDate\":true,\"listStoreFront\":true,\"view\":{\"receivedThisMonth\":true}}},\"serveAdmins\":{\"id\":true,\"servePartner\":{\"id\":true,\"name\":true,\"description\":true,\"logoFilePath\":true,\"website\":true,\"address\":{\"id\":true,\"address1\":true,\"city\":true,\"state\":true,\"zip\":true,\"country\":true},\"phone\":true,\"email\":true,\"imagesFilePaths\":true,\"handle\":{\"id\":true}}},\"epApplications\":{\"id\":true,\"name\":true,\"handle\":{\"id\":true}},\"spApplications\":{\"id\":true,\"name\":true,\"handle\":{\"id\":true}}, \"token\":\"\"}",
+									"type": "text"
+								},
+								{
+									"key": "token",
+									"value": "",
+									"description": "Enter just token string. Must be admin",
+									"type": "text"
+								},
+								{
+									"key": "dto",
+									"value": "{ \"userId\": \"\"}",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{BASE_URL}}user/snoop",
+							"host": [
+								"{{BASE_URL}}user"
+							],
+							"path": [
+								"snoop"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "User - Get All User Privileges",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "query",
+									"value": "{\"id\":true,\"baAdmin\":true}",
+									"type": "text"
+								},
+								{
+									"key": "token",
+									"value": "",
+									"description": "Enter token string. Must be admin",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{BASE_URL}}user/getAllUserPrivileges",
+							"host": [
+								"{{BASE_URL}}user"
+							],
+							"path": [
+								"getAllUserPrivileges"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "User - Grant BA Privilege",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "query",
+									"value": "{\"id\":true,\"joyride\":true,\"baAdmin\":true,\"changeMaker\":{\"id\":true,\"profilePicFilePath\":true,\"bio\":true,\"firstName\":true,\"lastName\":true,\"onboardingState\":true,\"phone\":true,\"handle\":{\"id\":true},\"address\":{\"id\":true,\"address1\":true,\"address2\":true,\"address3\":true,\"city\":true,\"state\":true,\"zip\":true,\"country\":true},\"view\":{\"earnedCredits\":true,\"poiApproved\":true,\"secondsCompleted\":true,\"spentCredits\":true}},\"exchangeAdmins\":{\"id\":true,\"exchangePartner\":{\"id\":true,\"handle\":{\"id\":true},\"onboardingState\":true,\"name\":true,\"description\":true,\"logoFilePath\":true,\"website\":true,\"address\":{\"id\":true,\"address1\":true,\"city\":true,\"state\":true,\"zip\":true,\"country\":true},\"phone\":true,\"email\":true,\"ein\":true,\"imagesFilePaths\":true,\"budget\":true,\"budgetEndDate\":true,\"listStoreFront\":true,\"view\":{\"receivedThisMonth\":true}}},\"serveAdmins\":{\"id\":true,\"servePartner\":{\"id\":true,\"name\":true,\"description\":true,\"logoFilePath\":true,\"website\":true,\"address\":{\"id\":true,\"address1\":true,\"city\":true,\"state\":true,\"zip\":true,\"country\":true},\"phone\":true,\"email\":true,\"imagesFilePaths\":true,\"handle\":{\"id\":true}}},\"epApplications\":{\"id\":true,\"name\":true,\"handle\":{\"id\":true}},\"spApplications\":{\"id\":true,\"name\":true,\"handle\":{\"id\":true}}}",
+									"type": "text"
+								},
+								{
+									"key": "token",
+									"value": "",
+									"description": "Enter token string. Must be admin",
+									"type": "text"
+								},
+								{
+									"key": "dto",
+									"value": "{ \"id\": \"\"}",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{BASE_URL}}user/grantBAPrivilege",
+							"host": [
+								"{{BASE_URL}}user"
+							],
+							"path": [
+								"grantBAPrivilege"
+							],
+							"query": [
+								{
+									"key": "",
+									"value": null,
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "User - Revoke BA Privilege",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "query",
+									"value": "{\"id\":true,\"joyride\":true,\"baAdmin\":true,\"changeMaker\":{\"id\":true,\"profilePicFilePath\":true,\"bio\":true,\"firstName\":true,\"lastName\":true,\"onboardingState\":true,\"phone\":true,\"handle\":{\"id\":true},\"address\":{\"id\":true,\"address1\":true,\"address2\":true,\"address3\":true,\"city\":true,\"state\":true,\"zip\":true,\"country\":true},\"view\":{\"earnedCredits\":true,\"poiApproved\":true,\"secondsCompleted\":true,\"spentCredits\":true}},\"exchangeAdmins\":{\"id\":true,\"exchangePartner\":{\"id\":true,\"handle\":{\"id\":true},\"onboardingState\":true,\"name\":true,\"description\":true,\"logoFilePath\":true,\"website\":true,\"address\":{\"id\":true,\"address1\":true,\"city\":true,\"state\":true,\"zip\":true,\"country\":true},\"phone\":true,\"email\":true,\"ein\":true,\"imagesFilePaths\":true,\"budget\":true,\"budgetEndDate\":true,\"listStoreFront\":true,\"view\":{\"receivedThisMonth\":true}}},\"serveAdmins\":{\"id\":true,\"servePartner\":{\"id\":true,\"name\":true,\"description\":true,\"logoFilePath\":true,\"website\":true,\"address\":{\"id\":true,\"address1\":true,\"city\":true,\"state\":true,\"zip\":true,\"country\":true},\"phone\":true,\"email\":true,\"imagesFilePaths\":true,\"handle\":{\"id\":true}}},\"epApplications\":{\"id\":true,\"name\":true,\"handle\":{\"id\":true}},\"spApplications\":{\"id\":true,\"name\":true,\"handle\":{\"id\":true}}}",
+									"type": "text"
+								},
+								{
+									"key": "token",
+									"value": "",
+									"description": "Enter token string. Must be admin",
+									"type": "text"
+								},
+								{
+									"key": "dto",
+									"value": "{ \"id\": \"\"}",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{BASE_URL}}user/revokeBAPrivilege",
+							"host": [
+								"{{BASE_URL}}user"
+							],
+							"path": [
+								"revokeBAPrivilege"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "User - Search Users",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "query",
+									"value": "{\"id\":true,\"changeMaker\":{\"handle\":{\"id\":true},\"firstName\":true,\"lastName\":true}}",
+									"type": "text"
+								},
+								{
+									"key": "dto",
+									"value": "{ \"emailSearchString\": \"qheffern@gmail.com\"}",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{BASE_URL}}user/searchUsers",
+							"host": [
+								"{{BASE_URL}}user"
+							],
+							"path": [
+								"searchUsers"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "User - Activate User Account",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "query",
+									"value": "{}",
+									"type": "text"
+								},
+								{
+									"key": "dto",
+									"value": "{ \"email\" : \"\", \"epId\" : \"\", \"activationHash\" : \"\", \"temporaryPassword\" : \"\", \"forgotPasswordHash\" : \"\", \"newPassword\" : \"\"}",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{BASE_URL}}user/activateUserAccount",
+							"host": [
+								"{{BASE_URL}}user"
+							],
+							"path": [
+								"activateUserAccount"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "User - Resend Email Verification Email",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "query",
+									"value": "{}",
+									"type": "text"
+								},
+								{
+									"key": "dto",
+									"value": "{ \"userId\" : \"\"}",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{BASE_URL}}user/resendEmailVerificationEmail",
+							"host": [
+								"{{BASE_URL}}user"
+							],
+							"path": [
+								"resendEmailVerificationEmail"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "User - Verify Email",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "query",
+									"value": "{}",
+									"type": "text"
+								},
+								{
+									"key": "dto",
+									"value": "{ \"email\": \"\", \"hash\": \"\"}",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{BASE_URL}}user/verifyEmail",
+							"host": [
+								"{{BASE_URL}}user"
+							],
+							"path": [
+								"verifyEmail"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "User - Forgot Password",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "query",
+									"value": "{}",
+									"type": "text"
+								},
+								{
+									"key": "dto",
+									"value": "{ \"email\": \"\"}",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{BASE_URL}}user/forgotPassword",
+							"host": [
+								"{{BASE_URL}}user"
+							],
+							"path": [
+								"forgotPassword"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "User - Forgot Password Change",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "query",
+									"value": "{}",
+									"type": "text"
+								},
+								{
+									"key": "dto",
+									"value": "{ \"email\": \"\", \"password\": \"\", \"hash\": \"\"}",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{BASE_URL}}user/forgotPasswordChange",
+							"host": [
+								"{{BASE_URL}}user"
+							],
+							"path": [
+								"forgotPasswordChange"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "User - Change Password",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "query",
+									"value": "{}",
+									"type": "text"
+								},
+								{
+									"key": "token",
+									"value": "",
+									"type": "text"
+								},
+								{
+									"key": "dto",
+									"value": "{ \"currentPassword\": \"\", \"newPassword\": \"\"}",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{BASE_URL}}user/changePassword",
+							"host": [
+								"{{BASE_URL}}user"
+							],
+							"path": [
+								"changePassword"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "User - Finish Joyride",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "query",
+									"value": "{}",
+									"type": "text"
+								},
+								{
+									"key": "token",
+									"value": "",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{BASE_URL}}user/finishJoyride",
+							"host": [
+								"{{BASE_URL}}user"
+							],
+							"path": [
+								"finishJoyride"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "User - Admin User Search",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "query",
+									"value": "{\"id\":true,\"joyride\":true,\"baAdmin\":true,\"changeMaker\":{\"id\":true,\"profilePicFilePath\":true,\"bio\":true,\"firstName\":true,\"lastName\":true,\"onboardingState\":true,\"phone\":true,\"handle\":{\"id\":true},\"address\":{\"id\":true,\"address1\":true,\"address2\":true,\"address3\":true,\"city\":true,\"state\":true,\"zip\":true,\"country\":true},\"view\":{\"earnedCredits\":true,\"poiApproved\":true,\"secondsCompleted\":true,\"spentCredits\":true}},\"exchangeAdmins\":{\"id\":true,\"exchangePartner\":{\"id\":true,\"handle\":{\"id\":true},\"onboardingState\":true,\"name\":true,\"description\":true,\"logoFilePath\":true,\"website\":true,\"address\":{\"id\":true,\"address1\":true,\"city\":true,\"state\":true,\"zip\":true,\"country\":true},\"phone\":true,\"email\":true,\"ein\":true,\"imagesFilePaths\":true,\"budget\":true,\"budgetEndDate\":true,\"listStoreFront\":true,\"view\":{\"receivedThisMonth\":true}}},\"serveAdmins\":{\"id\":true,\"servePartner\":{\"id\":true,\"name\":true,\"description\":true,\"logoFilePath\":true,\"website\":true,\"address\":{\"id\":true,\"address1\":true,\"city\":true,\"state\":true,\"zip\":true,\"country\":true},\"phone\":true,\"email\":true,\"imagesFilePaths\":true,\"handle\":{\"id\":true}}},\"epApplications\":{\"id\":true,\"name\":true,\"handle\":{\"id\":true}},\"spApplications\":{\"id\":true,\"name\":true,\"handle\":{\"id\":true}}}",
+									"type": "text"
+								},
+								{
+									"key": "token",
+									"value": "",
+									"description": "Must be admin",
+									"type": "text"
+								},
+								{
+									"key": "dto",
+									"value": "{ \"searchStr\": \"\"}",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{BASE_URL}}user/adminUserSearch",
+							"host": [
+								"{{BASE_URL}}user"
+							],
+							"path": [
+								"adminUserSearch"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Change Makers",
+			"item": [
+				{
+					"name": "Change Makers - Create Profile",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "query",
+									"value": "{\"id\":true,\"joyride\":true,\"baAdmin\":true,\"changeMaker\":{\"id\":true,\"profilePicFilePath\":true,\"bio\":true,\"firstName\":true,\"lastName\":true,\"onboardingState\":true,\"phone\":true,\"handle\":{\"id\":true},\"address\":{\"id\":true,\"address1\":true,\"address2\":true,\"address3\":true,\"city\":true,\"state\":true,\"zip\":true,\"country\":true},\"view\":{\"earnedCredits\":true,\"poiApproved\":true,\"secondsCompleted\":true,\"spentCredits\":true}},\"exchangeAdmins\":{\"id\":true,\"exchangePartner\":{\"id\":true,\"handle\":{\"id\":true},\"onboardingState\":true,\"name\":true,\"description\":true,\"logoFilePath\":true,\"website\":true,\"address\":{\"id\":true,\"address1\":true,\"city\":true,\"state\":true,\"zip\":true,\"country\":true},\"phone\":true,\"email\":true,\"ein\":true,\"imagesFilePaths\":true,\"budget\":true,\"budgetEndDate\":true,\"listStoreFront\":true,\"view\":{\"receivedThisMonth\":true}}},\"serveAdmins\":{\"id\":true,\"servePartner\":{\"id\":true,\"name\":true,\"description\":true,\"logoFilePath\":true,\"website\":true,\"address\":{\"id\":true,\"address1\":true,\"city\":true,\"state\":true,\"zip\":true,\"country\":true},\"phone\":true,\"email\":true,\"imagesFilePaths\":true,\"handle\":{\"id\":true}}},\"epApplications\":{\"id\":true,\"name\":true,\"handle\":{\"id\":true}},\"spApplications\":{\"id\":true,\"name\":true,\"handle\":{\"id\":true}}}",
+									"type": "text"
+								},
+								{
+									"key": "token",
+									"value": "",
+									"type": "text"
+								},
+								{
+									"key": "dto",
+									"value": "{\n  @IsNotEmpty()\n  @Matches(ImConfig.regex.firstName)\n  firstName!: string;\n\n  @IsNotEmpty()\n  @Matches(ImConfig.regex.lastName)\n  lastName!: string;\n\n  @IsNotEmpty()\n  @Matches(ImConfig.regex.handle)\n  handle!: string;\n\n  @IsNotEmpty()\n  @Matches(ImConfig.regex.phone)\n  phone!: string;\n\n  @IsOptional()\n  @IsString()\n  onboardingState?: CmOnboardingState;\n}",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{BASE_URL}}changemaker/createProfile",
+							"host": [
+								"{{BASE_URL}}changemaker"
+							],
+							"path": [
+								"createProfile"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "BASE_URL",
+			"value": "http://127.0.0.1:3335/",
+			"type": "string"
+		}
+	]
+}

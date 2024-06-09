@@ -1,7 +1,6 @@
-import { Transaction, TransactionQuery } from '@involvemint/shared/domain';
+import { Transaction, TransactionQuery, IParser } from '@involvemint/shared/domain';
 import { createEntityAdapter, EntityState } from '@ngrx/entity';
 import { createReducer, on } from '@ngrx/store';
-import { IParser } from '@orcha/common';
 import * as TransactionsActions from './transactions.actions';
 
 export const TRANSACTIONS_KEY = 'transactions';

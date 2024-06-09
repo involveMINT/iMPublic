@@ -36,10 +36,10 @@ import {
   ProjectDocument,
   ProjectListingStatus,
   Question,
+  IProps
 } from '@involvemint/shared/domain';
 import { parseDate, STATES, tapOnce } from '@involvemint/shared/util';
 import { FormArray, FormControl, FormGroup } from '@ngneat/reactive-forms';
-import { IProps } from '@orcha/common';
 import { compareAsc, compareDesc, isAfter } from 'date-fns';
 import { merge } from 'rxjs';
 import { auditTime, filter, map, skip, switchMap, tap } from 'rxjs/operators';

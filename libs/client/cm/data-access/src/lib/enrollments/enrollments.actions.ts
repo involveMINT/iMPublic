@@ -1,7 +1,6 @@
 import { ProjectFeedStoreModel } from '@involvemint/client/shared/data-access';
-import { LinkPassportDocumentDto, SubmitEnrollmentApplicationDto } from '@involvemint/shared/domain';
+import { LinkPassportDocumentDto, APIOperationError, SubmitEnrollmentApplicationDto } from '@involvemint/shared/domain';
 import { createAction, props } from '@ngrx/store';
-import { OrchaOperationError } from '@orcha/common';
 import { EnrollmentStoreModel } from './enrollments.reducer';
 
 export const refreshEnrollments = createAction('[Enrollments|ChangeMaker] Enrollments Refresh');
@@ -14,7 +13,7 @@ export const loadEnrollmentsSuccess = createAction(
 
 export const loadEnrollmentsError = createAction(
   '[Enrollments|ChangeMaker] Enrollments Load Error',
-  props<{ error: OrchaOperationError }>()
+  props<{ error: APIOperationError }>()
 );
 
 /*
@@ -37,7 +36,7 @@ export const startApplicationSuccess = createAction(
 
 export const startApplicationError = createAction(
   '[Enrollments|ChangeMaker] Start Application Error',
-  props<{ error: OrchaOperationError }>()
+  props<{ error: APIOperationError }>()
 );
 
 /*
@@ -59,7 +58,7 @@ export const withdrawEnrollmentSuccess = createAction(
 
 export const withdrawEnrollmentError = createAction(
   '[Enrollments|ChangeMaker] Withdraw Application Error',
-  props<{ error: OrchaOperationError }>()
+  props<{ error: APIOperationError }>()
 );
 
 /*
@@ -82,7 +81,7 @@ export const linkPassportDocumentSuccess = createAction(
 
 export const linkPassportDocumentError = createAction(
   '[Enrollments|ChangeMaker] Link Passport Error',
-  props<{ error: OrchaOperationError }>()
+  props<{ error: APIOperationError }>()
 );
 
 /*
@@ -105,7 +104,7 @@ export const submitApplicationSuccess = createAction(
 
 export const submitApplicationError = createAction(
   '[Enrollments|ChangeMaker] Submit Application Error',
-  props<{ error: OrchaOperationError }>()
+  props<{ error: APIOperationError }>()
 );
 
 /*
@@ -127,5 +126,5 @@ export const acceptWaiverSuccess = createAction(
 
 export const acceptWaiverError = createAction(
   '[Enrollments|ChangeMaker] Accept Waiver Error',
-  props<{ error: OrchaOperationError }>()
+  props<{ error: APIOperationError }>()
 );
