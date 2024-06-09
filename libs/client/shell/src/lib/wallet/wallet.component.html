@@ -164,7 +164,7 @@
               Balance Leftover:
               <ion-spinner *ngIf="!state.creditsLoaded" class="spin-loader" name="crescent"></ion-spinner>
               <span *ngIf="state.creditsLoaded" [style.font-weight]="'700'">
-                {{ state.balance - amount.value | currency: '':'' }}
+                {{ state.balance - amount.value > 0 ? (state.balance - amount.value | currency: '':'') : '0' }}
               </span>
               <ion-icon
                 *ngIf="state.creditsLoaded"
@@ -175,17 +175,19 @@
             <div class="amount" (click)="focus()">
               <div
                 class="sending-amount"
+                *ngIf="amount.value >= 0"
                 [style.grid-template-columns]="amount.value.toFixed(2).length + 'ch auto'"
               >
-                <input
-                  [style.width.ch]="amount.value.toFixed(2).length"
-                  #amountInp
-                  currencyMask
-                  [formControl]="amount"
-                />
+              <input
+              [style.width.ch]="amount.value.toFixed(2).length"
+              #amountInp
+              currencyMask
+              [formControl]="amount"
+              
+            />
                 <ion-icon src="/assets/icons/cc.svg" class="amount-icon"></ion-icon>
               </div>
-              <span class="equiv">
+              <span class="equiv" *ngIf="amount.value >= 0">
                 <i>Valued at: {{ amount.value | currency }} USD</i>
               </span>
             </div>
