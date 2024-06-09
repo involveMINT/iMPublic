@@ -6,7 +6,7 @@ import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { pessimisticUpdate } from '@nrwl/angular';
 import { from } from 'rxjs';
 import { delayWhen, filter, map, switchMap, take, tap } from 'rxjs/operators';
-import { ChangeMakerOrchestration } from '../../../orchestrations';
+import { ChangeMakerRestClient } from '../../../rest-clients';
 import { UserFacade } from '../../user.facade';
 import * as CmProfileActions from './cm-profile.actions';
 
@@ -45,7 +45,7 @@ export class CmProfileEffects {
             take(1),
             switchMap((cm) => {
               if (!cm) throw new Error('No ChangeMaker Profile Found!');
-              return this.cm.updateProfileImage(UserQuery.changeMaker, undefined, file);
+              return this.cm.updateProfileImage(UserQuery.changeMaker, file);
             }),
             map((event) => {
               switch (event.type) {
@@ -79,7 +79,7 @@ export class CmProfileEffects {
 
   constructor(
     private readonly actions$: Actions,
-    private readonly cm: ChangeMakerOrchestration,
+    private readonly cm: ChangeMakerRestClient,
     private readonly uf: UserFacade,
     private readonly status: StatusService,
     private readonly infoModal: InfoModalService

@@ -1,4 +1,4 @@
-import { createQuery } from '@orcha/common';
+import { createQuery } from '../repository';
 import { Poi } from './poi.model';
 
 export const PoiCmQuery = createQuery<Poi[]>()({

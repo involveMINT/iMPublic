@@ -1,9 +1,9 @@
 import { UnArray } from '@involvemint/shared/util';
 import { createAction, props } from '@ngrx/store';
-import { OrchaOperationError } from '@orcha/common';
 import { ExchangePartnerMarketStoreModel } from '../market/market.reducer';
 import { ActiveProfile } from '../session/user-session.reducer';
 import { VoucherStoreModel } from './vouchers.reducer';
+import { APIOperationError } from '@involvemint/shared/domain';
 
 export const refreshVouchersForProfile = createAction(
   '[Vouchers] Vouchers Refresh For Profile',
@@ -21,7 +21,7 @@ export const loadVouchersForProfileSuccess = createAction(
 
 export const loadVouchersForProfileError = createAction(
   '[Vouchers] Vouchers Load For Profile Error',
-  props<{ error: OrchaOperationError }>()
+  props<{ error: APIOperationError }>()
 );
 
 /*
@@ -46,5 +46,5 @@ export const buyVoucherSuccess = createAction(
 
 export const buyVoucherError = createAction(
   '[Vouchers] Buy Voucher Error',
-  props<{ error: OrchaOperationError }>()
+  props<{ error: APIOperationError }>()
 );

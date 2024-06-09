@@ -1,7 +1,6 @@
-import { PassportDocument, PassportDocumentQuery } from '@involvemint/shared/domain';
+import { PassportDocument, PassportDocumentQuery, IParser } from '@involvemint/shared/domain';
 import { createEntityAdapter, EntityState } from '@ngrx/entity';
 import { createReducer, on } from '@ngrx/store';
-import { IParser } from '@orcha/common';
 import * as PassportActions from './passport.actions';
 
 export const PASSPORT_KEY = 'passport';

@@ -1,7 +1,6 @@
-import { Poi, PoiCmQuery } from '@involvemint/shared/domain';
+import { Poi, PoiCmQuery, IParser } from '@involvemint/shared/domain';
 import { createEntityAdapter, EntityState } from '@ngrx/entity';
 import { createReducer, on } from '@ngrx/store';
-import { IParser } from '@orcha/common';
 import * as PoisActions from './pois.actions';
 
 export const POIS_KEY = 'pois';

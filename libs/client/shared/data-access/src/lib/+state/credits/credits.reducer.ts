@@ -1,7 +1,6 @@
-import { Credit, CreditQuery } from '@involvemint/shared/domain';
+import { Credit, CreditQuery, IParser } from '@involvemint/shared/domain';
 import { createEntityAdapter, EntityState } from '@ngrx/entity';
 import { createReducer, on } from '@ngrx/store';
-import { IParser } from '@orcha/common';
 import * as CreditsActions from './credits.actions';
 
 export const CREDITS_KEY = 'credits';

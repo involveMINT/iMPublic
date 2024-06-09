@@ -1,6 +1,5 @@
-import { UpdateProjectDto } from '@involvemint/shared/domain';
+import { APIOperationError, UpdateProjectDto } from '@involvemint/shared/domain';
 import { createAction, props } from '@ngrx/store';
-import { OrchaOperationError } from '@orcha/common';
 import { ProjectSpStoreModel } from './projects.reducer';
 
 export const refreshProjects = createAction(
@@ -17,7 +16,7 @@ export const loadProjectsSuccess = createAction(
 
 export const loadProjectsError = createAction(
   '[ServePartner|Projects] Load Projects Error',
-  props<{ error: OrchaOperationError }>()
+  props<{ error: APIOperationError }>()
 );
 
 /*
@@ -36,7 +35,7 @@ export const createProjectSuccess = createAction(
 
 export const createProjectError = createAction(
   '[ServePartner|Projects] Create Project Error',
-  props<{ error: OrchaOperationError }>()
+  props<{ error: APIOperationError }>()
 );
 
 /*
@@ -59,7 +58,7 @@ export const updateProjectSuccess = createAction(
 
 export const updateProjectError = createAction(
   '[ServePartner|Projects] Update Project Error',
-  props<{ error: OrchaOperationError }>()
+  props<{ error: APIOperationError }>()
 );
 
 /*
@@ -82,7 +81,7 @@ export const deleteProjectSuccess = createAction(
 
 export const deleteProjectError = createAction(
   '[ServePartner|Projects] Delete Project Error',
-  props<{ error: OrchaOperationError }>()
+  props<{ error: APIOperationError }>()
 );
 
 /*
@@ -105,7 +104,7 @@ export const uploadImagesSuccess = createAction(
 
 export const uploadImagesError = createAction(
   '[ServePartner|Projects] Upload Project Images Error',
-  props<{ error: OrchaOperationError }>()
+  props<{ error: APIOperationError }>()
 );
 
 /*
@@ -128,7 +127,7 @@ export const deleteImageSuccess = createAction(
 
 export const deleteImageError = createAction(
   '[ServePartner|Projects] Delete Project Images Error',
-  props<{ error: OrchaOperationError }>()
+  props<{ error: APIOperationError }>()
 );
 
 /*
@@ -150,5 +149,5 @@ export const uploadCustomWaiverSuccess = createAction(
 
 export const uploadCustomWaiverError = createAction(
   '[ServePartner|Projects] Upload Custom WaiverError',
-  props<{ error: OrchaOperationError }>()
+  props<{ error: APIOperationError }>()
 );

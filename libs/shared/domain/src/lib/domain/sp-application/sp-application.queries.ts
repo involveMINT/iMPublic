@@ -1,4 +1,4 @@
-import { createQuery } from '@orcha/common';
+import { createQuery } from '../repository';
 import { SpApplication } from './sp-application.model';
 
 export const SpApplicationQuery = createQuery<SpApplication>()({

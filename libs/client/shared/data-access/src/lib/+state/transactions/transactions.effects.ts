@@ -5,10 +5,10 @@ import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { fetch, pessimisticUpdate } from '@nrwl/angular';
 import { from, of } from 'rxjs';
 import { delayWhen, filter, map, switchMap, take, tap } from 'rxjs/operators';
-import { TransactionOrchestration } from '../../orchestrations';
 import * as CreditsActions from '../credits/credits.actions';
 import { UserFacade } from '../user.facade';
 import * as TransactionsActions from './transactions.actions';
+import { TransactionRestClient } from '../../rest-clients';
 
 @Injectable()
 export class TransactionsEffects {
@@ -17,7 +17,7 @@ export class TransactionsEffects {
       ofType(TransactionsActions.loadTransactionsForProfile),
       fetch({
         run: ({ profile }) =>
-          this.transactionOrcha
+          this.transactionClient
             .getForProfile(TransactionQuery, { profileId: profile.id })
             .pipe(
               map((transactions) =>
@@ -54,7 +54,7 @@ export class TransactionsEffects {
             switchMap(() => this.user.session.selectors.activeProfile$),
             take(1),
             switchMap((profile) =>
-              this.transactionOrcha.transaction(TransactionQuery, dto).pipe(
+              this.transactionClient.transaction(TransactionQuery, dto).pipe(
                 tap(() => this.status.dismissLoader()),
                 delayWhen((transaction) =>
                   from(
@@ -91,7 +91,7 @@ export class TransactionsEffects {
 
   constructor(
     private readonly actions$: Actions,
-    private readonly transactionOrcha: TransactionOrchestration,
+    private readonly transactionClient: TransactionRestClient,
     private readonly status: StatusService,
     private readonly user: UserFacade,
     private readonly infoModal: InfoModalService

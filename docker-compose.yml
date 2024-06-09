@@ -1,0 +1,58 @@
+version: '3.8'
+
+services:
+  postgres:
+    hostname: postgres
+    container_name: postgres
+    image: postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: postgres
+      POSTGRES_INITDB_ARGS: '-A md5'
+    ports:
+      - '5433:5432'
+    volumes:
+      - ./.docker/init.sql:/docker-entrypoint-initdb.d/init.sql
+  pgadmin:
+    container_name: pgadmin
+    image: dpage/pgadmin4
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=localadmin@involvemint.io
+      - PGADMIN_DEFAULT_PASSWORD=involvemintlocal
+      - PGADMIN_CONFIG_SERVER_MODE=False
+      - PGADMIN_CONFIG_MASTER_PASSWORD_REQUIRED=False
+    ports:
+      - '8889:80'
+    hostname: pgadmin
+    entrypoint: /bin/sh -c "chmod 600 /tmp/pgpass; /entrypoint.sh;"
+    volumes:
+      - ./.docker/servers.json:/pgadmin4/servers.json # preconfigured servers/connections
+      - ./.docker/pgpass:/tmp/pgpass # passwords for the connections in this file
+    depends_on:
+      - postgres
+  firebase_emulators:
+    container_name: firebase_emulators
+    build:
+      context: .docker/firebase-emulators
+      args:
+        - FIREBASE_TOOLS_VERSION=12.9.1
+        - HOME=/home/node=value
+    ports:
+      - 4000:4000
+      - 5000:5000
+      - 5001:5001
+      - 8080:8080
+      - 8085:8085
+      - 9000:9000
+      - 9005:9005
+      - 9099:9099
+      - 9199:9199
+      - 4400:4400
+    volumes:
+      - .docker/firebase-emulators/firebase.json:/firebase.json
+      - .docker/firebase-emulators/storage.rules:/storage.rules
+      - .docker/firebase-emulators/.firebaserc:/.firebaserc
+    command: >
+      sh -c "firebase emulators:start --import=firebase-local-data --export-on-exit=firebase-local-data"
+

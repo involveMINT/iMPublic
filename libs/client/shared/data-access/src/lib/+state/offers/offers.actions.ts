@@ -1,6 +1,5 @@
-import { DeleteOfferImageDto, UpdateOfferDto } from '@involvemint/shared/domain';
+import { DeleteOfferImageDto, APIOperationError, UpdateOfferDto } from '@involvemint/shared/domain';
 import { createAction, props } from '@ngrx/store';
-import { OrchaOperationError } from '@orcha/common';
 import { ActiveProfile } from '../session/user-session.reducer';
 import { OfferStoreModel } from './offers.reducer';
 
@@ -20,7 +19,7 @@ export const loadOffersForProfileSuccess = createAction(
 
 export const loadOffersForProfileError = createAction(
   '[Offers] Offers Load For Profile Error',
-  props<{ error: OrchaOperationError }>()
+  props<{ error: APIOperationError }>()
 );
 
 /*
@@ -39,7 +38,7 @@ export const createOfferSuccess = createAction(
 
 export const createOfferError = createAction(
   '[Offers] Create Offer Error',
-  props<{ error: OrchaOperationError }>()
+  props<{ error: APIOperationError }>()
 );
 
 /*
@@ -58,7 +57,7 @@ export const updateOfferSuccess = createAction(
 
 export const updateOfferError = createAction(
   '[Offers] Update Offer Error',
-  props<{ error: OrchaOperationError }>()
+  props<{ error: APIOperationError }>()
 );
 
 /*
@@ -81,7 +80,7 @@ export const deleteOfferSuccess = createAction(
 
 export const deleteOfferError = createAction(
   '[Offers] Delete Offer Error',
-  props<{ error: OrchaOperationError }>()
+  props<{ error: APIOperationError }>()
 );
 
 /*
@@ -103,7 +102,7 @@ export const uploadImagesSuccess = createAction(
 
 export const uploadImagesError = createAction(
   '[Offers] Upload Offer Images Error',
-  props<{ error: OrchaOperationError }>()
+  props<{ error: APIOperationError }>()
 );
 
 /*
@@ -122,5 +121,5 @@ export const deleteImageSuccess = createAction(
 
 export const deleteImageError = createAction(
   '[Offers] Delete Offer Image Error',
-  props<{ error: OrchaOperationError }>()
+  props<{ error: APIOperationError }>()
 );

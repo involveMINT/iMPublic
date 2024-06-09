@@ -1,7 +1,6 @@
-import { Offer, OfferQuery } from '@involvemint/shared/domain';
+import { Offer, OfferQuery, IParser } from '@involvemint/shared/domain';
 import { createEntityAdapter, EntityState } from '@ngrx/entity';
 import { createReducer, on } from '@ngrx/store';
-import { IParser } from '@orcha/common';
 import * as OffersActions from './offers.actions';
 
 export const OFFERS_KEY = 'offers';

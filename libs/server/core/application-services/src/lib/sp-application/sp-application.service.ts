@@ -10,15 +10,17 @@ import {
   SpApplication,
   SubmitSpApplicationDto,
   WithdrawSpApplicationDto,
+  IQuery,
+  parseQuery
 } from '@involvemint/shared/domain';
 import { Injectable, UnauthorizedException } from '@nestjs/common';
-import { IQuery, parseQuery } from '@orcha/common';
 import * as geocoder from 'node-geocoder';
 import { Socket } from 'socket.io';
 import * as uuid from 'uuid';
 import { AuthService } from '../auth/auth.service';
 import { EmailService } from '../email/email.service';
 import { DbTransactionCreator } from '../transaction-creator/transaction-creator.service';
+import { getDefaultAddress } from '@involvemint/shared/domain';
 
 @Injectable()
 export class SpApplicationService {
@@ -48,6 +50,24 @@ export class SpApplicationService {
 
     const spAppId = uuid.v4();
 
+    let address;
+
+    if(environment.environment === 'local')
+    {
+      address = getDefaultAddress();
+    }
+    else
+    {
+      address = {
+        id: uuid.v4(),
+        address1: dto.address1,
+        address2: dto.address2,
+        city: dto.city,
+        state: dto.state,
+        zip: dto.zip,
+      };
+    }
+    
     const spApp = await this.spAppRepo.upsert(
       {
         id: spAppId,
@@ -58,14 +78,7 @@ export class SpApplicationService {
         phone: dto.phone,
         website: dto.website,
         dateCreated: new Date(),
-        address: {
-          id: uuid.v4(),
-          address1: dto.address1,
-          address2: dto.address2,
-          city: dto.city,
-          state: dto.state,
-          zip: dto.zip,
-        },
+        address: address,
       },
       query
     );
@@ -99,8 +112,17 @@ export class SpApplicationService {
       user: { id: true, changeMaker: { firstName: true } },
     });
 
-    const geo = geocoder.default({ provider: 'google', apiKey: environment.gcpApiKey });
-    const res = await geo.geocode(Object.entries(spApp.address).join(' '));
+    let res: geocoder.Entry[];
+
+    if(environment.environment === 'local')
+    {
+      res = environment.defaultLocalAddress;
+    }
+    else
+    {
+      const geo = geocoder.default({ provider: 'google', apiKey: environment.gcpApiKey });
+      res = await geo.geocode(Object.entries(spApp.address).join(' '));
+    }
 
     const lat = Number(res[0]?.latitude?.toFixed(4));
     const lng = Number(res[0]?.longitude?.toFixed(4));

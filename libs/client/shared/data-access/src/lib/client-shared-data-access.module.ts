@@ -1,10 +1,10 @@
 import { CommonModule } from '@angular/common';
+import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { InfoModalModule } from '@involvemint/client/shared/util';
 import { IonicModule } from '@ionic/angular';
 import { EffectsModule } from '@ngrx/effects';
 import { StoreModule } from '@ngrx/store';
-import { OrchaModule } from '@orcha/angular';
 import { CreditsEffects } from './+state/credits/credits.effects';
 import { CreditReducer, CREDITS_KEY } from './+state/credits/credits.reducer';
 import { ProjectsEffects } from './+state/market/market.effects';
@@ -27,37 +27,16 @@ import { ConfirmVoucherPurchaseModalModule } from './+state/vouchers/confirm-vou
 import { VouchersEffects } from './+state/vouchers/vouchers.effects';
 import { VoucherReducer, VOUCHERS_KEY } from './+state/vouchers/vouchers.reducer';
 import { AuthInterceptor } from './auth.interceptor';
-import { EpApplicationGateway } from './gateways/ep-application.gateway';
-import { SpApplicationGateway } from './gateways/sp-application.gateway';
 import { ImProfileSelectModalModule } from './modals/im-profile-select-modal/im-profile-select-modal.module';
-import {
-  ChangeMakerOrchestration,
-  ChatOrchestration,
-  CreditOrchestration,
-  EnrollmentOrchestration,
-  EpApplicationOrchestration,
-  ExchangeAdminOrchestration,
-  ExchangePartnerOrchestration,
-  HandleOrchestration,
-  PassportDocumentOrchestration,
-  ProjectOrchestration,
-  ServeAdminOrchestration,
-  SpApplicationOrchestration,
-  TransactionOrchestration,
-  UserOrchestration,
-  VoucherOrchestration,
-} from './orchestrations';
-import { OfferOrchestration } from './orchestrations/offer.orchestration';
-import { PoiOrchestration } from './orchestrations/poi.orchestration';
-import { RequestOrchestration } from './orchestrations/request.orchestration';
-import { ServePartnerOrchestration } from './orchestrations/serve-partner.orchestration';
-import { StorageOrchestration } from './orchestrations/storage.orchestration';
+import { ChangeMakerRestClient, ChatRestClient, CreditRestClient, EnrollmentRestClient, EpApplicationRestClient, ExchangeAdminRestClient, ExchangePartnerRestClient, HandleRestClient, OfferRestClient, PassportDocumentRestClient, PoiRestClient, ProjectRestClient, RequestRestClient, ServeAdminRestClient, ServePartnerRestClient, SpApplicationRestClient, TransactionRestClient, UserRestClient, VoucherRestClient } from './rest-clients';
+import { StorageRestClient } from './rest-clients/storage.rest-client';
 
 @NgModule({
   imports: [
     CommonModule,
     IonicModule,
     InfoModalModule,
+    HttpClientModule,
     ImProfileSelectModalModule,
     ConfirmVoucherPurchaseModalModule,
     StoreModule.forFeature(CREDITS_KEY, CreditReducer),
@@ -81,33 +60,35 @@ import { StorageOrchestration } from './orchestrations/storage.orchestration';
       UserSessionEffects,
       VouchersEffects,
     ]),
-    OrchaModule.forFeature({
-      orchestrations: [
-        ChangeMakerOrchestration,
-        ChatOrchestration,
-        CreditOrchestration,
-        EnrollmentOrchestration,
-        EpApplicationOrchestration,
-        ExchangeAdminOrchestration,
-        ExchangePartnerOrchestration,
-        HandleOrchestration,
-        OfferOrchestration,
-        PassportDocumentOrchestration,
-        PoiOrchestration,
-        ProjectOrchestration,
-        RequestOrchestration,
-        ServeAdminOrchestration,
-        ServePartnerOrchestration,
-        SpApplicationOrchestration,
-        StorageOrchestration,
-        TransactionOrchestration,
-        UserOrchestration,
-        VoucherOrchestration,
-      ],
-      gateways: [EpApplicationGateway, SpApplicationGateway],
-      interceptors: [AuthInterceptor],
-    }),
   ],
-  providers: [UserFacade, AuthInterceptor],
+  providers: [
+    UserFacade,
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: AuthInterceptor,
+      multi: true,
+    },
+    ChangeMakerRestClient,
+    ChatRestClient,
+    CreditRestClient,
+    EnrollmentRestClient,
+    EpApplicationRestClient,
+    ExchangeAdminRestClient,
+    ExchangePartnerRestClient,
+    HandleRestClient,
+    OfferRestClient,
+    PassportDocumentRestClient,
+    PoiRestClient,
+    ProjectRestClient,
+    RequestRestClient,
+    ServeAdminRestClient,
+    ServePartnerRestClient,
+    SpApplicationRestClient,
+    StorageRestClient,
+    TransactionRestClient,
+    UserRestClient,
+    VoucherRestClient
+  ]
+  
 })
 export class ClientSharedDataAccessModule {}

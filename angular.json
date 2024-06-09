@@ -99,6 +99,14 @@
                   "maximumError": "10kb"
                 }
               ]
+            },
+            "local": {
+              "fileReplacements":[
+                {
+                  "replace": "libs/shared/domain/src/lib/environments/environment.ts",
+                  "with": "libs/shared/domain/src/lib/environments/environment.local.ts"
+                }
+              ]
             }
           }
         },
@@ -115,6 +123,9 @@
             },
             "test": {
               "browserTarget": "involvemint:build:test"
+            },
+            "local": {
+              "browserTarget": "involvemint:build:local"
             }
           }
         },
@@ -158,6 +169,9 @@
             },
             "test": {
               "devServerTarget": "involvemint:serve:test"
+            },
+            "local": {
+              "devServerTarget": "involvemint:serve"
             }
           }
         },
@@ -205,6 +219,14 @@
                   "with": "libs/shared/domain/src/lib/environments/environment.test.ts"
                 }
               ]
+            },
+            "local": {
+              "fileReplacements":[
+                {
+                  "replace": "libs/shared/domain/src/lib/environments/environment.ts",
+                  "with": "libs/shared/domain/src/lib/environments/environment.local.ts"
+                }
+              ]
             }
           }
         },
@@ -213,6 +235,11 @@
           "options": {
             "buildTarget": "api:build",
             "port": 2324
+          },
+          "configurations": {
+            "local":{
+              "buildTarget": "api:build:local"
+            }
           }
         },
         "lint": {
@@ -787,22 +814,22 @@
         }
       }
     },
-    "server-orcha": {
-      "root": "libs/server/orcha",
-      "sourceRoot": "libs/server/orcha/src",
+    "server-api": {
+      "root": "libs/server/api",
+      "sourceRoot": "libs/server/api/src",
       "projectType": "library",
       "architect": {
         "lint": {
           "builder": "@nrwl/linter:eslint",
           "options": {
-            "lintFilePatterns": ["libs/server/orcha/**/*.ts"]
+            "lintFilePatterns": ["libs/server/api/**/*.ts"]
           }
         },
         "test": {
           "builder": "@nrwl/jest:jest",
-          "outputs": ["coverage/libs/server/orcha"],
+          "outputs": ["coverage/libs/server/api"],
           "options": {
-            "jestConfig": "libs/server/orcha/jest.config.js",
+            "jestConfig": "libs/server/api/jest.config.js",
             "passWithNoTests": true
           }
         }

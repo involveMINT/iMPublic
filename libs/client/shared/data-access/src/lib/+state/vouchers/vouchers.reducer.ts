@@ -1,7 +1,6 @@
-import { Voucher, VoucherQuery } from '@involvemint/shared/domain';
+import { Voucher, VoucherQuery, IParser } from '@involvemint/shared/domain';
 import { createEntityAdapter, EntityState } from '@ngrx/entity';
 import { createReducer, on } from '@ngrx/store';
-import { IParser } from '@orcha/common';
 import * as VouchersActions from './vouchers.actions';
 
 export const VOUCHERS_KEY = 'vouchers';
