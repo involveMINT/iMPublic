@@ -26,18 +26,20 @@
         </im-item>
         <im-item [touched]="true">
           <ion-icon slot="start" name="lock-closed"></ion-icon>
-          <input formControlName="password" name="password" type="password" placeholder="Password" />
+
+          <input formControlName="password" name="password" type="password" placeholder="Password"
+            [type]="isPasswordVisible ? 'text' : 'password'" />
+          <a class="type-toggle" (click)="togglePasswordVisibility()">
+            <ion-icon class="show-option" [hidden]="isPasswordVisible" name="eye-off-outline"></ion-icon>
+            <ion-icon class="hide-option" [hidden]="!isPasswordVisible" name="eye-outline"></ion-icon>
+          </a>
           <im-error *ngIf="!loginForm.controls.password.valid && loginForm.controls.password.touched">
             Please enter your password.
           </im-error>
         </im-item>
 
         <!-- Implicit button for form when pressing enter button -->
-        <button
-          style="display: none"
-          [disabled]="!loginForm.valid"
-          test-attr="login-submit-implicit-button"
-        ></button>
+        <button style="display: none" [disabled]="!loginForm.valid" test-attr="login-submit-implicit-button"></button>
       </form>
       <ion-button [disabled]="!loginForm.valid" (click)="submit()" test-attr="login-submit-button">
         Log In
