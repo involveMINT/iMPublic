@@ -9,8 +9,10 @@ export class EmailService {
 
   shouldNotSendNotification = environment.environment === 'local';
 
+  //to configure call back urls for emails
   constructor(@Inject(FRONTEND_ROUTES_TOKEN) private readonly route: FrontendRoutes) { }
 
+  //sends informational emaisl to multiple recipients, if notification sho0uld  be sent, constructs a message object and sends to mailgun api
   sendInfoEmail({
     user,
     message,
@@ -35,7 +37,7 @@ export class EmailService {
 
     return this.mg?.messages().send(msg);
   }
-
+  //send email verification
   sendEmailVerification(email: string, hash: string, registerAs?: SignUpDto['registerAs']) {
     if (this.shouldNotSendNotification) return;
 
@@ -53,6 +55,7 @@ export class EmailService {
     return this.mg?.messages().send(msg);
   }
 
+  //sends a pw reset link
   sendForgotPassword(email: string, hash: string) {
     if (this.shouldNotSendNotification) return;
 
@@ -70,6 +73,7 @@ export class EmailService {
     return this.mg?.messages().send(msg);
   }
 
+  //send axtivate business acount
   sendActivateBusinessUserAccount(
     baAdminName: string | undefined,
     baAdminEmail: string,
@@ -96,4 +100,25 @@ export class EmailService {
 
     return this.mg?.messages().send(msg);
   }
+
+  confirmApplicationSubmission(
+    email: string,
+    message: string,
+    user: string | undefined,
+  ) {
+    if (this.shouldNotSendNotification) return;
+
+    const msg = {
+      from: this.noreply,
+      to: email,
+      subject: 'Thank You for Submitting Your Application',
+      template: 'EP-and-SP-application-submission',
+      'v:data': message,
+    };
+
+    return this.mg?.messages().send(msg);
+  }
+
+
+
 }

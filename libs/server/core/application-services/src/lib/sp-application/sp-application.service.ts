@@ -41,7 +41,7 @@ export class SpApplicationService {
     private readonly sp: ServePartnerRepository,
     private readonly handle: HandleRepository,
     private readonly email: EmailService
-  ) {}
+  ) { }
 
   async submit(query: IQuery<SpApplication>, dto: SubmitSpApplicationDto, token: string) {
     const user = await this.auth.validateUserToken(token);
@@ -52,12 +52,10 @@ export class SpApplicationService {
 
     let address;
 
-    if(environment.environment === 'local')
-    {
+    if (environment.environment === 'local') {
       address = getDefaultAddress();
     }
-    else
-    {
+    else {
       address = {
         id: uuid.v4(),
         address1: dto.address1,
@@ -67,7 +65,7 @@ export class SpApplicationService {
         zip: dto.zip,
       };
     }
-    
+
     const spApp = await this.spAppRepo.upsert(
       {
         id: spAppId,
@@ -88,6 +86,21 @@ export class SpApplicationService {
     }
 
     await this.process({}, { allow: true, id: spAppId }, '', false);
+
+    await this.email.sendInfoEmail({
+      email: user.id,
+      user: user.servicepartner?.firstName,
+      subject: `Thank you for applying`,
+      message: `Congratulations! that you have successfully submitted an application! Please give us a week to review. 
+      You check on your status at {{link}}. YOu will receive a confirmation email from noreply@involvemint.io to ${email} once 
+      your application is approved IF you have any questions reach out to partnerships@involvemint.io. In the meantime we encourage 
+      you review our user manual {{link}}} and FAQ {{Link}}`,
+    });
+
+
+    return this.ep.findOneOrFail(epAppId, query);
+
+
     return spApp;
   }
 
@@ -114,12 +127,10 @@ export class SpApplicationService {
 
     let res: geocoder.Entry[];
 
-    if(environment.environment === 'local')
-    {
+    if (environment.environment === 'local') {
       res = environment.defaultLocalAddress;
     }
-    else
-    {
+    else {
       const geo = geocoder.default({ provider: 'google', apiKey: environment.gcpApiKey });
       res = await geo.geocode(Object.entries(spApp.address).join(' '));
     }
