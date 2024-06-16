@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { ServeAdminOrchestration, UserFacade } from '@involvemint/client/shared/data-access';
+import { ServeAdminRestClient, UserFacade } from '@involvemint/client/shared/data-access';
 import { StatusService } from '@involvemint/client/shared/util';
 import { SpAdminQuery } from '@involvemint/shared/domain';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
@@ -86,7 +86,7 @@ export class SpAdminsEffects {
 
   constructor(
     private readonly actions$: Actions,
-    private readonly serveAdmin: ServeAdminOrchestration,
+    private readonly serveAdmin: ServeAdminRestClient,
     private readonly status: StatusService,
     private readonly user: UserFacade
   ) {}

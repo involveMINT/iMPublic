@@ -74,9 +74,9 @@ export class EpCoverComponent extends StatefulComponent<State> implements OnInit
             exchangePartner,
             images: exchangePartner
               ? [
-                  ...(exchangePartner.logoFilePath ? [exchangePartner.logoFilePath] : []),
-                  ...exchangePartner.imagesFilePaths,
-                ]
+                ...(exchangePartner.logoFilePath ? [exchangePartner.logoFilePath] : []),
+                ...exchangePartner.imagesFilePaths,
+              ]
               : [],
             fullAddress: exchangePartner ? formatImAddress(exchangePartner.address) : null,
           });
@@ -119,12 +119,14 @@ export class EpCoverComponent extends StatefulComponent<State> implements OnInit
     return this.offersChecked.get(offer.id);
   }
 
+
+
   offerCheck(evt: {
     checked: boolean;
     offer: UnArray<ExchangePartnerMarketStoreModel['offers']>;
     quantity: number;
   }) {
-    if (evt.quantity === 0) evt.checked = false;
+    if (evt.quantity <= 0) evt.checked = false;
 
     if (evt.checked) {
       this.offersChecked.set(evt.offer.id, { quantity: evt.quantity, offer: evt.offer });

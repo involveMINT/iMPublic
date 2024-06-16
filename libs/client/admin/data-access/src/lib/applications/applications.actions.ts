@@ -1,6 +1,5 @@
-import { ProcessEpApplicationDto, ProcessSpApplicationDto } from '@involvemint/shared/domain';
+import { ProcessEpApplicationDto, ProcessSpApplicationDto, APIOperationError } from '@involvemint/shared/domain';
 import { createAction, props } from '@ngrx/store';
-import { OrchaOperationError } from '@orcha/common';
 import { EpApplicationStoreModel, SpApplicationStoreModel } from './applications.reducer';
 
 export const refreshApplications = createAction('[Admin|Applications] Refresh Applications');
@@ -11,7 +10,7 @@ export const loadApplicationsSuccess = createAction(
 );
 export const loadApplicationsError = createAction(
   '[Admin|Applications] Load Applications Error',
-  props<{ error: OrchaOperationError }>()
+  props<{ error: APIOperationError }>()
 );
 
 export const processEpApplication = createAction(
@@ -24,7 +23,7 @@ export const processEpApplicationSuccess = createAction(
 );
 export const processEpApplicationError = createAction(
   '[Admin|Applications] Process Ep Application Error',
-  props<{ error: OrchaOperationError }>()
+  props<{ error: APIOperationError }>()
 );
 
 export const processSpApplication = createAction(
@@ -37,5 +36,5 @@ export const processSpApplicationSuccess = createAction(
 );
 export const processSpApplicationError = createAction(
   '[Admin|Applications] Process Sp Application Error',
-  props<{ error: OrchaOperationError }>()
+  props<{ error: APIOperationError }>()
 );

@@ -1,24 +1,17 @@
-import { HttpEvent, HttpHandler, HttpRequest } from '@angular/common/http';
+import { HttpEvent, HttpHandler, HttpInterceptor, HttpRequest } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { environment } from '@involvemint/shared/domain';
-import { OrchaInterceptor } from '@orcha/angular';
-import { ORCHA_TOKEN } from '@orcha/common';
+import { environment, TOKEN_KEY } from '@involvemint/shared/domain';
 import { Observable } from 'rxjs';
 import { delay, tap } from 'rxjs/operators';
 import { ImAuthTokenStorage } from './+state/session/user-session.storage';
 
 @Injectable()
-export class AuthInterceptor implements OrchaInterceptor {
+export class AuthInterceptor implements HttpInterceptor {
   intercept(req: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
-    const headers = req.headers;
-    const body = req.body as FormData;
 
     const userToken = ImAuthTokenStorage.getValue();
-    if (body) {
-      body.set(ORCHA_TOKEN, userToken?.token ?? '');
-    }
 
-    const authReq = req.clone({ headers, body });
+    const authReq = req.clone({ headers: req.headers.set(TOKEN_KEY, userToken?.token ?? '') });
     return (
       next
         .handle(authReq)
