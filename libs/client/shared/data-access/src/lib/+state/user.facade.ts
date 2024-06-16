@@ -640,5 +640,5 @@ export class UserFacade {
     private readonly store: Store,
     private readonly actions$: Actions,
     private readonly route: RouteService
-  ) {}
+  ) { }
 }

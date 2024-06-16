@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component, HostListener, OnInit } from '@angular/core';
 import { Validators } from '@angular/forms';
+import { RouteService } from '@involvemint/client/shared/routes';
 import {
   HandleRestClient,
   UserFacade,
@@ -30,8 +31,7 @@ interface State {
 })
 export class EpApplicationComponent
   extends StatefulComponent<State>
-  implements OnInit, ConfirmDeactivationGuard
-{
+  implements OnInit, ConfirmDeactivationGuard {
   baAdmin = false;
   applyFor: 'business' | 'yourself' = 'yourself';
 
@@ -58,6 +58,7 @@ export class EpApplicationComponent
 
   constructor(
     private readonly user: UserFacade,
+    private readonly route: RouteService,
     private readonly userClient: UserRestClient,
     private readonly handleRestClient: HandleRestClient
   ) {
@@ -99,7 +100,11 @@ export class EpApplicationComponent
     if (this.baAdmin && this.applyFor === 'business') {
       this.user.session.dispatchers.baSubmitEpApplication(this.epForm.value);
     } else {
+      console.log('Dispatching submitEpApplication', this.epForm.value);
       this.user.session.dispatchers.submitEpApplication(this.epForm.value);
+      console.log('done submitEpApplication called from component');
+      this.route.to.ep.onboarding.ROOT;
+
     }
   }
 

@@ -212,13 +212,13 @@ export class ImAppComponent extends StatefulComponent<State> implements OnInit {
           // Only refresh menu if criteria is met.
           return (
             a.epApplications.length +
-              a.spApplications.length +
-              a.exchangeAdmins.length +
-              a.serveAdmins.length ===
-              b.epApplications.length +
-                b.spApplications.length +
-                b.exchangeAdmins.length +
-                b.serveAdmins.length &&
+            a.spApplications.length +
+            a.exchangeAdmins.length +
+            a.serveAdmins.length ===
+            b.epApplications.length +
+            b.spApplications.length +
+            b.exchangeAdmins.length +
+            b.serveAdmins.length &&
             a.navTabs === b.navTabs &&
             a.changeMaker === b.changeMaker
           );
@@ -685,17 +685,17 @@ export class ImAppComponent extends StatefulComponent<State> implements OnInit {
               const createCmProfile: MenuItem[] = changeMaker
                 ? []
                 : [
-                    {
-                      title: 'Create ChangeMaker Profile',
-                      icon: 'person-add',
-                      color: 'var(--im-green)',
-                      route: this.route.rawRoutes.path.applications.cm.ROOT,
-                      uponActivation: () => setImPrimaryColors('cm'),
-                      click: () => this.route.to.applications.cm.ROOT(),
-                      inMenu: true,
-                      inTabs: true,
-                    },
-                  ];
+                  {
+                    title: 'Create ChangeMaker Profile',
+                    icon: 'person-add',
+                    color: 'var(--im-green)',
+                    route: this.route.rawRoutes.path.applications.cm.ROOT,
+                    uponActivation: () => setImPrimaryColors('cm'),
+                    click: () => this.route.to.applications.cm.ROOT(),
+                    inMenu: true,
+                    inTabs: true,
+                  },
+                ];
 
               const registerEp: MenuItem = {
                 title: 'Register an ExchangePartner',
@@ -916,6 +916,7 @@ export class ImAppComponent extends StatefulComponent<State> implements OnInit {
         take(1),
         withLatestFrom(this.activatedRoute.queryParams),
         tap(([{ changeMaker, exchangeAdmins, serveAdmins, epApplications, spApplications }, query]) => {
+          console.log('Initial state of listen onboarding actions:', { changeMaker, exchangeAdmins, serveAdmins, epApplications, spApplications });
           const noProfiles =
             !changeMaker &&
             exchangeAdmins.length === 0 &&
@@ -945,6 +946,7 @@ export class ImAppComponent extends StatefulComponent<State> implements OnInit {
         switchMap((state) => {
           switch (state?.changeMaker?.onboardingState) {
             case 'market':
+              console.log('Navigating to market onboarding');
               this.updateState({ onboarding: 'cm' });
               this.route.to.market.ROOT();
               this.infoModal.open({
@@ -957,6 +959,7 @@ export class ImAppComponent extends StatefulComponent<State> implements OnInit {
               this.user.cmProfile.dispatchers.editCmProfile({ onboardingState: 'done' });
               break;
             case 'project':
+              console.log('Navigating to project onboarding');
               this.updateState({ onboarding: 'cm' });
               this.route.to.projects.ROOT();
               this.infoModal.open({
@@ -969,6 +972,7 @@ export class ImAppComponent extends StatefulComponent<State> implements OnInit {
               break;
 
             default:
+              console.log('No specific onboarding state');
               this.updateState({ onboarding: null });
               return this.user.session.selectors.activeProfileEp$;
           }
@@ -977,11 +981,15 @@ export class ImAppComponent extends StatefulComponent<State> implements OnInit {
         tap((ep) => {
           switch (ep?.onboardingState) {
             case EpOnboardingState.profile:
+
+              console.log('Onboarding state updated to ep');
               this.updateState({ onboarding: 'ep' });
+              console.log('Navigating to EP onboarding');
               this.route.to.ep.onboarding.ROOT();
               break;
 
             default:
+              console.log('Navigating to EP onboarding');
               this.updateState({ onboarding: null });
               break;
           }
