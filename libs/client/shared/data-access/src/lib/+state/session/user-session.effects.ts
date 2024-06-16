@@ -363,42 +363,7 @@ export class UserSessionEffects {
       })
     )
   );
-  /*
-    readonly userSignUp$ = createEffect(() =>
-      this.actions$.pipe(
-        ofType(UserSessionActions.userSignUp),
-        delayWhen(() => from(this.status.showLoader('Signing Up...'))),
-        pessimisticUpdate({
-          run: ({ dto }) =>
-            this.user.signUp({ token: true }, dto).pipe(
-              map(({ token }) => {
-                ImAuthTokenStorage.setValue({ id: dto.id, token });
-                if (environment.environment !== 'local') {
-                  (async () => {
-                    const modal = await this.infoModal.open({
-                      title: 'Check your email',
-                      description: "To verify your account, tap the link in the email we've sent you.",
-                      icon: { name: '/assets/im-check-mail.svg', source: 'src' },
-                      useBackground: false,
-                    });
-                    await modal.onDidDismiss();
-                    await this.route.to.login.ROOT();
-                  })();
-                } else {
-                  this.route.to.ROOT();
-                }
-                return UserSessionActions.userSignUpSuccess({ token });
-              })
-            ),
-          onError: (action, { error }) => {
-            this.status.presentNgRxActionAlert(action, error);
-            return UserSessionActions.userSignUpError({ error });
-          },
-        }),
-        tap(() => this.status.dismissLoader())
-      )
-    );
-  */
+
   readonly submitEpApplication$ = createEffect(() =>
     this.actions$.pipe(
       ofType(UserSessionActions.submitEpApplication),
@@ -408,9 +373,9 @@ export class UserSessionEffects {
         run: ({ dto }) =>
           this.epApp.submit(UserQuery.epApplications, dto).pipe(
             map((epApp) => {
-              // if (!ImConfig.requireApplicationApproval) {
-              //   window.location.reload();
-              // }
+              if (!ImConfig.requireApplicationApproval) {
+                window.location.reload();
+              }
               this.status.dismissLoader();
               this.infoModal.open({
                 title: 'ExchangePartner Application Successful',
@@ -476,9 +441,9 @@ export class UserSessionEffects {
         run: ({ dto }) =>
           this.spApp.submit(UserQuery.spApplications, dto).pipe(
             map((spApp) => {
-              if (!ImConfig.requireApplicationApproval) {
-                window.location.reload();
-              }
+              // if (!ImConfig.requireApplicationApproval) {
+              //   window.location.reload();
+              // }
               this.status.dismissLoader();
               this.infoModal.open({
                 title: 'ServePartner Application Successful',
