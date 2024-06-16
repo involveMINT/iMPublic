@@ -87,8 +87,8 @@ export class EpApplicationService {
 
 
     await this.email.sendInfoEmail({
-      email: user.id,
-      user: user.exchangePartner?.firstName,
+      email: dto.email,
+      user: dto.name,
       subject: `Thank you for applying`,
       message: `Congratulations! that you have successfully submitted an application! Please give us a week to review. 
       You check on your status at {{link}}. YOu will receive a confirmation email from noreply@involvemint.io to ${email} once 

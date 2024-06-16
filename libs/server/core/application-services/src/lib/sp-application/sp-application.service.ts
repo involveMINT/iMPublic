@@ -88,11 +88,11 @@ export class SpApplicationService {
     await this.process({}, { allow: true, id: spAppId }, '', false);
 
     await this.email.sendInfoEmail({
-      email: user.id,
-      user: user.servicepartner?.firstName,
+      email: dto.email,
+      user: dto.name,
       subject: `Thank you for applying`,
       message: `Congratulations! that you have successfully submitted an application! Please give us a week to review. 
-      You check on your status at {{link}}. YOu will receive a confirmation email from noreply@involvemint.io to ${email} once 
+      You check on your status at {{link}}. YOu will receive a confirmation email from noreply@involvemint.io to ${dto.email} once 
       your application is approved IF you have any questions reach out to partnerships@involvemint.io. In the meantime we encourage 
       you review our user manual {{link}}} and FAQ {{Link}}`,
     });
