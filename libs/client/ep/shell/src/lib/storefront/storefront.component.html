@@ -48,6 +48,29 @@
                 </im-error>
               </im-item>
 
+
+              <im-item [touched]="true" label="Add Tags">
+                <ion-item>
+                  <ion-select (ionChange)="onTagSelected($event)" placeholder="Select a tag">
+                    <ion-select-option *ngFor="let tag of availableTags" [value]="tag">{{ tag }}</ion-select-option>
+                  </ion-select>
+                </ion-item>
+              </im-item>
+              
+              <div style="margin-bottom: 20px;" class="tags" *ngIf="storeFrontForm.get('tags')?.value.length > 0">
+                <div class="tag" *ngFor="let tag of storeFrontForm.get('tags')?.value; let i = index">
+                  <span >{{ tag }}</span>
+                  <ion-icon name="close-circle" (click)="removeTag(i)"></ion-icon>
+                </div>
+              </div>
+
+              
+                            
+
+
+
+
+
               <div>
                 <div class="im-primary-text">Storefront Images:</div>
                 <div class="images-cont">

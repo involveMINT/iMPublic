@@ -34,7 +34,7 @@
               },
               "apps/involvemint/src/manifest.webmanifest"
             ],
-            "styles": ["apps/involvemint/src/styles.scss"],
+            "styles": ["./node_modules/@angular/material/prebuilt-themes/indigo-pink.css", "apps/involvemint/src/styles.scss"],
             "scripts": [],
             "serviceWorker": true,
             "ngswConfigPath": "apps/involvemint/ngsw-config.json",

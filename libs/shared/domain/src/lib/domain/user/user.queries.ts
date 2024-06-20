@@ -68,6 +68,7 @@ export const UserQuery = createQuery<User>()({
       view: {
         receivedThisMonth: true,
       },
+      tags:true
     },
   },
   serveAdmins: {

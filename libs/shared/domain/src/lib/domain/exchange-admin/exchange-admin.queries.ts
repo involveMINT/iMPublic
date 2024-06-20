@@ -42,5 +42,6 @@ export const BaDownloadEpAdminsQuery = createQuery<ExchangeAdmin[]>()({
     view: {
       receivedThisMonth: true,
     },
+    tags:true 
   },
 });
