@@ -18,6 +18,7 @@ import {
 import { tapOnce, UnArray } from '@involvemint/shared/util';
 import { FormControl, FormGroup } from '@ngneat/reactive-forms';
 import { filter, skip, switchMap, tap } from 'rxjs/operators';
+import { FormBuilder} from '@angular/forms';
 
 type Profile = NonNullable<UnArray<UserStoreModel['exchangeAdmins']>['exchangePartner']>;
 
@@ -35,13 +36,17 @@ interface State {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class StorefrontComponent extends StatefulComponent<State> implements OnInit {
+  
   @ViewChild('tabs') tabs!: ImTabsComponent;
+  availableTags: string[] = ['Essentials', 'Arts & Entertainment', 'Professional Services', 'Trades', 'Rentals', 'Farming/Land', 'Food & Food Services', 'Health & Wellness', 'Transportation', 'Home Services', 'Youth', 'Seniors', 'Education/Training', 'Retail', 'Media & Print', 'Free'];
+  
 
   readonly storeFrontForm = new FormGroup({
     listStoreFront: new FormControl<StorefrontListingStatus>(defaultProjectListingStatus, (e) =>
       Validators.required(e)
     ),
     description: new FormControl('', [Validators.maxLength(ImConfig.maxDescriptionLength)]),
+    tags: new FormControl<string[]>([]) 
   });
 
   readonly listingOptions: StorefrontListingStatus[] = ['public', 'private', 'unlisted'];
@@ -53,12 +58,14 @@ export class StorefrontComponent extends StatefulComponent<State> implements OnI
     private readonly status: StatusService,
     private readonly imagesViewer: ImImagesViewerModalService,
     private readonly route: RouteService,
-    private readonly activatedRoute: ActivatedRoute
+    private readonly activatedRoute: ActivatedRoute,
   ) {
     super({ activeTabIndex: 0, profile: null, deepLink: null, savingState: 'saved' });
+    
   }
 
   ngOnInit(): void {
+    
     this.activatedRoute.queryParams.pipe().subscribe(async ({ activeTab }) => {
       if (!activeTab) {
         return;
@@ -89,9 +96,11 @@ export class StorefrontComponent extends StatefulComponent<State> implements OnI
           if (!exchangePartner) {
             return;
           }
+          console.log(exchangePartner)
           this.storeFrontForm.patchValue({
             listStoreFront: exchangePartner.listStoreFront,
             description: exchangePartner.description,
+            tags: exchangePartner.tags
           });
         }),
         tap((exchangePartner) => {
@@ -105,10 +114,15 @@ export class StorefrontComponent extends StatefulComponent<State> implements OnI
         switchMap(() => this.storeFrontForm.valueChanges),
         skip(1),
         tap((form) => {
+          console.log(this.storeFrontForm.get('tags')?.value)
+          console.log(this.storeFrontForm.get('description')?.value)
+          console.log(form.tags) 
+          console.log(form.description)
           this.updateState({ savingState: 'saving' });
           this.user.epProfile.dispatchers.editEpProfile({
             listStoreFront: form.listStoreFront,
             description: form.description,
+            tags: form.tags, 
           });
         })
       )
@@ -123,6 +137,7 @@ export class StorefrontComponent extends StatefulComponent<State> implements OnI
       activeTabIndex: event,
     });
   }
+
 
   async viewImages(paths: string[], index: number): Promise<void> {
     await this.imagesViewer.open({ imagesFilePaths: paths, slideIndex: index });
@@ -141,9 +156,31 @@ export class StorefrontComponent extends StatefulComponent<State> implements OnI
     this.user.epProfile.dispatchers.uploadEpImages(files);
   }
 
+
+
   deleteImage(imagesFilePathsIndex: number): void {
     this.user.epProfile.dispatchers.deleteEpImage(imagesFilePathsIndex);
   }
+
+  addTag(tag: string) {
+    console.log("we are hereeeeee")
+    const currentTags = this.storeFrontForm.get('tags')?.value || [];
+    if (tag && !currentTags.includes(tag)) {
+      this.storeFrontForm.get('tags')?.patchValue([...currentTags, tag]);
+      console.log('Updated Tags:', this.storeFrontForm.get('tags')?.value);
+    }
+  }
+  
+  onTagSelected(event: any) {
+    const selectedTag = event.detail.value;
+    this.addTag(selectedTag);
+  }
+  
+  removeTag(index: number): void {
+    const currentTags = [...this.storeFrontForm.get('tags')?.value]; // Make a copy of the array
+    currentTags.splice(index, 1);
+    this.storeFrontForm.get('tags')?.patchValue([...currentTags]);
+}
 
   makeCoverPhoto(
     ep: UnArray<UserStoreModel['exchangeAdmins']>['exchangePartner'],
