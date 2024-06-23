@@ -7,7 +7,10 @@ export class ImWelcomeModalService {
   constructor(private readonly modal: ModalController) {}
 
   async open() {
-    const modal = await this.modal.create({ component: ImWelcomeModalComponent });
+    const modal = await this.modal.create({
+      component: ImWelcomeModalComponent,
+      backdropDismiss: false
+    });
     await modal.present();
     return modal.onDidDismiss();
   }
