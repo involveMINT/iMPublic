@@ -49,3 +49,6 @@ gcp-api-key-prod.json
 
 reports/*
 !reports/readme.md
+
+package-lock.json
+package.json
