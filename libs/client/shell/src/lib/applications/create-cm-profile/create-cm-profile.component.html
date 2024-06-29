@@ -107,6 +107,28 @@
         <ion-slide class="slide">
           <div class="im-cont small">
             <div class="info">
+              <ion-icon name="location-outline" class="header-icon"></ion-icon>
+              <div class="im-primary-text">Enable Location Services</div>
+              <span class="description">
+                Please enable location services to use this platform. Your location helps us with mapping and providing a better experience.
+              </span>
+            </div>
+            <im-block>
+              <ng-container body>
+                <div class="center-content">
+                  <ion-button (click)="enableLocation()">Enable Location Services</ion-button>
+                </div>
+              </ng-container>
+              <div footer class="im-buttons">
+                <ion-button fill="outline" (click)="prev()">Back</ion-button>
+                <ion-button (click)="next()" [disabled]="!state.locationEnabled">Next</ion-button>
+              </div>
+            </im-block>
+          </div>
+        </ion-slide>
+        <ion-slide class="slide">
+          <div class="im-cont small">
+            <div class="info">
               <ion-icon src="/assets/icons/@.svg" class="header-icon"></ion-icon>
               <div class="im-primary-text">Create a @handle.</div>
               <span class="description">
