@@ -11,6 +11,7 @@
       "start:server": "ng serve api",
       "start:client:local": "ng serve involvemint -c local",
       "start:server:local": "ng serve api -c local",
+      "orcha": "npm i ../orcha/dist/libs/angular/orcha-angular-0.2.10.tgz ../orcha/dist/libs/common/orcha-common-0.2.10.tgz ../orcha/dist/libs/nestjs/orcha-nestjs-0.2.10.tgz ../orcha/dist/libs/testing/orcha-testing-0.2.10.tgz ../orcha/dist/libs/typeorm/orcha-typeorm-0.2.10.tgz && npm dedupe",
       "build": "nx run-many --target=build --projects=involvemint,api --prod --skip-nx-cache",
       "build:client": "nx run-many --target=build --projects=involvemint --prod --skip-nx-cache",
       "build:server": "nx run-many --target=build --projects=api --prod --skip-nx-cache",
@@ -93,6 +94,10 @@
       "@ngrx/router-store": "^12.0.0",
       "@ngrx/store": "^12.0.0",
       "@nrwl/angular": "12.3.6",
+      "@orcha/angular": "0.2.16",
+      "@orcha/common": "0.2.16",
+      "@orcha/nestjs": "0.2.16",
+      "@orcha/typeorm": "0.2.16",
       "class-transformer": "0.4.0",
       "class-validator": "0.13.1",
       "cron": "1.8.2",
@@ -149,6 +154,7 @@
       "@nrwl/nx-cloud": "12.1.10",
       "@nrwl/tao": "12.3.6",
       "@nrwl/workspace": "12.3.6",
+      "@orcha/testing": "0.2.16",
       "@types/cron": "1.7.2",
       "@types/jest": "26.0.23",
       "@types/jest-when": "2.7.3",
@@ -181,3 +187,4 @@
       "typescript": "4.2.4"
     }
   }
+  
