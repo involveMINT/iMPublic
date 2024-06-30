@@ -1,6 +1,8 @@
 import { ChangeDetectionStrategy, Component, OnInit, ViewChild } from '@angular/core';
 import { Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
+
+
 import {
   ImImagesViewerModalService,
   UserFacade,
@@ -59,7 +61,7 @@ export class StorefrontComponent extends StatefulComponent<State> implements OnI
   }
 
   ngOnInit(): void {
-    this.activatedRoute.queryParams.pipe().subscribe(async ({ activeTab }) => {
+    this.activatedRoute.queryParams.pipe().subscribe(async ({ activeTab }) => {//subscribes to the query params angular router observable, returning activetab
       if (!activeTab) {
         return;
       }
@@ -69,20 +71,20 @@ export class StorefrontComponent extends StatefulComponent<State> implements OnI
           activeTab: undefined,
         },
       });
-      this.updateState({
+      this.updateState({//merges old state with new fields to create a new state
         activeTabIndex:
           activeTab === 'storefront' ? 0 : activeTab === 'offers' ? 1 : activeTab === 'requests' ? 2 : 0,
       });
       activeTab === 'storefront'
         ? this.tabs.setIndex(0)
         : activeTab === 'offers'
-        ? this.tabs.setIndex(1)
-        : activeTab === 'requests'
-        ? this.tabs.setIndex(2)
-        : this.tabs.setIndex(0);
+          ? this.tabs.setIndex(1)
+          : activeTab === 'requests'
+            ? this.tabs.setIndex(2)
+            : this.tabs.setIndex(0);
     });
 
-    this.effect(() =>
+    this.effect(() =>//creates an observable that is subscribed to for the lifetime of the component
       this.user.session.selectors.activeProfileEp$.pipe(
         filter((exchangePartner) => !!exchangePartner),
         tapOnce((exchangePartner) => {
@@ -110,10 +112,38 @@ export class StorefrontComponent extends StatefulComponent<State> implements OnI
             listStoreFront: form.listStoreFront,
             description: form.description,
           });
+        }),
+
+        tap((form) => {
+
+          if (form.listStoreFront === 'private' || form.listStoreFront === 'unlisted') {
+            console.log(`Value of listStoreFront: ${form.listStoreFront}`);
+            console.log(`Type of listStoreFront: ${typeof form.listStoreFront}`);
+
+            this.user.offers.selectors.offers$.pipe(
+              tap(({ offers }) => {
+                offers.forEach(offer => {
+                  this.user.offers.dispatchers.update({
+                    offerId: offer.id,
+                    changes: {
+                      listingStatus: form.listStoreFront,
+                      name: offer.name,
+                      description: offer.description,
+                      price: offer.price
+                    },
+                  });
+                  throw '';
+                });
+              })
+            ).subscribe();
+
+
+          }
         })
       )
     );
   }
+
 
   tabChangeEvent(event: number) {
     if (typeof event !== 'number') {
