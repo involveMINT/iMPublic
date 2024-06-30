@@ -147,7 +147,7 @@ export class StorefrontComponent extends StatefulComponent<State> implements OnI
     let files: File[] | undefined;
     try {
       files = parseMultipleFiles(event);
-    } catch (error) {
+    } catch (error:any) {
       this.status.presentAlert({ title: 'Error', description: error.message });
     }
 
