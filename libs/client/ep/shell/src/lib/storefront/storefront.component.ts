@@ -132,8 +132,9 @@ export class StorefrontComponent extends StatefulComponent<State> implements OnI
                       price: offer.price
                     },
                   });
-                  throw '';
+
                 });
+                throw '';
               })
             ).subscribe();
 
