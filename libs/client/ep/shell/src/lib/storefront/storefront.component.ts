@@ -61,17 +61,17 @@ export class StorefrontComponent extends StatefulComponent<State> implements OnI
   }
 
   ngOnInit(): void {
-    this.activatedRoute.queryParams.pipe().subscribe(async ({ activeTab }) => {//subscribes to the query params angular router observable, returning activetab
+    this.activatedRoute.queryParams.pipe().subscribe(async ({ activeTab }) => {
       if (!activeTab) {
         return;
       }
-      // re-route to same route to remove queryParams (activeTab)
+
       this.route.to.ep.storefront.ROOT({
         queryParams: {
           activeTab: undefined,
         },
       });
-      this.updateState({//merges old state with new fields to create a new state
+      this.updateState({
         activeTabIndex:
           activeTab === 'storefront' ? 0 : activeTab === 'offers' ? 1 : activeTab === 'requests' ? 2 : 0,
       });
@@ -84,7 +84,7 @@ export class StorefrontComponent extends StatefulComponent<State> implements OnI
             : this.tabs.setIndex(0);
     });
 
-    this.effect(() =>//creates an observable that is subscribed to for the lifetime of the component
+    this.effect(() =>
       this.user.session.selectors.activeProfileEp$.pipe(
         filter((exchangePartner) => !!exchangePartner),
         tapOnce((exchangePartner) => {
