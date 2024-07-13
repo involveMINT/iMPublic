@@ -19,7 +19,7 @@ import {
 } from '@involvemint/shared/domain';
 import { tapOnce, UnArray } from '@involvemint/shared/util';
 import { FormControl, FormGroup } from '@ngneat/reactive-forms';
-import { filter, skip, switchMap, tap } from 'rxjs/operators';
+import { filter, skip, switchMap, tap, take } from 'rxjs/operators';
 
 type Profile = NonNullable<UnArray<UserStoreModel['exchangeAdmins']>['exchangePartner']>;
 
@@ -117,10 +117,8 @@ export class StorefrontComponent extends StatefulComponent<State> implements OnI
         tap((form) => {
 
           if (form.listStoreFront === 'private' || form.listStoreFront === 'unlisted') {
-            console.log(`Value of listStoreFront: ${form.listStoreFront}`);
-            console.log(`Type of listStoreFront: ${typeof form.listStoreFront}`);
-
             this.user.offers.selectors.offers$.pipe(
+              take(1),
               tap(({ offers }) => {
                 offers.forEach(offer => {
                   this.user.offers.dispatchers.update({
@@ -134,11 +132,8 @@ export class StorefrontComponent extends StatefulComponent<State> implements OnI
                   });
 
                 });
-                throw '';
               })
             ).subscribe();
-
-
           }
         })
       )
