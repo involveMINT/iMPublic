@@ -65,13 +65,11 @@
             <div class="recent-transactions-list" *ngIf="state.transactionsLoaded">
               <p *ngIf="state.allTransactions.length === 0"><i>No recent transactions.</i></p>
               <div class="transaction" *ngFor="let t of state.allTransactions.slice(0, 10)">
-                <b class="to-from im-ellipsis">
-                  @{{
-                    state.activeProfile?.handle?.id === t.meta.senderHandle
-                      ? t.meta.receiverHandle
-                      : t.meta.senderHandle
-                  }}
-                </b>
+                <im-handle
+        [handle]="state.activeProfile?.handle?.id === t.meta.senderHandle
+          ? t.meta.receiverHandle
+          : t.meta.senderHandle">
+      </im-handle>
                 <span *ngIf="t.epAudibleCode" class="code">{{ t.epAudibleCode }}</span>
                 <span class="date">{{ t.dateTransacted | date: 'M/dd/yy' }}</span>
                 <div>
@@ -106,11 +104,16 @@
               <ion-icon name="globe" class="globe-icon" slot="start"></ion-icon>
               <div class="item-info">
                 <div class="handle im-ellipsis">
-                  @{{
-                    state.activeProfile?.handle?.id === t.meta.senderHandle
+                  
+                  <im-handle
+                  [handle]=
+                    "state.activeProfile?.handle?.id === t.meta.senderHandle
                       ? t.meta.receiverHandle
-                      : t.meta.senderHandle
-                  }}
+                      : t.meta.senderHandle"
+                  
+                  
+                  ></im-handle>
+                  
                 </div>
                 <b class="code">
                   {{ t.epAudibleCode }}
