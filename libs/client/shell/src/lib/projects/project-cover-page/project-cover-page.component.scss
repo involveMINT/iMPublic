@@ -17,3 +17,13 @@
   display: grid;
   gap: 0.25rem;
 }
+
+.im-primary-text {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.im-primary-text ion-button {
+  margin-left: auto;
+}
