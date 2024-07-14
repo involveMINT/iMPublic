@@ -22,7 +22,16 @@
       <div class="im-cont" *ngIf="state.project as project">
         <div [style.min-width]="'0px'">
           <im-block [join]="true" [images]="project.imagesFilePaths">
-            <div header class="im-primary-text">{{ project.title }}</div>
+            <div header class="im-primary-text">
+              {{ project.title }}
+              <ion-button
+                *ngIf="state.buttonState === 'notApplied'"
+                [disabled]="state.projectState === ProjectStatus.closed"
+                (click)="startApplication(state.project)"
+              >
+                {{ state.projectState === ProjectStatus.open ? 'Join' : 'Closed' }}
+              </ion-button>
+            </div>
             <div body class="card-body">
               <div>
                 <div [style.font-size]="'16px'">{{ project.servePartner.name }}</div>
