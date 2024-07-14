@@ -29,7 +29,7 @@ export class UserSessionEffects {
           this.user.login({ token: true }, { id, password }).pipe(
             tap(({ token }) => ImAuthTokenStorage.setValue({ id, token })),
             map(({ token }) => {
-              this.route.to.ROOT();
+              this.route.to.activityfeed.ROOT();
               this.status.dismissLoader();
               ImAuthTokenStorage.setValue({ id, token });
               return UserSessionActions.userLoginSuccess({ id, token });
@@ -117,7 +117,7 @@ export class UserSessionEffects {
                   await this.route.to.login.ROOT();
                 })();
               } else {
-                this.route.to.ROOT();
+                this.route.to.activityfeed.ROOT();
               }
               return UserSessionActions.userSignUpSuccess({ token });
             })

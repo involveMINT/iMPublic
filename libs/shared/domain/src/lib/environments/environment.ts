@@ -4,7 +4,8 @@ const host = 'localhost';
 
 /** Develop environment variables. */
 export const environment: Env = {
-  environment: 'local',
+  production: false,
+  test: false,
   host,
   apiUrl: `http://${host}:3335`,
   appUrl: `http://${host}:4202`,
@@ -15,7 +16,7 @@ export const environment: Env = {
   typeOrmConfig: {
     type: 'postgres',
     host: '127.0.0.1',
-    port: 5433,
+    port: 5432,
     username: 'postgres',
     password: '1Qazxsw2',
     database: 'involvemint',
@@ -64,16 +65,4 @@ export const environment: Env = {
     saltSeparator: 'Bw==',
     signerKey: 'de/PQ/Gy53mgslvUgDUKDCgHJPArYqbFnGILLQZNe5My/CvqIThVL/CsndU8oudZ9lc4B7PT8w3sAar2/luQxA==',
   },
-  defaultLocalAddress: [{
-    streetNumber: '5000',
-    streetName: 'Forbes Ave',
-    formattedAddress: '5000 Forbes Ave, Pittsburgh, PA 15213',
-    city: 'Pittsburgh',
-    administrativeLevels: {
-      level1short: 'PA'
-    },
-    zipcode: '15213',
-    latitude: 40.444229,
-    longitude: -79.943367
-  }] 
 };

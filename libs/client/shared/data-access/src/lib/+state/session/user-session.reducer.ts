@@ -49,6 +49,7 @@ const initialState: UserSessionState = {
   loadingRoute: '',
   joyride: false,
   baAdmin: false,
+  dateLastLoggedIn: "",
 };
 
 export const UserSessionReducer = createReducer(
