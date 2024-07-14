@@ -101,23 +101,7 @@ export class EmailService {
     return this.mg?.messages().send(msg);
   }
 
-  confirmApplicationSubmission(
-    email: string,
-    message: string,
-    user: string | undefined,
-  ) {
-    if (this.shouldNotSendNotification) return;
 
-    const msg = {
-      from: this.noreply,
-      to: email,
-      subject: 'Thank You for Submitting Your Application',
-      template: 'EP-and-SP-application-submission',
-      'v:data': message,
-    };
-
-    return this.mg?.messages().send(msg);
-  }
 
 
 
