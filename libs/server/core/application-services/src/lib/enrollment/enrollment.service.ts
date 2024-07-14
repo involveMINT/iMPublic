@@ -19,8 +19,7 @@ import {
   StartEnrollmentApplicationDto,
   SubmitEnrollmentApplicationDto,
   WithdrawEnrollmentApplicationDto,
-  IQuery, 
-  parseQuery
+  SearchForEnrollmentsDto,
 } from '@involvemint/shared/domain';
 import { HttpException, HttpStatus, Inject, Injectable, InternalServerErrorException } from '@nestjs/common';
 import * as uuid from 'uuid';
@@ -53,6 +52,33 @@ export class EnrollmentService {
     }
 
     return this.enrollmentRepo.query(query, { where: { changeMaker: { id: user.changeMaker.id } } });
+  }
+
+  async searchForEnrollments(query: IQuery<Enrollment[]>, token: string, dto: SearchForEnrollmentsDto) {
+    const user = await this.auth.validateUserToken(token ?? '', { id: true, changeMaker: { id: true } });
+
+    if (!user?.changeMaker) {
+      throw new HttpException(
+        `No associated ChangeMaker Profile found with user "${user.id}".`,
+        HttpStatus.NOT_FOUND
+      );
+    }
+
+    const whereClause = {
+      or: [
+        { changeMaker: { firstName: { startsWith: dto.query } } }, // First name starts with the provided string
+        { changeMaker: { lastName: { startsWith: dto.query } } }, // Last name starts with the provided string
+        {
+          changeMaker: {
+            handle: {
+              startsWith: dto.query, // This filters user IDs that start with the provided string
+            },
+          },
+        },
+      ],
+    };
+
+    return this.enrollmentRepo.query(query, { where: whereClause });
   }
 
   async getBySpProject(query: IQuery<Enrollment[]>, token: string, dto: GetEnrollmentsBySpProject) {

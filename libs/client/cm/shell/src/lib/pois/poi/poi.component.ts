@@ -3,12 +3,13 @@ import { Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { ChangeMakerFacade, PoiCmStoreModel } from '@involvemint/client/cm/data-access';
 import { ImImagesViewerModalService } from '@involvemint/client/shared/data-access';
+import { ImUserSearchModalService } from '@involvemint/client/shared/data-access';
 import { RouteService } from '@involvemint/client/shared/routes';
 import {
   ConfirmComponentDeactivation,
   getPosition,
   LatLng,
-  parseOneImageFile,
+  parseMultipleImageFiles,
   StatefulComponent,
   StatusService,
 } from '@involvemint/client/shared/util';
@@ -18,6 +19,7 @@ import {
   calculatePoiDurationFromNow,
   calculatePoiMandatoryClockOutDate,
   calculatePoiStatus,
+  Handle,
   ImConfig,
   PoiStatus,
   QuestionAnswersDto,
@@ -39,6 +41,9 @@ interface State {
   timeElapsedSecond: number;
   mandatoryClockOutDate: Date | null;
   mandatoryClockOutDateFromNow: string;
+  exampleUserFirst: string;
+  exampleUserLast: string;
+  exampleUserHandle: string;
 }
 
 @Component({
@@ -49,7 +54,7 @@ interface State {
 })
 export class PoiComponent extends StatefulComponent<State> implements OnInit, ConfirmComponentDeactivation {
   readonly questions = new FormArray<string>([]);
-
+  
   readonly maxImagesPerItem = new Array(ImConfig.maxImagesPerItem);
 
   get PoiStatus() {
@@ -61,7 +66,8 @@ export class PoiComponent extends StatefulComponent<State> implements OnInit, Co
     private readonly route: RouteService,
     private readonly activatedRoute: ActivatedRoute,
     private readonly status: StatusService,
-    private readonly imgViewer: ImImagesViewerModalService
+    private readonly imgViewer: ImImagesViewerModalService,
+    private readonly usersSearch: ImUserSearchModalService,
   ) {
     super({
       poi: null,
@@ -74,6 +80,9 @@ export class PoiComponent extends StatefulComponent<State> implements OnInit, Co
       timeElapsedSecond: 0,
       mandatoryClockOutDate: null,
       mandatoryClockOutDateFromNow: '',
+      exampleUserFirst: 'Firstname',
+      exampleUserLast: 'Lastname',
+      exampleUserHandle: 'Handle', 
     });
   }
 
@@ -103,7 +112,7 @@ export class PoiComponent extends StatefulComponent<State> implements OnInit, Co
         }),
         filter(({ poi }) => !!poi),
         tapOnce(({ poi }) => {
-          poi?.enrollment.project.questions.forEach((_, i) => {
+          poi?.enrollments[0].project.questions.forEach((_, i) => {
             this.questions.insert(
               i,
               new FormControl(poi?.answers[i]?.answer || '', (e) => Validators.required(e))
@@ -180,19 +189,23 @@ export class PoiComponent extends StatefulComponent<State> implements OnInit, Co
   }
 
   uploadImage(event: Event): void {
-    let file: File | undefined;
+    let selectedfiles: File[] | undefined;
     try {
-      file = parseOneImageFile(event);
-      console.log(file);
+      selectedfiles = parseMultipleImageFiles(event); 
+      console.log(selectedfiles);
     } catch (error) {
       this.status.presentAlert({ title: 'Error', description: error.message });
     }
 
-    console.log(file);
+    console.log(selectedfiles);
 
-    if (!file) return;
+    if (!selectedfiles) return;
 
-    this.updateState({ files: [...this.state.files, file] });
+    for (let i = 0; i < selectedfiles.length; i++) {
+      let file = selectedfiles[i];
+      this.updateState({ files: [...this.state.files, file] });
+    }
+
     this.updateFileUrls();
   }
 
@@ -240,11 +253,17 @@ export class PoiComponent extends StatefulComponent<State> implements OnInit, Co
     this.cf.poi.dispatchers.resume(poi);
   }
 
+  // Add search method here
+  searchForEnrollments(search: string) {
+    this.cf.poi.dispatchers.searchForEnrollments(search);
+  }
+
+  // Either adding enrollments before dispatching or passing enrollment ids and fetching them in the backend.
   submit(poi: PoiCmStoreModel) {
     this.cf.poi.dispatchers.submit(
       poi,
       this.state.files,
-      poi.enrollment.project.questions.map(
+      poi.enrollments[0].project.questions.map(
         (question, i): QuestionAnswersDto => ({
           answer: this.questions.value[i],
           questionId: question.id,
@@ -273,5 +292,19 @@ export class PoiComponent extends StatefulComponent<State> implements OnInit, Co
 
   calculateCreditsEarnedForPoi(poi: PoiCmStoreModel) {
     return calculateCreditsEarnedForPoi(poi);
+  }
+
+  async addCm(poi: PoiCmStoreModel) {
+    const user = await this.usersSearch.open({
+      title: 'Search users...',
+    });
+    if (user) {
+      this.updateState({
+        exampleUserFirst: user.changeMaker?.firstName,
+        exampleUserLast: user.changeMaker?.lastName,
+        exampleUserHandle: user.changeMaker?.handle.id,
+      });
+
+    }
   }
 }

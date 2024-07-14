@@ -26,6 +26,7 @@
             *ngFor="let _ of maxImagesPerItem; index as i"
             [imgUrl]="state.request!.imagesFilePaths[i] | imStorageUrl | async"
             [disable]="state.request!.imagesFilePaths.length < i"
+            [hidden]="state.request!.imagesFilePaths.length < i"
             (imgClick)="viewImages(state.request!.imagesFilePaths, i)"
             (uploadImg)="uploadImage(state.request, $event)"
             (deleteImg)="deleteImage(state.request, i)"

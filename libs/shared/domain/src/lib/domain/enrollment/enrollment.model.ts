@@ -1,4 +1,4 @@
-import { IManyToOne, IOneToMany } from '../repository';
+import { IManyToMany, IManyToOne, IOneToMany } from '@orcha/common';
 import { ChangeMaker } from '../change-maker';
 import { EnrollmentDocument } from '../enrollment-document';
 import { Poi } from '../poi';
@@ -15,6 +15,6 @@ export interface Enrollment {
 
   changeMaker: IManyToOne<ChangeMaker, 'enrollments'>;
   project: IManyToOne<Project, 'enrollments'>;
-  pois: IOneToMany<Poi, 'enrollment'>;
+  pois: IManyToMany<Poi, 'enrollments'>;
   enrollmentDocuments: IOneToMany<EnrollmentDocument, 'enrollment'>;
 }

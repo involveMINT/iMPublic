@@ -79,7 +79,7 @@ export class PoiService {
     const project = await this.posRepo.findOneOrFail(dto.projectId, { servePartner: { id: true } });
 
     if (
-      await this.posService.permissions.userIsServeAdmin(token, project.servePartner.id) ||
+      (await this.posService.permissions.userIsServeAdmin(token, project.servePartner.id)) ||
       user.changeMaker?.enrollments.some((e) => e.project.id === dto.projectId)
     ) {
       return this.poiRepo.findPoisByProject(dto.projectId, query);
@@ -132,7 +132,7 @@ export class PoiService {
       dateStopped: true,
       pausedTimes: true,
       resumedTimes: true,
-      enrollment: { project: { title: true } },
+      enrollments: { project: { title: true } },
     });
 
     const inProgressPoi = myPois.find((poi) => calculatePoiStatus(poi) < PoiStatus.submitted);
@@ -140,7 +140,7 @@ export class PoiService {
       throw new HttpException(
         {
           text: `You have an unsubmitted Proof of Impact to the Project Enrollment:
-            ${inProgressPoi.enrollment.project.title}. Please submit or withdraw this Proof of Impact
+            ${inProgressPoi.enrollments[0].project.title}. Please submit or withdraw this Proof of Impact
             before creating a new one.`,
           code: 'poiAlreadyExists',
           id: inProgressPoi.id,
@@ -157,7 +157,7 @@ export class PoiService {
         imagesFilePaths: [],
         pausedTimes: [],
         resumedTimes: [],
-        enrollment: dto.enrollmentId,
+        enrollments: [dto.enrollmentId],
         credits: [],
       },
       query
@@ -168,7 +168,7 @@ export class PoiService {
     const user = await this.auth.validateUserToken(token ?? '', { changeMaker: { id: true } });
 
     const poiQuery = createQuery<Poi>()({
-      enrollment: { changeMaker: { id: true }, project: { creditsEarned: true, requireLocation: true } },
+      enrollments: { changeMaker: { id: true }, project: { creditsEarned: true, requireLocation: true } },
       id: true,
       dateStarted: true,
       dateStopped: true,
@@ -181,7 +181,7 @@ export class PoiService {
 
     const poi = await this.poiRepo.findOneOrFail(dto.poiId, poiQuery);
 
-    if (user.changeMaker?.id !== poi.enrollment?.changeMaker?.id) {
+    if (!user.changeMaker || !poi.enrollments.map((e) => e.changeMaker.id).includes(user.changeMaker?.id)) {
       throw new HttpException('You do not own this Proof of Impact.', HttpStatus.UNAUTHORIZED);
     }
     const status = calculatePoiStatus(poi);
@@ -191,7 +191,7 @@ export class PoiService {
         HttpStatus.CONFLICT
       );
     }
-    if (poi.enrollment.project.requireLocation && (!dto.latitude || !dto.longitude)) {
+    if (poi.enrollments[0].project.requireLocation && (!dto.latitude || !dto.longitude)) {
       throw new HttpException('Your location is required for this Proof of Impact.', HttpStatus.BAD_REQUEST);
     }
 
@@ -217,7 +217,7 @@ export class PoiService {
   async stop(query: IQuery<Poi>, token: string, dto: StopPoiTimerDto) {
     const user = await this.auth.validateUserToken(token ?? '', { changeMaker: { id: true } });
     const poi = await this.poiRepo.findOneOrFail(dto.poiId, {
-      enrollment: { changeMaker: { id: true }, project: { creditsEarned: true } },
+      enrollments: { changeMaker: { id: true }, project: { creditsEarned: true } },
       id: true,
       dateStarted: true,
       dateStopped: true,
@@ -229,7 +229,7 @@ export class PoiService {
       task: { id: true },
     });
 
-    if (user.changeMaker?.id !== poi.enrollment?.changeMaker?.id) {
+    if (!user.changeMaker || !poi.enrollments.map((e) => e.changeMaker.id).includes(user.changeMaker?.id)) {
       throw new HttpException('You do not own this Proof of Impact.', HttpStatus.UNAUTHORIZED);
     }
     const status = calculatePoiStatus(poi);
@@ -243,7 +243,7 @@ export class PoiService {
 
   async stopNoAuth(dto: StopPoiTimerDto) {
     const poi = await this.poiRepo.findOneOrFail(dto.poiId, {
-      enrollment: { changeMaker: { id: true }, project: { creditsEarned: true } },
+      enrollments: { changeMaker: { id: true }, project: { creditsEarned: true } },
       id: true,
       dateStarted: true,
       dateStopped: true,
@@ -283,7 +283,7 @@ export class PoiService {
   async withdraw(query: IQuery<{ deletedId: string }>, token: string, dto: EndPoiTimerDto) {
     const user = await this.auth.validateUserToken(token ?? '', { changeMaker: { id: true } });
     const poi = await this.poiRepo.findOneOrFail(dto.poiId, {
-      enrollment: { changeMaker: { id: true } },
+      enrollments: { changeMaker: { id: true } },
       dateStarted: true,
       dateStopped: true,
       dateSubmitted: true,
@@ -295,7 +295,7 @@ export class PoiService {
       imagesFilePaths: true,
     });
 
-    if (user.changeMaker?.id !== poi.enrollment?.changeMaker?.id) {
+    if (!user.changeMaker || !poi.enrollments.map((e) => e.changeMaker.id).includes(user.changeMaker?.id)) {
       throw new HttpException('You do not own this Proof of Impact.', HttpStatus.UNAUTHORIZED);
     }
     const status = calculatePoiStatus(poi);
@@ -325,7 +325,7 @@ export class PoiService {
   async pause(query: IQuery<Poi>, token: string, dto: PausePoiTimerDto) {
     const user = await this.auth.validateUserToken(token ?? '', { changeMaker: { id: true } });
     const poi = await this.poiRepo.findOneOrFail(dto.poiId, {
-      enrollment: { changeMaker: { id: true } },
+      enrollments: { changeMaker: { id: true } },
       dateStarted: true,
       dateStopped: true,
       dateSubmitted: true,
@@ -336,7 +336,7 @@ export class PoiService {
       task: { id: true },
     });
 
-    if (user.changeMaker?.id !== poi.enrollment?.changeMaker?.id) {
+    if (!user.changeMaker || !poi.enrollments.map((e) => e.changeMaker.id).includes(user.changeMaker?.id)) {
       throw new HttpException('You do not own this Proof of Impact.', HttpStatus.UNAUTHORIZED);
     }
     const status = calculatePoiStatus(poi);
@@ -363,7 +363,7 @@ export class PoiService {
     const user = await this.auth.validateUserToken(token ?? '', { changeMaker: { id: true } });
 
     const poiQuery = createQuery<Poi>()({
-      enrollment: { changeMaker: { id: true }, project: { creditsEarned: true } },
+      enrollments: { changeMaker: { id: true }, project: { creditsEarned: true } },
       dateStarted: true,
       dateStopped: true,
       dateSubmitted: true,
@@ -376,7 +376,7 @@ export class PoiService {
 
     const poi = await this.poiRepo.findOneOrFail(dto.poiId, poiQuery);
 
-    if (user.changeMaker?.id !== poi.enrollment?.changeMaker?.id) {
+    if (!user.changeMaker || !poi.enrollments.map((e) => e.changeMaker.id).includes(user.changeMaker?.id)) {
       throw new HttpException('You do not own this Proof of Impact.', HttpStatus.UNAUTHORIZED);
     }
     if (calculatePoiStatus(poi) !== PoiStatus.paused) {
@@ -406,7 +406,7 @@ export class PoiService {
   async submit(query: IQuery<Poi>, token: string, dto: SubmitPoiDto, files: Express.Multer.File[]) {
     const user = await this.auth.validateUserToken(token ?? '', { changeMaker: { id: true } });
     const poi = await this.poiRepo.findOneOrFail(dto.poiId, {
-      enrollment: {
+      enrollments: {
         changeMaker: { id: true, handle: { id: true } },
         project: {
           title: true,
@@ -425,7 +425,7 @@ export class PoiService {
       task: { id: true },
     });
 
-    if (user.changeMaker?.id !== poi.enrollment?.changeMaker?.id) {
+    if (!user.changeMaker || !poi.enrollments.map((e) => e.changeMaker.id).includes(user.changeMaker?.id)) {
       throw new HttpException('You do not own this Proof of Impact.', HttpStatus.UNAUTHORIZED);
     }
     const status = calculatePoiStatus(poi);
@@ -435,15 +435,15 @@ export class PoiService {
         HttpStatus.BAD_REQUEST
       );
     }
-    if (poi.enrollment.project.requireImages && files.length < 1) {
+    if (poi.enrollments[0].project.requireImages && files.length < 1) {
       throw new HttpException(
         'This Proof of Impact requires at least one image upon submission.',
         HttpStatus.BAD_REQUEST
       );
     }
-    if (poi.enrollment.project.questions.length !== dto.answers.length) {
+    if (poi.enrollments[0].project.questions.length !== dto.answers.length) {
       throw new HttpException(
-        `This Proof of Impact requires the submission of answers to ${poi.enrollment.project.questions.length} questions.`,
+        `This Proof of Impact requires the submission of answers to ${poi.enrollments[0].project.questions.length} questions.`,
         HttpStatus.BAD_REQUEST
       );
     }
@@ -519,12 +519,13 @@ export class PoiService {
       }
     });
 
+    // TODO: May need to send emails to all tagged users
     await this.email.sendInfoEmail({
-      message: `@${poi.enrollment.changeMaker.handle.id} has submitted a Proof of Impact
-                for your Project ${poi.enrollment.project.title}.`,
+      message: `@${poi.enrollments[0].changeMaker.handle.id} has submitted a Proof of Impact
+                for your Project ${poi.enrollments[0].project.title}.`,
       subject: `New Proof of Impact has been Submitted`,
-      user: poi.enrollment.project.servePartner.name,
-      email: poi.enrollment.project.servePartner.admins.map((a) => a.user.id),
+      user: poi.enrollments[0].project.servePartner.name,
+      email: poi.enrollments[0].project.servePartner.admins.map((a) => a.user.id),
     });
 
     return this.poiRepo.findOneOrFail(dto.poiId, query);
@@ -532,7 +533,7 @@ export class PoiService {
 
   async approve(query: IQuery<Poi>, token: string, dto: ApprovePoiDto) {
     const poi = await this.poiRepo.findOneOrFail(dto.poiId, {
-      enrollment: { project: { servePartner: { id: true } }, changeMaker: { id: true } },
+      enrollments: { project: { servePartner: { id: true } }, changeMaker: { id: true } },
       id: true,
       dateStarted: true,
       dateStopped: true,
@@ -545,10 +546,10 @@ export class PoiService {
 
     const user = await this.posService.permissions.userIsServeAdmin(
       token,
-      poi.enrollment.project.servePartner.id
+      poi.enrollments[0].project.servePartner.id
     );
 
-    if (user.changeMaker?.id === poi.enrollment.changeMaker.id) {
+    if (user.changeMaker?.id === poi.enrollments[0].changeMaker.id) {
       throw new HttpException('You cannot approve your own Proof of Impact.', HttpStatus.UNAUTHORIZED);
     }
 
@@ -560,6 +561,7 @@ export class PoiService {
       );
     }
 
+    // TODO: Add credits here
     await this.dbTransact.run(async () => {
       await this.poiRepo.update(dto.poiId, { dateApproved: new Date() });
       await this.creditRepo.upsert({
@@ -568,7 +570,7 @@ export class PoiService {
         dateMinted: new Date(),
         escrow: false,
         poi: poi.id,
-        changeMaker: poi.enrollment.changeMaker.id,
+        changeMaker: poi.enrollments[0].changeMaker.id,
       });
     });
     return this.poiRepo.findOneOrFail(dto.poiId, query);
@@ -576,7 +578,7 @@ export class PoiService {
 
   async deny(query: IQuery<Poi>, token: string, dto: DenyPoiDto) {
     const poi = await this.poiRepo.findOneOrFail(dto.poiId, {
-      enrollment: { project: { servePartner: { id: true } }, changeMaker: { id: true } },
+      enrollments: { project: { servePartner: { id: true } }, changeMaker: { id: true } },
       dateStarted: true,
       dateStopped: true,
       dateSubmitted: true,
@@ -588,10 +590,10 @@ export class PoiService {
 
     const user = await this.posService.permissions.userIsServeAdmin(
       token,
-      poi.enrollment.project.servePartner.id
+      poi.enrollments[0].project.servePartner.id
     );
 
-    if (user.changeMaker?.id === poi.enrollment.changeMaker.id) {
+    if (user.changeMaker?.id === poi.enrollments[0].changeMaker.id) {
       throw new HttpException('You cannot deny your own Proof of Impact.', HttpStatus.UNAUTHORIZED);
     }
 

@@ -6,6 +6,7 @@ import {
   ImagesViewerModalModule,
   ImBlockModule,
   ImStorageUrlPipeModule,
+  ImUserSearchModalModule,
 } from '@involvemint/client/shared/data-access';
 import { ImFormsModule, ImImageModule } from '@involvemint/client/shared/ui';
 import { ConfirmDeactivationGuard } from '@involvemint/client/shared/util';
@@ -24,6 +25,7 @@ import { PoisComponent } from './pois/pois.component';
     ImImageModule,
     ImStorageUrlPipeModule,
     ImagesViewerModalModule,
+    ImUserSearchModalModule,
     RouterModule.forChild([
       {
         path: '',

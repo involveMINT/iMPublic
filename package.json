@@ -131,6 +131,7 @@
     "typeorm": "0.2.37",
     "typeorm-transactional-cls-hooked": "0.1.21",
     "uuid": "8.3.2",
+    "yarn": "^1.22.22",
     "zone.js": "~0.11.4"
   },
   "devDependencies": {

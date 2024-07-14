@@ -1,4 +1,4 @@
-import { IManyToOne, IOneToMany, IOneToOne } from '../repository';
+import { IManyToMany, IOneToMany, IOneToOne } from '@orcha/common';
 import { Credit } from '../credit';
 import { Enrollment } from '../enrollment';
 import { QuestionAnswer } from '../question-answer';
@@ -20,7 +20,7 @@ export interface Poi {
   resumedTimes: Array<Date | string>;
 
   answers: IOneToMany<QuestionAnswer, 'poi'>;
-  enrollment: IManyToOne<Enrollment, 'pois'>;
+  enrollments: IManyToMany<Enrollment, 'pois'>;
   credits: IOneToMany<Credit, 'poi'>;
   task?: IOneToOne<Task, 'poi'>;
 

@@ -72,3 +72,15 @@ export const EnrollmentsSpQuery = createQuery<Enrollment[]>()({
     maxChangeMakers: true,
   },
 });
+
+export const SearchForEnrollmentsQuery = createQuery<Enrollment[]>()({
+  id: true,
+  changeMaker: {
+    id: true,
+    handle: {
+      id: true,
+    },
+    firstName: true,
+    lastName: true,
+  },
+});

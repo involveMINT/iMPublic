@@ -1,5 +1,5 @@
 <label class="empty-cont" *ngIf="!imgUrl" [ngStyle]="{ cursor: cursor }">
-  <input *ngIf="!disabled" type="file" (change)="uploadImg.emit($event)" />
+  <input *ngIf="!disabled" type="file" multiple (change)="uploadImg.emit($event)" />
   <div class="circ"><ion-icon slot="icon-only" name="add"></ion-icon></div>
   <div class="add-image">Add Image</div>
 </label>
