@@ -15,9 +15,6 @@ import { IonicModule } from '@ionic/angular';
 import { AutosizeModule } from 'ngx-autosize';
 import { StorefrontComponent } from './storefront.component';
 import {FormsModule} from '@angular/forms';
-import {MatInputModule} from '@angular/material/input';
-import {MatSelectModule} from '@angular/material/select';
-import {MatFormFieldModule} from '@angular/material/form-field';
 
 @NgModule({
   imports: [
@@ -33,7 +30,7 @@ import {MatFormFieldModule} from '@angular/material/form-field';
     ImStorageUrlPipeModule,
     OffersModule,
     RequestsModule,
-    MatFormFieldModule, MatSelectModule, MatInputModule, FormsModule,
+    FormsModule,
     RouterModule.forChild([
       {
         path: '',
