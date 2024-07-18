@@ -51,6 +51,9 @@ export class ExchangePartnerEntity implements Required<ExchangePartner> {
   @Column('text', { default: EpOnboardingState.profile })
   onboardingState!: EpOnboardingState;
 
+  @Column('simple-array', { default: '' })
+  tags: string[] = [];  
+
   @OneToOne(() => HandleEntity, (e) => e.exchangePartner, { cascade: true })
   @JoinColumn()
   handle!: HandleEntity;

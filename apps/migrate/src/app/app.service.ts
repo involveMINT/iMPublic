@@ -211,6 +211,7 @@ export class AppService {
               sendingTransactions: [],
               sendingVouchers: [],
               view: null,
+              tags: ep.tags
             };
           })
           .filter((u) => !!u)
