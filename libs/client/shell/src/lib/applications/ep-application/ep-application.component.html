@@ -190,7 +190,18 @@
       </div>
 
       <div class="im-buttons">
-        <ion-button color="primary" [disabled]="!epForm.valid || state.verifyingHandle" (click)="submit()">
+        <ion-button
+          color="primary"
+          [disabled]="!epForm.valid || state.verifyingHandle"
+          (click)="enableLocation()"
+        >
+          Enable Location Services
+        </ion-button>
+        <ion-button
+          color="primary"
+          [disabled]="!epForm.valid || state.verifyingHandle || !state.locationEnabled"
+          (click)="submit()"
+        >
           {{ baAdmin ? (applyFor === 'business' ? 'Submit for Business' : 'Submit for Yourself') : 'Submit' }}
         </ion-button>
       </div>
