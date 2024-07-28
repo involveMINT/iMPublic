@@ -44,5 +44,12 @@
       gap: var(--im-padding);
       padding: var(--im-padding);
     }
+
+    .center-content {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100%;
+    }
   }
 }
