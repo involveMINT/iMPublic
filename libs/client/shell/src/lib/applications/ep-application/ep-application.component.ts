@@ -7,7 +7,11 @@ import {
   verifyHandleUniqueness,
   verifyUserEmailUniqueness,
 } from '@involvemint/client/shared/data-access';
-import { ConfirmDeactivationGuard, StatefulComponent } from '@involvemint/client/shared/util';
+import {
+  ConfirmDeactivationGuard,
+  StatefulComponent,
+  GeolocationService,
+} from '@involvemint/client/shared/util';
 import { ImConfig, SubmitEpApplicationDto } from '@involvemint/shared/domain';
 import { STATES } from '@involvemint/shared/util';
 import { FormControl, FormGroup } from '@ngneat/reactive-forms';
@@ -20,6 +24,7 @@ interface EpForm extends Omit<SubmitEpApplicationDto, 'address2'> {
 interface State {
   verifyingUserEmail: boolean;
   verifyingHandle: boolean;
+  locationEnabled: boolean;
 }
 
 @Component({
@@ -59,9 +64,10 @@ export class EpApplicationComponent
   constructor(
     private readonly user: UserFacade,
     private readonly userClient: UserRestClient,
-    private readonly handleRestClient: HandleRestClient
+    private readonly handleRestClient: HandleRestClient,
+    private readonly geolocationService: GeolocationService
   ) {
-    super({ verifyingUserEmail: false, verifyingHandle: false });
+    super({ verifyingUserEmail: false, verifyingHandle: false, locationEnabled: false });
   }
 
   @HostListener('window:beforeunload', ['$event'])
@@ -109,5 +115,20 @@ export class EpApplicationComponent
     } else if ((event as CustomEvent).detail.value === 'yourself') {
       this.applyFor = 'yourself';
     }
+  }
+
+  enableLocation() {
+    this.geolocationService
+      .getPosition()
+      .then((position) => {
+        console.log('Location retrieved:', position);
+        this.updateState({ locationEnabled: true });
+      })
+      .catch((error) => {
+        console.error('Error retrieving location:', error);
+        if (error.code === error.PERMISSION_DENIED) {
+          alert('Please enable location services to use this feature.');
+        }
+      });
   }
 }
