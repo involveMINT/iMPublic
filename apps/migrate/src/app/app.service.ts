@@ -211,7 +211,8 @@ export class AppService {
               sendingTransactions: [],
               sendingVouchers: [],
               view: null, 
-              tags: ep.tags
+              tags: ep.tags, 
+              spendingOptions: ep.spendingOptions
               
             };
           })

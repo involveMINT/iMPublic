@@ -39,6 +39,7 @@ export class StorefrontComponent extends StatefulComponent<State> implements OnI
   
   @ViewChild('tabs') tabs!: ImTabsComponent;
   availableTags: string[] = ['Essentials', 'Arts & Entertainment', 'Professional Services', 'Trades', 'Rentals', 'Farming/Land', 'Food & Food Services', 'Health & Wellness', 'Transportation', 'Home Services', 'Youth', 'Seniors', 'Education/Training', 'Retail', 'Media & Print', 'Free'];
+
   
 
   readonly storeFrontForm = new FormGroup({
@@ -46,7 +47,8 @@ export class StorefrontComponent extends StatefulComponent<State> implements OnI
       Validators.required(e)
     ),
     description: new FormControl('', [Validators.maxLength(ImConfig.maxDescriptionLength)]),
-    tags: new FormControl<string[]>([]) 
+    tags: new FormControl<string[]>([]), 
+    spendingOptions: new FormControl('')
   });
 
   readonly listingOptions: StorefrontListingStatus[] = ['public', 'private', 'unlisted'];
@@ -100,7 +102,9 @@ export class StorefrontComponent extends StatefulComponent<State> implements OnI
           this.storeFrontForm.patchValue({
             listStoreFront: exchangePartner.listStoreFront,
             description: exchangePartner.description,
-            tags: exchangePartner.tags
+            tags: exchangePartner.tags, 
+            spendingOptions: exchangePartner.spendingOptions
+            
           });
         }),
         tap((exchangePartner) => {
@@ -123,6 +127,7 @@ export class StorefrontComponent extends StatefulComponent<State> implements OnI
             listStoreFront: form.listStoreFront,
             description: form.description,
             tags: form.tags, 
+            spendingOptions: form.spendingOptions
           });
         })
       )

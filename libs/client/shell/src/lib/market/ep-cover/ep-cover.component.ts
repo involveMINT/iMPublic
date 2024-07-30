@@ -31,6 +31,7 @@ interface State {
 })
 export class EpCoverComponent extends StatefulComponent<State> implements OnInit {
   @ViewChild('tabs') tabs!: ImTabsComponent;
+  
 
   readonly offersChecked = new Map<
     string,
@@ -143,4 +144,5 @@ export class EpCoverComponent extends StatefulComponent<State> implements OnInit
   buyVoucher(exchangePartner: ExchangePartnerMarketStoreModel) {
     this.user.vouchers.dispatchers.buy(exchangePartner, Array.from(this.offersChecked.values()));
   }
+
 }

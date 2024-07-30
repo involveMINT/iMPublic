@@ -15,6 +15,7 @@ import { RequestEntity } from '../request/request.entity';
 import { TransactionEntity } from '../transaction/transaction.entity';
 import { VoucherEntity } from '../voucher/voucher.entity';
 import { ExchangePartnerViewEntity } from './exchange-partner.view';
+import { deflate } from 'zlib';
 
 @Entity({ name: DbTableNames.ExchangePartner })
 export class ExchangePartnerEntity implements Required<ExchangePartner> {
@@ -52,6 +53,8 @@ export class ExchangePartnerEntity implements Required<ExchangePartner> {
   onboardingState!: EpOnboardingState;
   @Column('simple-array', { default: '' })
   tags: string[] = [];  
+  @Column('text', {default: ' '})
+  spendingOptions!: string;
 
   @OneToOne(() => HandleEntity, (e) => e.exchangePartner, { cascade: true })
   @JoinColumn()
