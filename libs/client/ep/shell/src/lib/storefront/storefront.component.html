@@ -64,6 +64,16 @@
                 </div>
               </div>
 
+              <im-item [touched]="true" label="Select Spending Options">
+                <ion-item>
+                  <ion-select formControlName="spendingOptions" placeholder="Select an Option">
+                    <ion-select-option value="In-Person">In-Person</ion-select-option>
+                    <ion-select-option value="Virtual">Virtual</ion-select-option>
+                    <ion-select-option value="Both">Both</ion-select-option>
+                  </ion-select>
+                </ion-item>
+              </im-item>
+
               
                             
 

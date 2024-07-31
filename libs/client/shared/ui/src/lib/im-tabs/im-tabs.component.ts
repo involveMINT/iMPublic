@@ -40,7 +40,21 @@ export class ImTabsComponent extends RxJSBaseClass implements AfterContentInit {
   }
 
   tabChangeEvent(event: Event) {
-    this.tabChange.emit((event as CustomEvent).detail.index);
+    const newIndex = (event as CustomEvent).detail.index;
+    const tabArray = this.tabs.toArray();
+    if (!tabArray[newIndex]?.disabled) {
+      this.tabChange.emit(newIndex);
+      this.activeTabIndex = newIndex; 
+    } else {
+      this.superTabs.selectTab(this.activeTabIndex);
+    }
+  }
+
+  selectTab(index: number) {
+    if (!this.tabs.toArray()[index]?.disabled) {
+      this.superTabs.selectTab(index);
+      this.activeTabIndex = index; 
+    }
   }
 
   ngAfterContentInit() {
@@ -53,6 +67,8 @@ export class ImTabsComponent extends RxJSBaseClass implements AfterContentInit {
   }
 
   setIndex(index: number) {
-    this.superTabs.selectTab(index);
+    if (!this.tabs.toArray()[index]?.disabled) {
+      this.superTabs.selectTab(index);
+    }
   }
 }

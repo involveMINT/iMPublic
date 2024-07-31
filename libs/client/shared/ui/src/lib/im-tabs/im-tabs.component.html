@@ -5,8 +5,12 @@
   [activeTabIndex]="activeTabIndex"
 >
   <super-tabs-toolbar imSuperTabsToolbarTheme [slot]="slot" [scrollable]="true" [scrollablePadding]="false">
-    <super-tab-button *ngFor="let label of labels$ | async">
-      <ion-label>{{ label }}</ion-label>
+    <super-tab-button *ngFor="let tab of tabs.toArray(); let i = index"
+      [ngClass]="{ 'disabled': tabs.toArray()[i].disabled }"
+      [class.disabled]="tab.disabled"
+      [disabled]="tab.disabled"
+      (click)="tab.disabled ? null : selectTab(i)">
+      <ion-label>{{ tab.label }}</ion-label>
     </super-tab-button>
   </super-tabs-toolbar>
   <super-tabs-container

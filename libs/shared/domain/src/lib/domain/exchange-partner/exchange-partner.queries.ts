@@ -63,7 +63,8 @@ export const ExchangePartnerMarketQuery = createQuery<ExchangePartner[]>()({
     dateUpdated: true,
     imagesFilePaths: true,
   },
-  tags:true 
+  tags:true, 
+  spendingOptions: true 
 });
 
 export const BaDownloadEpIdsWithEmailQuery = createQuery<ExchangePartner[]>()({

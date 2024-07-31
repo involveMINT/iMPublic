@@ -29,8 +29,9 @@
   </ion-header>
 
   <ion-content>
-    <im-tabs *ngIf="state.exchangePartner as ep" #tabs [swipeEnabled]="false">
-      <im-tab label="Storefront">
+    <im-tabs *ngIf="state.exchangePartner as ep" #tabs [swipeEnabled]="false"
+    [activeTabIndex]="state.exchangePartner.spendingOptions === 'Virtual' ? 1 : 0">
+      <im-tab label="Storefront" [disabled]="ep.spendingOptions === 'Virtual'">
         <div class="im-cont">
           <div class="im-primary-text title">{{ ep!.name }}</div>
           <im-image-slides
@@ -72,7 +73,7 @@
           </div>
         </div>
       </im-tab>
-      <im-tab label="Offers">
+      <im-tab label="Offers" [disabled]="ep.spendingOptions === 'In-Person'">
         <div class="im-cont">
           <div class="im-primary-text" style="text-align: center">Items For Sale</div>
           <div style="text-align: center" *ngIf="ep.offers.length === 0">No offers listed.</div>

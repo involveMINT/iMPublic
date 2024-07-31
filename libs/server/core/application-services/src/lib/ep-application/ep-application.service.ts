@@ -235,7 +235,8 @@ export class EpApplicationService {
           receivingVouchers: [],
           sendingVouchers: [],
           view: null,
-          tags: [] 
+          tags: [], 
+          spendingOptions: ""
         });
       }
     });

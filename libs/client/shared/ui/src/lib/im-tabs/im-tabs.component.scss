@@ -19,6 +19,13 @@ super-tab-button {
   }
 }
 
+super-tab-button.disabled {
+  color: #ccc; 
+  pointer-events: none; 
+  opacity: 0.3; 
+  background-color: #f5f5f5;
+}
+
 super-tab-button:nth-child(even) {
   box-shadow: 0px 0px 0px 1px var(--im-border-color);
   z-index: 1;
