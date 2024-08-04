@@ -364,6 +364,27 @@ export class UserSessionEffects {
     )
   );
 
+  // readonly submitEpApplication$ = createEffect(() =>
+  //   this.actions$.pipe(
+  //     ofType(UserSessionActions.submitEpApplication),
+  //     delayWhen(() => from(this.status.showLoader('Submitting ExchangePartner Application...'))),
+  //     pessimisticUpdate({
+  //       run: ({ dto }) =>
+  //         this.epApp.submit(UserQuery.epApplications, dto).pipe(
+  //           map((epApp) => {
+  //             // if (!ImConfig.requireApplicationApproval) {
+  //             //   window.location.reload();
+  //             // }
+  //             this.status.dismissLoader();
+  //             this.infoModal.open({
+  //               title: 'ExchangePartner Application Successful',
+  //               description: `Our administrators are reviewing your request and is pending approval or denial.`,
+  //               icon: { name: 'checkmark', source: 'ionicon' },
+  //               useBackground: true,
+  //             });
+  //             console.log("hit here debug 1");
+
+  @Injectable()
   readonly submitEpApplication$ = createEffect(() =>
     this.actions$.pipe(
       ofType(UserSessionActions.submitEpApplication),
@@ -371,18 +392,24 @@ export class UserSessionEffects {
       pessimisticUpdate({
         run: ({ dto }) =>
           this.epApp.submit(UserQuery.epApplications, dto).pipe(
-            map((epApp) => {
-              if (!ImConfig.requireApplicationApproval) {
-                window.location.reload();
-              }
+            switchMap((epApp) => {
               this.status.dismissLoader();
-              this.infoModal.open({
-                title: 'ExchangePartner Application Successful',
-                description: `Our administrators are reviewing your request and is pending approval or denial.`,
-                icon: { name: 'checkmark', source: 'ionicon' },
-                useBackground: true,
-              });
-              return UserSessionActions.submitEpApplicationSuccess({ epApp });
+              return from(
+                this.infoModal.open({
+                  title: 'ExchangePartner Application Successful',
+                  description: `Our administrators are reviewing your request and is pending approval or denial.`,
+                  icon: { name: 'checkmark', source: 'ionicon' },
+                  useBackground: true,
+                })
+              ).pipe(
+                switchMap(modal => modal.onDidDismiss()),
+                map(result => {
+                  if (result.data) {
+                    // this.route.to.SomePageToGoTo.ROOT();
+                  }
+                  return UserSessionActions.submitEpApplicationSuccess({ epApp });
+                })
+              );
             })
           ),
         onError: (action, { error }) => {

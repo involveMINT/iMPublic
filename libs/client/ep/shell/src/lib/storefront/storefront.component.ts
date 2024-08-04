@@ -1,6 +1,8 @@
 import { ChangeDetectionStrategy, Component, OnInit, ViewChild } from '@angular/core';
 import { Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
+
+
 import {
   ImImagesViewerModalService,
   UserFacade,
@@ -17,8 +19,9 @@ import {
 } from '@involvemint/shared/domain';
 import { tapOnce, UnArray } from '@involvemint/shared/util';
 import { FormControl, FormGroup } from '@ngneat/reactive-forms';
-import { filter, skip, switchMap, tap } from 'rxjs/operators';
+import { filter, skip, switchMap, tap ,take } from 'rxjs/operators';
 import { FormBuilder} from '@angular/forms';
+
 
 type Profile = NonNullable<UnArray<UserStoreModel['exchangeAdmins']>['exchangePartner']>;
 
@@ -72,7 +75,7 @@ export class StorefrontComponent extends StatefulComponent<State> implements OnI
       if (!activeTab) {
         return;
       }
-      // re-route to same route to remove queryParams (activeTab)
+
       this.route.to.ep.storefront.ROOT({
         queryParams: {
           activeTab: undefined,
@@ -85,10 +88,10 @@ export class StorefrontComponent extends StatefulComponent<State> implements OnI
       activeTab === 'storefront'
         ? this.tabs.setIndex(0)
         : activeTab === 'offers'
-        ? this.tabs.setIndex(1)
-        : activeTab === 'requests'
-        ? this.tabs.setIndex(2)
-        : this.tabs.setIndex(0);
+          ? this.tabs.setIndex(1)
+          : activeTab === 'requests'
+            ? this.tabs.setIndex(2)
+            : this.tabs.setIndex(0);
     });
 
     this.effect(() =>
@@ -129,10 +132,34 @@ export class StorefrontComponent extends StatefulComponent<State> implements OnI
             tags: form.tags, 
             spendingOptions: form.spendingOptions
           });
+        }),
+
+        tap((form) => {
+
+          if (form.listStoreFront === 'private' || form.listStoreFront === 'unlisted') {
+            this.user.offers.selectors.offers$.pipe(
+              take(1),
+              tap(({ offers }) => {
+                offers.forEach(offer => {
+                  this.user.offers.dispatchers.update({
+                    offerId: offer.id,
+                    changes: {
+                      listingStatus: form.listStoreFront,
+                      name: offer.name,
+                      description: offer.description,
+                      price: offer.price
+                    },
+                  });
+
+                });
+              })
+            ).subscribe();
+          }
         })
       )
     );
   }
+
 
   tabChangeEvent(event: number) {
     if (typeof event !== 'number') {

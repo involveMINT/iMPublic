@@ -26,19 +26,28 @@
         </im-item>
         <im-item [touched]="true">
           <ion-icon slot="start" name="lock-closed"></ion-icon>
-          <input formControlName="password" placeholder="Password" name="password" type="password" />
+
+          <input formControlName="password" placeholder="Password" name="password"
+            [type]="isPasswordVisible ? 'text' : 'password'" />
+
+          <a class="type-toggle" (click)="togglePasswordVisibility()">
+            <ion-icon class="show-option" [hidden]="isPasswordVisible" name="eye-off-outline"></ion-icon>
+            <ion-icon class="hide-option" [hidden]="!isPasswordVisible" name="eye-outline"></ion-icon>
+          </a>
+
           <im-error *ngIf="!signUpForm.controls.password.valid && signUpForm.controls.password.touched">
             {{ pwdValidationText }}
           </im-error>
         </im-item>
         <im-item [touched]="true">
           <ion-icon slot="start" name="lock-closed"></ion-icon>
-          <input
-            formControlName="confirmPassword"
-            placeholder="Confirm Password"
-            name="password"
-            type="password"
-          />
+
+          <input formControlName="confirmPassword" placeholder="Confirm Password" name="password"
+            [type]="isConfirmPasswordVisible ? 'text' : 'password'" />
+          <a class="type-toggle" (click)="toggleConfirmPasswordVisibility()">
+            <ion-icon class="show-option" [hidden]="isConfirmPasswordVisible" name="eye-off-outline"></ion-icon>
+            <ion-icon class="hide-option" [hidden]="!isConfirmPasswordVisible" name="eye-outline"></ion-icon>
+          </a>
           <im-error *ngIf="signUpForm.controls.password.touched && signUpForm.getError('notSame')">
             Your passwords do not match.
           </im-error>
@@ -51,12 +60,8 @@
         <!-- Implicit button for form when pressing enter button -->
         <button style="display: none" [disabled]="!signUpForm.valid"></button>
       </form>
-      <ion-button
-        [style.margin-top]="'var(--im-padding)'"
-        [disabled]="!signUpForm.valid"
-        test-attr="sign-up-submit-button"
-        (click)="submit()"
-      >
+      <ion-button [style.margin-top]="'var(--im-padding)'" [disabled]="!signUpForm.valid"
+        test-attr="sign-up-submit-button" (click)="submit()">
         Sign Up
       </ion-button>
       <span [style.margin-top]="'var(--im-padding)'">
