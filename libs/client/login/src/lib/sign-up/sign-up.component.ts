@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, ContentChild, OnInit } from '@angular/core';
 import { ValidationErrors, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { ImLegalModalInputs, ImLegalModalService, UserFacade } from '@involvemint/client/shared/data-access';
@@ -20,8 +20,11 @@ interface State {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SignUpComponent extends StatefulComponent<State> implements OnInit {
+  isPasswordVisible = false;
+  isConfirmPasswordVisible = false;
   readonly signUpForm = new FormGroup(
     {
+
       email: new FormControl(
         '',
         Validators.compose([(c) => Validators.required(c), Validators.pattern(ImConfig.regex.email)])
@@ -48,6 +51,7 @@ export class SignUpComponent extends StatefulComponent<State> implements OnInit 
     private readonly uf: UserFacade,
     private readonly activatedRoute: ActivatedRoute,
     private readonly legalModal: ImLegalModalService
+
   ) {
     super({ errorStatus: '' });
   }
@@ -98,7 +102,16 @@ export class SignUpComponent extends StatefulComponent<State> implements OnInit 
     this.updateState({ errorStatus: '' });
   }
 
+  togglePasswordVisibility(): void {
+    this.isPasswordVisible = !this.isPasswordVisible;
+  }
+
+  toggleConfirmPasswordVisibility(): void {
+    this.isConfirmPasswordVisible = !this.isConfirmPasswordVisible;
+  }
   // doGoogleLogin(): void {
   //   this.uf.session.dispatchers.googleSignIn(environment.authPersistance);
   // }
 }
+
+

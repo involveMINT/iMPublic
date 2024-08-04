@@ -17,6 +17,7 @@ interface State {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class LoginPageComponent extends StatefulComponent<State> implements OnInit {
+  isPasswordVisible = false;
   readonly loginForm = new FormGroup({
     email: new FormControl('', [(c) => Validators.required(c), Validators.pattern(ImConfig.regex.email)]),
     password: new FormControl('', (c) => Validators.required(c)),
@@ -68,5 +69,9 @@ export class LoginPageComponent extends StatefulComponent<State> implements OnIn
 
   async forgotPassword() {
     return this.route.to.forgotPassword.ROOT({ animation: 'back' });
+  }
+
+  togglePasswordVisibility(): void {
+    this.isPasswordVisible = !this.isPasswordVisible;
   }
 }
