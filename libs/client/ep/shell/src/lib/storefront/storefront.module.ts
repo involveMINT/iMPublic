@@ -14,6 +14,7 @@ import { ImRoutes } from '@involvemint/shared/domain';
 import { IonicModule } from '@ionic/angular';
 import { AutosizeModule } from 'ngx-autosize';
 import { StorefrontComponent } from './storefront.component';
+import {FormsModule} from '@angular/forms';
 
 @NgModule({
   imports: [
@@ -29,6 +30,7 @@ import { StorefrontComponent } from './storefront.component';
     ImStorageUrlPipeModule,
     OffersModule,
     RequestsModule,
+    FormsModule,
     RouterModule.forChild([
       {
         path: '',

@@ -210,7 +210,10 @@ export class AppService {
               requests: [],
               sendingTransactions: [],
               sendingVouchers: [],
-              view: null,
+              view: null, 
+              tags: ep.tags, 
+              spendingOptions: ep.spendingOptions
+              
             };
           })
           .filter((u) => !!u)
@@ -777,6 +780,7 @@ export class AppService {
             address: address,
             listingStatus: e.listed ? 'public' : 'private',
             price: e.price,
+            
           };
         }).filter((u) => !!u)
       )

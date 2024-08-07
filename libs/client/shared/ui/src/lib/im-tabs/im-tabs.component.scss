@@ -13,16 +13,27 @@ super-tab-button {
   flex-grow: 1;
   max-width: 100%;
   padding: 0;
-
+  
   ion-label {
     text-transform: none;
   }
 }
 
+super-tab-button.disabled {
+  color: #ccc; 
+  pointer-events: none; 
+  opacity: 0.3; 
+  background-color: #f5f5f5;
+}
+
+
+
 super-tab-button:nth-child(even) {
   box-shadow: 0px 0px 0px 1px var(--im-border-color);
   z-index: 1;
 }
+
+
 
 super-tabs-toolbar {
   background: var(--im-menu-item);
@@ -51,3 +62,4 @@ super-tabs-container,
   border-top: 0;
   border-bottom: 1px solid var(--im-border-color);
 }
+

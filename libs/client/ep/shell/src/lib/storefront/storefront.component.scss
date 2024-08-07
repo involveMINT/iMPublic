@@ -14,4 +14,20 @@
     padding: 0.5em;
     color: black;
   }
+
+  
+}
+.tags {
+  display:flex ; 
+  gap: 10px ; 
+}
+.tag {
+  background-color: var(--ion-color-primary) ; 
+  padding: 4px 8px ;  
+  border-radius: 8px ;
+  color:white ; 
+  display:flex ; 
+  align-items: center;
+  gap: 2px ; 
+
 }

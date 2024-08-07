@@ -150,4 +150,21 @@ img {
     border: 2px solid var(--im-orange);
     border-radius: 13px;
   }
+
+  
+}
+
+
+.tags {
+  display:flex ; 
+  gap: 4px ;
+  flex-wrap: wrap;
+}
+.tag {
+  background-color: var(--ion-color-primary) ;
+  color: white ; 
+  font-size: 10px ;
+  padding: 2px 8px ; 
+  border-radius: 4px;
+  white-space: nowrap;
 }
