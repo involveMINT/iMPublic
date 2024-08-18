@@ -6,7 +6,7 @@ import {
 } from '@involvemint/client/shared/data-access';
 import { RouteService } from '@involvemint/client/shared/routes';
 import { StatefulComponent } from '@involvemint/client/shared/util';
-import { calculateEnrollmentStatus, EnrollmentStatus } from '@involvemint/shared/domain';
+import { calculateEnrollmentStatus, calculateProjectExpiry, EnrollmentStatus, ProjectStatus, ProjectListingStatus } from '@involvemint/shared/domain';
 import { parseDate } from '@involvemint/shared/util';
 import { formatDistanceToNow } from 'date-fns';
 import { tap } from 'rxjs/operators';
@@ -22,8 +22,10 @@ interface State {
   styleUrls: ['./browse-projects.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
+
 export class BrowseProjectsComponent extends StatefulComponent<State> implements OnInit {
   @Input() inline = false;
+
 
   constructor(
     private readonly user: UserFacade,
@@ -36,17 +38,26 @@ export class BrowseProjectsComponent extends StatefulComponent<State> implements
   ngOnInit() {
     this.effect(() =>
       this.user.projects.selectors.projects$.pipe(
-        tap(({ projects, loaded }) =>
+        tap(({ projects, loaded }) => {
+          const updatedProjects = projects.map((project) => {
+            const status = calculateProjectExpiry(project);
+            if (status === ProjectStatus.open) {
+              return { ...project, listingStatus: 'public' as ProjectListingStatus };
+            }
+            else {
+              return { ...project, listingStatus: 'private' as ProjectListingStatus };
+            }
+            return project;
+          });
           this.updateState({
-            // Filter by public so it won't show any unlisted projects that an SP may have viewed
-            // then went back to the projects feed.
-            projects: projects.filter((p) => p.listingStatus === 'public'),
+            projects: updatedProjects.filter((p) => p.listingStatus === 'public'),
             loaded,
-          })
-        )
+          });
+        })
       )
     );
   }
+
 
   refresh() {
     this.user.projects.dispatchers.refresh();

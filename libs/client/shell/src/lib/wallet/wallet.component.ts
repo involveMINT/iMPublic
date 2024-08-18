@@ -95,7 +95,7 @@ export class WalletComponent extends StatefulComponent<State> implements OnInit 
             creditsLoaded: loaded,
             balance: balance / 100,
             escrowCredits,
-            escrowBalance,
+            escrowBalance: escrowBalance / 100
           });
         })
       )
@@ -229,3 +229,6 @@ export class WalletComponent extends StatefulComponent<State> implements OnInit 
     return run;
   }
 }
+
+
+

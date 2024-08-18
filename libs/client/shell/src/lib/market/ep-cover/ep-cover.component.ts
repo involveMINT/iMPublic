@@ -124,7 +124,7 @@ export class EpCoverComponent extends StatefulComponent<State> implements OnInit
     offer: UnArray<ExchangePartnerMarketStoreModel['offers']>;
     quantity: number;
   }) {
-    if (evt.quantity === 0) evt.checked = false;
+    if (evt.quantity <= 0) evt.checked = false;
 
     if (evt.checked) {
       this.offersChecked.set(evt.offer.id, { quantity: evt.quantity, offer: evt.offer });
@@ -142,5 +142,8 @@ export class EpCoverComponent extends StatefulComponent<State> implements OnInit
 
   buyVoucher(exchangePartner: ExchangePartnerMarketStoreModel) {
     this.user.vouchers.dispatchers.buy(exchangePartner, Array.from(this.offersChecked.values()));
+
+    this.offersChecked.clear();
+    this.updateState({ total: 0 });
   }
 }
