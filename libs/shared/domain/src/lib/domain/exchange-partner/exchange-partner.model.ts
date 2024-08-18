@@ -34,6 +34,7 @@ export interface ExchangePartner {
   longitude?: number;
   dateCreated: Date | string;
   onboardingState: EpOnboardingState;
+  tags: string[] ;
 
   address: IOneToOne<Address, 'exchangePartner'>;
   handle: IOneToOne<Handle, 'exchangePartner'>;

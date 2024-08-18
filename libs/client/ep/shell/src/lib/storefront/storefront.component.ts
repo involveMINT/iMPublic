@@ -21,6 +21,8 @@ import { tapOnce, UnArray } from '@involvemint/shared/util';
 import { FormControl, FormGroup } from '@ngneat/reactive-forms';
 import { filter, skip, switchMap, tap, take } from 'rxjs/operators';
 
+import { FormBuilder} from '@angular/forms';
+
 type Profile = NonNullable<UnArray<UserStoreModel['exchangeAdmins']>['exchangePartner']>;
 
 interface State {
@@ -38,12 +40,14 @@ interface State {
 })
 export class StorefrontComponent extends StatefulComponent<State> implements OnInit {
   @ViewChild('tabs') tabs!: ImTabsComponent;
+  availableTags: string[] = ['Essentials', 'Arts & Entertainment', 'Professional Services', 'Trades', 'Rentals', 'Farming/Land', 'Food & Food Services', 'Health & Wellness', 'Transportation', 'Home Services', 'Youth', 'Seniors', 'Education/Training', 'Retail', 'Media & Print', 'Free'];
 
   readonly storeFrontForm = new FormGroup({
     listStoreFront: new FormControl<StorefrontListingStatus>(defaultProjectListingStatus, (e) =>
       Validators.required(e)
     ),
     description: new FormControl('', [Validators.maxLength(ImConfig.maxDescriptionLength)]),
+    tags: new FormControl<string[]>([])
   });
 
   readonly listingOptions: StorefrontListingStatus[] = ['public', 'private', 'unlisted'];
@@ -94,6 +98,7 @@ export class StorefrontComponent extends StatefulComponent<State> implements OnI
           this.storeFrontForm.patchValue({
             listStoreFront: exchangePartner.listStoreFront,
             description: exchangePartner.description,
+            tags: exchangePartner.tags
           });
         }),
         tap((exchangePartner) => {
@@ -111,6 +116,7 @@ export class StorefrontComponent extends StatefulComponent<State> implements OnI
           this.user.epProfile.dispatchers.editEpProfile({
             listStoreFront: form.listStoreFront,
             description: form.description,
+            tags: form.tags,
           });
         }),
 
@@ -158,7 +164,7 @@ export class StorefrontComponent extends StatefulComponent<State> implements OnI
     let files: File[] | undefined;
     try {
       files = parseMultipleFiles(event);
-    } catch (error) {
+    } catch (error:any) {
       this.status.presentAlert({ title: 'Error', description: error.message });
     }
 
@@ -170,6 +176,26 @@ export class StorefrontComponent extends StatefulComponent<State> implements OnI
   deleteImage(imagesFilePathsIndex: number): void {
     this.user.epProfile.dispatchers.deleteEpImage(imagesFilePathsIndex);
   }
+
+  addTag(tag: string) {
+    console.log("we are hereeeeee")
+    const currentTags = this.storeFrontForm.get('tags')?.value || [];
+    if (tag && !currentTags.includes(tag)) {
+      this.storeFrontForm.get('tags')?.patchValue([...currentTags, tag]);
+      console.log('Updated Tags:', this.storeFrontForm.get('tags')?.value);
+    }
+  }
+
+  onTagSelected(event: any) {
+    const selectedTag = event.detail.value;
+    this.addTag(selectedTag);
+  }
+
+  removeTag(index: number): void {
+    const currentTags = [...this.storeFrontForm.get('tags')?.value]; // Make a copy of the array
+    currentTags.splice(index, 1);
+    this.storeFrontForm.get('tags')?.patchValue([...currentTags]);
+}
 
   makeCoverPhoto(
     ep: UnArray<UserStoreModel['exchangeAdmins']>['exchangePartner'],
