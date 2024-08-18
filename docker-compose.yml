@@ -55,4 +55,3 @@ services:
       - .docker/firebase-emulators/.firebaserc:/.firebaserc
     command: >
       sh -c "firebase emulators:start --import=firebase-local-data --export-on-exit=firebase-local-data"
-
