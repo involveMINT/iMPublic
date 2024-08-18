@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { RouteService } from '@involvemint/client/shared/routes';
 import { StatefulComponent } from '@involvemint/client/shared/util';
 import { ProjectSpStoreModel, ServePartnerFacade } from '@involvemint/client/sp/data-access';
+import { calculateProjectExpiry, ProjectStatus, ProjectListingStatus } from '@involvemint/shared/domain';
 import { tap } from 'rxjs/operators';
 
 interface State {
@@ -24,11 +25,25 @@ export class ProjectsPageComponent extends StatefulComponent<State> implements O
     this.effect(() =>
       this.sp.projects.selectors.projects$.pipe(
         tap(({ projects, loaded }) => {
-          this.updateState({ projects, loaded });
+          const updatedProjects = projects.map((project) => {
+            const status = calculateProjectExpiry(project);
+            if (status === ProjectStatus.open) {
+              return { ...project, listingStatus: 'public' as ProjectListingStatus };
+            }
+            else {
+              return { ...project, listingStatus: 'private' as ProjectListingStatus };
+            }
+            return project;
+          });
+          this.updateState({
+            projects: updatedProjects.filter((p) => p.listingStatus === 'public' || p.listingStatus === 'private'),
+            loaded,
+          });
         })
       )
     );
   }
+
 
   refresh() {
     this.sp.projects.dispatchers.refresh();
