@@ -10,6 +10,22 @@ export enum ProjectStatus {
   closed = 'closed',
 }
 
+export const calculateProjectExpiry = createLogic<
+  Project,
+  {
+    startDate: true;
+    endDate: true;
+  }
+>()((project) => {
+  const currentDate = new Date();
+  if (
+    (project.endDate && isAfter(currentDate, parseDate(project.endDate)))
+  ) {
+    return ProjectStatus.closed;
+  }
+  return ProjectStatus.open;
+});
+
 export const calculateProjectStatus = createLogic<
   Project,
   {
