@@ -40,7 +40,7 @@ services:
         - HOME=/home/node=value
     ports:
       - 4000:4000
-      - 5000:5000
+      - 5002:5000
       - 5001:5001
       - 8080:8080
       - 8085:8085
@@ -55,4 +55,3 @@ services:
       - .docker/firebase-emulators/.firebaserc:/.firebaserc
     command: >
       sh -c "firebase emulators:start --import=firebase-local-data --export-on-exit=firebase-local-data"
-
