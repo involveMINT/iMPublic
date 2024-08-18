@@ -1,12 +1,8 @@
 import { AfterViewInit, ChangeDetectionStrategy, Component, OnInit, ViewChild } from '@angular/core';
 import { Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-import {
-  HandleRestClient,
-  UserFacade,
-  verifyHandleUniqueness,
-} from '@involvemint/client/shared/data-access';
-import { StatefulComponent } from '@involvemint/client/shared/util';
+import { HandleRestClient, UserFacade, verifyHandleUniqueness } from '@involvemint/client/shared/data-access';
+import { StatefulComponent, GeolocationService } from '@involvemint/client/shared/util';
 import { CmOnboardingState, ImConfig } from '@involvemint/shared/domain';
 import { DeepReadonly, STATES } from '@involvemint/shared/util';
 import { IonSlides } from '@ionic/angular';
@@ -26,6 +22,7 @@ export interface CreateCmProfileFormData {
 
 interface State {
   verifyingHandle: boolean;
+  locationEnabled: boolean;
 }
 
 @Component({
@@ -58,9 +55,10 @@ export class CreateCmProfileComponent extends StatefulComponent<State> implement
   constructor(
     private readonly uf: UserFacade,
     private readonly handleRestClient: HandleRestClient,
-    private readonly route: ActivatedRoute
+    private readonly route: ActivatedRoute,
+    private readonly geolocationService: GeolocationService
   ) {
-    super({ verifyingHandle: false });
+    super({ verifyingHandle: false, locationEnabled: false });
   }
 
   ngOnInit(): void {
@@ -91,6 +89,23 @@ export class CreateCmProfileComponent extends StatefulComponent<State> implement
     this.slides.lockSwipes(false);
     this.slides.slidePrev();
     this.slides.lockSwipes(true);
+  }
+
+  enableLocation() {
+    this.geolocationService
+      .getPosition()
+      .then((position) => {
+        console.log('Location retrieved:', position);
+        // store somewhere, tbd, TODO
+        this.updateState({ locationEnabled: true });
+        // this.next();
+      })
+      .catch((error) => {
+        console.error('Error retrieving location:', error);
+        if (error.code === error.PERMISSION_DENIED) {
+          alert('Please enable location services to use this feature.');
+        }
+      });
   }
 
   submit(): void {

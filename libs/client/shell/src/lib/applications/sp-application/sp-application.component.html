@@ -132,7 +132,18 @@
       </div>
 
       <div class="im-buttons">
-        <ion-button color="primary" [disabled]="!spForm.valid || state.verifyingHandle" (click)="submit()">
+        <ion-button
+          color="primary"
+          [disabled]="!spForm.valid || state.verifyingHandle"
+          (click)="enableLocation()"
+        >
+          Enable Location Services
+        </ion-button>
+        <ion-button
+          color="primary"
+          [disabled]="!spForm.valid || state.verifyingHandle || !state.locationEnabled"
+          (click)="submit()"
+        >
           Submit
         </ion-button>
       </div>
