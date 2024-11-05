@@ -1,9 +1,9 @@
 import { ChangeDetectionStrategy, Component, HostListener, OnInit } from '@angular/core';
 import { Validators } from '@angular/forms';
 import {
-  HandleOrchestration,
+  HandleRestClient,
   UserFacade,
-  UserOrchestration,
+  UserRestClient,
   verifyHandleUniqueness,
   verifyUserEmailUniqueness,
 } from '@involvemint/client/shared/data-access';
@@ -58,8 +58,8 @@ export class EpApplicationComponent
 
   constructor(
     private readonly user: UserFacade,
-    private readonly userOrcha: UserOrchestration,
-    private readonly handleOrcha: HandleOrchestration
+    private readonly userClient: UserRestClient,
+    private readonly handleRestClient: HandleRestClient
   ) {
     super({ verifyingUserEmail: false, verifyingHandle: false });
   }
@@ -81,9 +81,9 @@ export class EpApplicationComponent
       )
     );
 
-    this.effect(() => verifyUserEmailUniqueness(this.epForm, this.userOrcha, this));
+    this.effect(() => verifyUserEmailUniqueness(this.epForm, this.userClient, this));
 
-    this.effect(() => verifyHandleUniqueness(this.epForm, this.handleOrcha, this));
+    this.effect(() => verifyHandleUniqueness(this.epForm, this.handleRestClient, this));
 
     this.effect(() =>
       this.user.session.actionListeners.submitEpApplication.success.pipe(tap(() => this.epForm.reset()))

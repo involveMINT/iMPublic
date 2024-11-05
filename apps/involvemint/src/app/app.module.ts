@@ -1,21 +1,19 @@
-import { HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { AngularFireModule } from '@angular/fire';
-import { AngularFirestoreModule } from '@angular/fire/firestore';
+import { AngularFirestoreModule, USE_EMULATOR as USE_FIRESTORE_EMULATOR } from '@angular/fire/firestore';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouteReuseStrategy, RouterModule } from '@angular/router';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { ClientSharedDataAccessModule, ImInitLoaderModule } from '@involvemint/client/shared/data-access';
 import { FRONTEND_ROUTES } from '@involvemint/client/shared/routes';
-import { environment, ImConfig, ImRoutes } from '@involvemint/shared/domain';
+import { API_URL, environment, ImConfig, ImRoutes } from '@involvemint/shared/domain';
 import { routesFactory } from '@involvemint/shared/util';
 import { SuperTabsModule } from '@ionic-super-tabs/angular';
 import { IonicModule } from '@ionic/angular';
 import { EffectsModule } from '@ngrx/effects';
 import { ActionReducer, StoreModule, USER_PROVIDED_META_REDUCERS } from '@ngrx/store';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
-import { OrchaModule } from '@orcha/angular';
 import { CURRENCY_MASK_CONFIG } from 'ng2-currency-mask';
 import { JoyrideModule } from 'ngx-joyride';
 import { fancyAnimation } from './animaitons';
@@ -40,8 +38,6 @@ const ngrxDebugFactory = <T>() => {
   declarations: [AppComponent],
   imports: [
     BrowserModule,
-    HttpClientModule,
-    OrchaModule.forRoot(environment.apiUrl),
     IonicModule.forRoot({
       scrollAssist: true,
       scrollPadding: true,
@@ -62,7 +58,7 @@ const ngrxDebugFactory = <T>() => {
       },
     ]),
     StoreModule.forRoot([], {
-      runtimeChecks: environment.production
+      runtimeChecks: environment.environment === 'production'
         ? {}
         : {
             strictStateImmutability: true,
@@ -76,17 +72,21 @@ const ngrxDebugFactory = <T>() => {
     StoreDevtoolsModule.instrument({
       name: 'INVOLVEMINT',
       // In a production build you would want to disable the Store Devtools.
-      logOnly: environment.production,
+      logOnly: environment.environment === 'production',
     }),
     EffectsModule.forRoot([]),
     ServiceWorkerModule.register('ngsw-worker.js', {
-      enabled: environment.production,
+      enabled: environment.environment === 'production',
       // Register the ServiceWorker as soon as the app is stable
       // or after 30 seconds (whichever comes first).
       registrationStrategy: 'registerWhenStable:30000',
     }),
   ],
   providers: [
+    {
+      provide: API_URL,
+      useValue: environment.apiUrl,
+    },
     {
       provide: RouteReuseStrategy,
       useClass: ImRouteStrategy,
@@ -99,12 +99,18 @@ const ngrxDebugFactory = <T>() => {
       provide: FRONTEND_ROUTES,
       useValue: routesFactory(ImRoutes),
     },
-    environment.production
+    environment.environment === 'production'
       ? []
       : {
           provide: USER_PROVIDED_META_REDUCERS,
           useFactory: () => [ngrxDebugFactory()],
         },
+    environment.environment !== 'local' ?
+        []:
+        {
+          provide: USE_FIRESTORE_EMULATOR,
+          useValue: ['localhost', 8080]
+        }
   ],
   bootstrap: [AppComponent],
 })

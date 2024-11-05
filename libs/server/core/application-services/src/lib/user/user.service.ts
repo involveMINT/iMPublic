@@ -13,10 +13,11 @@ import {
   SearchUserDto,
   SignUpDto,
   SnoopDto,
-  User
+  User,
+  IQuery,
+  parseQuery
 } from '@involvemint/shared/domain';
 import { HttpException, HttpService, HttpStatus, Injectable } from '@nestjs/common';
-import { IQuery, parseQuery } from '@orcha/common';
 import { addMonths } from 'date-fns';
 import { first } from 'rxjs/operators';
 import { Raw } from 'typeorm';
@@ -43,7 +44,7 @@ export class UserService {
    * Initiates an involveMINT user's sign up sequence.
    * @param id User email address.
    * @param password User password.
-   * @param query Orcha query of the user's signed token.
+   * @param query query of the user's signed token.
    */
   async signUp(dto: SignUpDto, query: IQuery<{ token: string }>) {
     const conflictingUser = await this.userRepo.findOne(dto.id, { id: true });
@@ -99,7 +100,7 @@ export class UserService {
     if (!compare) {
       throw new HttpException(`Incorrect password.`, HttpStatus.UNAUTHORIZED);
     }
-    if (!user.active && environment.production) {
+    if (!user.active && (environment.environment !== 'local')) {
       throw new HttpException(`User ${user.id} has not been verified.`, HttpStatus.UNAUTHORIZED);
     }
 
@@ -317,7 +318,7 @@ export class UserService {
       forgotPasswordHash: null!,
       dateCreated: newDate,
     });
-    environment.production && this.addUserToMailChimpGeneralAudience(dto.email);
+    environment.environment === 'production' && this.addUserToMailChimpGeneralAudience(dto.email);
 
     // update EP listStoreFront status, budgetEndDate (re-calculate budgetEndDate on user activation since
     // it was created by a baAdmin) and dateCreated (insert a new dateCreated since it was created by a baAdmin)
@@ -368,7 +369,7 @@ export class UserService {
     }
 
     await this.userRepo.update(email, { active: true, activationHash: null! });
-    environment.production && this.addUserToMailChimpGeneralAudience(email);
+    environment.environment === 'production' && this.addUserToMailChimpGeneralAudience(email);
     return {};
   }
 

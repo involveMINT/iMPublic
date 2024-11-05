@@ -1,4 +1,4 @@
-import { IEnrollmentOrchestration, InvolvemintOrchestrations } from '@involvemint/shared/domain';
+import { IEnrollmentOrchestration, InvolvemintRoutes } from '@involvemint/shared/domain';
 import { INestApplication } from '@nestjs/common';
 import {
   createNestjsTestOrchestration,
@@ -7,7 +7,7 @@ import {
   TestOrchestration,
 } from '@orcha/testing';
 
-@TestOrchestration(InvolvemintOrchestrations.enrollment)
+@TestOrchestration(InvolvemintRoutes.enrollment)
 export class EnrollmentOrchestration implements ITestOrchestration<IEnrollmentOrchestration> {
   @TestOperation()
   get!: ITestOrchestration<IEnrollmentOrchestration>['get'];
@@ -27,6 +27,8 @@ export class EnrollmentOrchestration implements ITestOrchestration<IEnrollmentOr
   revertEnrollmentApplication!: ITestOrchestration<IEnrollmentOrchestration>['revertEnrollmentApplication'];
   @TestOperation()
   retireEnrollment!: ITestOrchestration<IEnrollmentOrchestration>['retireEnrollment'];
+  @TestOperation()
+  getBySpProject!: ITestOrchestration<IEnrollmentOrchestration>['getBySpProject'];
 }
 
 export function createEnrollmentOrchestration(app: INestApplication) {

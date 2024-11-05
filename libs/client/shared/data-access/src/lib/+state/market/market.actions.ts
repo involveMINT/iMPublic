@@ -1,10 +1,10 @@
 import { createAction, props } from '@ngrx/store';
-import { OrchaOperationError } from '@orcha/common';
 import {
   ExchangePartnerMarketStoreModel,
   OfferMarketStoreModel,
   RequestMarketStoreModel,
 } from './market.reducer';
+import { APIOperationError } from '@involvemint/shared/domain';
 
 export const marketRefresh = createAction('[Market] Refresh');
 
@@ -17,7 +17,7 @@ export const exchangePartnersMarketLoadSuccess = createAction(
 
 export const exchangePartnersMarketLoadError = createAction(
   '[Market|ExchangePartners]  ExchangePartners Load Error',
-  props<{ error: OrchaOperationError }>()
+  props<{ error: APIOperationError }>()
 );
 
 /*
@@ -40,7 +40,7 @@ export const getOneExchangePartnerSuccess = createAction(
 
 export const getOneExchangePartnerError = createAction(
   '[Market|ExchangePartners]  Get One ExchangePartner Error',
-  props<{ error: OrchaOperationError }>()
+  props<{ error: APIOperationError }>()
 );
 
 /*
@@ -60,7 +60,7 @@ export const offersMarketLoadSuccess = createAction(
 
 export const offersMarketLoadError = createAction(
   '[Market|Offers]  Offers Load Error',
-  props<{ error: OrchaOperationError }>()
+  props<{ error: APIOperationError }>()
 );
 
 /*
@@ -79,7 +79,7 @@ export const getOneOfferSuccess = createAction(
 
 export const getOneOfferError = createAction(
   '[Market|Offers]  Get One Offer Error',
-  props<{ error: OrchaOperationError }>()
+  props<{ error: APIOperationError }>()
 );
 
 /*
@@ -100,7 +100,7 @@ export const requestsMarketLoadSuccess = createAction(
 
 export const requestsMarketLoadError = createAction(
   '[Market|Offers]  Requests Load Error',
-  props<{ error: OrchaOperationError }>()
+  props<{ error: APIOperationError }>()
 );
 
 /*
@@ -122,5 +122,5 @@ export const getOneRequestSuccess = createAction(
 
 export const getOneRequestError = createAction(
   '[Market|Requests]  Get One Request Error',
-  props<{ error: OrchaOperationError }>()
+  props<{ error: APIOperationError }>()
 );

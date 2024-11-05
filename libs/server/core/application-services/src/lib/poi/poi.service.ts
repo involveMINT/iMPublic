@@ -26,10 +26,12 @@ import {
   StartPoiTimerDto,
   StopPoiTimerDto,
   SubmitPoiDto,
+  createQuery,
+  IQuery,
+  parseQuery
 } from '@involvemint/shared/domain';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { SchedulerRegistry } from '@nestjs/schedule';
-import { createQuery, IQuery, parseQuery } from '@orcha/common';
 import { CronJob, CronTime } from 'cron';
 import * as uuid from 'uuid';
 import { AuthService } from '../auth/auth.service';
@@ -75,7 +77,7 @@ export class PoiService {
     const project = await this.posRepo.findOneOrFail(dto.projectId, { servePartner: { id: true } });
 
     if (
-      this.posService.permissions.userIsServeAdmin(token, project.servePartner.id) ||
+      await this.posService.permissions.userIsServeAdmin(token, project.servePartner.id) ||
       user.changeMaker?.enrollments.some((e) => e.project.id === dto.projectId)
     ) {
       return this.poiRepo.findPoisByProject(dto.projectId, query);
