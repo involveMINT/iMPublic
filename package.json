@@ -102,6 +102,7 @@
     "firebase-admin": "9.9.0",
     "firebase-scrypt": "2.1.0",
     "husky": "6.0.0",
+    "involvemint": "file:",
     "lodash": "4.17.21",
     "mailgun-js": "0.22.0",
     "nestjs-typeorm-paginate": "2.6.2",
