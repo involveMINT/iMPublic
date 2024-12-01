@@ -1,4 +1,7 @@
 {
   "name": "@involvemint/scss",
-  "version": "0.1.0"
+  "version": "0.1.0",
+  "dependencies": {
+    "@involvemint/scss": "file:"
+  }
 }
