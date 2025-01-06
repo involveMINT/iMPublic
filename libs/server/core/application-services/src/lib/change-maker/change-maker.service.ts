@@ -127,4 +127,39 @@ export class ChangeMakerService {
 
     return this.cmRepo.update(user.changeMaker.id, { profilePicFilePath: path }, query);
   }
+
+  // This is for the frontend
+  async getPrePopulatedData(token: string): Promise<{ firstName: string; lastName: string; phone: string }> {
+    const user = await this.auth.validateUserToken(token);
+
+    let existingPartnerData;
+    if (user.exchangeAdmins.length > 0) {
+      const exchangePartner = user.exchangeAdmins[0].exchangePartner;
+      existingPartnerData = exchangePartner;
+    } else if (user.serveAdmins.length > 0) {
+      const servePartner = user.serveAdmins[0].servePartner;
+      existingPartnerData = servePartner;
+    }
+
+    if (existingPartnerData) {
+      const [firstName, ...lastNameParts] = existingPartnerData.name.split(' ');
+      const lastName = lastNameParts.join(' ') || 'N/A'; 
+      const phone = existingPartnerData.phone || '';
+
+      return {
+        firstName,
+        lastName,
+        phone,
+      };
+    }
+
+    // If no existing data, return default empty values
+    return {
+      firstName: '',
+      lastName: '',
+      phone: '',
+    };
+  }
+
+  
 }
