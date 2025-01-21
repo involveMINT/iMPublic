@@ -109,7 +109,7 @@ export class UserSessionEffects {
           this.user.signUp({ token: true }, dto).pipe(
             map(({ token }) => {
               ImAuthTokenStorage.setValue({ id: dto.id, token });
-              if (environment.production) {
+              if (environment.environment !== 'local') {
                 (async () => {
                   const modal = await this.infoModal.open({
                     title: 'Check your email',

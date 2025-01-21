@@ -79,8 +79,19 @@ export class ExchangePartnerService {
     }
 
     if (dto.changes.address) {
-      const geo = geocoder.default({ provider: 'google', apiKey: environment.gcpApiKey });
-      const res = await geo.geocode(Object.entries(dto.changes.address).join(' '));
+
+      let res: geocoder.Entry[];
+
+      if(environment.environment === 'local')
+      {
+        res = environment.defaultLocalAddress;
+      }
+      else
+      {
+        const geo = geocoder.default({ provider: 'google', apiKey: environment.gcpApiKey });
+        res = await geo.geocode(Object.entries(dto.changes.address).join(' '));
+      }
+
       dto.changes.latitude = Number(res[0]?.latitude?.toFixed(4));
       dto.changes.longitude = Number(res[0]?.longitude?.toFixed(4));
     }

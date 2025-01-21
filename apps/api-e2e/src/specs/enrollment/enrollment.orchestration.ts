@@ -27,6 +27,8 @@ export class EnrollmentOrchestration implements ITestOrchestration<IEnrollmentOr
   revertEnrollmentApplication!: ITestOrchestration<IEnrollmentOrchestration>['revertEnrollmentApplication'];
   @TestOperation()
   retireEnrollment!: ITestOrchestration<IEnrollmentOrchestration>['retireEnrollment'];
+  @TestOperation()
+  getBySpProject!: ITestOrchestration<IEnrollmentOrchestration>['getBySpProject'];
 }
 
 export function createEnrollmentOrchestration(app: INestApplication) {

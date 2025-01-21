@@ -62,7 +62,7 @@ const ngrxDebugFactory = <T>() => {
       },
     ]),
     StoreModule.forRoot([], {
-      runtimeChecks: environment.production
+      runtimeChecks: environment.environment === 'production'
         ? {}
         : {
             strictStateImmutability: true,
@@ -76,11 +76,11 @@ const ngrxDebugFactory = <T>() => {
     StoreDevtoolsModule.instrument({
       name: 'INVOLVEMINT',
       // In a production build you would want to disable the Store Devtools.
-      logOnly: environment.production,
+      logOnly: environment.environment === 'production',
     }),
     EffectsModule.forRoot([]),
     ServiceWorkerModule.register('ngsw-worker.js', {
-      enabled: environment.production,
+      enabled: environment.environment === 'production',
       // Register the ServiceWorker as soon as the app is stable
       // or after 30 seconds (whichever comes first).
       registrationStrategy: 'registerWhenStable:30000',
@@ -99,7 +99,7 @@ const ngrxDebugFactory = <T>() => {
       provide: FRONTEND_ROUTES,
       useValue: routesFactory(ImRoutes),
     },
-    environment.production
+    environment.environment === 'production'
       ? []
       : {
           provide: USER_PROVIDED_META_REDUCERS,

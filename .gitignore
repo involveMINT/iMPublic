@@ -1,4 +1,6 @@
 # See http://help.github.com/ignore-files/ for more about ignoring files.
+# environment file
+environment.ts
 
 # compiled output
 /dist
@@ -44,3 +46,6 @@ Thumbs.db
 
 gcp-service-key-prod.json
 gcp-api-key-prod.json
+
+reports/*
+!reports/readme.md
