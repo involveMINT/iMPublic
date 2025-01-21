@@ -1,3 +1,4 @@
 environment.prod.ts
 environment.test.ts
 environment.ts
+environment.*.ts
