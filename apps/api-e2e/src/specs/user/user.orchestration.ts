@@ -45,6 +45,8 @@ class UserOrchestration implements ITestOrchestration<IUserOrchestration> {
   changePassword!: ITestOrchestration<IUserOrchestration>['changePassword'];
   @TestOperation()
   finishJoyride!: ITestOrchestration<IUserOrchestration>['finishJoyride'];
+  @TestOperation()
+  adminUserSearch!: ITestOrchestration<IUserOrchestration>['adminUserSearch'];
 }
 
 export function createUserOrchestration(app: INestApplication) {

@@ -87,6 +87,7 @@ export class ProjectService {
 
   async create(query: IQuery<Project[]>, token: string, dto: CreateProjectDto) {
     await this.permissions.userIsServeAdmin(token, dto.spId);
+
     return this.projectRepo.upsert(
       {
         id: uuid.v4(),

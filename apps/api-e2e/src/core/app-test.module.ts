@@ -18,9 +18,9 @@ patchTypeORMRepositoryWithBaseRepository();
     TypeOrmModule.forRoot({
       type: 'postgres',
       host: '127.0.0.1',
-      port: 5432,
+      port: 5433,
       username: 'postgres',
-      password: '1Qazxsw2',
+      password: 'postgres',
       database: 'involvemint-e2e',
       synchronize: true,
       autoLoadEntities: true,

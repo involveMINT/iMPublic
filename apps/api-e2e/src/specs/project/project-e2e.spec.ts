@@ -16,6 +16,7 @@ import { createServeAdmin } from '../serve-admin/serve-admin.helpers';
 import { createServePartner } from '../serve-partner/serve-partner.helpers';
 import { createUserOrchestration } from '../user/user.orchestration';
 import { createProjectOrchestration } from './project.orchestration';
+import supertest from 'supertest'
 
 describe('ChangeMaker Orchestration Integration Tests', () => {
   let app: NestFastifyApplication;
@@ -28,7 +29,7 @@ describe('ChangeMaker Orchestration Integration Tests', () => {
   let saRepo: ServeAdminRepository;
   let projectRepo: ProjectRepository;
 
-  const creds = { id: 'email@email.com', password: 'GoodPwd341' };
+  const creds = { id: 'email@email.com', password: 'GoodPwd@341' };
   let auth: { body: { token: string }; statusCode: HttpStatus };
 
   const spQuery = createQuery<ServePartner>()({ id: true });
@@ -69,8 +70,12 @@ describe('ChangeMaker Orchestration Integration Tests', () => {
 
   describe('getAll', () => {
     it('should not get private projects (project is private by default)', async () => {
-      const res = await projectOrcha.getAll(projectQuery, auth.body.token, {});
-      expect(res.body.length).toBe(0);
+
+      const result = await supertest(app.getHttpServer())
+      .post(`/orcha/project/getAll`)
+      .field('query', JSON.stringify(projectQuery));
+
+      expect(result.body.length).toBe(0);
     });
     it('should not get unlisted projects', async () => {
       await projectRepo.update(project.id, { listingStatus: 'unlisted' });

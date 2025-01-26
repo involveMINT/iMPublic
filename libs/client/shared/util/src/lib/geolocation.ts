@@ -1,4 +1,5 @@
 import { StatusService } from './status.service';
+import { environment } from '@involvemint/shared/domain';
 
 export interface LatLng {
   lat: number;
@@ -10,6 +11,17 @@ export interface LatLng {
  * @param status StatusService to show loading screen
  */
 export function getPosition(status?: StatusService) {
+  
+  if(environment.environment === 'local')
+  {
+    return new Promise<LatLng>((resolve, _) => {
+      resolve({
+        lat: 40.444229,
+        lng: -79.943367
+      })
+    });
+  }
+
   // eslint-disable-next-line no-async-promise-executor
   return new Promise<LatLng>(async (resolve, reject) => {
     if (status) await status.showLoader('Getting Location...');

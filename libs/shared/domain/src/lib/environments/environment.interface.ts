@@ -1,9 +1,9 @@
 import { TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { FirebaseScryptOptions } from 'firebase-scrypt';
+import * as geocoder from 'node-geocoder';
 
 export interface Env {
-  production: boolean;
-  test: boolean;
+  environment: 'production' | 'test' | 'local';
   host: string;
   apiUrl: string;
   appUrl: string;
@@ -33,4 +33,5 @@ export interface Env {
   // eslint-disable-next-line @typescript-eslint/ban-types
   gcp: object;
   scrypt: FirebaseScryptOptions;
+  defaultLocalAddress: geocoder.Entry[];
 }

@@ -99,7 +99,7 @@ export class UserService {
     if (!compare) {
       throw new HttpException(`Incorrect password.`, HttpStatus.UNAUTHORIZED);
     }
-    if (!user.active && environment.production) {
+    if (!user.active && (environment.environment !== 'local')) {
       throw new HttpException(`User ${user.id} has not been verified.`, HttpStatus.UNAUTHORIZED);
     }
 
@@ -317,7 +317,7 @@ export class UserService {
       forgotPasswordHash: null!,
       dateCreated: newDate,
     });
-    environment.production && this.addUserToMailChimpGeneralAudience(dto.email);
+    environment.environment === 'production' && this.addUserToMailChimpGeneralAudience(dto.email);
 
     // update EP listStoreFront status, budgetEndDate (re-calculate budgetEndDate on user activation since
     // it was created by a baAdmin) and dateCreated (insert a new dateCreated since it was created by a baAdmin)
@@ -368,7 +368,7 @@ export class UserService {
     }
 
     await this.userRepo.update(email, { active: true, activationHash: null! });
-    environment.production && this.addUserToMailChimpGeneralAudience(email);
+    environment.environment === 'production' && this.addUserToMailChimpGeneralAudience(email);
     return {};
   }
 
