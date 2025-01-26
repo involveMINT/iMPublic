@@ -23,7 +23,6 @@ import * as uuid from 'uuid';
 import { AuthService } from '../auth/auth.service';
 import { StorageService } from '../storage/storage.service';
 import { DbTransactionCreator } from '../transaction-creator/transaction-creator.service';
-import { getDefaultAddress } from '@involvemint/shared/domain';
 
 @Injectable()
 export class ProjectService {
