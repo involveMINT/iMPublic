@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { ActivateUserAccountDto, AdminLoginDto, AdminUserSearchDto, AdminUserSearchQuery, ChangePasswordDto, DTO_KEY, ForgotPasswordChangeDto, ForgotPasswordDto, GrantBaPrivilegesDto, IParser, IQuery, ISnoopData, InvolvemintRoutes, LoginDto, QUERY_KEY, ResendEmailVerificationEmailDto, RevokeBaPrivilegesDto, SearchUserDto, SignUpDto, SnoopDto, User, UserPrivilegeQuery, UserQuery, UserSearchQuery, ValidateAdminDto, VerifyEmailDto, VerifyUserEmailDto, VerifyUserEmailQuery, environment } from '@involvemint/shared/domain';
+import { ActivateUserAccountDto, AdminLoginDto, AdminUserSearchDto, AdminUserSearchQuery, ChangePasswordDto, DTO_KEY, ForgotPasswordChangeDto, ForgotPasswordDto, GrantBaPrivilegesDto, IParser, Query, ISnoopData, InvolvemintRoutes, LoginDto, QUERY_KEY, ResendEmailVerificationEmailDto, RevokeBaPrivilegesDto, SearchUserDto, SignUpDto, SnoopDto, User, UserPrivilegeQuery, UserQuery, UserSearchQuery, ValidateAdminDto, VerifyEmailDto, VerifyUserEmailDto, VerifyUserEmailQuery, environment } from '@involvemint/shared/domain';
 import { Injectable } from '@angular/core';
 
 @Injectable()
@@ -8,7 +8,7 @@ export class UserRestClient {
 
   constructor(private http: HttpClient) { }
   
-  verifyUserEmail(query: IQuery<typeof VerifyUserEmailQuery>, dto: VerifyUserEmailDto)
+  verifyUserEmail(query: Query<typeof VerifyUserEmailQuery>, dto: VerifyUserEmailDto)
   {
     const body = {
       [QUERY_KEY]: query,
@@ -19,7 +19,7 @@ export class UserRestClient {
           .post<IParser<typeof VerifyUserEmailQuery, typeof VerifyUserEmailQuery>>(`${this.apiUrl}/verifyUserEmail`, body);
   }
 
-  signUp(query: IQuery<{ token: string }>, dto: SignUpDto)
+  signUp(query: Query<{ token: string }>, dto: SignUpDto)
   {
     const body = {
       [QUERY_KEY]: query,
@@ -30,7 +30,7 @@ export class UserRestClient {
           .post<IParser<{ token: string }, { token: string }>>(`${this.apiUrl}/signUp`, body);
   }
 
-  login(query: IQuery<{ token: string }>, dto: LoginDto)
+  login(query: Query<{ token: string }>, dto: LoginDto)
   {
     const body = {
       [QUERY_KEY]: query,
@@ -41,7 +41,7 @@ export class UserRestClient {
           .post<IParser<{ token: string }, { token: string }>>(`${this.apiUrl}/login`, body);
   }
 
-  adminLogin(query: IQuery<{ token: string }>, dto: AdminLoginDto)
+  adminLogin(query: Query<{ token: string }>, dto: AdminLoginDto)
   {
     const body = {
       [QUERY_KEY]: query,
@@ -52,7 +52,7 @@ export class UserRestClient {
           .post<IParser<{ token: string }, { token: string }>>(`${this.apiUrl}/adminLogin`, body);
   }
 
-  validateAdminToken(query: IQuery<{ token: string }>, dto: ValidateAdminDto)
+  validateAdminToken(query: Query<{ token: string }>, dto: ValidateAdminDto)
   {
     const body = {
       [QUERY_KEY]: query,
@@ -63,7 +63,7 @@ export class UserRestClient {
           .post<IParser<{ token: string }, { token: string }>>(`${this.apiUrl}/validateAdminToken`, body);
   }
 
-  getUserData(query: IQuery<User>)
+  getUserData(query: Query<User>)
   {
     const body = {
       [QUERY_KEY]: query,
@@ -73,7 +73,7 @@ export class UserRestClient {
           .post<IParser<User, typeof UserQuery>>(`${this.apiUrl}/getUserData`, body);
   }
 
-  snoop(query: IQuery<ISnoopData>, dto: SnoopDto)
+  snoop(query: Query<ISnoopData>, dto: SnoopDto)
   {
     const body = {
       [QUERY_KEY]: query,
@@ -84,7 +84,7 @@ export class UserRestClient {
           .post<IParser<ISnoopData, { token: string} & typeof UserQuery>>(`${this.apiUrl}/snoop`, body);
   }
 
-  getAllUserPrivileges(query: IQuery<User[]>)
+  getAllUserPrivileges(query: Query<User[]>)
   {
     const body = {
       [QUERY_KEY]: query,
@@ -94,7 +94,7 @@ export class UserRestClient {
           .post<IParser<User, typeof UserPrivilegeQuery>[]>(`${this.apiUrl}/getAllUserPrivileges`, body);
   }
 
-  grantBAPrivilege(query: IQuery<User>, dto: GrantBaPrivilegesDto)
+  grantBAPrivilege(query: Query<User>, dto: GrantBaPrivilegesDto)
   {
     const body = {
       [QUERY_KEY]: query,
@@ -105,7 +105,7 @@ export class UserRestClient {
           .post<IParser<User, typeof UserPrivilegeQuery>>(`${this.apiUrl}/grantBAPrivilege`, body);
   }
 
-  revokeBAPrivilege(query: IQuery<User>, dto: RevokeBaPrivilegesDto)
+  revokeBAPrivilege(query: Query<User>, dto: RevokeBaPrivilegesDto)
   {
     const body = {
       [QUERY_KEY]: query,
@@ -116,7 +116,7 @@ export class UserRestClient {
           .post<IParser<User, typeof UserPrivilegeQuery>>(`${this.apiUrl}/revokeBAPrivilege`, body);
   }
 
-  searchUsers(query: IQuery<User[]>, dto: SearchUserDto)
+  searchUsers(query: Query<User[]>, dto: SearchUserDto)
   {
     const body = {
       [QUERY_KEY]: query,
@@ -127,7 +127,7 @@ export class UserRestClient {
           .post<IParser<User, typeof UserSearchQuery>[]>(`${this.apiUrl}/searchUsers`, body);
   }
 
-  activateUserAccount(query: IQuery<Record<string, never>>, dto: ActivateUserAccountDto)
+  activateUserAccount(query: Query<Record<string, never>>, dto: ActivateUserAccountDto)
   {
     const body = {
       [QUERY_KEY]: query,
@@ -138,7 +138,7 @@ export class UserRestClient {
           .post<IParser<Record<string, never>, Record<string, never>>>(`${this.apiUrl}/activateUserAccount`, body);
   }
 
-  resendEmailVerificationEmail(query: IQuery<Record<string, never>>, dto: ResendEmailVerificationEmailDto)
+  resendEmailVerificationEmail(query: Query<Record<string, never>>, dto: ResendEmailVerificationEmailDto)
   {
     const body = {
       [QUERY_KEY]: query,
@@ -149,7 +149,7 @@ export class UserRestClient {
           .post<IParser<Record<string, never>, Record<string, never>>>(`${this.apiUrl}/resendEmailVerificationEmail`, body);
   }
 
-  verifyEmail(query: IQuery<Record<string, never>>, dto: VerifyEmailDto)
+  verifyEmail(query: Query<Record<string, never>>, dto: VerifyEmailDto)
   {
     const body = {
       [QUERY_KEY]: query,
@@ -160,7 +160,7 @@ export class UserRestClient {
           .post<IParser<Record<string, never>, Record<string, never>>>(`${this.apiUrl}/verifyEmail`, body);
   }
 
-  forgotPassword(query: IQuery<Record<string, never>>, dto: ForgotPasswordDto)
+  forgotPassword(query: Query<Record<string, never>>, dto: ForgotPasswordDto)
   {
     const body = {
       [QUERY_KEY]: query,
@@ -171,7 +171,7 @@ export class UserRestClient {
           .post<IParser<Record<string, never>, Record<string, never>>>(`${this.apiUrl}/forgotPassword`, body);
   }
 
-  forgotPasswordChange(query: IQuery<Record<string, never>>, dto: ForgotPasswordChangeDto)
+  forgotPasswordChange(query: Query<Record<string, never>>, dto: ForgotPasswordChangeDto)
   {
     const body = {
       [QUERY_KEY]: query,
@@ -182,7 +182,7 @@ export class UserRestClient {
           .post<IParser<Record<string, never>, Record<string, never>>>(`${this.apiUrl}/forgotPasswordChange`, body);
   }
 
-  changePassword(query: IQuery<Record<string, never>>, dto: ChangePasswordDto)
+  changePassword(query: Query<Record<string, never>>, dto: ChangePasswordDto)
   {
     const body = {
       [QUERY_KEY]: query,
@@ -193,14 +193,14 @@ export class UserRestClient {
           .post<IParser<Record<string, never>, Record<string, never>>>(`${this.apiUrl}/changePassword`, body);
   }
 
-  finishJoyride(query: IQuery<Record<string, never>>)
+  finishJoyride(query: Query<Record<string, never>>)
   {
     return this.http.post<IParser<Record<string, never>, Record<string, never>>>(`${this.apiUrl}/finishJoyride`, {
       [QUERY_KEY]: query
     });
   }
   
-  adminUserSearch(query: IQuery<User[]>, dto: AdminUserSearchDto)
+  adminUserSearch(query: Query<User[]>, dto: AdminUserSearchDto)
   {
     const body = {
       [QUERY_KEY]: query,

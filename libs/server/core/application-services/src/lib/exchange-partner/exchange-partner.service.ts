@@ -12,7 +12,7 @@ import {
   SearchEpDto,
   UpdateEpLogoFileDto,
   UploadEpImagesDto,
-  IQuery
+  Query
 } from '@involvemint/shared/domain';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import * as geocoder from 'node-geocoder';
@@ -32,17 +32,17 @@ export class ExchangePartnerService {
   ) {}
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  async query(query: IQuery<ExchangePartner[]>, dto: ExchangePartnerMarketQueryDto) {
+  async query(query: Query<ExchangePartner[]>, dto: ExchangePartnerMarketQueryDto) {
     // TODO dto
     const g = await this.epRepo.query(query, { where: { listStoreFront: 'public' } });
     return g;
   }
 
-  async getOne(query: IQuery<ExchangePartner>, dto: GetOneExchangePartnerDto) {
+  async getOne(query: Query<ExchangePartner>, dto: GetOneExchangePartnerDto) {
     return this.epRepo.findOneOrFail(dto.epId, query);
   }
 
-  async searchEps(query: IQuery<ExchangePartner>, dto: SearchEpDto) {
+  async searchEps(query: Query<ExchangePartner>, dto: SearchEpDto) {
     return this.epRepo.query(query, {
       where: [
         { email: Raw((alias) => `${alias} ILIKE '%${dto.epSearchString}%'`) },
@@ -52,7 +52,7 @@ export class ExchangePartnerService {
     });
   }
 
-  async editProfile(query: IQuery<ExchangePartner>, token: string, dto: EditEpProfileDto) {
+  async editProfile(query: Query<ExchangePartner>, token: string, dto: EditEpProfileDto) {
     await this.auth.authenticateFromProfileId(dto.epId, token);
 
     const ep = await this.epRepo.findOneOrFail(dto.epId, {
@@ -100,7 +100,7 @@ export class ExchangePartnerService {
   }
 
   async updateLogoFile(
-    query: IQuery<ExchangePartner>,
+    query: Query<ExchangePartner>,
     token: string,
     dto: UpdateEpLogoFileDto,
     file: Express.Multer.File
@@ -119,7 +119,7 @@ export class ExchangePartnerService {
   }
 
   async uploadImages(
-    query: IQuery<ExchangePartner>,
+    query: Query<ExchangePartner>,
     token: string,
     dto: UploadEpImagesDto,
     files: Express.Multer.File[]
@@ -151,7 +151,7 @@ export class ExchangePartnerService {
     );
   }
 
-  async deleteImage(query: IQuery<ExchangePartner>, token: string, dto: DeleteEpImageDto) {
+  async deleteImage(query: Query<ExchangePartner>, token: string, dto: DeleteEpImageDto) {
     await this.auth.authenticateFromProfileId(dto.epId, token);
 
     const ep = await this.epRepo.findOneOrFail(dto.epId, {

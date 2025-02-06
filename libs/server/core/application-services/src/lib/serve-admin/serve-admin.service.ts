@@ -4,7 +4,7 @@ import {
   GetServeAdminsForServePartnerDto,
   RemoveServeAdminDto,
   ServeAdmin,
-  IQuery,
+  Query,
   parseQuery
 } from '@involvemint/shared/domain';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
@@ -15,7 +15,7 @@ import { AuthService } from '../auth/auth.service';
 export class ServeAdminService {
   constructor(private readonly spAdminRepo: ServeAdminRepository, private readonly auth: AuthService) {}
 
-  async getForServePartner(query: IQuery<ServeAdmin>, token: string, dto: GetServeAdminsForServePartnerDto) {
+  async getForServePartner(query: Query<ServeAdmin>, token: string, dto: GetServeAdminsForServePartnerDto) {
     const user = await this.auth.validateUserToken(token, { serveAdmins: { servePartner: { id: true } } });
 
     const admin = user.serveAdmins.find((sa) => sa.servePartner.id === dto.spId);
@@ -27,7 +27,7 @@ export class ServeAdminService {
     return this.spAdminRepo.query(query, { where: { servePartner: dto.spId } });
   }
 
-  async addAdmin(query: IQuery<ServeAdmin>, token: string, dto: AddServeAdminDto) {
+  async addAdmin(query: Query<ServeAdmin>, token: string, dto: AddServeAdminDto) {
     /** User making the request. */
     const user = await this.auth.validateUserToken(token, {
       serveAdmins: { servePartner: { id: true }, superAdmin: true },
@@ -63,7 +63,7 @@ export class ServeAdminService {
       query
     );
   }
-  async removeAdmin(query: IQuery<{ deletedId: true }>, token: string, dto: RemoveServeAdminDto) {
+  async removeAdmin(query: Query<{ deletedId: true }>, token: string, dto: RemoveServeAdminDto) {
     /** User making the request. */
     const user = await this.auth.validateUserToken(token, {
       serveAdmins: { servePartner: { id: true }, superAdmin: true },

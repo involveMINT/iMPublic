@@ -10,7 +10,7 @@ import {
   VerifyHandleQuery,
   ViewProfileDto,
   ViewProfileInfoQuery,
-  IQuery,
+  Query,
   DTO_KEY,
   QUERY_KEY,
   parseQuery,
@@ -24,7 +24,7 @@ export class HandleController {
 
   @Post('verifyHandle')
   async verifyHandle(
-    @Body(QUERY_KEY, new QueryValidationPipe(VerifyHandleQuery)) query: IQuery<{ isUnique: boolean }>, 
+    @Body(QUERY_KEY, new QueryValidationPipe(VerifyHandleQuery)) query: Query<{ isUnique: boolean }>, 
     @Body(DTO_KEY, new ValidationPipe()) { handle }: VerifyHandleDto
   ) {
     const isUnique = await this.handle.verifyHandle(handle);
@@ -33,7 +33,7 @@ export class HandleController {
 
   @Post('searchHandles')
   async searchHandles(
-    @Body(QUERY_KEY, new QueryValidationPipe(HandleChatQuery)) query: IQuery<Handle[]>, 
+    @Body(QUERY_KEY, new QueryValidationPipe(HandleChatQuery)) query: Query<Handle[]>, 
     @Body(DTO_KEY, new ValidationPipe()) dto: SearchHandleDto
   ) {
     return this.handle.searchHandles(query, dto);
@@ -41,7 +41,7 @@ export class HandleController {
 
   @Post('viewProfile')
   async viewProfile(
-    @Body(QUERY_KEY, new QueryValidationPipe(ViewProfileInfoQuery)) query: IQuery<Handle[]>,
+    @Body(QUERY_KEY, new QueryValidationPipe(ViewProfileInfoQuery)) query: Query<Handle[]>,
     @Body(DTO_KEY, new ValidationPipe()) dto: ViewProfileDto
   ) {
     return this.handle.viewProfile(query, dto);
@@ -49,7 +49,7 @@ export class HandleController {
 
   @Post('genericSearch')
   async genericSearch(
-    @Body(QUERY_KEY, new QueryValidationPipe(GenericHandleSearchQuery)) query: IQuery<Handle[]>,
+    @Body(QUERY_KEY, new QueryValidationPipe(GenericHandleSearchQuery)) query: Query<Handle[]>,
     @Body(DTO_KEY, new ValidationPipe()) dto: GenericHandleSearchDto
   ) {
     return this.handle.genericSearch(query, dto);

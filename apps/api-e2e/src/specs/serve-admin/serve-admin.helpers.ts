@@ -1,9 +1,9 @@
 import { ServeAdminRepository } from '@involvemint/server/core/domain-services';
-import { IExactQuery, IQuery, ServeAdmin } from '@involvemint/shared/domain';
+import { ServeAdmin, Query, ExactQuery } from '@involvemint/shared/domain';
 import * as uuid from 'uuid';
 
-export function createServeAdmin<Q extends IQuery<ServeAdmin>>(
-  query: IExactQuery<ServeAdmin, Q>,
+export function createServeAdmin<Q extends Query<ServeAdmin>>(
+  query: ExactQuery<ServeAdmin, Q>,
   saRepo: ServeAdminRepository,
   userId: string,
   servePartnerId: string

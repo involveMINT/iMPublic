@@ -1,5 +1,8 @@
 import { IParser } from './parser';
-import { IExactQuery, IQuery } from './query';
+// import { IExactQuery, IQuery } from './query';
+import { ExactQuery, Query } from './ormquery';
+
+
 
 /**
  * Creates a type-safe query object. Note this is a curried function to get around Typescript limitations.
@@ -20,7 +23,7 @@ import { IExactQuery, IQuery } from './query';
  */
 export const createQuery =
   <T>() =>
-  <Q extends IQuery<T>>(query: IExactQuery<T, Q>) =>
+  <Q extends Query<T>>(query: ExactQuery<T, Q>) =>
     query as Q;
 
 /**
@@ -65,6 +68,6 @@ export const createQuery =
  * @returns The function defined in the third curried function argument.
  */
 export const createLogic =
-  <T, Q extends IQuery<T>>() =>
+  <T, Q extends Query<T>>() =>
   <R, K extends unknown[]>(func: (model: IParser<T, Q>, ...a: K) => R) =>
     func;

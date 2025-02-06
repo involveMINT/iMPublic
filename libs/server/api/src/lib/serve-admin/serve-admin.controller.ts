@@ -6,7 +6,7 @@ import {
   RemoveServeAdminDto,
   ServeAdmin,
   SpAdminQuery,
-  IQuery,
+  Query,
   TOKEN_KEY,
   DTO_KEY,
   QUERY_KEY,
@@ -21,7 +21,7 @@ export class ServeAdminController {
 
   @Post('getForServePartner')
   getForServePartner(
-    @Body(QUERY_KEY, new QueryValidationPipe(SpAdminQuery)) query: IQuery<ServeAdmin>, 
+    @Body(QUERY_KEY, new QueryValidationPipe(SpAdminQuery)) query: Query<ServeAdmin>, 
     @Headers(TOKEN_KEY) token: string, 
     @Body(DTO_KEY, new ValidationPipe()) dto: GetServeAdminsForServePartnerDto
   ) {
@@ -30,7 +30,7 @@ export class ServeAdminController {
 
   @Post('addAdmin')
   addAdmin(
-    @Body(QUERY_KEY, new QueryValidationPipe(SpAdminQuery)) query: IQuery<ServeAdmin>, 
+    @Body(QUERY_KEY, new QueryValidationPipe(SpAdminQuery)) query: Query<ServeAdmin>, 
     @Headers(TOKEN_KEY) token: string, 
     @Body(DTO_KEY, new ValidationPipe()) dto: AddServeAdminDto
   ) {
@@ -39,7 +39,7 @@ export class ServeAdminController {
 
   @Post('removeAdmin')
   removeAdmin(
-    @Body(QUERY_KEY, new QueryValidationPipe({ deletedId: true })) query: IQuery<{ deletedId: string }>, 
+    @Body(QUERY_KEY, new QueryValidationPipe({ deletedId: true })) query: Query<{ deletedId: string }>, 
     @Headers(TOKEN_KEY) token: string, 
     @Body(DTO_KEY, new ValidationPipe()) dto: RemoveServeAdminDto
   ) {

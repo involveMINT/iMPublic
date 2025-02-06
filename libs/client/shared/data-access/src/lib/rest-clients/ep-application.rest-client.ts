@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { BaSubmitEpApplicationDto, DTO_KEY, EpApplication, EpApplicationQuery, ExchangePartner, IParser, IQuery, InvolvemintRoutes, ProcessEpApplicationDto, QUERY_KEY, SubmitEpApplicationDto, WithdrawEpApplicationDto, environment } from '@involvemint/shared/domain';
+import { BaSubmitEpApplicationDto, DTO_KEY, EpApplication, EpApplicationQuery, ExchangePartner, IParser, Query, InvolvemintRoutes, ProcessEpApplicationDto, QUERY_KEY, SubmitEpApplicationDto, WithdrawEpApplicationDto, environment } from '@involvemint/shared/domain';
 
 
 @Injectable()
@@ -10,7 +10,7 @@ export class EpApplicationRestClient {
 
   constructor(private http: HttpClient) { }
   
-  submit(query: IQuery<EpApplication>, dto: SubmitEpApplicationDto) {
+  submit(query: Query<EpApplication>, dto: SubmitEpApplicationDto) {
     const body = {
       [QUERY_KEY]: query,
       [DTO_KEY]: dto
@@ -20,7 +20,7 @@ export class EpApplicationRestClient {
           .post<IParser<EpApplication, typeof EpApplicationQuery>>(`${this.apiUrl}/submit`, body);
   }
 
-  baSubmit(query: IQuery<ExchangePartner>, dto: BaSubmitEpApplicationDto) {
+  baSubmit(query: Query<ExchangePartner>, dto: BaSubmitEpApplicationDto) {
     const body = {
       [QUERY_KEY]: query,
       [DTO_KEY]: dto
@@ -30,7 +30,7 @@ export class EpApplicationRestClient {
           .post<IParser<ExchangePartner, typeof EpApplicationQuery>>(`${this.apiUrl}/baSubmit`, body);
   }
 
-  process(query: IQuery<{ deletedId: string }>, dto: ProcessEpApplicationDto) {
+  process(query: Query<{ deletedId: string }>, dto: ProcessEpApplicationDto) {
     const body = {
       [QUERY_KEY]: query,
       [DTO_KEY]: dto
@@ -40,7 +40,7 @@ export class EpApplicationRestClient {
           .post<IParser<{ deletedId: string }, { deletedId: string }>>(`${this.apiUrl}/process`, body);
   }
 
-  findAll(query: IQuery<EpApplication[]>) {
+  findAll(query: Query<EpApplication[]>) {
     const body = {
       [QUERY_KEY]: query
     };
@@ -49,7 +49,7 @@ export class EpApplicationRestClient {
           .post<IParser<EpApplication, typeof EpApplicationQuery>[]>(`${this.apiUrl}/findAll`, body);
   }
 
-  withdraw(query: IQuery<{ deletedId: string }>, dto: WithdrawEpApplicationDto) {
+  withdraw(query: Query<{ deletedId: string }>, dto: WithdrawEpApplicationDto) {
     const body = {
       [QUERY_KEY]: query,
       [DTO_KEY]: dto

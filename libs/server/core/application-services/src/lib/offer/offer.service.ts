@@ -11,7 +11,7 @@ import {
   QueryOffersDto,
   UpdateOfferDto,
   UploadOfferImageDto,
-  IQuery, 
+  Query,
   parseQuery
 } from '@involvemint/shared/domain';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
@@ -28,12 +28,12 @@ export class OfferService {
   ) {}
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  async query(query: IQuery<Offer[]>, dto: QueryOffersDto) {
+  async query(query: Query<Offer[]>, dto: QueryOffersDto) {
     // TODO dto
     return this.offerRepo.query(query, { where: { listingStatus: 'public' } });
   }
 
-  async getOne(query: IQuery<Offer>, dto: GetOneOfferDto) {
+  async getOne(query: Query<Offer>, dto: GetOneOfferDto) {
     const offer = await this.offerRepo.findOneOrFail(dto.offerId, { listingStatus: true });
     if (offer.listingStatus === 'private') {
       throw new HttpException('This offer is private', HttpStatus.UNAUTHORIZED);
@@ -41,7 +41,7 @@ export class OfferService {
     return this.offerRepo.findOneOrFail(dto.offerId, query);
   }
 
-  async getForProfile(query: IQuery<Offer>, token: string, dto: GetOffersForProfileDto) {
+  async getForProfile(query: Query<Offer>, token: string, dto: GetOffersForProfileDto) {
     await this.auth.authenticateFromProfileId(dto.profileId, token);
 
     return this.offerRepo.query(query, {
@@ -53,7 +53,7 @@ export class OfferService {
     });
   }
 
-  async create(query: IQuery<Offer>, token: string, dto: CreateOfferDto) {
+  async create(query: Query<Offer>, token: string, dto: CreateOfferDto) {
     const user = await this.auth.authenticateFromProfileId(dto.profileId, token);
 
     const now = new Date();
@@ -75,7 +75,7 @@ export class OfferService {
     );
   }
 
-  async update(query: IQuery<Offer>, token: string, dto: UpdateOfferDto) {
+  async update(query: Query<Offer>, token: string, dto: UpdateOfferDto) {
     const offer = await this.offerRepo.findOneOrFail(dto.offerId, {
       changeMaker: { id: true },
       exchangePartner: { id: true },
@@ -90,7 +90,7 @@ export class OfferService {
     return this.offerRepo.update(dto.offerId, { ...dto.changes, dateUpdated: new Date() }, query);
   }
 
-  async delete(query: IQuery<{ deletedId: string }>, token: string, dto: DeleteOfferDto) {
+  async delete(query: Query<{ deletedId: string }>, token: string, dto: DeleteOfferDto) {
     const offer = await this.offerRepo.findOneOrFail(dto.offerId, {
       changeMaker: { id: true },
       exchangePartner: { id: true },
@@ -117,7 +117,7 @@ export class OfferService {
   }
 
   async uploadImages(
-    query: IQuery<Offer>,
+    query: Query<Offer>,
     token: string,
     dto: UploadOfferImageDto,
     files: Express.Multer.File[]
@@ -154,7 +154,7 @@ export class OfferService {
     );
   }
 
-  async deleteImage(query: IQuery<Offer>, token: string, dto: DeleteOfferImageDto) {
+  async deleteImage(query: Query<Offer>, token: string, dto: DeleteOfferImageDto) {
     const offer = await this.offerRepo.findOneOrFail(dto.offerId, {
       changeMaker: { id: true },
       exchangePartner: { id: true },

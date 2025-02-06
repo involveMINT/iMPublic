@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { DTO_KEY, DeleteEpImageDto, EditEpProfileDto, ExchangePartner, ExchangePartnerMarketQuery, ExchangePartnerMarketQueryDto, FILES_KEY, GetOneExchangePartnerDto, IParser, IQuery, InvolvemintRoutes, QUERY_KEY, SearchEpDto, UpdateEpLogoFileDto, UserQuery, environment } from '@involvemint/shared/domain';
+import { DTO_KEY, DeleteEpImageDto, EditEpProfileDto, ExchangePartner, ExchangePartnerMarketQuery, ExchangePartnerMarketQueryDto, FILES_KEY, GetOneExchangePartnerDto, IParser, Query, InvolvemintRoutes, QUERY_KEY, SearchEpDto, UpdateEpLogoFileDto, UserQuery, environment } from '@involvemint/shared/domain';
 import { Injectable } from '@angular/core';
 
 @Injectable()
@@ -8,7 +8,7 @@ export class ExchangePartnerRestClient {
 
   constructor(private http: HttpClient) { }
 
-  query(query: IQuery<ExchangePartner>, dto: ExchangePartnerMarketQueryDto) {
+  query(query: Query<ExchangePartner>, dto: ExchangePartnerMarketQueryDto) {
     const body = {
       [QUERY_KEY]: query,
       [DTO_KEY]: dto
@@ -18,7 +18,7 @@ export class ExchangePartnerRestClient {
           .post<IParser<ExchangePartner, typeof ExchangePartnerMarketQuery>[]>(`${this.apiUrl}/query`, body);
   }
 
-  getOne(query: IQuery<ExchangePartner>, dto: GetOneExchangePartnerDto) {
+  getOne(query: Query<ExchangePartner>, dto: GetOneExchangePartnerDto) {
     const body = {
       [QUERY_KEY]: query,
       [DTO_KEY]: dto
@@ -28,7 +28,7 @@ export class ExchangePartnerRestClient {
           .post<IParser<ExchangePartner, typeof ExchangePartnerMarketQuery>>(`${this.apiUrl}/getOne`, body);
   }
 
-  searchEps(query: IQuery<ExchangePartner>, dto: SearchEpDto) {
+  searchEps(query: Query<ExchangePartner>, dto: SearchEpDto) {
     const body = {
       [QUERY_KEY]: query,
       [DTO_KEY]: dto
@@ -38,7 +38,7 @@ export class ExchangePartnerRestClient {
           .post<IParser<ExchangePartner, typeof ExchangePartnerMarketQuery>>(`${this.apiUrl}/searchEps`, body);
   }
 
-  editProfile(query: IQuery<ExchangePartner>, dto: EditEpProfileDto) {
+  editProfile(query: Query<ExchangePartner>, dto: EditEpProfileDto) {
     const body = {
       [QUERY_KEY]: query,
       [DTO_KEY]: dto
@@ -48,7 +48,7 @@ export class ExchangePartnerRestClient {
           .post<IParser<ExchangePartner, typeof UserQuery.exchangeAdmins.exchangePartner>>(`${this.apiUrl}/editProfile`, body);
   }
 
-  updateLogoFile(query: IQuery<ExchangePartner>, dto: UpdateEpLogoFileDto, image: File) {
+  updateLogoFile(query: Query<ExchangePartner>, dto: UpdateEpLogoFileDto, image: File) {
     const body = new FormData();
     body.set(QUERY_KEY, JSON.stringify(query));
     body.set(DTO_KEY, JSON.stringify(dto));
@@ -61,7 +61,7 @@ export class ExchangePartnerRestClient {
           });
   }
 
-  uploadImages(query: IQuery<ExchangePartner>, dto: UpdateEpLogoFileDto, images: File[]) {
+  uploadImages(query: Query<ExchangePartner>, dto: UpdateEpLogoFileDto, images: File[]) {
     const body = new FormData();
     body.set(QUERY_KEY, JSON.stringify(query));
     body.set(DTO_KEY, JSON.stringify(dto));
@@ -74,7 +74,7 @@ export class ExchangePartnerRestClient {
           });
   }
 
-  deleteImage(query: IQuery<ExchangePartner>, dto: DeleteEpImageDto) {
+  deleteImage(query: Query<ExchangePartner>, dto: DeleteEpImageDto) {
     const body = {
       [QUERY_KEY]: query,
       [DTO_KEY]: dto

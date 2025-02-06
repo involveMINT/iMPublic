@@ -7,7 +7,7 @@ import {
   PassportDocument,
   PassportDocumentQuery,
   ReplacePassportDocumentDto,
-  IQuery,
+  Query,
   TOKEN_KEY,
   DTO_KEY,
   QUERY_KEY,
@@ -24,7 +24,7 @@ export class PassportDocumentController {
 
   @Post('get')
   get(
-    @Body(QUERY_KEY, new QueryValidationPipe(PassportDocumentQuery)) query: IQuery<PassportDocument[]>, 
+    @Body(QUERY_KEY, new QueryValidationPipe(PassportDocumentQuery)) query: Query<PassportDocument[]>, 
     @Headers(TOKEN_KEY) token: string
   ) {
     return this.passport.get(query, token);
@@ -33,7 +33,7 @@ export class PassportDocumentController {
   @Post('create')
   @UseInterceptors(FileInterceptor(FILES_KEY))
   create(
-    @Body(QUERY_KEY, new QueryValidationPipe(PassportDocumentQuery)) query: IQuery<PassportDocument>, 
+    @Body(QUERY_KEY, new QueryValidationPipe(PassportDocumentQuery)) query: Query<PassportDocument>, 
     @Headers(TOKEN_KEY) token: string, 
     @UploadedFile() file: Express.Multer.File
   ) {
@@ -42,7 +42,7 @@ export class PassportDocumentController {
 
   @Post('edit')
   edit(
-    @Body(QUERY_KEY, new QueryValidationPipe(PassportDocumentQuery)) query: IQuery<PassportDocument>, 
+    @Body(QUERY_KEY, new QueryValidationPipe(PassportDocumentQuery)) query: Query<PassportDocument>, 
     @Headers(TOKEN_KEY) token: string, 
     @Body(DTO_KEY, new ValidationPipe()) dto: EditPassportDocumentDto
   ) {
@@ -52,7 +52,7 @@ export class PassportDocumentController {
   @Post('replace')
   @UseInterceptors(FileInterceptor(FILES_KEY))
   replace(
-    @Body(QUERY_KEY, new QueryValidationPipe(PassportDocumentQuery)) query: IQuery<PassportDocument>, 
+    @Body(QUERY_KEY, new QueryValidationPipe(PassportDocumentQuery)) query: Query<PassportDocument>, 
     @Headers(TOKEN_KEY) token: string, 
     @Body(DTO_KEY, new ValidationPipe()) dto: ReplacePassportDocumentDto, 
     @UploadedFile() file: Express.Multer.File
@@ -62,7 +62,7 @@ export class PassportDocumentController {
 
   @Post('delete')
   delete(
-    @Body(QUERY_KEY, new QueryValidationPipe(DeletePassportDocumentQuery)) query: IQuery<{ deletedId: string }>, 
+    @Body(QUERY_KEY, new QueryValidationPipe(DeletePassportDocumentQuery)) query: Query<{ deletedId: string }>, 
     @Headers(TOKEN_KEY) token: string, 
     @Body(DTO_KEY, new ValidationPipe()) dto: DeletePassportDocumentDto
   ) {

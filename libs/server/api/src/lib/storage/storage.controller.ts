@@ -2,7 +2,7 @@ import { StorageService } from '@involvemint/server/core/application-services';
 import {
   GetStorageFileDto,
   InvolvemintRoutes,
-  IQuery,
+  Query,
   parseQuery,
   TOKEN_KEY,
   DTO_KEY,
@@ -18,7 +18,7 @@ export class StorageController {
 
   @Post('getUrl')
   async getUrl(
-    @Body(QUERY_KEY, new QueryValidationPipe({ url: true })) query: IQuery<{ url: string }>,
+    @Body(QUERY_KEY, new QueryValidationPipe({ url: true })) query: Query<{ url: string }>,
     @Headers(TOKEN_KEY) token: string,
     @Body(DTO_KEY, new ValidationPipe()) dto: GetStorageFileDto,
   ) {

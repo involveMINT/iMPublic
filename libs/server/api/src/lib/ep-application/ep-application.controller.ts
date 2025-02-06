@@ -10,10 +10,10 @@ import {
   SubmitEpApplicationDto,
   UserQuery,
   WithdrawEpApplicationDto,
-  IQuery,
   TOKEN_KEY,
+  Query,
   DTO_KEY,
-  QUERY_KEY,
+  QUERY_KEY
 } from '@involvemint/shared/domain';
 import { 
   Controller,
@@ -29,7 +29,7 @@ export class EpApplicationController {
 
   @Post('submit')
   submit(
-    @Body(QUERY_KEY, new QueryValidationPipe(UserQuery.epApplications)) query: IQuery<EpApplication>, 
+    @Body(QUERY_KEY, new QueryValidationPipe(UserQuery.epApplications)) query: Query<EpApplication>, 
     @Headers(TOKEN_KEY) token: string, 
     @Body(DTO_KEY, new ValidationPipe()) dto: SubmitEpApplicationDto
   ) {
@@ -38,7 +38,7 @@ export class EpApplicationController {
 
   @Post('withdraw')
   withdraw(
-    @Body(QUERY_KEY, new QueryValidationPipe({ deletedId: true })) query: IQuery<{ deletedId: string }>, 
+    @Body(QUERY_KEY, new QueryValidationPipe({ deletedId: true })) query: Query<{ deletedId: string }>, 
     @Headers(TOKEN_KEY) token: string, 
     @Body(DTO_KEY, new ValidationPipe()) dto: WithdrawEpApplicationDto
   ) {
@@ -47,7 +47,7 @@ export class EpApplicationController {
 
   @Post('baSubmit')
   baSubmit(
-    @Body(QUERY_KEY, new QueryValidationPipe(BaSubmitEpApplicationQuery)) query: IQuery<ExchangePartner>, 
+    @Body(QUERY_KEY, new QueryValidationPipe(BaSubmitEpApplicationQuery)) query: Query<ExchangePartner>, 
     @Headers(TOKEN_KEY) token: string, 
     @Body(DTO_KEY, new ValidationPipe()) dto: BaSubmitEpApplicationDto
   ) {
@@ -56,7 +56,7 @@ export class EpApplicationController {
 
   @Post('process')
   process(
-    @Body(QUERY_KEY, new QueryValidationPipe({ deletedId: true })) query: IQuery<{ deletedId: string }>, 
+    @Body(QUERY_KEY, new QueryValidationPipe({ deletedId: true })) query: Query<{ deletedId: string }>, 
     @Headers(TOKEN_KEY) token: string, 
     @Body(DTO_KEY, new ValidationPipe()) dto: ProcessEpApplicationDto
   ) {
@@ -65,7 +65,7 @@ export class EpApplicationController {
 
   @Post('findAll')
   findAll(
-    @Body(QUERY_KEY, new QueryValidationPipe(EpApplicationQuery)) query: IQuery<EpApplication>, 
+    @Body(QUERY_KEY, new QueryValidationPipe(EpApplicationQuery)) query: Query<EpApplication>, 
     @Headers(TOKEN_KEY) token: string
   ) {
     return this.epApp.findAll(query, token);

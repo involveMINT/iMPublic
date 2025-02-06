@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { DeleteSpImageDto, DTO_KEY, EditSpProfileDto, environment, FILES_KEY, InvolvemintRoutes, IParser, IQuery, QUERY_KEY, ServePartner, UpdateSpLogoFileDto, UploadSpImagesDto, UserQuery } from '@involvemint/shared/domain';
+import { DeleteSpImageDto, DTO_KEY, EditSpProfileDto, environment, FILES_KEY, InvolvemintRoutes, IParser, Query, QUERY_KEY, ServePartner, UpdateSpLogoFileDto, UploadSpImagesDto, UserQuery } from '@involvemint/shared/domain';
 import { Injectable } from '@angular/core';
 
 @Injectable()
@@ -9,7 +9,7 @@ export class ServePartnerRestClient {
 
   constructor(private http: HttpClient) { }
 
-  editProfile(query: IQuery<ServePartner>, dto: EditSpProfileDto)
+  editProfile(query: Query<ServePartner>, dto: EditSpProfileDto)
   {
     const body = {
       [QUERY_KEY]: query,
@@ -20,7 +20,7 @@ export class ServePartnerRestClient {
           .post<IParser<ServePartner, typeof UserQuery.serveAdmins.servePartner>>(`${this.apiUrl}/editProfile`, body);
   }
 
-  updateLogoFile(query: IQuery<ServePartner>, dto: UpdateSpLogoFileDto, logo: File) {
+  updateLogoFile(query: Query<ServePartner>, dto: UpdateSpLogoFileDto, logo: File) {
     const body = new FormData();
     body.set(QUERY_KEY, JSON.stringify(query));
     body.set(DTO_KEY, JSON.stringify(dto));
@@ -33,7 +33,7 @@ export class ServePartnerRestClient {
           });
   }
 
-  uploadImages(query: IQuery<ServePartner>, dto: UploadSpImagesDto, files: File[]) {
+  uploadImages(query: Query<ServePartner>, dto: UploadSpImagesDto, files: File[]) {
     const body = new FormData();
     body.set(QUERY_KEY, JSON.stringify(query));
     body.set(DTO_KEY, JSON.stringify(dto));
@@ -46,7 +46,7 @@ export class ServePartnerRestClient {
           });
   }
 
-  deleteImage(query: IQuery<ServePartner>, dto: DeleteSpImageDto) {
+  deleteImage(query: Query<ServePartner>, dto: DeleteSpImageDto) {
     const body = {
       [QUERY_KEY]: query,
       [DTO_KEY]: dto,

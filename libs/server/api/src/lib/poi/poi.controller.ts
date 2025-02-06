@@ -11,7 +11,7 @@ import {
   SubmitPoiDto,
   WithdrawPoiDto,
   InvolvemintRoutes,
-  IQuery,
+  Query,
   ResumePoiTimerDto,
   QUERY_KEY,
   PoiCmQuery,
@@ -37,7 +37,7 @@ export class PoiController {
 
   @Post('get')
   get(
-    @Body(QUERY_KEY, new QueryValidationPipe(PoiCmQuery)) query: IQuery<Poi[]>, 
+    @Body(QUERY_KEY, new QueryValidationPipe(PoiCmQuery)) query: Query<Poi[]>, 
     @Headers(TOKEN_KEY) token: string 
   ){
       return this.poiService.get(query, token);
@@ -45,7 +45,7 @@ export class PoiController {
 
   @Post('create')
   create(
-    @Body(QUERY_KEY, new QueryValidationPipe(PoiCmQuery)) query: IQuery<Poi>, 
+    @Body(QUERY_KEY, new QueryValidationPipe(PoiCmQuery)) query: Query<Poi>, 
     @Headers(TOKEN_KEY) token: string, 
     @Body(DTO_KEY, new ValidationPipe()) dto: CreatePoiDto
   ) {
@@ -54,7 +54,7 @@ export class PoiController {
 
   @Post('start')
   start(
-    @Body(QUERY_KEY, new QueryValidationPipe(PoiCmQuery)) query: IQuery<Poi>, 
+    @Body(QUERY_KEY, new QueryValidationPipe(PoiCmQuery)) query: Query<Poi>, 
     @Headers(TOKEN_KEY) token: string, 
     @Body(DTO_KEY, new ValidationPipe()) dto: StartPoiTimerDto
   ) {
@@ -63,7 +63,7 @@ export class PoiController {
 
   @Post('stop')
   stop(
-    @Body(QUERY_KEY, new QueryValidationPipe(PoiCmQuery)) query: IQuery<Poi>, 
+    @Body(QUERY_KEY, new QueryValidationPipe(PoiCmQuery)) query: Query<Poi>, 
     @Headers(TOKEN_KEY) token: string, 
     @Body(DTO_KEY, new ValidationPipe()) dto: StopPoiTimerDto
   ) {
@@ -72,7 +72,7 @@ export class PoiController {
 
   @Post('withdraw')
   withdraw(
-    @Body(QUERY_KEY, new QueryValidationPipe({ deletedId: true })) query: IQuery<{ deletedId: string }>, 
+    @Body(QUERY_KEY, new QueryValidationPipe({ deletedId: true })) query: Query<{ deletedId: string }>, 
     @Headers(TOKEN_KEY) token: string, 
     @Body(DTO_KEY, new ValidationPipe()) dto: WithdrawPoiDto
     ) {
@@ -81,7 +81,7 @@ export class PoiController {
 
   @Post('pause')
   pause(
-    @Body(QUERY_KEY, new QueryValidationPipe(PoiCmQuery)) query: IQuery<Poi>, 
+    @Body(QUERY_KEY, new QueryValidationPipe(PoiCmQuery)) query: Query<Poi>, 
     @Headers(TOKEN_KEY) token: string, 
     @Body(DTO_KEY, new ValidationPipe()) dto: PausePoiTimerDto
   ) {
@@ -90,7 +90,7 @@ export class PoiController {
 
   @Post('resume')
   resume(
-    @Body(QUERY_KEY, new QueryValidationPipe(PoiCmQuery)) query: IQuery<Poi>, 
+    @Body(QUERY_KEY, new QueryValidationPipe(PoiCmQuery)) query: Query<Poi>, 
     @Headers(TOKEN_KEY) token: string, 
     @Body(DTO_KEY, new ValidationPipe()) dto: ResumePoiTimerDto
   ) {
@@ -100,7 +100,7 @@ export class PoiController {
   @Post('submit')
   @UseInterceptors(FilesInterceptor(FILES_KEY))
   submit(
-    @Body(QUERY_KEY, new QueryValidationPipe(PoiCmQuery)) query: IQuery<Poi>, 
+    @Body(QUERY_KEY, new QueryValidationPipe(PoiCmQuery)) query: Query<Poi>, 
     @Headers(TOKEN_KEY) token: string, 
     @Body(DTO_KEY, new ValidationPipe()) dto: SubmitPoiDto, 
     @UploadedFiles() files: Express.Multer.File[]
@@ -118,7 +118,7 @@ export class PoiController {
 
   @Post('getByProject')
   getByProject(
-    @Body(QUERY_KEY, new QueryValidationPipe(PoiSpQuery)) query: IQuery<Poi[]>, 
+    @Body(QUERY_KEY, new QueryValidationPipe(PoiSpQuery)) query: Query<Poi[]>, 
     @Headers(TOKEN_KEY) token: string,
     @Body(DTO_KEY, new ValidationPipe()) dto: GetPoisByProjectDto
   ) {
@@ -127,7 +127,7 @@ export class PoiController {
 
   @Post('approve')
   approve(
-    @Body() body: { query: IQuery<Poi>, token: string, dto: ApprovePoiDto },
+    @Body() body: { query: Query<Poi>, token: string, dto: ApprovePoiDto },
     @Headers(TOKEN_KEY) token: string
   ) {
     return this.poiService.approve(body.query, token, body.dto);
@@ -135,7 +135,7 @@ export class PoiController {
 
   @Post('deny')
   deny(
-    @Body(QUERY_KEY, new QueryValidationPipe(PoiSpQuery)) query: IQuery<Poi>, 
+    @Body(QUERY_KEY, new QueryValidationPipe(PoiSpQuery)) query: Query<Poi>, 
     @Headers(TOKEN_KEY) token: string, 
     @Body(DTO_KEY, new ValidationPipe()) dto: DenyPoiDto
   ) {

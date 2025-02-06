@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { CreateProjectDto, DeleteProjectDto, DeleteProjectImageDto, DTO_KEY, environment, FILES_KEY, GetProjectDto, IExactQuery, InvolvemintRoutes, IPagination, IParser, IQuery, Project, ProjectFeedQuery, ProjectSpQuery, ProjectsQueryDto, ProjectsSpDto, QUERY_KEY, UpdateProjectDto, UploadCustomWaiverDto, UploadProjectImageDto } from '@involvemint/shared/domain';
+import { CreateProjectDto, DeleteProjectDto, DeleteProjectImageDto, DTO_KEY, environment, FILES_KEY, GetProjectDto, ExactQuery, InvolvemintRoutes, IPagination, IParser, Query, Project, ProjectFeedQuery, ProjectSpQuery, ProjectsQueryDto, ProjectsSpDto, QUERY_KEY, UpdateProjectDto, UploadCustomWaiverDto, UploadProjectImageDto } from '@involvemint/shared/domain';
 import { Injectable } from '@angular/core';
 
 @Injectable()
@@ -8,7 +8,7 @@ export class ProjectRestClient {
 
   constructor(private http: HttpClient) { }
   
-  getAll(query: IQuery<Project[]>, dto: ProjectsQueryDto) {
+  getAll(query: Query<Project[]>, dto: ProjectsQueryDto) {
     const body = {
       [QUERY_KEY]: query,
       [DTO_KEY]: dto
@@ -18,7 +18,7 @@ export class ProjectRestClient {
           .post<IPagination<IParser<Project, typeof ProjectFeedQuery>>>(`${this.apiUrl}/getAll`, body);
   }
 
-  getOne(query: IQuery<Project>, dto: GetProjectDto) {
+  getOne(query: Query<Project>, dto: GetProjectDto) {
     const body = {
       [QUERY_KEY]: query,
       [DTO_KEY]: dto
@@ -29,7 +29,7 @@ export class ProjectRestClient {
   }
 
 
-  getAllOwnedBySp(query: IQuery<Project[]>, dto: ProjectsSpDto) {
+  getAllOwnedBySp(query: Query<Project[]>, dto: ProjectsSpDto) {
     const body = {
       [QUERY_KEY]: query,
       [DTO_KEY]: dto
@@ -39,7 +39,7 @@ export class ProjectRestClient {
           .post<IParser<Project, typeof ProjectSpQuery>[]>(`${this.apiUrl}/getAllOwnedBySp`, body);
   }
 
-  create(query: IQuery<Project>, dto: CreateProjectDto) {
+  create(query: Query<Project>, dto: CreateProjectDto) {
     const body = {
       [QUERY_KEY]: query,
       [DTO_KEY]: dto
@@ -49,7 +49,7 @@ export class ProjectRestClient {
           .post<IParser<Project, typeof ProjectSpQuery>>(`${this.apiUrl}/create`, body);
   }
 
-  update(query: IQuery<Project>, dto: UpdateProjectDto) {
+  update(query: Query<Project>, dto: UpdateProjectDto) {
     const body = {
       [QUERY_KEY]: query,
       [DTO_KEY]: dto
@@ -59,7 +59,7 @@ export class ProjectRestClient {
           .post<IParser<Project, typeof ProjectSpQuery>>(`${this.apiUrl}/update`, body);
   }
 
-  uploadImages(query: IQuery<Project>, dto: UploadProjectImageDto, images: File[]) {
+  uploadImages(query: Query<Project>, dto: UploadProjectImageDto, images: File[]) {
     const body = new FormData();
     body.set(QUERY_KEY, JSON.stringify(query));
     body.set(DTO_KEY, JSON.stringify(dto));
@@ -72,7 +72,7 @@ export class ProjectRestClient {
           });
   }
 
-  deleteImage(query: IQuery<Project>, dto: DeleteProjectImageDto) {
+  deleteImage(query: Query<Project>, dto: DeleteProjectImageDto) {
     const body = {
       [QUERY_KEY]: query,
       [DTO_KEY]: dto
@@ -82,7 +82,7 @@ export class ProjectRestClient {
           .post<IParser<Project, typeof ProjectSpQuery>>(`${this.apiUrl}/deleteImage`, body);
   }
 
-  delete(query: IExactQuery<{ deletedId: string }, { deletedId: true }>, dto: DeleteProjectDto) {
+  delete(query: ExactQuery<{ deletedId: string }, { deletedId: true }>, dto: DeleteProjectDto) {
     const body = {
       [QUERY_KEY]: query,
       [DTO_KEY]: dto
@@ -92,7 +92,7 @@ export class ProjectRestClient {
           .post<IParser<{ deletedId: string }, { deletedId: true }>>(`${this.apiUrl}/delete`, body);
   }
 
-  uploadCustomWaiver(query: IQuery<Project>, dto: UploadCustomWaiverDto, waiver: File) {
+  uploadCustomWaiver(query: Query<Project>, dto: UploadCustomWaiverDto, waiver: File) {
     const body = new FormData();
     body.set(QUERY_KEY, JSON.stringify(query));
     body.set(DTO_KEY, JSON.stringify(dto));

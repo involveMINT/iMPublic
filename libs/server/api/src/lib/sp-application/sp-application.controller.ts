@@ -6,7 +6,7 @@ import {
   SpApplicationQuery,
   SubmitSpApplicationDto,
   UserQuery,
-  IQuery,
+  Query,
   TOKEN_KEY,
   DTO_KEY,
   QUERY_KEY,
@@ -22,7 +22,7 @@ export class SpApplicationController {
 
   @Post('submit')
   async submit(
-    @Body(QUERY_KEY, new QueryValidationPipe(UserQuery.spApplications)) query: IQuery<SpApplication>, 
+    @Body(QUERY_KEY, new QueryValidationPipe(UserQuery.spApplications)) query: Query<SpApplication>, 
     @Body(DTO_KEY, new ValidationPipe()) dto: SubmitSpApplicationDto,
     @Headers(TOKEN_KEY) token: string
   ) {
@@ -31,7 +31,7 @@ export class SpApplicationController {
 
   @Post('withdraw')
   async withdraw(
-    @Body(QUERY_KEY, new QueryValidationPipe({ deletedId: true })) query: IQuery<{ deletedId: string }>, 
+    @Body(QUERY_KEY, new QueryValidationPipe({ deletedId: true })) query: Query<{ deletedId: string }>, 
     @Body(DTO_KEY, new ValidationPipe()) dto: WithdrawSpApplicationDto, 
     @Headers(TOKEN_KEY) token: string
   ) {
@@ -40,7 +40,7 @@ export class SpApplicationController {
 
   @Post('process')
   async process(
-    @Body(QUERY_KEY, new QueryValidationPipe({ deletedId: true })) query: IQuery<{ deletedId: string }>, 
+    @Body(QUERY_KEY, new QueryValidationPipe({ deletedId: true })) query: Query<{ deletedId: string }>, 
     @Body(DTO_KEY, new ValidationPipe()) dto: ProcessSpApplicationDto, 
     @Headers(TOKEN_KEY) token: string
   ) {
@@ -49,7 +49,7 @@ export class SpApplicationController {
 
   @Post('findAll')
   async findAll(
-    @Body(QUERY_KEY, new QueryValidationPipe(SpApplicationQuery)) query: IQuery<SpApplication>, 
+    @Body(QUERY_KEY, new QueryValidationPipe(SpApplicationQuery)) query: Query<SpApplication>, 
     @Headers(TOKEN_KEY) token: string
   ) {
     return this.spApplicationService.findAll(query, token);

@@ -1,7 +1,7 @@
 import {
-  IExactQuery,
   IPaginate,
-  IQuery,
+  Query,
+  ExactQuery,
   IUpdateEntity,
   IUpsertEntity,
   IProps,
@@ -9,8 +9,10 @@ import {
   IParser,
   PAGINATE_KEY,
   PAGINATE_PAGE,
-  PAGINATE_LIMIT
+  PAGINATE_LIMIT,
+  InvolvemintRoutes
 } from '@involvemint/shared/domain';
+
 import { paginate, Pagination } from 'nestjs-typeorm-paginate';
 import { Socket } from 'socket.io';
 import { DeepPartial, FindManyOptions, Repository } from 'typeorm';
@@ -27,11 +29,11 @@ export abstract class IBaseRepository<
   private readonly gatewaysStorage = new GatewaysStorage<Entity, IdType>();
 
   readonly subscriptions = {
-    oneEntitySubscription: async <Q extends IQuery<Entity>>(
+    oneEntitySubscription: async <Q extends Query<Entity>>(
       socket: Socket,
       channel: string,
       id: IdType,
-      query: IExactQuery<Entity, Q>
+      query: ExactQuery<Entity, Q>
     ) => {
       const listener = () => {
         const relations = createTypeormRelationsArray(query);
@@ -40,11 +42,11 @@ export abstract class IBaseRepository<
       return this.gatewaysStorage.provisionIdsSubscription({ socket, channel, listener, query });
     },
 
-    manyEntitiesSubscription: async <Q extends IQuery<Entity>>(
+    manyEntitiesSubscription: async <Q extends Query<Entity>>(
       socket: Socket,
       channel: string,
       ids: IdType[],
-      query: IExactQuery<Entity, Q>
+      query: ExactQuery<Entity, Q>
     ) => {
       const listener = () => {
         const relations = createTypeormRelationsArray(query);
@@ -53,10 +55,10 @@ export abstract class IBaseRepository<
       return this.gatewaysStorage.provisionIdsSubscription({ socket, channel, listener, query });
     },
 
-    querySubscription: async <Q extends IQuery<Entity>>(
+    querySubscription: async <Q extends Query<Entity>>(
       socket: Socket,
       channel: string,
-      query: IExactQuery<Entity, Q>,
+      query: ExactQuery<Entity, Q>,
       options?: Omit<FindManyOptions<Entity>, 'relations'>
     ) => {
       const listener = async () => this.provisionQuery(query, options);
@@ -74,11 +76,11 @@ export abstract class IBaseRepository<
   ) {}
 
   async findOneOrFail(id: IdType): Promise<IProps<Entity>>;
-  async findOneOrFail<Q extends IQuery<Entity>>(
+  async findOneOrFail<Q extends Query<Entity>>(
     id: IdType,
-    query: IExactQuery<Entity, Q>
+    query: ExactQuery<Entity, Q>
   ): Promise<IParser<Entity, Q>>;
-  async findOneOrFail<Q extends IQuery<Entity>>(id: IdType, query?: IExactQuery<Entity, Q>) {
+  async findOneOrFail<Q extends Query<Entity>>(id: IdType, query?: ExactQuery<Entity, Q>) {
     if (query) {
       const relations = createTypeormRelationsArray(query);
       const dbRes = await this.repo.findOneOrFail(id, { relations });
@@ -89,11 +91,11 @@ export abstract class IBaseRepository<
   }
 
   async findOne(id: IdType): Promise<IProps<Entity> | undefined>;
-  async findOne<Q extends IQuery<Entity>>(
+  async findOne<Q extends Query<Entity>>(
     id: IdType,
-    query: IExactQuery<Entity, Q>
+    query: ExactQuery<Entity, Q>
   ): Promise<IParser<Entity, Q> | undefined>;
-  async findOne<Q extends IQuery<Entity>>(id: IdType, query?: IExactQuery<Entity, Q>) {
+  async findOne<Q extends Query<Entity>>(id: IdType, query?: ExactQuery<Entity, Q>) {
     if (query) {
       const relations = createTypeormRelationsArray(query);
       const dbRes = await this.repo.findOne(id, { relations });
@@ -104,11 +106,11 @@ export abstract class IBaseRepository<
   }
 
   async findMany(ids: IdType[]): Promise<IProps<Entity>[]>;
-  async findMany<Q extends IQuery<Entity>>(
+  async findMany<Q extends Query<Entity>>(
     ids: IdType[],
-    query: IExactQuery<Entity, Q>
+    query: ExactQuery<Entity, Q>
   ): Promise<IParser<Entity[], Q>>;
-  async findMany<Q extends IQuery<Entity>>(ids: IdType[], query?: IExactQuery<Entity, Q>) {
+  async findMany<Q extends Query<Entity>>(ids: IdType[], query?: ExactQuery<Entity, Q>) {
     if (ids.length === 0) return [] as unknown as IParser<Entity[], Q>;
     if (query) {
       const relations = createTypeormRelationsArray(query);
@@ -120,8 +122,8 @@ export abstract class IBaseRepository<
   }
 
   async findAll(): Promise<IProps<Entity>[]>;
-  async findAll<Q extends IQuery<Entity>>(query: IExactQuery<Entity, Q>): Promise<IParser<Entity[], Q>>;
-  async findAll<Q extends IQuery<Entity>>(query?: IExactQuery<Entity, Q>) {
+  async findAll<Q extends Query<Entity>>(query: ExactQuery<Entity, Q>): Promise<IParser<Entity[], Q>>;
+  async findAll<Q extends Query<Entity>>(query?: ExactQuery<Entity, Q>) {
     if (query) {
       const relations = createTypeormRelationsArray(query);
       const dbRes = await this.repo.find({ relations });
@@ -131,16 +133,16 @@ export abstract class IBaseRepository<
     }
   }
 
-  async query<Q extends IQuery<Entity>>(
-    query: IExactQuery<Entity, Q>,
+  async query<Q extends Query<Entity>>(
+    query: ExactQuery<Entity, Q>,
     options?: Omit<FindManyOptions<Entity>, 'relations'>
   ): Promise<IParser<Entity[], Q>> {
     const entities = await this.provisionQuery(query, options);
     return parseQuery(query, entities) as IParser<Entity[], Q>;
   }
 
-  private async provisionQuery<Q extends IQuery<Entity>>(
-    query: IExactQuery<Entity, Q>,
+  private async provisionQuery<Q extends Query<Entity>>(
+    query: ExactQuery<Entity, Q>,
     options?: Omit<FindManyOptions<Entity>, 'relations'>
   ): Promise<Pagination<Entity> | Entity[]> {
     let entities: Pagination<Entity> | Entity[];
@@ -160,40 +162,41 @@ export abstract class IBaseRepository<
   }
 
   async update(id: IdType, entity: IUpdateEntity<Entity>): Promise<IProps<Entity>>;
-  async update<Q extends IQuery<Entity>>(
+  async update<Q extends Query<Entity>>(
     id: IdType,
     entity: IUpdateEntity<Entity>,
-    query: IExactQuery<Entity, Q>
+    query: ExactQuery<Entity, Q>
   ): Promise<IParser<Entity, Q>>;
-  async update<Q extends IQuery<Entity>>(
+  async update<Q extends Query<Entity>>(
     id: IdType,
     entity: IUpdateEntity<Entity>,
-    query?: IExactQuery<Entity, Q>
+    query?: ExactQuery<Entity, Q>
   ) {
     await this.repo.save({ ...(entity as unknown as DeepPartial<Entity>), id });
     this.gatewaysStorage.trigger(id);
     return query ? this.findOneOrFail(id, query) : this.findOneOrFail(id);
   }
+  
 
   async upsert(entity: IUpsertEntity<Entity>): Promise<IProps<Entity>>;
-  async upsert<Q extends IQuery<Entity>>(
+  async upsert<Q extends Query<Entity>>(
     entity: IUpsertEntity<Entity>,
-    query: IExactQuery<Entity, Q>
+    query: ExactQuery<Entity, Q>
   ): Promise<IParser<Entity, Q>>;
-  async upsert<Q extends IQuery<Entity>>(entity: IUpsertEntity<Entity>, query?: IExactQuery<Entity, Q>) {
+  async upsert<Q extends Query<Entity>>(entity: IUpsertEntity<Entity>, query?: ExactQuery<Entity, Q>) {
     await this.repo.save(entity as unknown as DeepPartial<Entity>);
     this.gatewaysStorage.trigger(entity.id as IdType);
     return query ? this.findOneOrFail(entity.id as IdType, query) : this.findOneOrFail(entity.id as IdType);
   }
 
   async upsertMany(entities: IUpsertEntity<Entity>[]): Promise<IProps<Entity>[]>;
-  async upsertMany<Q extends IQuery<Entity>>(
+  async upsertMany<Q extends Query<Entity>>(
     entities: IUpsertEntity<Entity>[],
-    query: IExactQuery<Entity, Q>
+    query: ExactQuery<Entity, Q>
   ): Promise<IParser<Entity[], Q>>;
-  async upsertMany<Q extends IQuery<Entity>>(
+  async upsertMany<Q extends Query<Entity>>(
     entities: IUpsertEntity<Entity>[],
-    query?: IExactQuery<Entity, Q>
+    query?: ExactQuery<Entity, Q>
   ) {
     if (entities.length === 0) return [] as unknown as IParser<Entity[], Q>;
     await this.repo.save(entities as unknown as DeepPartial<Entity>[]);

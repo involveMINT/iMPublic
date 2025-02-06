@@ -6,10 +6,10 @@ import {
 import { 
   environment, 
   ImConfig, 
-  User,
-  IExactQuery, 
+  User, 
   IParser, 
-  IQuery  
+  ExactQuery,
+  Query,
 } from '@involvemint/shared/domain';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
@@ -89,11 +89,11 @@ export class AuthService {
    * @returns The user entity associated with the token.
    */
   async validateUserToken(token?: string): Promise<User>;
-  async validateUserToken<Q extends IQuery<User>>(
+  async validateUserToken<Q extends Query<User>>(
     token: string,
-    query: IExactQuery<User, Q>
+    query: ExactQuery<User, Q>
   ): Promise<IParser<User, Q>>;
-  async validateUserToken<Q extends IQuery<User>>(token?: string, query?: IExactQuery<User, Q>) {
+  async validateUserToken<Q extends Query<User>>(token?: string, query?: ExactQuery<User, Q>) {
     if (!token) {
       throw new HttpException(
         `Unable to verify authentication token. No Token given.`,
@@ -106,7 +106,7 @@ export class AuthService {
     try {
       sign = await this.getTokenOwner(token);
     } catch (e) {
-      throw new HttpException(e, HttpStatus.INTERNAL_SERVER_ERROR);
+      throw new HttpException(e instanceof Error ? e.message : String(e), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     if (!sign.userId) {

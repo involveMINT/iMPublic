@@ -12,7 +12,7 @@ import {
   QueryOffersDto,
   UpdateOfferDto,
   UploadOfferImageDto,
-  IQuery,
+  Query,
   TOKEN_KEY,
   DTO_KEY,
   QUERY_KEY,
@@ -28,7 +28,7 @@ export class OfferController {
 
   @Post('query')
   query(
-    @Body(QUERY_KEY, new QueryValidationPipe(OfferMarketQuery)) query: IQuery<Offer[]>, 
+    @Body(QUERY_KEY, new QueryValidationPipe(OfferMarketQuery)) query: Query<Offer[]>, 
     @Body(DTO_KEY, new ValidationPipe()) dto: QueryOffersDto
   ) {
     return this.offer.query(query, dto);
@@ -36,7 +36,7 @@ export class OfferController {
 
   @Post('getOne')
   getOne(
-    @Body(QUERY_KEY, new QueryValidationPipe(OfferMarketQuery)) query: IQuery<Offer>, 
+    @Body(QUERY_KEY, new QueryValidationPipe(OfferMarketQuery)) query: Query<Offer>, 
     @Body(DTO_KEY, new ValidationPipe()) dto: GetOneOfferDto
   ) {
     return this.offer.getOne(query, dto);
@@ -44,7 +44,7 @@ export class OfferController {
 
   @Post('getForProfile')
   getForProfile(
-    @Body(QUERY_KEY, new QueryValidationPipe(OfferQuery)) query: IQuery<Offer[]>, 
+    @Body(QUERY_KEY, new QueryValidationPipe(OfferQuery)) query: Query<Offer[]>, 
     @Headers(TOKEN_KEY) token: string, 
     @Body(DTO_KEY, new ValidationPipe()) dto: GetOffersForProfileDto
   ) {
@@ -53,7 +53,7 @@ export class OfferController {
 
   @Post('create')
   create(
-    @Body(QUERY_KEY, new QueryValidationPipe(OfferQuery)) query: IQuery<Offer>, 
+    @Body(QUERY_KEY, new QueryValidationPipe(OfferQuery)) query: Query<Offer>, 
     @Headers(TOKEN_KEY) token: string, 
     @Body(DTO_KEY, new ValidationPipe()) dto: CreateOfferDto
   ) {
@@ -62,7 +62,7 @@ export class OfferController {
 
   @Post('update')
   update(
-    @Body(QUERY_KEY, new QueryValidationPipe(OfferQuery)) query: IQuery<Offer>, 
+    @Body(QUERY_KEY, new QueryValidationPipe(OfferQuery)) query: Query<Offer>, 
     @Headers(TOKEN_KEY) token: string, 
     @Body(DTO_KEY, new ValidationPipe()) dto: UpdateOfferDto
   ) {
@@ -71,7 +71,7 @@ export class OfferController {
 
   @Post('delete')
   delete(
-    @Body(QUERY_KEY, new QueryValidationPipe({ deletedId: true })) query: IQuery<{ deletedId: string }>, 
+    @Body(QUERY_KEY, new QueryValidationPipe({ deletedId: true })) query: Query<{ deletedId: string }>, 
     @Headers(TOKEN_KEY) token: string, 
     @Body(DTO_KEY, new ValidationPipe()) dto: DeleteOfferDto
   ) {
@@ -81,7 +81,7 @@ export class OfferController {
   @Post('uploadImages')
   @UseInterceptors(FilesInterceptor(FILES_KEY))
   uploadImages(
-    @Body(QUERY_KEY, new QueryValidationPipe(OfferQuery)) query: IQuery<Offer>, 
+    @Body(QUERY_KEY, new QueryValidationPipe(OfferQuery)) query: Query<Offer>, 
     @Headers(TOKEN_KEY) token: string, 
     @Body(DTO_KEY, new ValidationPipe()) dto: UploadOfferImageDto, 
     @UploadedFiles() files: Express.Multer.File[]
@@ -91,7 +91,7 @@ export class OfferController {
 
   @Post('deleteImage')
   deleteImage(
-    @Body(QUERY_KEY, new QueryValidationPipe(OfferQuery)) query: IQuery<Offer>, 
+    @Body(QUERY_KEY, new QueryValidationPipe(OfferQuery)) query: Query<Offer>, 
     @Headers(TOKEN_KEY) token: string, 
     @Body(DTO_KEY, new ValidationPipe()) dto: DeleteOfferImageDto
   ) {

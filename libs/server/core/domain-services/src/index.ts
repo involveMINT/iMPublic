@@ -46,5 +46,6 @@ export * from './lib/transaction/transaction.entity';
 export * from './lib/transaction/transaction.repository';
 export * from './lib/user/user.entity';
 export * from './lib/user/user.repository';
+export * from './lib/user/userORM.repository';
 export * from './lib/voucher/voucher.entity';
 export * from './lib/voucher/voucher.repository';

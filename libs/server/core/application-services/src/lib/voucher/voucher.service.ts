@@ -20,7 +20,7 @@ import {
   Voucher,
   voucherCanBeRedeemed,
   voucherCanBeRefunded,
-  IQuery
+  Query
 } from '@involvemint/shared/domain';
 import { guaranteeSixCharUidUniqueness } from '@involvemint/shared/util';
 import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
@@ -47,7 +47,7 @@ export class VoucherService {
     private readonly sms: SMSService
   ) {}
 
-  async getForProfile(query: IQuery<Voucher>, token: string, dto: GetVouchersForProfileDto) {
+  async getForProfile(query: Query<Voucher>, token: string, dto: GetVouchersForProfileDto) {
     await this.auth.authenticateFromProfileId(dto.profileId, token);
     return this.voucherRepo.query(query, {
       where: [
@@ -58,12 +58,12 @@ export class VoucherService {
     });
   }
 
-  async getBySeller(query: IQuery<Voucher>, token: string, dto: GetVouchersBySellerDto) {
+  async getBySeller(query: Query<Voucher>, token: string, dto: GetVouchersBySellerDto) {
     await this.auth.authenticateFromProfileId(dto.epId, token);
     return this.voucherRepo.query(query, { where: { seller: dto.epId } });
   }
 
-  async buy(query: IQuery<Voucher>, token: string, dto: BuyVoucherDto) {
+  async buy(query: Query<Voucher>, token: string, dto: BuyVoucherDto) {
     const buyer = await this.auth.authenticateFromProfileId(dto.buyerId, token);
 
     if (dto.buyerId === dto.sellerId) {
@@ -150,7 +150,7 @@ export class VoucherService {
     return this.voucherRepo.findOneOrFail(voucherId, query);
   }
 
-  async redeemVoucher(query: IQuery<Voucher>, token: string, dto: RedeemVoucherDto) {
+  async redeemVoucher(query: Query<Voucher>, token: string, dto: RedeemVoucherDto) {
     await this.auth.authenticateFromProfileId(dto.sellerId, token);
 
     const vouchers = await this.voucherRepo.query(
@@ -250,7 +250,7 @@ export class VoucherService {
     return this.voucherRepo.findOneOrFail(voucher.id, query);
   }
 
-  async refundVoucher(query: IQuery<Voucher>, token: string, dto: RefundVoucherDto) {
+  async refundVoucher(query: Query<Voucher>, token: string, dto: RefundVoucherDto) {
     const voucher = await this.voucherRepo.findOneOrFail(dto.voucherId, {
       id: true,
       seller: { id: true, handle: { id: true }, name: true },
@@ -360,7 +360,7 @@ export class VoucherService {
     return this.voucherRepo.findOneOrFail(voucher.id, query);
   }
 
-  async archiveVoucher(query: IQuery<Voucher>, token: string, dto: ArchiveVoucherDto) {
+  async archiveVoucher(query: Query<Voucher>, token: string, dto: ArchiveVoucherDto) {
     const voucher = await this.voucherRepo.findOneOrFail(dto.voucherId, {
       id: true,
       seller: { id: true },
@@ -378,7 +378,7 @@ export class VoucherService {
     return this.voucherRepo.findOneOrFail(voucher.id, query);
   }
 
-  async unarchiveVoucher(query: IQuery<Voucher>, token: string, dto: UnarchiveVoucherDto) {
+  async unarchiveVoucher(query: Query<Voucher>, token: string, dto: UnarchiveVoucherDto) {
     const voucher = await this.voucherRepo.findOneOrFail(dto.voucherId, {
       id: true,
       seller: { id: true },

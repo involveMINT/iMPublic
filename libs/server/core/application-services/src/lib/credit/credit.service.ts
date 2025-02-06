@@ -7,7 +7,7 @@ import {
   MintDto,
   createQuery, 
   IParser, 
-  IQuery
+  Query
 } from '@involvemint/shared/domain';
 import { isDecimal } from '@involvemint/shared/util';
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
@@ -36,7 +36,7 @@ export class CreditService {
     private readonly handle: HandleRepository
   ) {}
 
-  async getCreditsForProfile(query: IQuery<Credit>, token: string, dto: GetCreditsForProfileDto) {
+  async getCreditsForProfile(query: Query<Credit>, token: string, dto: GetCreditsForProfileDto) {
     await this.auth.authenticateFromProfileId(dto.profileId, token);
 
     return this.creditRepo.query(query, {

@@ -6,20 +6,20 @@
   "scripts": {
     "ng": "nx",
     "nx": "nx",
-    "start": "node dist/apps/api/main.js",
-    "start:client": "ng serve involvemint",
-    "start:server": "ng serve api",
-    "start:client:local": "ng serve involvemint -c local",
-    "start:server:local": "ng serve api -c local",
-    "build": "nx run-many --target=build --projects=involvemint,api --prod --skip-nx-cache",
-    "build:client": "nx run-many --target=build --projects=involvemint --prod --skip-nx-cache",
-    "build:server": "nx run-many --target=build --projects=api --prod --skip-nx-cache",
-    "deploy:server": "nx run-many --target=build --projects=api --prod --skip-nx-cache && gcloud config set project involvemint2 && gcloud app deploy app.yaml --stop-previous-version --quiet",
-    "deploy:client": "nx run-many --target=build --projects=involvemint --prod --skip-nx-cache && firebase use involvemint2 && firebase deploy",
-    "deploy": "nx run-many --target=build --projects=involvemint,api --prod --skip-nx-cache && gcloud config set project involvemint2 && gcloud app deploy app.yaml --stop-previous-version --quiet && firebase use involvemint2 && firebase deploy && gcloud config set project involvemint-test && gcloud app deploy app.yaml --stop-previous-version --quiet && firebase use involvemint-test && firebase deploy",
-    "deploy:test": "nx run-many --target=build --projects=involvemint,api --configuration=test --skip-nx-cache && gcloud config set project im-test-395400 && gcloud app deploy app.yaml --stop-previous-version --quiet && firebase use im-test-395400 && firebase deploy",
-    "deploy:test:server": "nx run-many --target=build --projects=api --configuration=test --skip-nx-cache && gcloud config set project im-test-395400 && gcloud app deploy app.yaml --stop-previous-version --quiet",
-    "deploy:test:client": "nx run-many --target=build --projects=involvemint --configuration=test --skip-nx-cache && firebase use im-test-395400 && firebase deploy",
+    "start": "set NODE_OPTIONS=--openssl-legacy-provider && node dist/apps/api/main.js",
+    "start:client": "set NODE_OPTIONS=--openssl-legacy-provider && ng serve involvemint",
+    "start:server": "set NODE_OPTIONS=--openssl-legacy-provider && ng serve api",
+    "start:client:local": "set NODE_OPTIONS=--openssl-legacy-provider && ng serve involvemint -c local",
+    "start:server:local": "set NODE_OPTIONS=--openssl-legacy-provider && ng serve api -c local",
+    "build": "set NODE_OPTIONS=--openssl-legacy-provider && nx run-many --target=build --projects=involvemint,api --prod --skip-nx-cache",
+    "build:client": "set NODE_OPTIONS=--openssl-legacy-provider && nx run-many --target=build --projects=involvemint --prod --skip-nx-cache",
+    "build:server": "set NODE_OPTIONS=--openssl-legacy-provider && nx run-many --target=build --projects=api --prod --skip-nx-cache",
+    "deploy:server": "set NODE_OPTIONS=--openssl-legacy-provider && nx run-many --target=build --projects=api --prod --skip-nx-cache && gcloud config set project involvemint2 && gcloud app deploy app.yaml --stop-previous-version --quiet",
+    "deploy:client": "set NODE_OPTIONS=--openssl-legacy-provider && nx run-many --target=build --projects=involvemint --prod --skip-nx-cache && firebase use involvemint2 && firebase deploy",
+    "deploy": "set NODE_OPTIONS=--openssl-legacy-provider && nx run-many --target=build --projects=involvemint,api --prod --skip-nx-cache && gcloud config set project involvemint2 && gcloud app deploy app.yaml --stop-previous-version --quiet && firebase use involvemint2 && firebase deploy && gcloud config set project involvemint-test && gcloud app deploy app.yaml --stop-previous-version --quiet && firebase use involvemint-test && firebase deploy",
+    "deploy:test": "set NODE_OPTIONS=--openssl-legacy-provider && nx run-many --target=build --projects=involvemint,api --configuration=test --skip-nx-cache && gcloud config set project im-test-395400 && gcloud app deploy app.yaml --stop-previous-version --quiet && firebase use im-test-395400 && firebase deploy",
+    "deploy:test:server": "set NODE_OPTIONS=--openssl-legacy-provider && nx run-many --target=build --projects=api --configuration=test --skip-nx-cache && gcloud config set project im-test-395400 && gcloud app deploy app.yaml --stop-previous-version --quiet",
+    "deploy:test:client": "set NODE_OPTIONS=--openssl-legacy-provider && nx run-many --target=build --projects=involvemint --configuration=test --skip-nx-cache && firebase use im-test-395400 && firebase deploy",
     "test": "nx run-many --target=test --all",
     "lint": "nx run-many --target=lint --all",
     "e2e": "ng e2e",
@@ -53,8 +53,8 @@
     }
   },
   "engines": {
-    "npm": "8.19.4",
-    "node": "16.20.2"
+    "npm": "10.8.1",
+    "node": "22.4.1"
   },
   "private": true,
   "dependencies": {
@@ -111,6 +111,7 @@
     "ngx-pagination": "^5.1.1",
     "node-geocoder": "3.27.0",
     "passport": "0.4.1",
+    "passport-auth0": "^1.4.4",
     "passport-jwt": "4.0.0",
     "passport-local": "1.0.0",
     "pg": "8.6.0",
@@ -178,6 +179,7 @@
     "pretty-quick": "3.1.0",
     "ts-jest": "26.5.6",
     "ts-node": "10.0.0",
-    "typescript": "4.2.4"
+    "typescript": "4.2.4",
+    "webpack": "^5.96.1"
   }
 }

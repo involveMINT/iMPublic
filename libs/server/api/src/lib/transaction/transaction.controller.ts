@@ -5,7 +5,7 @@ import {
   TransactionDto,
   TransactionQuery,
   InvolvemintRoutes,
-  IQuery,
+  Query,
   QUERY_KEY,
   TOKEN_KEY,
   DTO_KEY
@@ -20,7 +20,7 @@ export class TransactionController {
 
   @Post('getForProfile')
   getForProfile(
-    @Body(QUERY_KEY, new QueryValidationPipe(TransactionQuery)) query: IQuery<Transaction>, 
+    @Body(QUERY_KEY, new QueryValidationPipe(TransactionQuery)) query: Query<Transaction>, 
     @Headers(TOKEN_KEY) token: string, 
     @Body(DTO_KEY, new ValidationPipe()) dto: GetTransactionsForProfileDto
   ) {
@@ -29,7 +29,7 @@ export class TransactionController {
 
   @Post('transaction')
   transaction(
-    @Body(QUERY_KEY, new QueryValidationPipe(TransactionQuery)) query: IQuery<Transaction>, 
+    @Body(QUERY_KEY, new QueryValidationPipe(TransactionQuery)) query: Query<Transaction>, 
     @Headers(TOKEN_KEY) token: string, 
     @Body(DTO_KEY, new ValidationPipe()) dto: TransactionDto
   ) {

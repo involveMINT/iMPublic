@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { AcceptWaiverDto, DTO_KEY, Enrollment, EnrollmentsQuery, EnrollmentsSpQuery, GetEnrollmentsBySpProject, IParser, IQuery, InvolvemintRoutes, LinkPassportDocumentDto, ProcessEnrollmentApplicationDto, QUERY_KEY, RetireEnrollmentDto, RevertEnrollmentApplicationDto, StartEnrollmentApplicationDto, SubmitEnrollmentApplicationDto, WithdrawEnrollmentApplicationDto, environment } from '@involvemint/shared/domain';
+import { AcceptWaiverDto, DTO_KEY, Enrollment, EnrollmentsQuery, EnrollmentsSpQuery, GetEnrollmentsBySpProject, IParser, Query, InvolvemintRoutes, LinkPassportDocumentDto, ProcessEnrollmentApplicationDto, QUERY_KEY, RetireEnrollmentDto, RevertEnrollmentApplicationDto, StartEnrollmentApplicationDto, SubmitEnrollmentApplicationDto, WithdrawEnrollmentApplicationDto, environment } from '@involvemint/shared/domain';
 import { Observable } from 'rxjs';
 
 @Injectable()
@@ -9,7 +9,7 @@ export class EnrollmentRestClient {
 
   constructor(private http: HttpClient) { }
   
-  get(query: IQuery<Enrollment>): Observable<IParser<Enrollment, typeof EnrollmentsQuery>[]>
+  get(query: Query<Enrollment>): Observable<IParser<Enrollment, typeof EnrollmentsQuery>[]>
   {
     const body = {
       [QUERY_KEY]: query
@@ -19,7 +19,7 @@ export class EnrollmentRestClient {
           .post<IParser<Enrollment, typeof EnrollmentsQuery>[]>(`${this.apiUrl}/get`, body);
   }
 
-  getBySpProject(query: IQuery<Enrollment>, dto: GetEnrollmentsBySpProject)
+  getBySpProject(query: Query<Enrollment>, dto: GetEnrollmentsBySpProject)
   {
     const body = {
       [QUERY_KEY]: query,
@@ -31,7 +31,7 @@ export class EnrollmentRestClient {
   }
 
 
-  startApplication(query: IQuery<Enrollment>, dto: StartEnrollmentApplicationDto) {
+  startApplication(query: Query<Enrollment>, dto: StartEnrollmentApplicationDto) {
     const body = {
       [QUERY_KEY]: query,
       [DTO_KEY]: dto
@@ -41,7 +41,7 @@ export class EnrollmentRestClient {
           .post<IParser<Enrollment, typeof EnrollmentsQuery>>(`${this.apiUrl}/startApplication`, body);
   }
 
-  withdraw(query: IQuery<{ deletedId: string }>, dto: WithdrawEnrollmentApplicationDto) {
+  withdraw(query: Query<{ deletedId: string }>, dto: WithdrawEnrollmentApplicationDto) {
     const body = {
       [QUERY_KEY]: query,
       [DTO_KEY]: dto
@@ -51,7 +51,7 @@ export class EnrollmentRestClient {
           .post<IParser<{ deletedId: string }, { deletedId: string }>>(`${this.apiUrl}/withdraw`, body);
   }
 
-  linkPassportDocument(query: IQuery<Enrollment>, dto: LinkPassportDocumentDto) {
+  linkPassportDocument(query: Query<Enrollment>, dto: LinkPassportDocumentDto) {
     const body = {
       [QUERY_KEY]: query,
       [DTO_KEY]: dto
@@ -61,7 +61,7 @@ export class EnrollmentRestClient {
           .post<IParser<Enrollment, typeof EnrollmentsQuery>>(`${this.apiUrl}/linkPassportDocument`, body);
   }
 
-  submitApplication(query: IQuery<Enrollment>, dto: SubmitEnrollmentApplicationDto) {
+  submitApplication(query: Query<Enrollment>, dto: SubmitEnrollmentApplicationDto) {
     const body = {
       [QUERY_KEY]: query,
       [DTO_KEY]: dto
@@ -71,7 +71,7 @@ export class EnrollmentRestClient {
           .post<IParser<Enrollment, typeof EnrollmentsQuery>>(`${this.apiUrl}/submitApplication`, body);
   }
 
-  acceptWaiver(query: IQuery<Enrollment>, dto: AcceptWaiverDto) {
+  acceptWaiver(query: Query<Enrollment>, dto: AcceptWaiverDto) {
     const body = {
       [QUERY_KEY]: query,
       [DTO_KEY]: dto
@@ -81,7 +81,7 @@ export class EnrollmentRestClient {
           .post<IParser<Enrollment, typeof EnrollmentsQuery>>(`${this.apiUrl}/acceptWaiver`, body);
   }
 
-  processEnrollmentApplication(query: IQuery<Enrollment>, dto: ProcessEnrollmentApplicationDto) {
+  processEnrollmentApplication(query: Query<Enrollment>, dto: ProcessEnrollmentApplicationDto) {
     const body = {
       [QUERY_KEY]: query,
       [DTO_KEY]: dto
@@ -91,7 +91,7 @@ export class EnrollmentRestClient {
           .post<IParser<Enrollment, typeof EnrollmentsSpQuery>>(`${this.apiUrl}/processEnrollmentApplication`, body);
   }
 
-  revertEnrollmentApplication(query: IQuery<Enrollment>, dto: RevertEnrollmentApplicationDto) {
+  revertEnrollmentApplication(query: Query<Enrollment>, dto: RevertEnrollmentApplicationDto) {
     const body = {
       [QUERY_KEY]: query,
       [DTO_KEY]: dto
@@ -101,7 +101,7 @@ export class EnrollmentRestClient {
           .post<IParser<Enrollment, typeof EnrollmentsSpQuery>>(`${this.apiUrl}/revertEnrollmentApplication`, body);
   }
 
-  retireEnrollment(query: IQuery<Enrollment>, dto: RetireEnrollmentDto) {
+  retireEnrollment(query: Query<Enrollment>, dto: RetireEnrollmentDto) {
     const body = {
       [QUERY_KEY]: query,
       [DTO_KEY]: dto

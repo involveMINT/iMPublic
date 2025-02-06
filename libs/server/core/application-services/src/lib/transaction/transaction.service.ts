@@ -19,7 +19,7 @@ import {
   TransactionDto,
   createQuery,
   IParser,
-  IQuery
+  Query
 } from '@involvemint/shared/domain';
 import { guaranteeSixCharUidUniqueness, isDecimal, parseDate, UnArray } from '@involvemint/shared/util';
 import { BadRequestException, HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
@@ -57,7 +57,7 @@ export class TransactionService {
     @Inject(FRONTEND_ROUTES_TOKEN) private readonly route: FrontendRoutes
   ) {}
 
-  async getForProfile(query: IQuery<Transaction>, token: string, dto: GetTransactionsForProfileDto) {
+  async getForProfile(query: Query<Transaction>, token: string, dto: GetTransactionsForProfileDto) {
     await this.auth.authenticateFromProfileId(dto.profileId, token);
     return this.transactionRepo.query(query, {
       where: [
@@ -78,7 +78,7 @@ export class TransactionService {
    * @param dto
    */
   async transactionP2p(
-    query: IQuery<Transaction>,
+    query: Query<Transaction>,
     token: string,
     dto: TransactionDto,
     runInTransaction: boolean
@@ -149,7 +149,7 @@ export class TransactionService {
    * @param dto
    */
   async transactionVoucher(
-    query: IQuery<Transaction>,
+    query: Query<Transaction>,
     token: string,
     dto: RedeemVoucherDto,
     runInTransaction: boolean
@@ -189,7 +189,7 @@ export class TransactionService {
     return this.transaction(query, transactionDto, runInTransaction);
   }
 
-  private async transaction(query: IQuery<Transaction>, dto: TransactionDto, runInTransaction: boolean) {
+  private async transaction(query: Query<Transaction>, dto: TransactionDto, runInTransaction: boolean) {
     const getCredits = async (
       cmId: string | undefined,
       epId: string | undefined,

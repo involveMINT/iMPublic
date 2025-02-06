@@ -8,7 +8,7 @@ import {
   ServePartner,
   UpdateSpLogoFileDto,
   UploadSpImagesDto,
-  IQuery
+  Query
 } from '@involvemint/shared/domain';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import * as uuid from 'uuid';
@@ -25,7 +25,7 @@ export class ServePartnerService {
     private readonly firestore: FirestoreService
   ) {}
 
-  async editProfile(query: IQuery<ServePartner>, token: string, dto: EditSpProfileDto) {
+  async editProfile(query: Query<ServePartner>, token: string, dto: EditSpProfileDto) {
     const user = await this.auth.validateUserToken(token, {
       serveAdmins: { servePartner: { id: true, logoFilePath: true, handle: { id: true } } },
     });
@@ -50,7 +50,7 @@ export class ServePartnerService {
   }
 
   async updateLogoFile(
-    query: IQuery<ServePartner>,
+    query: Query<ServePartner>,
     token: string,
     dto: UpdateSpLogoFileDto,
     file: Express.Multer.File
@@ -75,7 +75,7 @@ export class ServePartnerService {
   }
 
   async uploadImages(
-    query: IQuery<ServePartner>,
+    query: Query<ServePartner>,
     token: string,
     dto: UploadSpImagesDto,
     files: Express.Multer.File[]
@@ -111,7 +111,7 @@ export class ServePartnerService {
     );
   }
 
-  async deleteImage(query: IQuery<ServePartner>, token: string, dto: DeleteSpImageDto) {
+  async deleteImage(query: Query<ServePartner>, token: string, dto: DeleteSpImageDto) {
     const user = await this.auth.validateUserToken(token, {
       serveAdmins: { servePartner: { id: true, imagesFilePaths: true } },
     });

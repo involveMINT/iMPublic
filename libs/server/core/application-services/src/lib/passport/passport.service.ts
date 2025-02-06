@@ -4,7 +4,7 @@ import {
   generatePassportDocumentFilePath,
   ImStorageFileRoots,
   PassportDocument,
-  IQuery,
+  Query,
   parseQuery
 } from '@involvemint/shared/domain';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
@@ -20,7 +20,7 @@ export class PassportService {
     private readonly storage: StorageService
   ) {}
 
-  async get(query: IQuery<PassportDocument[]>, token: string) {
+  async get(query: Query<PassportDocument[]>, token: string) {
     const user = await this.auth.validateUserToken(token, { id: true, changeMaker: { id: true } });
 
     if (!user?.changeMaker) {
@@ -33,7 +33,7 @@ export class PassportService {
     return this.passportRepo.query(query, { where: { changeMaker: { id: user.changeMaker.id } } });
   }
 
-  async create(query: IQuery<PassportDocument>, token: string, file: Express.Multer.File) {
+  async create(query: Query<PassportDocument>, token: string, file: Express.Multer.File) {
     const user = await this.auth.validateUserToken(token, { id: true, changeMaker: { id: true } });
 
     if (!user?.changeMaker) {
@@ -59,7 +59,7 @@ export class PassportService {
     );
   }
 
-  async edit(query: IQuery<PassportDocument>, token: string, dto: EditPassportDocumentDto) {
+  async edit(query: Query<PassportDocument>, token: string, dto: EditPassportDocumentDto) {
     const user = await this.auth.validateUserToken(token, { changeMaker: { id: true } });
     const document = await this.passportRepo.findOneOrFail(dto.documentId, {
       changeMaker: { id: true },
@@ -75,7 +75,7 @@ export class PassportService {
   }
 
   async replace(
-    query: IQuery<PassportDocument>,
+    query: Query<PassportDocument>,
     token: string,
     dto: EditPassportDocumentDto,
     file: Express.Multer.File
@@ -101,7 +101,7 @@ export class PassportService {
     );
   }
 
-  async delete(query: IQuery<{ deletedId: string }>, token: string, dto: EditPassportDocumentDto) {
+  async delete(query: Query<{ deletedId: string }>, token: string, dto: EditPassportDocumentDto) {
     const user = await this.auth.validateUserToken(token, { changeMaker: { id: true } });
     const document = await this.passportRepo.findOneOrFail(dto.documentId, {
       changeMaker: { id: true },

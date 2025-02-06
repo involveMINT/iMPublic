@@ -11,7 +11,7 @@ import {
   Request,
   UpdateRequestDto,
   UploadRequestImageDto,
-  IQuery,
+  Query,
   parseQuery
 } from '@involvemint/shared/domain';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
@@ -27,12 +27,12 @@ export class RequestService {
     private readonly storage: StorageService
   ) {}
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  async query(query: IQuery<Request[]>, dto: QueryRequestsDto) {
+  async query(query: Query<Request[]>, dto: QueryRequestsDto) {
     // TODO dto
     return this.requestRepo.query(query, { where: { listingStatus: 'public' } });
   }
 
-  async getOne(query: IQuery<Request>, dto: GetOneRequestDto) {
+  async getOne(query: Query<Request>, dto: GetOneRequestDto) {
     const request = await this.requestRepo.findOneOrFail(dto.requestId, { listingStatus: true });
     if (request.listingStatus === 'private') {
       throw new HttpException('This request is private', HttpStatus.UNAUTHORIZED);
@@ -40,7 +40,7 @@ export class RequestService {
     return this.requestRepo.findOneOrFail(dto.requestId, query);
   }
 
-  async getForProfile(query: IQuery<Request>, token: string, dto: GetRequestsForProfileDto) {
+  async getForProfile(query: Query<Request>, token: string, dto: GetRequestsForProfileDto) {
     await this.auth.authenticateFromProfileId(dto.profileId, token);
 
     return this.requestRepo.query(query, {
@@ -52,7 +52,7 @@ export class RequestService {
     });
   }
 
-  async create(query: IQuery<Request>, token: string, dto: CreateRequestDto) {
+  async create(query: Query<Request>, token: string, dto: CreateRequestDto) {
     const user = await this.auth.authenticateFromProfileId(dto.profileId, token);
 
     const now = new Date();
@@ -75,7 +75,7 @@ export class RequestService {
     );
   }
 
-  async update(query: IQuery<Request>, token: string, dto: UpdateRequestDto) {
+  async update(query: Query<Request>, token: string, dto: UpdateRequestDto) {
     const request = await this.requestRepo.findOneOrFail(dto.requestId, {
       changeMaker: { id: true },
       exchangePartner: { id: true },
@@ -90,7 +90,7 @@ export class RequestService {
     return this.requestRepo.update(dto.requestId, { ...dto.changes, dateUpdated: new Date() }, query);
   }
 
-  async delete(query: IQuery<{ deletedId: string }>, token: string, dto: DeleteRequestDto) {
+  async delete(query: Query<{ deletedId: string }>, token: string, dto: DeleteRequestDto) {
     const request = await this.requestRepo.findOneOrFail(dto.requestId, {
       changeMaker: { id: true },
       exchangePartner: { id: true },
@@ -107,7 +107,7 @@ export class RequestService {
   }
 
   async uploadImages(
-    query: IQuery<Request>,
+    query: Query<Request>,
     token: string,
     dto: UploadRequestImageDto,
     files: Express.Multer.File[]
@@ -144,7 +144,7 @@ export class RequestService {
     );
   }
 
-  async deleteImage(query: IQuery<Request>, token: string, dto: DeleteRequestImageDto) {
+  async deleteImage(query: Query<Request>, token: string, dto: DeleteRequestImageDto) {
     const request = await this.requestRepo.findOneOrFail(dto.requestId, {
       changeMaker: { id: true },
       exchangePartner: { id: true },

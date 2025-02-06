@@ -27,7 +27,7 @@ import {
   StopPoiTimerDto,
   SubmitPoiDto,
   createQuery,
-  IQuery,
+  Query,
   parseQuery
 } from '@involvemint/shared/domain';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
@@ -57,7 +57,7 @@ export class PoiService {
     private readonly email: EmailService
   ) {}
 
-  async get(query: IQuery<Poi[]>, token: string) {
+  async get(query: Query<Poi[]>, token: string) {
     const user = await this.auth.validateUserToken(token ?? '', { id: true, changeMaker: { id: true } });
 
     if (!user?.changeMaker) {
@@ -70,7 +70,7 @@ export class PoiService {
     return this.poiRepo.findPoisByCm(user.changeMaker.id, query);
   }
 
-  async getByProject(query: IQuery<Poi[]>, token: string, dto: GetPoisByProjectDto) {
+  async getByProject(query: Query<Poi[]>, token: string, dto: GetPoisByProjectDto) {
     const user = await this.auth.validateUserToken(token ?? '', {
       changeMaker: { enrollments: { id: true, project: { id: true, servePartner: { id: true } } } },
     });
@@ -86,7 +86,7 @@ export class PoiService {
     throw new HttpException('You cannot access these Proofs of Impact.', HttpStatus.UNAUTHORIZED);
   }
 
-  async create(query: IQuery<Poi>, token: string, dto: CreatePoiDto) {
+  async create(query: Query<Poi>, token: string, dto: CreatePoiDto) {
     const user = await this.auth.validateUserToken(token ?? '', { changeMaker: { id: true } });
     const enrollment = await this.enrollmentRepo.findOneOrFail(dto.enrollmentId, {
       dateApplied: true,
@@ -162,7 +162,7 @@ export class PoiService {
     );
   }
 
-  async start(query: IQuery<Poi>, token: string, dto: StartPoiTimerDto) {
+  async start(query: Query<Poi>, token: string, dto: StartPoiTimerDto) {
     const user = await this.auth.validateUserToken(token ?? '', { changeMaker: { id: true } });
 
     const poiQuery = createQuery<Poi>()({
@@ -212,7 +212,7 @@ export class PoiService {
     return this.poiRepo.findOneOrFail(dto.poiId, query);
   }
 
-  async stop(query: IQuery<Poi>, token: string, dto: StopPoiTimerDto) {
+  async stop(query: Query<Poi>, token: string, dto: StopPoiTimerDto) {
     const user = await this.auth.validateUserToken(token ?? '', { changeMaker: { id: true } });
     const poi = await this.poiRepo.findOneOrFail(dto.poiId, {
       enrollment: { changeMaker: { id: true }, project: { creditsEarned: true } },
@@ -278,7 +278,7 @@ export class PoiService {
     });
   }
 
-  async withdraw(query: IQuery<{ deletedId: string }>, token: string, dto: EndPoiTimerDto) {
+  async withdraw(query: Query<{ deletedId: string }>, token: string, dto: EndPoiTimerDto) {
     const user = await this.auth.validateUserToken(token ?? '', { changeMaker: { id: true } });
     const poi = await this.poiRepo.findOneOrFail(dto.poiId, {
       enrollment: { changeMaker: { id: true } },
@@ -320,7 +320,7 @@ export class PoiService {
     return parseQuery(query, { deletedId: dto.poiId });
   }
 
-  async pause(query: IQuery<Poi>, token: string, dto: PausePoiTimerDto) {
+  async pause(query: Query<Poi>, token: string, dto: PausePoiTimerDto) {
     const user = await this.auth.validateUserToken(token ?? '', { changeMaker: { id: true } });
     const poi = await this.poiRepo.findOneOrFail(dto.poiId, {
       enrollment: { changeMaker: { id: true } },
@@ -357,7 +357,7 @@ export class PoiService {
     return this.poiRepo.findOneOrFail(dto.poiId, query);
   }
 
-  async resume(query: IQuery<Poi>, token: string, dto: ResumePoiTimerDto) {
+  async resume(query: Query<Poi>, token: string, dto: ResumePoiTimerDto) {
     const user = await this.auth.validateUserToken(token ?? '', { changeMaker: { id: true } });
 
     const poiQuery = createQuery<Poi>()({
@@ -401,7 +401,7 @@ export class PoiService {
     return this.poiRepo.findOneOrFail(dto.poiId, query);
   }
 
-  async submit(query: IQuery<Poi>, token: string, dto: SubmitPoiDto, files: Express.Multer.File[]) {
+  async submit(query: Query<Poi>, token: string, dto: SubmitPoiDto, files: Express.Multer.File[]) {
     const user = await this.auth.validateUserToken(token ?? '', { changeMaker: { id: true } });
     const poi = await this.poiRepo.findOneOrFail(dto.poiId, {
       enrollment: {
@@ -505,7 +505,7 @@ export class PoiService {
     return this.poiRepo.findOneOrFail(dto.poiId, query);
   }
 
-  async approve(query: IQuery<Poi>, token: string, dto: ApprovePoiDto) {
+  async approve(query: Query<Poi>, token: string, dto: ApprovePoiDto) {
     const poi = await this.poiRepo.findOneOrFail(dto.poiId, {
       enrollment: { project: { servePartner: { id: true } }, changeMaker: { id: true } },
       id: true,
@@ -549,7 +549,7 @@ export class PoiService {
     return this.poiRepo.findOneOrFail(dto.poiId, query);
   }
 
-  async deny(query: IQuery<Poi>, token: string, dto: DenyPoiDto) {
+  async deny(query: Query<Poi>, token: string, dto: DenyPoiDto) {
     const poi = await this.poiRepo.findOneOrFail(dto.poiId, {
       enrollment: { project: { servePartner: { id: true } }, changeMaker: { id: true } },
       dateStarted: true,

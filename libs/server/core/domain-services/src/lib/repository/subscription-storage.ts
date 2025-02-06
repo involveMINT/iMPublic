@@ -1,11 +1,11 @@
-import { IExactQuery, IPagination, parseQuery } from '@involvemint/shared/domain';
+import { IPagination, parseQuery, ExactQuery } from '@involvemint/shared/domain';
 import { Socket } from 'socket.io';
 
 interface ISubscription<Entity> {
   channel: string;
   socket: Socket;
   listener: () => Promise<Entity | Entity[] | IPagination<Entity>>;
-  query: IExactQuery<Entity, unknown>;
+  query: ExactQuery<Entity, unknown>;
 }
 
 interface IdsSubscription<Entity, IdType> extends ISubscription<Entity> {

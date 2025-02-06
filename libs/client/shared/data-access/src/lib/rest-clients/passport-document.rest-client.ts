@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { DTO_KEY, DeletePassportDocumentDto, EditPassportDocumentDto, FILES_KEY, IParser, IQuery, InvolvemintRoutes, PassportDocument, PassportDocumentQuery, QUERY_KEY, ReplacePassportDocumentDto, environment } from '@involvemint/shared/domain';
+import { DTO_KEY, DeletePassportDocumentDto, EditPassportDocumentDto, FILES_KEY, IParser, Query, InvolvemintRoutes, PassportDocument, PassportDocumentQuery, QUERY_KEY, ReplacePassportDocumentDto, environment } from '@involvemint/shared/domain';
 import { Injectable } from '@angular/core';
 
 @Injectable()
@@ -9,7 +9,7 @@ export class PassportDocumentRestClient {
 
   constructor(private http: HttpClient) { }
   
-  get(query: IQuery<PassportDocument>) {
+  get(query: Query<PassportDocument>) {
     const body = {
       [QUERY_KEY]: query
     };
@@ -18,7 +18,7 @@ export class PassportDocumentRestClient {
           .post<IParser<PassportDocument, typeof PassportDocumentQuery>[]>(`${this.apiUrl}/get`, body);
   }
 
-  create(query: IQuery<PassportDocument>, document: File) {
+  create(query: Query<PassportDocument>, document: File) {
     const body = new FormData();
     body.set(QUERY_KEY, JSON.stringify(query));
     body.set(FILES_KEY, document, document.name);
@@ -30,7 +30,7 @@ export class PassportDocumentRestClient {
           });
   }
 
-  edit(query: IQuery<PassportDocument>, dto: EditPassportDocumentDto) {
+  edit(query: Query<PassportDocument>, dto: EditPassportDocumentDto) {
     const body = {
       [QUERY_KEY]: query,
       [DTO_KEY]: dto
@@ -40,7 +40,7 @@ export class PassportDocumentRestClient {
           .post<IParser<PassportDocument, typeof PassportDocumentQuery>>(`${this.apiUrl}/edit`, body);
   }
 
-  replace(query: IQuery<PassportDocument>, dto: ReplacePassportDocumentDto, document: File)
+  replace(query: Query<PassportDocument>, dto: ReplacePassportDocumentDto, document: File)
   {
     const body = new FormData();
     body.set(QUERY_KEY, JSON.stringify(query));
@@ -54,7 +54,7 @@ export class PassportDocumentRestClient {
           });
   }
 
-  delete(query: IQuery<{ deletedId: string }>, dto: DeletePassportDocumentDto)
+  delete(query: Query<{ deletedId: string }>, dto: DeletePassportDocumentDto)
   {
     const body = {
       [QUERY_KEY]: query,

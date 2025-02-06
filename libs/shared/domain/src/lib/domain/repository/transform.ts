@@ -2,7 +2,7 @@
 /* eslint-disable @typescript-eslint/ban-types */
 import { IPagination } from './pagination';
 import { IParser } from './parser';
-import { IExactQuery, IQuery } from './query';
+import { ExactQuery, Query } from './ormquery';
 
 /**
  * Manually parse an Query.
@@ -56,13 +56,13 @@ import { IExactQuery, IQuery } from './query';
  * @param query Reference Query.
  * @param entities Objects to parse.
  */
-export function parseQuery<T, Q extends IQuery<T>>(query: IExactQuery<T, Q>, entities: T): IParser<T, Q>;
-export function parseQuery<T, Q extends IQuery<T>>(
-  query: IExactQuery<T, Q>,
+export function parseQuery<T, Q extends Query<T>>(query: ExactQuery<T, Q>, entities: T): IParser<T, Q>;
+export function parseQuery<T, Q extends Query<T>>(
+  query: ExactQuery<T, Q>,
   entities: T[] | IPagination<T>
 ): IParser<T[], Q>;
-export function parseQuery<T, Q extends IQuery<T>>(
-  query: IExactQuery<T, Q>,
+export function parseQuery<T, Q extends Query<T>>(
+  query: ExactQuery<T, Q>,
   entities: T | T[] | IPagination<T> | undefined
 ) {
   if (!entities) return undefined;

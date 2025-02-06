@@ -13,8 +13,8 @@ import {
   RevertEnrollmentApplicationDto,
   RetireEnrollmentDto,
   InvolvemintRoutes,
-  IQuery,
   QUERY_KEY,
+  Query,
   TOKEN_KEY,
   DTO_KEY,
   Project,
@@ -33,7 +33,7 @@ export class EnrollmentController {
 
   @Post('get')
   get(
-    @Body(QUERY_KEY, new QueryValidationPipe(EnrollmentsQuery)) query: IQuery<Enrollment[]>, 
+    @Body(QUERY_KEY, new QueryValidationPipe(EnrollmentsQuery)) query: Query<Enrollment[]>, 
     @Headers(TOKEN_KEY) token: string 
   ){
       return this.enrollmentService.get(query, token);
@@ -41,7 +41,7 @@ export class EnrollmentController {
 
   @Post('getBySpProject')
   getBySpProject(
-    @Body(QUERY_KEY, new QueryValidationPipe(EnrollmentsSpQuery)) query: IQuery<Enrollment[]>, 
+    @Body(QUERY_KEY, new QueryValidationPipe(EnrollmentsSpQuery)) query: Query<Enrollment[]>, 
     @Headers(TOKEN_KEY) token: string, 
     @Body(DTO_KEY, new ValidationPipe()) dto: GetEnrollmentsBySpProject
   ) {
@@ -50,7 +50,7 @@ export class EnrollmentController {
 
   @Post('startApplication')
   startApplication(
-    @Body(QUERY_KEY, new QueryValidationPipe(EnrollmentsQuery)) query: IQuery<Enrollment>, 
+    @Body(QUERY_KEY, new QueryValidationPipe(EnrollmentsQuery)) query: Query<Enrollment>, 
     @Headers(TOKEN_KEY) token: string, 
     @Body(DTO_KEY, new ValidationPipe()) dto: StartEnrollmentApplicationDto
   ) {
@@ -59,7 +59,7 @@ export class EnrollmentController {
 
   @Post('withdraw')
   withdraw(
-    @Body(QUERY_KEY, new QueryValidationPipe({ deletedId: true })) query: IQuery<{ deletedId: string }>, 
+    @Body(QUERY_KEY, new QueryValidationPipe({ deletedId: true })) query: Query<{ deletedId: string }>, 
     @Headers(TOKEN_KEY) token: string, 
     @Body(DTO_KEY, new ValidationPipe()) dto: WithdrawEnrollmentApplicationDto
     ) {
@@ -68,7 +68,7 @@ export class EnrollmentController {
 
   @Post('linkPassportDocument')
   linkPassportDocument(
-    @Body(QUERY_KEY, new QueryValidationPipe(EnrollmentsQuery)) query: IQuery<Enrollment>, 
+    @Body(QUERY_KEY, new QueryValidationPipe(EnrollmentsQuery)) query: Query<Enrollment>, 
     @Headers(TOKEN_KEY) token: string, 
     @Body(DTO_KEY, new ValidationPipe()) dto: LinkPassportDocumentDto
   ) {
@@ -77,7 +77,7 @@ export class EnrollmentController {
 
   @Post('submitApplication')
   submitApplication(
-    @Body(QUERY_KEY, new QueryValidationPipe(EnrollmentsQuery)) query: IQuery<Enrollment>, 
+    @Body(QUERY_KEY, new QueryValidationPipe(EnrollmentsQuery)) query: Query<Enrollment>, 
     @Headers(TOKEN_KEY) token: string, 
     @Body(DTO_KEY, new ValidationPipe()) dto: SubmitEnrollmentApplicationDto
   ) {
@@ -86,7 +86,7 @@ export class EnrollmentController {
 
   @Post('acceptWaiver')
   acceptWaiver(
-    @Body(QUERY_KEY, new QueryValidationPipe(EnrollmentsQuery)) query: IQuery<Enrollment>, 
+    @Body(QUERY_KEY, new QueryValidationPipe(EnrollmentsQuery)) query: Query<Enrollment>, 
     @Headers(TOKEN_KEY) token: string, 
     @Body(DTO_KEY, new ValidationPipe()) dto: AcceptWaiverDto
   ) {
@@ -95,7 +95,7 @@ export class EnrollmentController {
 
   @Post('processEnrollmentApplication')
   processEnrollmentApplication(
-    @Body(QUERY_KEY, new QueryValidationPipe(EnrollmentsSpQuery)) query: IQuery<Project>, 
+    @Body(QUERY_KEY, new QueryValidationPipe(EnrollmentsSpQuery)) query: Query<Project>, 
     @Headers(TOKEN_KEY) token: string, 
     @Body(DTO_KEY, new ValidationPipe()) dto: ProcessEnrollmentApplicationDto
   ) {
@@ -104,7 +104,7 @@ export class EnrollmentController {
 
   @Post('revertEnrollmentApplication')
   revertEnrollmentApplication(
-    @Body(QUERY_KEY, new QueryValidationPipe(EnrollmentsSpQuery)) query: IQuery<Project>, 
+    @Body(QUERY_KEY, new QueryValidationPipe(EnrollmentsSpQuery)) query: Query<Project>, 
     @Headers(TOKEN_KEY) token: string, 
     @Body(DTO_KEY, new ValidationPipe()) dto: RevertEnrollmentApplicationDto
   ) {
@@ -113,7 +113,7 @@ export class EnrollmentController {
 
   @Post('retireEnrollment')
   retireEnrollment(
-    @Body(QUERY_KEY, new QueryValidationPipe(EnrollmentsSpQuery)) query: IQuery<Project>, 
+    @Body(QUERY_KEY, new QueryValidationPipe(EnrollmentsSpQuery)) query: Query<Project>, 
     @Headers(TOKEN_KEY) token: string, 
     @Body(DTO_KEY, new ValidationPipe()) dto: RetireEnrollmentDto
   ) {

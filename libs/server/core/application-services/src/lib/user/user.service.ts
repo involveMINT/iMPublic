@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
-import { ExchangePartnerRepository, UserRepository } from '@involvemint/server/core/domain-services';
+import { ExchangePartnerRepository, UserORMRepository, UserRepository } from '@involvemint/server/core/domain-services';
 import {
   ActivateUserAccountDto,
   AdminUserSearchDto,
@@ -14,7 +14,7 @@ import {
   SignUpDto,
   SnoopDto,
   User,
-  IQuery,
+  Query,
   parseQuery
 } from '@involvemint/shared/domain';
 import { HttpException, HttpService, HttpStatus, Injectable } from '@nestjs/common';
@@ -24,10 +24,12 @@ import { Raw } from 'typeorm';
 import * as uuid from 'uuid';
 import { AuthService } from '../auth/auth.service';
 import { EmailService } from '../email/email.service';
+import { AnyCnameRecord } from 'dns';
 
 @Injectable()
 export class UserService {
   constructor(
+    private readonly userORMRepo: UserORMRepository,
     private readonly userRepo: UserRepository,
     private readonly auth: AuthService,
     private readonly email: EmailService,
@@ -46,9 +48,9 @@ export class UserService {
    * @param password User password.
    * @param query query of the user's signed token.
    */
-  async signUp(dto: SignUpDto, query: IQuery<{ token: string }>) {
-    const conflictingUser = await this.userRepo.findOne(dto.id, { id: true });
-
+  async signUp(dto: SignUpDto, query: {token:true}) {
+   // const conflictingUser = await this.userRepo.findOne(dto.id, { id: true });
+    const conflictingUser = await this.userORMRepo.findById(dto.id);
     /* Checks */
 
     if (conflictingUser?.id) {
@@ -88,8 +90,8 @@ export class UserService {
    * @param password User password.
    * @param query query of the user's signed token.
    */
-  async login(id: string, password: string, query: IQuery<{ token: string }>) {
-    const user = await this.userRepo.findOne(id);
+  async login(id: string, password: string, query: { token: true }) {
+    const user = await this.userORMRepo.GetfindOne(id);
 
     /* Checks */
 
@@ -119,7 +121,7 @@ export class UserService {
    * @param password Admin's password (found in environment variables).
    * @param query query of the admins's signed token.
    */
-  async adminLogin(password: string, query: IQuery<{ token: string }>) {
+  async adminLogin(password: string, query: Query<{ token: string }>) {
     const compare = await this.auth.comparePasswordToHashed(password, environment.adminPasswordHash, '');
     if (!compare) {
       throw new HttpException(`Username or password incorrect.`, HttpStatus.UNAUTHORIZED);
@@ -133,7 +135,7 @@ export class UserService {
    * @param token Admin's token.
    * @returns query of inputted token.
    */
-  async validateAdminToken(query: IQuery<{ token: string }>, token: string) {
+  async validateAdminToken(query: Query<{ token: string }>, token: string) {
     await this.auth.validateAdminToken(token);
     return parseQuery(query, { token });
   }
@@ -144,7 +146,7 @@ export class UserService {
    * @param token User's auth token.
    * @returns The user's desired session data from the user associated with the token.
    */
-  async getUserData(query: IQuery<User>, token: string) {
+  async getUserData(query: Query<User>, token: string) {
     return this.auth.validateUserToken(token, query);
   }
 
@@ -205,9 +207,9 @@ export class UserService {
    * @param token Admin's auth token.
    * @param dto User email of the user the admin is to snoop on.
    */
-  async snoop(query: IQuery<ISnoopData>, token: string, dto: SnoopDto) {
+  async snoop(query: Query<ISnoopData>, token: string, dto: SnoopDto) {
     await this.validateAdminToken({}, token);
-    const data = await this.userRepo.findOneOrFail(dto.userId, query as IQuery<Omit<ISnoopData, 'token'>>);
+    const data = await this.userRepo.findOneOrFail(dto.userId, query as Query<Omit<ISnoopData, 'token'>>);
     const userToken = this.auth.createToken({ userId: dto.userId });
     return { ...data, token: userToken } as any; // TODO
   }
@@ -218,7 +220,7 @@ export class UserService {
    * @param query query of all users with privileges.
    * @param token Admin's auth token.
    */
-  async getAllUserPrivileges(query: IQuery<User[]>, token: string) {
+  async getAllUserPrivileges(query: Query<User[]>, token: string) {
     await this.validateAdminToken({}, token);
     return this.userRepo.query(query, { where: { baAdmin: true } });
   }
@@ -230,7 +232,7 @@ export class UserService {
    * @param token The admin's authentication token.
    * @param dto User's Id to grant BA privileges
    */
-  async grantBAPrivilege(query: IQuery<User>, token: string, dto: GrantBaPrivilegesDto) {
+  async grantBAPrivilege(query: Query<User>, token: string, dto: GrantBaPrivilegesDto) {
     await this.validateAdminToken({}, token);
     return this.userRepo.update(dto.id, { baAdmin: true }, query);
   }
@@ -242,7 +244,7 @@ export class UserService {
    * @param token The admin's authentication token.
    * @param dto User's Id to revoke BA privileges
    */
-  async revokeBAPrivilege(query: IQuery<User>, token: string, dto: RevokeBaPrivilegesDto) {
+  async revokeBAPrivilege(query: Query<User>, token: string, dto: RevokeBaPrivilegesDto) {
     await this.validateAdminToken({}, token);
     return this.userRepo.update(dto.id, { baAdmin: false }, query);
   }
@@ -252,7 +254,7 @@ export class UserService {
    * @param query query of searched users.
    * @param dto User search criteria.
    */
-  async searchUsers(query: IQuery<User[]>, dto: SearchUserDto) {
+  async searchUsers(query: Query<User[]>, dto: SearchUserDto) {
     return this.userRepo.query(query, {
       where: {
         id: Raw((alias) => `${alias} ILIKE '%${dto.emailSearchString}%'`),
@@ -479,7 +481,7 @@ export class UserService {
       .toPromise();
   }
 
-  async adminUserSearch(query: IQuery<User[]>, token: string, dto: AdminUserSearchDto) {
+  async adminUserSearch(query: Query<User[]>, token: string, dto: AdminUserSearchDto) {
     await this.auth.validateAdminToken(token);
     const q = Raw((alias) => `${alias} ILIKE '%${dto.searchStr}%'`);
     return this.userRepo.query(query, {

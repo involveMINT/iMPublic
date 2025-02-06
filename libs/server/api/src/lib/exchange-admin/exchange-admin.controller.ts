@@ -8,7 +8,7 @@ import {
   GetSuperAdminForExchangePartnerDto,
   InvolvemintRoutes,
   RemoveExchangeAdminDto,
-  IQuery,
+  Query,
   TOKEN_KEY,
   DTO_KEY,
   QUERY_KEY,
@@ -27,7 +27,7 @@ export class ExchangeAdminController {
 
   @Post('getForExchangePartner')
   getForExchangePartner(
-    @Body(QUERY_KEY, new QueryValidationPipe(EpAdminQuery)) query: IQuery<ExchangeAdmin>,
+    @Body(QUERY_KEY, new QueryValidationPipe(EpAdminQuery)) query: Query<ExchangeAdmin>,
     @Headers(TOKEN_KEY) token: string,
     @Body(DTO_KEY, new ValidationPipe()) dto: GetExchangeAdminsForExchangePartnerDto
   ) {
@@ -36,7 +36,7 @@ export class ExchangeAdminController {
 
   @Post('getSuperAdminForExchangePartner')
   async getSuperAdminForExchangePartner(
-    @Body(QUERY_KEY, new QueryValidationPipe(BaDownloadEpAdminsQuery)) query: IQuery<ExchangeAdmin>,
+    @Body(QUERY_KEY, new QueryValidationPipe(BaDownloadEpAdminsQuery)) query: Query<ExchangeAdmin>,
     @Headers(TOKEN_KEY) token: string,
     @Body(DTO_KEY, new ValidationPipe()) dto: GetSuperAdminForExchangePartnerDto
   ) {
@@ -45,7 +45,7 @@ export class ExchangeAdminController {
 
   @Post('addAdmin')
   addAdmin(
-    @Body(QUERY_KEY, new QueryValidationPipe(EpAdminQuery)) query: IQuery<ExchangeAdmin>,
+    @Body(QUERY_KEY, new QueryValidationPipe(EpAdminQuery)) query: Query<ExchangeAdmin>,
     @Headers(TOKEN_KEY) token: string,
     @Body(DTO_KEY, new ValidationPipe()) dto: AddExchangeAdminDto
   ) {
@@ -54,7 +54,7 @@ export class ExchangeAdminController {
 
   @Post('removeAdmin')
   removeAdmin(
-    @Body(QUERY_KEY, new QueryValidationPipe({ deletedId: true })) query: IQuery<{ deletedId: true }>,
+    @Body(QUERY_KEY, new QueryValidationPipe({ deletedId: true })) query: Query<{ deletedId: true }>,
     @Headers(TOKEN_KEY) token: string,
     @Body(DTO_KEY, new ValidationPipe()) dto: RemoveExchangeAdminDto
   ) {

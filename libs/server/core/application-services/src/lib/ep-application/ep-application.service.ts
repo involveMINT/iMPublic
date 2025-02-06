@@ -14,7 +14,7 @@ import {
   ProcessEpApplicationDto,
   SubmitEpApplicationDto,
   WithdrawEpApplicationDto,
-  IQuery,
+  Query,
   parseQuery
 } from '@involvemint/shared/domain';
 import { HttpException, HttpStatus, Injectable, UnauthorizedException } from '@nestjs/common';
@@ -41,7 +41,7 @@ export class EpApplicationService {
     private readonly userService: UserService
   ) {}
 
-  async submit(query: IQuery<EpApplication>, token: string, dto: SubmitEpApplicationDto) {
+  async submit(query: Query<EpApplication>, token: string, dto: SubmitEpApplicationDto) {
     const user = await this.auth.validateUserToken(token);
     await this.handle.verifyHandleUniqueness(dto.handle);
     const epAppId = uuid.v4();
@@ -89,7 +89,7 @@ export class EpApplicationService {
   }
 
   // BA only
-  async baSubmit(query: IQuery<ExchangePartner>, token: string, dto: BaSubmitEpApplicationDto) {
+  async baSubmit(query: Query<ExchangePartner>, token: string, dto: BaSubmitEpApplicationDto) {
     const user = await this.auth.validateUserToken(token);
     if (!user.baAdmin) {
       throw new HttpException(
@@ -159,7 +159,7 @@ export class EpApplicationService {
 
   // Admin only
   async process(
-    query: IQuery<{ deletedId: string }>,
+    query: Query<{ deletedId: string }>,
     token: string,
     dto: ProcessEpApplicationDto,
     auth = true,
@@ -251,12 +251,12 @@ export class EpApplicationService {
     return parseQuery(query, { deletedId: dto.id });
   }
 
-  async findAll(query: IQuery<EpApplication>, token: string) {
+  async findAll(query: Query<EpApplication>, token: string) {
     await this.auth.validateAdminToken(token);
     return this.epAppRepo.findAll(query);
   }
 
-  async withdraw(query: IQuery<{ deletedId: string }>, token: string, dto: WithdrawEpApplicationDto) {
+  async withdraw(query: Query<{ deletedId: string }>, token: string, dto: WithdrawEpApplicationDto) {
     const user = await this.auth.validateUserToken(token);
     const epApp = await this.epAppRepo.findOneOrFail(dto.epAppId, { user: { id: true } });
 

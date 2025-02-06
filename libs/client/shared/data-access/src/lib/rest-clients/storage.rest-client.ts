@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { DTO_KEY, environment, GetStorageFileDto, InvolvemintRoutes, IParser, IQuery, QUERY_KEY } from '@involvemint/shared/domain';
+import { DTO_KEY, environment, GetStorageFileDto, InvolvemintRoutes, IParser, Query, QUERY_KEY } from '@involvemint/shared/domain';
 import { Injectable } from '@angular/core';
 
 @Injectable()
@@ -8,7 +8,7 @@ export class StorageRestClient {
 
   constructor(private http: HttpClient) { }
   
-  getUrl(query: IQuery<{ url: string }>, dto: GetStorageFileDto)
+  getUrl(query: Query<{ url: string }>, dto: GetStorageFileDto)
   {
     const body = {
       [QUERY_KEY]: query,

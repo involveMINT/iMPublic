@@ -51,6 +51,8 @@ import { UserEntity } from './user/user.entity';
 import { UserRepository } from './user/user.repository';
 import { VoucherEntity } from './voucher/voucher.entity';
 import { VoucherRepository } from './voucher/voucher.repository';
+import { UserORMRepository } from './user/userORM.repository';
+
 
 const entities = TypeOrmModule.forFeature([
   AddressEntity,
@@ -107,6 +109,7 @@ const repositories: Provider[] = [
   TransactionRepository,
   UserRepository,
   VoucherRepository,
+  UserORMRepository,
 ];
 
 @Module({

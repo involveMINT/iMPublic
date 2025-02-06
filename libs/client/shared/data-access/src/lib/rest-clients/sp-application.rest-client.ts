@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { DTO_KEY, environment, IExactQuery, InvolvemintRoutes, IParser, IQuery, ProcessSpApplicationDto, QUERY_KEY, SpApplication, SpApplicationQuery, SubmitSpApplicationDto, UserQuery, WithdrawSpApplicationDto } from '@involvemint/shared/domain';
+import { DTO_KEY, environment, ExactQuery, InvolvemintRoutes, IParser, Query, ProcessSpApplicationDto, QUERY_KEY, SpApplication, SpApplicationQuery, SubmitSpApplicationDto, UserQuery, WithdrawSpApplicationDto } from '@involvemint/shared/domain';
 import { Injectable } from '@angular/core';
 
 @Injectable()
@@ -8,7 +8,7 @@ export class SpApplicationRestClient {
 
   constructor(private http: HttpClient) { }
 
-  submit(query: IQuery<SpApplication>, dto: SubmitSpApplicationDto)
+  submit(query: Query<SpApplication>, dto: SubmitSpApplicationDto)
   {
     const body = {
       [QUERY_KEY]: query,
@@ -19,7 +19,7 @@ export class SpApplicationRestClient {
           .post<IParser<SpApplication, typeof UserQuery.spApplications>>(`${this.apiUrl}/submit`, body);
   }
 
-  process(query: IExactQuery<{ deletedId: string }, { deletedId: true }>, dto: ProcessSpApplicationDto)
+  process(query: ExactQuery<{ deletedId: string }, { deletedId: true }>, dto: ProcessSpApplicationDto)
   {
     const body = {
       [QUERY_KEY]: query,
@@ -30,7 +30,7 @@ export class SpApplicationRestClient {
           .post<IParser<{ deletedId: string }, { deletedId: true }>>(`${this.apiUrl}/process`, body);
   }
 
-  findAll(query: IQuery<SpApplication[]>)
+  findAll(query: Query<SpApplication[]>)
   {
     const body = {
       [QUERY_KEY]: query,
@@ -40,7 +40,7 @@ export class SpApplicationRestClient {
           .post<IParser<SpApplication, typeof SpApplicationQuery>[]>(`${this.apiUrl}/findAll`, body);
   }
 
-  withdraw(query: IExactQuery<{ deletedId: string }, { deletedId: true }>, dto: WithdrawSpApplicationDto)
+  withdraw(query: ExactQuery<{ deletedId: string }, { deletedId: true }>, dto: WithdrawSpApplicationDto)
   {
     const body = {
       [QUERY_KEY]: query,

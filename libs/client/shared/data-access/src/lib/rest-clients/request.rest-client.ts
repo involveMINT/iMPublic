@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { CreateRequestDto, DTO_KEY, DeleteRequestDto, DeleteRequestImageDto, FILES_KEY, GetOneRequestDto, GetRequestsForProfileDto, IExactQuery, IPagination, IParser, IQuery, InvolvemintRoutes, QUERY_KEY, QueryRequestsDto, Request, RequestMarketQuery, RequestQuery, UpdateRequestDto, UploadRequestImageDto, environment } from '@involvemint/shared/domain';
+import { CreateRequestDto, DTO_KEY, DeleteRequestDto, DeleteRequestImageDto, FILES_KEY, GetOneRequestDto, GetRequestsForProfileDto, ExactQuery, IPagination, IParser, Query, InvolvemintRoutes, QUERY_KEY, QueryRequestsDto, Request, RequestMarketQuery, RequestQuery, UpdateRequestDto, UploadRequestImageDto, environment } from '@involvemint/shared/domain';
 import { Injectable } from '@angular/core';
 
 @Injectable()
@@ -8,7 +8,7 @@ export class RequestRestClient {
 
   constructor(private http: HttpClient) { }
   
-  query(query: IQuery<Request[]>, dto: QueryRequestsDto)
+  query(query: Query<Request[]>, dto: QueryRequestsDto)
   {
     const body = {
       [QUERY_KEY]: query,
@@ -19,7 +19,7 @@ export class RequestRestClient {
           .post<IPagination<IParser<Request, typeof RequestMarketQuery>>>(`${this.apiUrl}/query`, body);
   }
 
-  getOne(query: IQuery<Request>, dto: GetOneRequestDto)
+  getOne(query: Query<Request>, dto: GetOneRequestDto)
   {
     const body = {
       [QUERY_KEY]: query,
@@ -30,7 +30,7 @@ export class RequestRestClient {
           .post<IParser<Request, typeof RequestMarketQuery>>(`${this.apiUrl}/getOne`, body);
   }
 
-  getForProfile(query: IQuery<Request[]>, dto: GetRequestsForProfileDto)
+  getForProfile(query: Query<Request[]>, dto: GetRequestsForProfileDto)
   {
     const body = {
       [QUERY_KEY]: query,
@@ -41,7 +41,7 @@ export class RequestRestClient {
           .post<IParser<Request, typeof RequestQuery>[]>(`${this.apiUrl}/getForProfile`, body);
   }
 
-  create(query: IQuery<Request>, dto: CreateRequestDto)
+  create(query: Query<Request>, dto: CreateRequestDto)
   {
     const body = {
       [QUERY_KEY]: query,
@@ -52,7 +52,7 @@ export class RequestRestClient {
           .post<IParser<Request, typeof RequestQuery>>(`${this.apiUrl}/create`, body);
   }
 
-  update(query: IQuery<Request>, dto: UpdateRequestDto)
+  update(query: Query<Request>, dto: UpdateRequestDto)
   {
     const body = {
       [QUERY_KEY]: query,
@@ -63,7 +63,7 @@ export class RequestRestClient {
           .post<IParser<Request, typeof RequestQuery>>(`${this.apiUrl}/update`, body);
   }
 
-  delete(query: IExactQuery<{ deletedId: string }, { deletedId: true}>, dto: DeleteRequestDto) {
+  delete(query: ExactQuery<{ deletedId: string }, { deletedId: true}>, dto: DeleteRequestDto) {
     const body = {
       [QUERY_KEY]: query,
       [DTO_KEY]: dto
@@ -73,7 +73,7 @@ export class RequestRestClient {
           .post<IParser<{ deletedId: string }, { deletedId: true }>>(`${this.apiUrl}/delete`, body);
   }
 
-  uploadImages(query: IQuery<Request>, dto: UploadRequestImageDto, files: File[]) {
+  uploadImages(query: Query<Request>, dto: UploadRequestImageDto, files: File[]) {
     const body = new FormData();
     body.set(QUERY_KEY, JSON.stringify(query));
     body.set(DTO_KEY, JSON.stringify(dto));
@@ -86,7 +86,7 @@ export class RequestRestClient {
           });
   }
 
-  deleteImage(query: IQuery<Request>, dto: DeleteRequestImageDto) {
+  deleteImage(query: Query<Request>, dto: DeleteRequestImageDto) {
     const body = {
       [QUERY_KEY]: query,
       [DTO_KEY]: dto

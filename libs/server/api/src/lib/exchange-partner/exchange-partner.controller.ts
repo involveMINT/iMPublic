@@ -12,7 +12,7 @@ import {
   UpdateEpLogoFileDto,
   UploadEpImagesDto,
   UserQuery,
-  IQuery,
+  Query,
   TOKEN_KEY,
   DTO_KEY,
   QUERY_KEY,
@@ -35,7 +35,7 @@ export class ExchangePartnerController {
 
   @Post('query')
   query(
-    @Body(QUERY_KEY, new QueryValidationPipe(ExchangePartnerMarketQuery)) query: IQuery<ExchangePartner[]>, 
+    @Body(QUERY_KEY, new QueryValidationPipe(ExchangePartnerMarketQuery)) query: Query<ExchangePartner[]>, 
     @Body(DTO_KEY, new ValidationPipe()) dto: ExchangePartnerMarketQueryDto
   ) {
     return this.ep.query(query, dto);
@@ -43,7 +43,7 @@ export class ExchangePartnerController {
 
   @Post('getOne')
   async getOne(
-    @Body(QUERY_KEY, new QueryValidationPipe(ExchangePartnerMarketQuery)) query: IQuery<ExchangePartner>, 
+    @Body(QUERY_KEY, new QueryValidationPipe(ExchangePartnerMarketQuery)) query: Query<ExchangePartner>, 
     @Body(DTO_KEY, new ValidationPipe()) dto: GetOneExchangePartnerDto
   ) {
     return this.ep.getOne(query, dto);
@@ -51,7 +51,7 @@ export class ExchangePartnerController {
 
   @Post('searchEps')
   async searchEps(
-    @Body(QUERY_KEY, new QueryValidationPipe(ExchangePartnerSearchQuery)) query: IQuery<ExchangePartner>, 
+    @Body(QUERY_KEY, new QueryValidationPipe(ExchangePartnerSearchQuery)) query: Query<ExchangePartner>, 
     @Body(DTO_KEY, new ValidationPipe()) dto: SearchEpDto
   ) {
     return this.ep.searchEps(query, dto);
@@ -59,7 +59,7 @@ export class ExchangePartnerController {
 
   @Post('editProfile')
   async editProfile(
-    @Body(QUERY_KEY, new QueryValidationPipe(UserQuery.exchangeAdmins.exchangePartner)) query: IQuery<ExchangePartner>, 
+    @Body(QUERY_KEY, new QueryValidationPipe(UserQuery.exchangeAdmins.exchangePartner)) query: Query<ExchangePartner>, 
     @Headers(TOKEN_KEY) token: string, 
     @Body(DTO_KEY, new ValidationPipe()) dto: EditEpProfileDto
   ) {
@@ -69,7 +69,7 @@ export class ExchangePartnerController {
   @Post('updateLogoFile')
   @UseInterceptors(FilesInterceptor(FILES_KEY))
   async updateLogoFile(
-    @Body(QUERY_KEY, new QueryValidationPipe(UserQuery.exchangeAdmins.exchangePartner)) query: IQuery<ExchangePartner>, 
+    @Body(QUERY_KEY, new QueryValidationPipe(UserQuery.exchangeAdmins.exchangePartner)) query: Query<ExchangePartner>, 
     @Headers(TOKEN_KEY) token: string, 
     @Body(DTO_KEY, new ValidationPipe()) dto: UpdateEpLogoFileDto, 
     @UploadedFiles() files: Express.Multer.File[]
@@ -80,7 +80,7 @@ export class ExchangePartnerController {
   @Post('uploadImages')
   @UseInterceptors(FilesInterceptor(FILES_KEY))
   async uploadImages(
-    @Body(QUERY_KEY, new QueryValidationPipe(UserQuery.exchangeAdmins.exchangePartner)) query: IQuery<ExchangePartner>, 
+    @Body(QUERY_KEY, new QueryValidationPipe(UserQuery.exchangeAdmins.exchangePartner)) query: Query<ExchangePartner>, 
     @Headers(TOKEN_KEY) token: string, 
     @Body(DTO_KEY, new ValidationPipe()) dto: UploadEpImagesDto, 
     @UploadedFiles() files: Express.Multer.File[]
@@ -90,7 +90,7 @@ export class ExchangePartnerController {
 
   @Post('deleteImage')
   async deleteImage(
-    @Body(QUERY_KEY, new QueryValidationPipe(UserQuery.exchangeAdmins.exchangePartner)) query: IQuery<ExchangePartner>, 
+    @Body(QUERY_KEY, new QueryValidationPipe(UserQuery.exchangeAdmins.exchangePartner)) query: Query<ExchangePartner>, 
     @Headers(TOKEN_KEY) token: string, 
     @Body(DTO_KEY, new ValidationPipe()) dto: DeleteEpImageDto
   ) {

@@ -4,8 +4,8 @@ import {
   CreateChangeMakerProfileDto,
   EditCmProfileDto,
   InvolvemintRoutes,
-  IQuery,
   QUERY_KEY,
+  Query,
   TOKEN_KEY,
   DTO_KEY,
   FILES_KEY,
@@ -28,7 +28,7 @@ export class ChangeMakerController {
 
   @Post('createProfile')
   createProfile(
-    @Body(QUERY_KEY, new QueryValidationPipe(UserQuery.changeMaker)) query: IQuery<ChangeMaker>, 
+    @Body(QUERY_KEY, new QueryValidationPipe(UserQuery.changeMaker)) query: Query<ChangeMaker>, 
     @Headers(TOKEN_KEY) token: string, 
     @Body(DTO_KEY, new ValidationPipe()) dto: CreateChangeMakerProfileDto
   ) {
@@ -37,7 +37,7 @@ export class ChangeMakerController {
 
   @Post('editProfile')
   async editProfile(
-    @Body(QUERY_KEY, new QueryValidationPipe(UserQuery.changeMaker)) query: IQuery<ChangeMaker>, 
+    @Body(QUERY_KEY, new QueryValidationPipe(UserQuery.changeMaker)) query: Query<ChangeMaker>, 
     @Headers(TOKEN_KEY) token: string, 
     @Body(DTO_KEY, new ValidationPipe()) dto: EditCmProfileDto
   ) {
@@ -47,7 +47,7 @@ export class ChangeMakerController {
   @Post('updateProfileImage')
   @UseInterceptors(FileInterceptor(FILES_KEY))
   async updateProfileImage(
-    @Body(QUERY_KEY, new QueryValidationPipe(UserQuery.changeMaker)) query: IQuery<ChangeMaker>, 
+    @Body(QUERY_KEY, new QueryValidationPipe(UserQuery.changeMaker)) query: Query<ChangeMaker>, 
     @Headers(TOKEN_KEY) token: string, 
     @UploadedFile() file: Express.Multer.File
   ) {

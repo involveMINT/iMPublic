@@ -3,12 +3,12 @@ import {
   CreateChangeMakerProfileDto, 
   EditCmProfileDto, 
   IParser, 
-  IQuery, 
+  Query,
   InvolvemintRoutes, 
   environment,
   QUERY_KEY,
   FILES_KEY,
-  IExactQuery,
+  ExactQuery,
   UserQuery,
   DTO_KEY
  } from '@involvemint/shared/domain';
@@ -22,7 +22,7 @@ export class ChangeMakerRestClient {
 
   constructor(private http: HttpClient) { }
   
-  createProfile(query: IQuery<ChangeMaker>, dto: CreateChangeMakerProfileDto): Observable<IParser<ChangeMaker, typeof UserQuery.changeMaker>>
+  createProfile(query: Query<ChangeMaker>, dto: CreateChangeMakerProfileDto): Observable<IParser<ChangeMaker, typeof UserQuery.changeMaker>>
   {
     const body = {
       [QUERY_KEY]: query,
@@ -32,7 +32,7 @@ export class ChangeMakerRestClient {
     return this.http
           .post<IParser<ChangeMaker, typeof UserQuery.changeMaker>>(`${this.apiUrl}/createProfile`, body);
   }
-  editProfile(changeMakerQuery: IExactQuery<ChangeMaker, typeof UserQuery.changeMaker>, dto: EditCmProfileDto)
+  editProfile(changeMakerQuery: ExactQuery<ChangeMaker, typeof UserQuery.changeMaker>, dto: EditCmProfileDto)
   {
     const body = {
       [QUERY_KEY]:changeMakerQuery,
@@ -40,9 +40,9 @@ export class ChangeMakerRestClient {
     };
 
     return this.http
-          .post<IParser<ChangeMaker, IExactQuery<ChangeMaker, typeof UserQuery.changeMaker>>>(`${this.apiUrl}/editProfile`, body)
+          .post<IParser<ChangeMaker, ExactQuery<ChangeMaker, typeof UserQuery.changeMaker>>>(`${this.apiUrl}/editProfile`, body)
   }
-  updateProfileImage(changeMakerQuery: IQuery<ChangeMaker>, image: File): Observable<HttpEvent<IParser<ChangeMaker, typeof UserQuery.changeMaker>>>
+  updateProfileImage(changeMakerQuery: Query<ChangeMaker>, image: File): Observable<HttpEvent<IParser<ChangeMaker, typeof UserQuery.changeMaker>>>
   {
     const body = new FormData();
     body.set(QUERY_KEY, JSON.stringify(changeMakerQuery));

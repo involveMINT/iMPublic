@@ -5,7 +5,7 @@ import {
   EditCmProfileDto,
   generateChangeMakerProfileImageFilePath,
   ImStorageFileRoots,
-  IQuery
+  Query
 } from '@involvemint/shared/domain';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import * as uuid from 'uuid';
@@ -29,7 +29,7 @@ export class ChangeMakerService {
    * @param token User's auth token.
    * @param dto Essential ChangeMaker profile data.
    */
-  async createProfile(query: IQuery<ChangeMaker>, token: string, dto: CreateChangeMakerProfileDto) {
+  async createProfile(query: Query<ChangeMaker>, token: string, dto: CreateChangeMakerProfileDto) {
     const user = await this.auth.validateUserToken(token);
     await this.handle.verifyHandleUniqueness(dto.handle);
     return this.cmRepo.upsert(
@@ -56,7 +56,7 @@ export class ChangeMakerService {
     );
   }
 
-  async editProfile(query: IQuery<ChangeMaker>, token: string, dto: EditCmProfileDto) {
+  async editProfile(query: Query<ChangeMaker>, token: string, dto: EditCmProfileDto) {
     const user = await this.auth.validateUserToken(token, {
       id: true,
       changeMaker: { id: true, profilePicFilePath: true, handle: { id: true } },
@@ -80,9 +80,8 @@ export class ChangeMakerService {
     return this.cmRepo.update(user.changeMaker.id, dto, query);
   }
 
-  async updateProfileImage(query: IQuery<ChangeMaker>, token: string, file: Express.Multer.File) {
+  async updateProfileImage(query: Query<ChangeMaker>, token: string, file: Express.Multer.File) {
     const user = await this.auth.validateUserToken(token, { id: true, changeMaker: { id: true } });
-
     if (!user?.changeMaker) {
       throw new HttpException(
         `No associated ChangeMaker Profile found with user "${user.id}".`,

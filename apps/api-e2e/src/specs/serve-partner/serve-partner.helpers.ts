@@ -1,9 +1,9 @@
 import { ServePartnerRepository } from '@involvemint/server/core/domain-services';
-import { ServePartner, IExactQuery, IQuery } from '@involvemint/shared/domain';
+import { ServePartner, Query, ExactQuery} from '@involvemint/shared/domain';
 import * as uuid from 'uuid';
 
-export function createServePartner<Q extends IQuery<ServePartner>>(
-  query: IExactQuery<ServePartner, Q>,
+export function createServePartner<Q extends Query<ServePartner>>(
+  query: ExactQuery<ServePartner, Q>,
   spRepo: ServePartnerRepository,
   dto: { id: string; handle: string }
 ) {

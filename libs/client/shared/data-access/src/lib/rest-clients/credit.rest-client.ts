@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Credit, CreditQuery, DTO_KEY, GetCreditsForProfileDto, IParser, IParserObject, IQuery, InvolvemintRoutes, MintDto, QUERY_KEY, environment } from '@involvemint/shared/domain';
+import { Credit, CreditQuery, DTO_KEY, GetCreditsForProfileDto, IParser, IParserObject, Query, InvolvemintRoutes, MintDto, QUERY_KEY, environment } from '@involvemint/shared/domain';
 import { Observable } from 'rxjs';
 import { Injectable } from '@angular/core';
 
@@ -9,7 +9,7 @@ export class CreditRestClient {
 
   constructor(private http: HttpClient) { }
 
-  getCreditsForProfile(creditQuery: IQuery<Credit[]>, dto: GetCreditsForProfileDto)
+  getCreditsForProfile(creditQuery: Query<Credit[]>, dto: GetCreditsForProfileDto)
   {
     const body = {
       [QUERY_KEY]: creditQuery,

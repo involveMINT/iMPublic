@@ -5,10 +5,10 @@ import {
   GetCreditsForProfileDto,
   InvolvemintRoutes,
   MintDto,
-  IQuery,
   TOKEN_KEY,
   DTO_KEY,
   QUERY_KEY,
+  Query
 } from '@involvemint/shared/domain';
 import {
     Controller,
@@ -24,7 +24,7 @@ export class CreditController {
 
   @Post('getCreditsForProfile')
   getCreditsForProfile(
-    @Body(QUERY_KEY, new QueryValidationPipe(CreditQuery)) query: IQuery<Credit>, 
+    @Body(QUERY_KEY, new QueryValidationPipe(CreditQuery)) query: Query<Credit>, 
     @Headers(TOKEN_KEY) token: string, 
     @Body(DTO_KEY, new ValidationPipe()) dto: GetCreditsForProfileDto
   ) {

@@ -6,7 +6,8 @@ export abstract class VerifyUserEmailDto {
   email!: string;
 }
 
-export abstract class SignUpDto {
+export abstract class 
+SignUpDto {
   /** `id` is the user's email */
   @Matches(ImConfig.regex.email)
   id!: string;
