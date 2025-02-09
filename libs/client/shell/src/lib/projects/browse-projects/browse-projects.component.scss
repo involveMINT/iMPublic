@@ -27,3 +27,13 @@ im-block {
   display: grid;
   gap: calc(var(--im-padding) / 2);
 }
+
+.red-dot {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 8px;
+  height: 8px;
+  background-color: red;
+  border-radius: 50%;
+}

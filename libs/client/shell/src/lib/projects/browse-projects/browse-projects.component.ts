@@ -91,4 +91,6 @@ export class BrowseProjectsComponent extends StatefulComponent<State> implements
     ).length;
     return project.maxChangeMakers - len;
   }
+  updateActionedOnAccountSetup() {
+  }
 }
