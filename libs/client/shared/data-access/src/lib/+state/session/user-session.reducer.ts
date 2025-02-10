@@ -48,6 +48,7 @@ const initialState: UserSessionState = {
   changeMaker: undefined,
   loadingRoute: '',
   joyride: false,
+  actionedOnAccountSetup: false,
   baAdmin: false,
 };
 

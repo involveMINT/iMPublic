@@ -9,6 +9,7 @@ export const ValidateAdminTokenQuery = LoginQuery;
 export const UserQuery = createQuery<User>()({
   id: true,
   joyride: true,
+  actionedOnAccountSetup: true,
   baAdmin: true,
   changeMaker: {
     id: true,

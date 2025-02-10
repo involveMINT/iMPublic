@@ -14,6 +14,7 @@ import { tap } from 'rxjs/operators';
 interface State {
   projects: ProjectFeedStoreModel[];
   loaded: boolean;
+  actionedOnAccountSetup: boolean;
 }
 
 @Component({
@@ -30,7 +31,7 @@ export class BrowseProjectsComponent extends StatefulComponent<State> implements
     private readonly route: RouteService,
     private readonly viewProfile: ImViewProfileModalService
   ) {
-    super({ projects: [], loaded: false });
+    super({ projects: [], loaded: false, actionedOnAccountSetup: false });
   }
 
   ngOnInit() {
@@ -42,6 +43,17 @@ export class BrowseProjectsComponent extends StatefulComponent<State> implements
             // then went back to the projects feed.
             projects: projects.filter((p) => p.listingStatus === 'public'),
             loaded,
+          })
+        )
+      )
+    );
+    this.effect(() =>
+      this.user.session.selectors.state$.pipe(
+        tap(({ actionedOnAccountSetup}) =>
+          this.updateState({
+            // Filter by public so it won't show any unlisted projects that an SP may have viewed
+            // then went back to the projects feed.
+            actionedOnAccountSetup : actionedOnAccountSetup,
           })
         )
       )
@@ -90,7 +102,5 @@ export class BrowseProjectsComponent extends StatefulComponent<State> implements
       (e) => calculateEnrollmentStatus(e) === EnrollmentStatus.enrolled
     ).length;
     return project.maxChangeMakers - len;
-  }
-  updateActionedOnAccountSetup() {
   }
 }
