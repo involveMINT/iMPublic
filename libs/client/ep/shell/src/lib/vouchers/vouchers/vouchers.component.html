@@ -27,7 +27,13 @@
             [active]="voucherIsActive(voucher)"
             (click)="viewVoucher(voucher)"
           >
-            <b>@{{ getVoucherOwnerHandle(voucher) }}</b>
+            <b> &#64; {{ getVoucherOwnerHandle(voucher) }}</b>
+            <ion-icon
+              (click)="viewProfile(getVoucherOwnerHandle(voucher) || '' )"
+              class="info"
+              slot="icon-only"
+              name="information-circle"
+            ></ion-icon>
           </im-code-item>
         </div>
       </im-tab>
@@ -43,7 +49,13 @@
             [active]="voucherIsActive(voucher)"
             (click)="viewVoucher(voucher)"
           >
-            <b>@{{ getVoucherOwnerHandle(voucher) }}</b>
+            <b> &#64; {{ getVoucherOwnerHandle(voucher) }}</b>
+            <ion-icon
+              (click)="viewProfile(getVoucherOwnerHandle(voucher) || '' )"
+              class="info"
+              slot="icon-only"
+              name="information-circle"
+            ></ion-icon>
           </im-code-item>
         </div>
       </im-tab>
@@ -59,7 +71,13 @@
             [active]="voucherIsActive(voucher)"
             (click)="viewVoucher(voucher)"
           >
-            <b>@{{ getVoucherOwnerHandle(voucher) }}</b>
+            <b> &#64; {{ getVoucherOwnerHandle(voucher) }}</b>
+            <ion-icon
+              (click)="viewProfile(getVoucherOwnerHandle(voucher) || '' )"
+              class="info"
+              slot="icon-only"
+              name="information-circle"
+            ></ion-icon>
           </im-code-item>
         </div>
       </im-tab>
@@ -75,7 +93,13 @@
             [active]="voucherIsActive(voucher)"
             (click)="viewVoucher(voucher)"
           >
-            <b>@{{ getVoucherOwnerHandle(voucher) }}</b>
+            <b> &#64; {{ getVoucherOwnerHandle(voucher) }}</b>
+            <ion-icon
+              (click)="viewProfile(getVoucherOwnerHandle(voucher) || '' )"
+              class="info"
+              slot="icon-only"
+              name="information-circle"
+            ></ion-icon>
           </im-code-item>
         </div>
       </im-tab>

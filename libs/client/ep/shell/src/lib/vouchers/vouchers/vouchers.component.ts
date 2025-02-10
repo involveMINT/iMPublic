@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { EpVoucherStoreModel, ExchangePartnerFacade } from '@involvemint/client/ep/data-access';
-import { VoucherStoreModel } from '@involvemint/client/shared/data-access';
+import { VoucherStoreModel, ImViewProfileModalService } from '@involvemint/client/shared/data-access';
 import { RouteService } from '@involvemint/client/shared/routes';
 import { StatefulComponent } from '@involvemint/client/shared/util';
 import { calculateVoucherStatus, VoucherStatus } from '@involvemint/shared/domain';
@@ -22,7 +22,7 @@ interface State {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class VouchersComponent extends StatefulComponent<State> implements OnInit {
-  constructor(private readonly epf: ExchangePartnerFacade, private readonly route: RouteService) {
+  constructor(private readonly epf: ExchangePartnerFacade, private readonly route: RouteService, private readonly viewProfileModal: ImViewProfileModalService) {
     super({ active: [], redeemed: [], archived: [], refunded: [], expired: [], loaded: false });
   }
 
@@ -57,6 +57,10 @@ export class VouchersComponent extends StatefulComponent<State> implements OnIni
 
   viewVoucher(voucher: EpVoucherStoreModel) {
     this.route.to.ep.vouchers.VOUCHER(voucher.id);
+  }
+  viewProfile(handle: string) {
+    console.log(handle);
+    this.viewProfileModal.open({ handle });
   }
 
   calculateVoucherStatus(voucher: EpVoucherStoreModel) {
