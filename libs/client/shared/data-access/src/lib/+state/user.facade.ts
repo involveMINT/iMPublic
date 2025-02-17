@@ -125,6 +125,9 @@ export class UserFacade {
       login: (id: string, password: string) => {
         this.store.dispatch(UserSessionActions.userLogin({ id, password }));
       },
+      updateAccountSetupViewed: (token: string) => {
+        this.store.dispatch(UserSessionActions.updateAccountSetupViewed({ token }));
+      },
       loginAdmin: (password: string) => {
         this.store.dispatch(UserSessionActions.adminLogin({ password }));
       },
