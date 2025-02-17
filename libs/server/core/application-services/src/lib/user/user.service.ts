@@ -453,6 +453,12 @@ export class UserService {
     return this.userRepo.update(user.id, { joyride: false });
   }
 
+
+  async viewedAccountSetupPage(token: string) {
+    const user = await this.auth.validateUserToken(token);
+    return this.userRepo.update(user.id, { actionedOnAccountSetup: true });
+  }
+
   private addUserToMailChimpGeneralAudience(email: string) {
     // User must update their email preferences with MailChimp profile information
     const mailchimpInstance = 'The Instance';
