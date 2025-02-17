@@ -5,10 +5,7 @@ import * as mailgun from 'mailgun-js';
 @Injectable()
 export class EmailService {
   mg = environment.environment !== 'local' ? mailgun.default(environment.mailgun) : null;
-  mg = environment.environment !== 'local' ? mailgun.default(environment.mailgun) : null;
   noreply = 'your no reply <noreply@example.com>';
-
-  shouldNotSendNotification = environment.environment === 'local';
 
   shouldNotSendNotification = environment.environment === 'local';
 
