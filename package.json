@@ -6,7 +6,7 @@
   "scripts": {
     "ng": "nx",
     "nx": "nx",
-    "start": "node dist/apps/api/main.js",
+    "start": "export NODE_OPTIONS=--openssl-legacy-provider && node dist/apps/api/main.js",
     "start:client": "ng serve involvemint",
     "start:server": "ng serve api",
     "start:client:local": "export FIRESTORE_EMULATOR_HOST='localhost:8080' && export FIREBASE_STORAGE_EMULATOR_HOST=localhost:9199 && export NODE_OPTIONS=--openssl-legacy-provider && ng serve involvemint -c local",
@@ -17,7 +17,7 @@
     "deploy:server": "nx run-many --target=build --projects=api --prod --skip-nx-cache && gcloud config set project involvemint2 && gcloud app deploy app.yaml --stop-previous-version --quiet",
     "deploy:client": "nx run-many --target=build --projects=involvemint --prod --skip-nx-cache && firebase use involvemint2 && firebase deploy",
     "deploy": "nx run-many --target=build --projects=involvemint,api --prod --skip-nx-cache && gcloud config set project involvemint2 && gcloud app deploy app.yaml --stop-previous-version --quiet && firebase use involvemint2 && firebase deploy && gcloud config set project involvemint-test && gcloud app deploy app.yaml --stop-previous-version --quiet && firebase use involvemint-test && firebase deploy",
-    "deploy:test": "nx run-many --target=build --projects=involvemint,api --configuration=test --skip-nx-cache && gcloud config set project im-test-395400 && gcloud app deploy app.yaml --stop-previous-version --quiet && firebase use im-test-395400 && firebase deploy",
+    "deploy:test": "export NODE_OPTIONS=--openssl-legacy-provider && nx run-many --target=build --projects=involvemint,api --configuration=test --skip-nx-cache && gcloud config set project im-test-395400 && gcloud app deploy app.yaml --stop-previous-version --quiet && firebase use im-test-395400 && firebase deploy",
     "deploy:test:server": "nx run-many --target=build --projects=api --configuration=test --skip-nx-cache && gcloud config set project im-test-395400 && gcloud app deploy app.yaml --stop-previous-version --quiet",
     "deploy:test:client": "nx run-many --target=build --projects=involvemint --configuration=test --skip-nx-cache && firebase use im-test-395400 && firebase deploy",
     "test": "nx run-many --target=test --all",

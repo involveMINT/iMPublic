@@ -5,7 +5,10 @@ import * as mailgun from 'mailgun-js';
 @Injectable()
 export class EmailService {
   mg = environment.environment !== 'local' ? mailgun.default(environment.mailgun) : null;
+  mg = environment.environment !== 'local' ? mailgun.default(environment.mailgun) : null;
   noreply = 'your no reply <noreply@example.com>';
+
+  shouldNotSendNotification = environment.environment === 'local';
 
   shouldNotSendNotification = environment.environment === 'local';
 
@@ -22,6 +25,7 @@ export class EmailService {
     subject: string;
     email: string | string[];
   }) {
+    if (this.shouldNotSendNotification) return;
     if (this.shouldNotSendNotification) return;
 
     const msg = {
@@ -60,6 +64,7 @@ export class EmailService {
 
   sendForgotPassword(email: string, hash: string) {
     if (this.shouldNotSendNotification) return;
+    if (this.shouldNotSendNotification) return;
 
     const url = `${environment.appUrl}${this.route.path.forgotPasswordChange.ROOT}?email=${email}&hash=${hash}`;
 
@@ -84,6 +89,7 @@ export class EmailService {
     temporaryPassword: string,
     forgotPasswordHash: string
   ) {
+    if (this.shouldNotSendNotification) return;
     if (this.shouldNotSendNotification) return;
 
     const url = `${environment.appUrl}${this.route.path.activateUserAccount.ROOT}?email=${newUserEmail}&epId=${newEpId}&activationHash=${activationHash}&temporaryPassword=${temporaryPassword}&forgotPasswordHash=${forgotPasswordHash}`;
