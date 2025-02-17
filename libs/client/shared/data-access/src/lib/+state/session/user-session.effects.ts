@@ -17,7 +17,6 @@ import { ChangeMakerRestClient } from '../../rest-clients/change-maker.rest-clie
 import * as UserSessionActions from './user-session.actions';
 import { ImAuthTokenStorage } from './user-session.storage';
 import { EpApplicationRestClient, ExchangeAdminRestClient, SpApplicationRestClient, UserRestClient } from '../../rest-clients';
-import { UserService } from '@involvemint/server/core/application-services';
 
 @Injectable()
 export class UserSessionEffects {
@@ -75,11 +74,9 @@ export class UserSessionEffects {
   readonly updateAccountSetupViewed$ = createEffect(() =>
     this.actions$.pipe(
       ofType(UserSessionActions.updateAccountSetupViewed),
-      // Optionally show a loader
-      delayWhen(() => from(this.status.showLoader('Updating account viewed setup...'))),
       fetch({
-        run: ({ token }) =>
-          this.userService.viewedAccountSetupPage(token).pipe(
+        run: () =>
+          this.user.setViewedAccountSetupPage({ status: true }).pipe(
             map(() => {
               this.status.dismissLoader();
               // On success, update the state to indicate the user has actioned on account setup.
@@ -564,7 +561,6 @@ export class UserSessionEffects {
   constructor(
     private readonly actions$: Actions,
     private readonly user: UserRestClient,
-    private readonly userService: UserService,
     private readonly exchangeAdmin: ExchangeAdminRestClient,
     private readonly route: RouteService,
     private readonly cm: ChangeMakerRestClient,

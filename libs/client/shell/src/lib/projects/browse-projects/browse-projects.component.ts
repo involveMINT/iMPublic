@@ -51,8 +51,6 @@ export class BrowseProjectsComponent extends StatefulComponent<State> implements
       this.user.session.selectors.state$.pipe(
         tap(({ actionedOnAccountSetup}) =>
           this.updateState({
-            // Filter by public so it won't show any unlisted projects that an SP may have viewed
-            // then went back to the projects feed.
             actionedOnAccountSetup : actionedOnAccountSetup,
           })
         )
