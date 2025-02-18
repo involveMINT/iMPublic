@@ -2,6 +2,7 @@ import { AfterViewInit, ChangeDetectionStrategy, Component, OnInit, ViewChild } 
 import { Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import {
+  ChangeMakerRestClient,
   HandleRestClient,
   UserFacade,
   verifyHandleUniqueness,
@@ -12,8 +13,7 @@ import { DeepReadonly, STATES } from '@involvemint/shared/util';
 import { IonSlides } from '@ionic/angular';
 import { FormControl, FormGroup } from '@ngneat/reactive-forms';
 import { subYears } from 'date-fns';
-import { takeUntil, tap, take } from 'rxjs/operators';
-import { ChangeMakerService } from '@involvemint/server/core/application-services';
+import { takeUntil, tap } from 'rxjs/operators';
 import { ImAuthTokenStorage } from '@involvemint/client/shared/data-access';
 
 
@@ -62,29 +62,29 @@ export class CreateCmProfileComponent extends StatefulComponent<State> implement
     private readonly uf: UserFacade,
     private readonly handleRestClient: HandleRestClient,
     private readonly route: ActivatedRoute,
-    private readonly changeMakerService: ChangeMakerService 
+    private readonly changeMakerRestClient: ChangeMakerRestClient
   ) {
     super({ verifyingHandle: false });
   }
 
   ngOnInit(): void {
     // Get auth token from storage, similar to user-session.effects.ts
-    const authToken = ImAuthTokenStorage.getValue()?.token;
+    // const authToken = ImAuthTokenStorage.getValue()?.token;
 
-    if (authToken) {
-      // Pre-populate form with data from the backend
-      this.changeMakerService.getPrePopulatedData(authToken).then((data) => {
-        if (data) {
-          this.createProfileForm.patchValue({
-            firstName: data.firstName || '',
-            lastName: data.lastName || '',
-            phone: data.phone || '',
-          });
-        }
-      });
-    } else {
-      console.error('Authentication token is missing');
-    }
+    // if (authToken) {
+    //   // Pre-populate form with data from the backend
+    //   this.changeMakerRestClient.getPrePopulatedData(authToken).then((data) => {
+    //     if (data) {
+    //       this.createProfileForm.patchValue({
+    //         firstName: data.firstName || '',
+    //         lastName: data.lastName || '',
+    //         phone: data.phone || '',
+    //       });
+    //     }
+    //   });
+    // } else {
+    //   console.error('Authentication token is missing');
+    // }
 
     // Verify handle uniqueness
     this.effect(() => verifyHandleUniqueness(this.createProfileForm, this.handleRestClient, this));
