@@ -15,6 +15,7 @@ interface State {
   projects: ProjectFeedStoreModel[];
   loaded: boolean;
   viewedAddNewAccount: boolean;
+  authenticated: boolean;
 }
 
 @Component({
@@ -31,7 +32,7 @@ export class BrowseProjectsComponent extends StatefulComponent<State> implements
     private readonly route: RouteService,
     private readonly viewProfile: ImViewProfileModalService
   ) {
-    super({ projects: [], loaded: false, viewedAddNewAccount: false });
+    super({ projects: [], loaded: false, viewedAddNewAccount: false, authenticated: false });
   }
 
   ngOnInit() {
@@ -49,9 +50,10 @@ export class BrowseProjectsComponent extends StatefulComponent<State> implements
     );
     this.effect(() =>
       this.user.session.selectors.state$.pipe(
-        tap(({ viewedAddNewAccount}) =>
+        tap(({ viewedAddNewAccount, id}) =>
           this.updateState({
             viewedAddNewAccount : viewedAddNewAccount,
+            authenticated: !!id
           })
         )
       )
