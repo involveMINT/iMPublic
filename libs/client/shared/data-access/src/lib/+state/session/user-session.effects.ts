@@ -71,6 +71,27 @@ export class UserSessionEffects {
     )
   );
 
+  readonly updateAccountSetupViewed$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(UserSessionActions.updateAccountSetupViewed),
+      fetch({
+        run: () =>
+          this.user.setViewedAccountSetupPage({ viewedAddNewAccount: true }).pipe(
+            map(() => {
+              this.status.dismissLoader();
+              // On success, update the state to indicate the user has actioned on account setup.
+              return UserSessionActions.updateAccountSetupViewedSuccess({ viewedAddNewAccount: true });
+            })
+          ),
+        onError: (action, { error }) => {
+          this.status.dismissLoader();
+          this.status.presentNgRxActionAlert(action, error);
+          return UserSessionActions.updateAccountSetupViewedError({ error });
+        }
+      })
+    )
+  );
+
   readonly adminLogin$ = createEffect(() =>
     this.actions$.pipe(
       ofType(UserSessionActions.adminLogin),

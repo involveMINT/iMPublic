@@ -48,6 +48,7 @@ const initialState: UserSessionState = {
   changeMaker: undefined,
   loadingRoute: '',
   joyride: false,
+  viewedAddNewAccount: false,
   baAdmin: false,
 };
 
@@ -70,6 +71,10 @@ export const UserSessionReducer = createReducer(
       ...state,
     };
   }),
+  on(UserSessionActions.updateAccountSetupViewedSuccess, (state, { viewedAddNewAccount }) => ({
+    ...state,
+    viewedAddNewAccount,
+  })),
   on(UserSessionActions.userSignUp, (state): UserSessionState => {
     return {
       ...state,

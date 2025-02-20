@@ -209,4 +209,13 @@ export class UserRestClient {
 
     return this.http.post<IParser<User, typeof AdminUserSearchQuery>[]>(`${this.apiUrl}/adminUserSearch`, body);
   }
+
+  setViewedAccountSetupPage(query: IQuery<{ viewedAddNewAccount: boolean}>)
+  {
+    const body = {
+      [QUERY_KEY]: query
+    };
+
+    return this.http.post<IParser<{ viewedAddNewAccount: boolean}, { viewedAddNewAccount: boolean}>[]>(`${this.apiUrl}/viewedAccountSetupPage`, body);
+  }
 }

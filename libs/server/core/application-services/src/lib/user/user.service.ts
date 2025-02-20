@@ -73,6 +73,7 @@ export class UserService {
         serveAdmins: [],
         spApplications: [],
         joyride: true,
+        viewedAddNewAccount: false,
         baAdmin: false,
       },
       {}
@@ -182,6 +183,7 @@ export class UserService {
         serveAdmins: [],
         spApplications: [],
         joyride: true,
+        viewedAddNewAccount: false,
         baAdmin: false,
       },
       { id: true }
@@ -451,6 +453,11 @@ export class UserService {
   async finishJoyride(token: string) {
     const user = await this.auth.validateUserToken(token);
     return this.userRepo.update(user.id, { joyride: false });
+  }
+
+  async viewedAccountSetupPage(token: string, query: IQuery<User>) {
+    const user = await this.auth.validateUserToken(token);
+    return this.userRepo.update(user.id, { viewedAddNewAccount: true }, query);
   }
 
   private addUserToMailChimpGeneralAudience(email: string) {

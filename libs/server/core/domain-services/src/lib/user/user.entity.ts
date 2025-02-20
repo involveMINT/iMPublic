@@ -37,6 +37,9 @@ export class UserEntity implements Required<User> {
   joyride!: boolean;
 
   @Column({ default: false })
+  viewedAddNewAccount!: boolean;
+
+  @Column({ default: false })
   baAdmin!: boolean;
 
   @OneToOne(() => ChangeMakerEntity, (e) => e.user, { nullable: true })

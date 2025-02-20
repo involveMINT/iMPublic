@@ -80,6 +80,7 @@ interface State {
   sideMenuBehavior: UserSessionState['sideMenuBehavior'];
   onboarding: 'cm' | 'ep' | 'mkt' | null;
   changeMaker: UserSessionState['changeMaker'] | null;
+  viewedAddNewAccount: boolean;
 }
 
 @Component({
@@ -167,6 +168,7 @@ export class ImAppComponent extends StatefulComponent<State> implements OnInit {
       sideMenuBehavior: 'hidden',
       changeMaker: null,
       profilesMenuOpen: false,
+      viewedAddNewAccount: false
     });
   }
 
@@ -177,6 +179,16 @@ export class ImAppComponent extends StatefulComponent<State> implements OnInit {
     this.listenSideMenuToggleAction();
     this.listenToToggleWalletAction();
     this.generateMainMenu();
+
+    this.effect(() =>
+      this.user.session.selectors.state$.pipe(
+        tap(({ viewedAddNewAccount}) =>
+          this.updateState({
+            viewedAddNewAccount : viewedAddNewAccount,
+          })
+        )
+      )
+    );
   }
 
   private listenSideMenuToggleAction() {
@@ -1178,5 +1190,9 @@ export class ImAppComponent extends StatefulComponent<State> implements OnInit {
         this.backDrop.remove();
       }
     });
+  }
+
+  async markViewedNewAccount(): Promise<void> {
+    this.user.session.dispatchers.updateAccountSetupViewed();
   }
 }

@@ -3,6 +3,7 @@
     <ion-toolbar>
       <ion-buttons slot="start">
         <ion-menu-button></ion-menu-button>
+        <div *ngIf="!state.viewedAddNewAccount" class="red-dot"></div>
       </ion-buttons>
       <ion-title>Projects</ion-title>
       <ion-buttons slot="end">

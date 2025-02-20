@@ -23,6 +23,7 @@ export class EmailService {
     email: string | string[];
   }) {
     if (this.shouldNotSendNotification) return;
+    if (this.shouldNotSendNotification) return;
 
     const msg = {
       from: this.noreply,
@@ -60,6 +61,7 @@ export class EmailService {
 
   sendForgotPassword(email: string, hash: string) {
     if (this.shouldNotSendNotification) return;
+    if (this.shouldNotSendNotification) return;
 
     const url = `${environment.appUrl}${this.route.path.forgotPasswordChange.ROOT}?email=${email}&hash=${hash}`;
 
@@ -84,6 +86,7 @@ export class EmailService {
     temporaryPassword: string,
     forgotPasswordHash: string
   ) {
+    if (this.shouldNotSendNotification) return;
     if (this.shouldNotSendNotification) return;
 
     const url = `${environment.appUrl}${this.route.path.activateUserAccount.ROOT}?email=${newUserEmail}&epId=${newEpId}&activationHash=${activationHash}&temporaryPassword=${temporaryPassword}&forgotPasswordHash=${forgotPasswordHash}`;

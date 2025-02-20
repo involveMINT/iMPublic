@@ -191,6 +191,14 @@ export class UserController {
     return this.user.finishJoyride(token);
   }
 
+  @Post('viewedAccountSetupPage')
+  async viewedAccountSetupPage(
+    @Body(QUERY_KEY, new QueryValidationPipe(UserQuery)) query: IQuery<User>, 
+    @Headers(TOKEN_KEY) token: string
+  ) {
+    return this.user.viewedAccountSetupPage(token, query);
+  }
+
   @Post('adminUserSearch')
   async adminUserSearch(
     @Body(QUERY_KEY, new QueryValidationPipe(UserQuery)) query: IQuery<User[]>, 
