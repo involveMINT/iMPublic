@@ -16,7 +16,7 @@ export interface User {
   activationHash?: string;
   forgotPasswordHash?: string;
   joyride: boolean;
-  actionedOnAccountSetup: boolean;
+  viewedAddNewAccount: boolean;
   baAdmin: boolean;
 
   changeMaker?: IOneToOne<ChangeMaker, 'user'>;

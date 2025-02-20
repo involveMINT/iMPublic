@@ -46,13 +46,12 @@ export const userLoginError = createAction(
 );
 
 export const updateAccountSetupViewed = createAction(
-  '[UserSession] Update Account Setup Viewed',
-  props<{ token: string }>()
+  '[UserSession] Update Account Setup Viewed'
 );
 
 export const updateAccountSetupViewedSuccess = createAction(
   '[UserSession] Update Account Setup Viewed Success',
-  props<{ actionedOnAccountSetup: boolean }>()
+  props<{ viewedAddNewAccount: boolean }>()
 );
 
 export const updateAccountSetupViewedError = createAction(

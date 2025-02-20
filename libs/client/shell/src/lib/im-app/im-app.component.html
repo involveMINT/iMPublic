@@ -22,7 +22,6 @@
               </div>
             </div>
           </div>
-
           <div *ngIf="!state.authenticated"></div>
           <div active-profile *ngIf="state.authenticated" (click)="toggleProfilesMenu()">
             <div
@@ -52,8 +51,8 @@
                     : ''
                 }}
               </div>
-              <div>
-                <div slot="end" class="red-dot"></div>
+              <div (click)="markViewedNewAccount()">
+                <div *ngIf="!state.viewedAddNewAccount" slot="end" class="red-dot"></div>
                 <ion-icon
                   [style.transform]="state.profilesMenuOpen ? 'rotate(180deg)' : ''"
                   src="/assets/icons/double-arrow-down.svg"
@@ -77,7 +76,7 @@
                   
                   <div class="menu-title">
                     <div>
-                      <div *ngIf="!menu.profile">
+                      <div *ngIf="!state.viewedAddNewAccount && !menu.profile">
                         <div  class="red-dot"></div>
                       </div>
                       <ion-icon

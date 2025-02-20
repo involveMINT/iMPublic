@@ -14,7 +14,7 @@ import { tap } from 'rxjs/operators';
 interface State {
   projects: ProjectFeedStoreModel[];
   loaded: boolean;
-  actionedOnAccountSetup: boolean;
+  viewedAddNewAccount: boolean;
 }
 
 @Component({
@@ -31,7 +31,7 @@ export class BrowseProjectsComponent extends StatefulComponent<State> implements
     private readonly route: RouteService,
     private readonly viewProfile: ImViewProfileModalService
   ) {
-    super({ projects: [], loaded: false, actionedOnAccountSetup: false });
+    super({ projects: [], loaded: false, viewedAddNewAccount: false });
   }
 
   ngOnInit() {
@@ -49,9 +49,9 @@ export class BrowseProjectsComponent extends StatefulComponent<State> implements
     );
     this.effect(() =>
       this.user.session.selectors.state$.pipe(
-        tap(({ actionedOnAccountSetup}) =>
+        tap(({ viewedAddNewAccount}) =>
           this.updateState({
-            actionedOnAccountSetup : actionedOnAccountSetup,
+            viewedAddNewAccount : viewedAddNewAccount,
           })
         )
       )

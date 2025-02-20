@@ -37,7 +37,7 @@ export class UserEntity implements Required<User> {
   joyride!: boolean;
 
   @Column({ default: false })
-  actionedOnAccountSetup!: boolean;
+  viewedAddNewAccount!: boolean;
 
   @Column({ default: false })
   baAdmin!: boolean;

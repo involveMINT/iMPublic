@@ -76,11 +76,11 @@ export class UserSessionEffects {
       ofType(UserSessionActions.updateAccountSetupViewed),
       fetch({
         run: () =>
-          this.user.setViewedAccountSetupPage({ status: true }).pipe(
+          this.user.setViewedAccountSetupPage({ viewedAddNewAccount: true }).pipe(
             map(() => {
               this.status.dismissLoader();
               // On success, update the state to indicate the user has actioned on account setup.
-              return UserSessionActions.updateAccountSetupViewedSuccess({ actionedOnAccountSetup: true });
+              return UserSessionActions.updateAccountSetupViewedSuccess({ viewedAddNewAccount: true });
             })
           ),
         onError: (action, { error }) => {
