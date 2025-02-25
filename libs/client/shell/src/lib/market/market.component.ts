@@ -23,6 +23,8 @@ interface State {
   offers: OfferMarketStoreModel[];
   requests: RequestMarketStoreModel[];
   loaded: boolean;
+  viewedAddNewAccount: boolean;
+  authenticated: boolean;
 }
 
 @Component({
@@ -46,6 +48,8 @@ export class MarketComponent extends StatefulComponent<State> implements OnInit 
       loaded: false,
       offers: [],
       requests: [],
+      viewedAddNewAccount: false, 
+      authenticated: false 
     });
   }
 
@@ -76,6 +80,17 @@ export class MarketComponent extends StatefulComponent<State> implements OnInit 
     this.effect(() =>
       this.user.session.selectors.activeProfile$.pipe(
         tap((activeProfile) => this.updateState({ activeProfile }))
+      )
+    );
+
+    this.effect(() =>
+      this.user.session.selectors.state$.pipe(
+        tap(({ viewedAddNewAccount, id}) =>
+          this.updateState({
+            viewedAddNewAccount : viewedAddNewAccount,
+            authenticated: !!id
+          })
+        )
       )
     );
 
