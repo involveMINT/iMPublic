@@ -45,7 +45,7 @@ describe('Enrollment Integration Tests', () => {
   let projectService: ProjectService;
 
   const creds = { id: 'email@email.com', password: 'GoodPwd@341' };
-  let token: string;
+  let auth: { body: { token: string }; statusCode: HttpStatus };
 
   const cmQuery = createQuery<ChangeMaker>()({ id: true });
   let cmProfile: IParser<ChangeMaker, typeof cmQuery>;
