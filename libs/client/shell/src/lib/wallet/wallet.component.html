@@ -26,7 +26,9 @@
           <div class="im-primary-text title">Balance</div>
           <div class="current-balance" *ngIf="state.creditsLoaded">
             <div class="cur-balance-number-cont">
-              <div class="cur-balance-number">{{ state.balance | currency: '':'' }}</div>
+              <div class="cur-balance-number">
+                {{ (state.balance < 0 ? 0 : state.balance) | currency: '':'' }}
+              </div>              
               <ion-icon src="/assets/icons/cc.svg" class="cur-balance-icon"></ion-icon>
               <div class="float-shadow text"></div>
               <div class="float-shadow icon"></div>
@@ -180,6 +182,8 @@
                 [style.grid-template-columns]="amount.value.toFixed(2).length + 'ch auto'"
               >
                 <input
+                  type="number"
+                  min="0"
                   [style.width.ch]="amount.value.toFixed(2).length"
                   #amountInp
                   currencyMask
