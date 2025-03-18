@@ -16,13 +16,15 @@ import {
   UpdateProjectDto,
   UploadCustomWaiverDto,
   UploadProjectImageDto,
+  IQuery,
+  parseQuery
 } from '@involvemint/shared/domain';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { IQuery, parseQuery } from '@orcha/common';
 import * as uuid from 'uuid';
 import { AuthService } from '../auth/auth.service';
 import { StorageService } from '../storage/storage.service';
 import { DbTransactionCreator } from '../transaction-creator/transaction-creator.service';
+import { getDefaultAddress } from '@involvemint/shared/domain';
 
 @Injectable()
 export class ProjectService {

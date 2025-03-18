@@ -1,4 +1,4 @@
-import { createQuery } from '@orcha/common';
+import { createQuery } from '../repository';
 import { Enrollment } from './enrollment.model';
 
 export const EnrollmentsQuery = createQuery<Enrollment>()({

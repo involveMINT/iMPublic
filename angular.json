@@ -227,6 +227,14 @@
                   "with": "libs/shared/domain/src/lib/environments/environment.local.ts"
                 }
               ]
+            },
+            "local": {
+              "fileReplacements":[
+                {
+                  "replace": "libs/shared/domain/src/lib/environments/environment.ts",
+                  "with": "libs/shared/domain/src/lib/environments/environment.local.ts"
+                }
+              ]
             }
           }
         },
@@ -814,22 +822,22 @@
         }
       }
     },
-    "server-orcha": {
-      "root": "libs/server/orcha",
-      "sourceRoot": "libs/server/orcha/src",
+    "server-api": {
+      "root": "libs/server/api",
+      "sourceRoot": "libs/server/api/src",
       "projectType": "library",
       "architect": {
         "lint": {
           "builder": "@nrwl/linter:eslint",
           "options": {
-            "lintFilePatterns": ["libs/server/orcha/**/*.ts"]
+            "lintFilePatterns": ["libs/server/api/**/*.ts"]
           }
         },
         "test": {
           "builder": "@nrwl/jest:jest",
-          "outputs": ["coverage/libs/server/orcha"],
+          "outputs": ["coverage/libs/server/api"],
           "options": {
-            "jestConfig": "libs/server/orcha/jest.config.js",
+            "jestConfig": "libs/server/api/jest.config.js",
             "passWithNoTests": true
           }
         }

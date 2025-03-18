@@ -1,4 +1,4 @@
-import { IOneToOne } from '@orcha/common';
+import { IOneToOne } from '../repository';
 import { ChangeMaker } from './change-maker.model';
 
 export interface ChangeMakerView {

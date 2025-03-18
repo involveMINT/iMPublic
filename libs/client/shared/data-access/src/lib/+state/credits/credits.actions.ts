@@ -1,7 +1,7 @@
 import { createAction, props } from '@ngrx/store';
-import { OrchaOperationError } from '@orcha/common';
 import { ActiveProfile } from '../session/user-session.reducer';
 import { CreditStoreModel } from './credits.reducer';
+import { APIOperationError } from '@involvemint/shared/domain';
 
 export const refreshCreditsForProfile = createAction(
   '[Credits] Credits Refresh For Profile',
@@ -19,5 +19,5 @@ export const loadCreditsForProfileSuccess = createAction(
 
 export const loadCreditsForProfileError = createAction(
   '[Credits] Credits Load For Profile Error',
-  props<{ error: OrchaOperationError }>()
+  props<{ error: APIOperationError }>()
 );

@@ -1,4 +1,4 @@
-import { createQuery } from '@orcha/common';
+import { createQuery } from '../repository';
 import { ExchangePartner } from './exchange-partner.model';
 
 export const ExchangePartnerSearchQuery = createQuery<ExchangePartner>()({

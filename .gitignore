@@ -49,3 +49,5 @@ gcp-api-key-prod.json
 
 reports/*
 !reports/readme.md
+
+firebase-debug.log

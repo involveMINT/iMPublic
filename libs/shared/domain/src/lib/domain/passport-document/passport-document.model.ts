@@ -1,4 +1,4 @@
-import { IManyToOne, IOneToMany } from '@orcha/common';
+import { IManyToOne, IOneToMany } from '../repository';
 import { ChangeMaker } from '../change-maker';
 import { EnrollmentDocument } from '../enrollment-document';
 

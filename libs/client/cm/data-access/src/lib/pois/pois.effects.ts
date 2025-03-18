@@ -1,6 +1,6 @@
 import { HttpEventType } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { PoiOrchestration, UserFacade } from '@involvemint/client/shared/data-access';
+import { PoiRestClient, UserFacade } from '@involvemint/client/shared/data-access';
 import { RouteService } from '@involvemint/client/shared/routes';
 import { StatusService } from '@involvemint/client/shared/util';
 import { calculatePoiStatus, PoiCmQuery, PoiStatus } from '@involvemint/shared/domain';
@@ -258,7 +258,7 @@ export class PoiEffects {
 
   constructor(
     private readonly actions$: Actions,
-    private readonly pois: PoiOrchestration,
+    private readonly pois: PoiRestClient,
     private readonly user: UserFacade,
     private readonly status: StatusService,
     private readonly route: RouteService,
