@@ -195,14 +195,14 @@ export class UserSessionEffects {
             this.status.presentAlertWithAction({
               alertData: {
                 title: 'Confirm',
-                description: `Are you sure you want to add business profile for "<b>${dto.name}</b>" temporarily?`,
+                description: `Are you sure you want to invite "<b>${dto.name}</b>" temporarily?`,
               },
-              buttonText: 'Add',
+              buttonText: 'Invite',
               buttonCssClass: 'im-alert-confirm',
             })
           ).pipe(
             filter((v) => v),
-            delayWhen(() => from(this.status.showLoader('Adding...'))),
+            delayWhen(() => from(this.status.showLoader('Inviting...'))),
             switchMap(() => {
               return this.exchangeAdmin.getSuperAdminForExchangePartner(BaDownloadEpAdminsQuery, dto);
             }),
@@ -230,7 +230,7 @@ export class UserSessionEffects {
             this.status.presentAlertWithAction({
               alertData: {
                 title: 'Confirm',
-                description: `Are you sure you want to remove added business profile for "<b>${downloadedEpAdmin.exchangePartner.email}</b>"?`,
+                description: `Are you sure you want to remove invitation for "<b>${downloadedEpAdmin.exchangePartner.email}</b>"?`,
               },
               buttonText: 'Remove',
               buttonCssClass: 'im-alert-deny',
