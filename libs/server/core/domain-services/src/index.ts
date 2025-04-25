@@ -2,6 +2,8 @@ export * from './lib/address/address.entity';
 export * from './lib/change-maker/change-maker.entity';
 export * from './lib/change-maker/change-maker.repository';
 export * from './lib/change-maker/change-maker.view';
+export * from './lib/clearance/clearance.entity';
+export * from './lib/clearance/clearance.repository';
 export * from './lib/credit/credit.entity';
 export * from './lib/credit/credit.repository';
 export * from './lib/enrollment-document/enrollment-document.entity';

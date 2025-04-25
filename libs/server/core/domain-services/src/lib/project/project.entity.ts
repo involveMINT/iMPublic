@@ -10,6 +10,7 @@ import { DbTableNames } from '../db-table-names';
 import { EnrollmentEntity } from '../enrollment/enrollment.entity';
 import { ProjectDocumentEntity } from '../project-document/project-document.entity';
 import { QuestionEntity } from '../question/question.entity';
+import { ClearanceEntity } from '../clearance/clearance.entity';
 import { ServePartnerEntity } from '../serve-partner/serve-partner.entity';
 
 @Entity({ name: DbTableNames.Project })
@@ -80,6 +81,9 @@ export class ProjectEntity implements Required<Project> {
 
   @OneToMany(() => QuestionEntity, (p) => p.project, { nullable: false, cascade: true })
   questions!: QuestionEntity[];
+
+  @OneToMany(() => ClearanceEntity, c => c.project, { cascade: false })
+  clearances!: ClearanceEntity[];
 
   @OneToMany(() => ProjectDocumentEntity, (p) => p.project, { nullable: false, cascade: true })
   projectDocuments!: ProjectDocumentEntity[];

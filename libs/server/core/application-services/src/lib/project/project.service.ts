@@ -1,4 +1,4 @@
-import { EnrollmentRepository, ProjectRepository } from '@involvemint/server/core/domain-services';
+import { EnrollmentRepository, ProjectRepository, QuestionRepository, ClearanceRepository } from '@involvemint/server/core/domain-services';
 import {
   calculateEnrollmentStatus,
   CreateProjectDto,
@@ -19,6 +19,7 @@ import {
   IQuery,
   parseQuery
 } from '@involvemint/shared/domain';
+import { In } from 'typeorm';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import * as uuid from 'uuid';
 import { AuthService } from '../auth/auth.service';
@@ -46,7 +47,9 @@ export class ProjectService {
     private readonly auth: AuthService,
     private readonly storage: StorageService,
     private readonly dbTransaction: DbTransactionCreator,
-    private readonly enrollmentRepo: EnrollmentRepository
+    private readonly enrollmentRepo: EnrollmentRepository,
+    private readonly questionRepo: QuestionRepository,
+    private readonly clearanceRepo: ClearanceRepository,
   ) {}
 
   // TODO dto criteria
@@ -133,11 +136,21 @@ export class ProjectService {
       imagesFilePaths: true,
       customWaiverFilePath: true,
       enrollments: { id: true },
+      questions: { id: true },
     });
     await this.permissions.userIsServeAdmin(token, project.servePartner.id);
 
     await this.dbTransaction.run(async () => {
+
       await this.enrollmentRepo.deleteMany(project.enrollments.map((e) => e.id));
+      
+      // delete questions
+      await this.questionRepo.deleteMany(
+          project.questions.map((q) => q.id)
+      );     
+      // delete clearances
+      await this.clearanceRepo.deleteManyByProjectId(dto.projectId);
+
       await this.projectRepo.delete(dto.projectId);
     });
 

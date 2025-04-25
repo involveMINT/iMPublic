@@ -4,6 +4,8 @@ import { AddressEntity } from './address/address.entity';
 import { ChangeMakerEntity } from './change-maker/change-maker.entity';
 import { ChangeMakerRepository } from './change-maker/change-maker.repository';
 import { ChangeMakerViewEntity } from './change-maker/change-maker.view';
+import { ClearanceEntity } from './clearance/clearance.entity';
+import { ClearanceRepository } from './clearance/clearance.repository';
 import { CreditEntity } from './credit/credit.entity';
 import { CreditRepository } from './credit/credit.repository';
 import { EnrollmentDocumentEntity } from './enrollment-document/enrollment-document.entity';
@@ -56,6 +58,7 @@ const entities = TypeOrmModule.forFeature([
   AddressEntity,
   ChangeMakerEntity,
   ChangeMakerViewEntity,
+  ClearanceEntity,
   CreditEntity,
   EnrollmentDocumentEntity,
   EnrollmentEntity,
@@ -84,6 +87,7 @@ const entities = TypeOrmModule.forFeature([
 
 const repositories: Provider[] = [
   ChangeMakerRepository,
+  ClearanceRepository,
   CreditRepository,
   EnrollmentDocumentRepository,
   EnrollmentRepository,
