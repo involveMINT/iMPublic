@@ -22,32 +22,32 @@
       <div class="im-cont" *ngIf="state.project as project">
         <div [style.min-width]="'0px'">
           <im-block [join]="true" [images]="project.imagesFilePaths">
-            <div header class="im-primary-text">{{ project.title }}</div>
+            <div header class="im-primary-text" data-testid="project-cover-title">{{ project.title }}</div>
             <div body class="card-body">
               <div>
-                <div [style.font-size]="'16px'">{{ project.servePartner.name }}</div>
-                <div>{{ project.address.city }}, {{ project.address.state }}</div>
+                <div [style.font-size]="'16px'" data-testid="project-cover-serve-partner-name">{{ project.servePartner.name }}</div>
+                <div data-testid="project-cover-city-state">{{ project.address.city }}, {{ project.address.state }}</div>
               </div>
-              <div>{{ project.description }}</div>
+              <div data-testid="project-cover-description">{{ project.description }}</div>
             </div>
           </im-block>
           <im-block [join]="true" icon="/assets/icons/cc-menu.svg">
             <div header class="manrope">Maximum CommunityCredits Earned Per Day</div>
-            <div body>{{ project.creditsEarned / 100 | currency: '':'' }}</div>
+            <div body data-testid="project-cover-max-credits">{{ project.creditsEarned / 100 | currency: '':'' }}</div>
           </im-block>
 
-          <im-block [join]="true" icon="/assets/icons/proof-of-impact.svg">
+          <im-block [join]="true" icon="/assets/icons/proof-of-impact.svg" data-testid="project-cover-requirements">
             <div header class="manrope">Requirements</div>
             <ng-container body>
               <ol>
-                <li>Record your time {{ project.requireLocation ? 'and location' : '' }} in app</li>
+                <li data-testid="project-cover-time-location">Record your time {{ project.requireLocation ? 'and location' : '' }} in app</li>
                 <li *ngFor="let question of project.questions; index as i">Answer Question {{ i + 1 }}</li>
-                <li *ngIf="project.requireImages">Upload images of impact</li>
+                <li *ngIf="project.requireImages" data-testid="project-cover-require-images">Upload images of impact</li>
               </ol>
             </ng-container>
           </im-block>
 
-          <im-block [join]="true" icon="globe" [style.--ion-color-primary]="'var(--ion-text-color)'">
+          <im-block [join]="true" icon="globe" [style.--ion-color-primary]="'var(--ion-text-color)'" data-testid="project-cover-clearances">
             <div header class="manrope">Clearances</div>
             <ng-container body>
               <i *ngIf="project.projectDocuments.length < 1">No Clearances required.</i>
@@ -59,7 +59,7 @@
 
           <im-block [join]="true" icon="people">
             <div header class="manrope">Enrollment Slots Remaining</div>
-            <div body>
+            <div body data-testid="project-cover-enrollment-remaining">
               {{ project.maxChangeMakers - calculateEnrolledEnrollments(project) }} remaining of
               {{ project.maxChangeMakers }} total.
             </div>
@@ -67,7 +67,7 @@
 
           <im-block [join]="true" icon="/assets/icons/timer.svg">
             <div header class="manrope">Preferred Schedule of Work</div>
-            <div body>{{ project.preferredScheduleOfWork }}</div>
+            <div body data-testid="project-cover-work-schedule">{{ project.preferredScheduleOfWork }}</div>
           </im-block>
 
           <!-- <im-block [join]="true" icon="/assets/icons/skills.svg">
@@ -81,7 +81,7 @@
 
           <im-block [join]="true" icon="/assets/icons/calendar.svg">
             <div header class="manrope">Start {{ project.endDate ? '& End' : '' }} Date</div>
-            <div body>
+            <div body data-testid="project-cover-dates">
               {{ project.startDate | date: 'MMMM d, y' }}
               {{ project.endDate ? '-' : '' }}
               {{ project.endDate | date: 'MMMM d, y' }}
@@ -100,9 +100,9 @@
           <im-block [join]="true" icon="/assets/icons/pin.svg">
             <div header class="manrope">Location</div>
             <div class="im-link" body (click)="gotoGoogleMapsLink(project.address)">
-              <div>{{ project.address.address1 }}</div>
-              <div>{{ project.address.address2 }}</div>
-              <div>
+              <div data-testid="project-cover-address-1">{{ project.address.address1 }}</div>
+              <div data-testid="project-cover-address-2">{{ project.address.address2 }}</div>
+              <div data-testid="project-cover-address-city-state-zip">
                 {{ project.address.city }}, {{ project.address.state }}
                 {{ project.address.zip }}
               </div>
@@ -110,8 +110,8 @@
           </im-block>
         </div>
         <div class="im-buttons">
-          <ion-button fill="outline" (click)="back()">Go Back</ion-button>
-          <ion-button *ngIf="!state.authenticated" (click)="login()">Login To Join</ion-button>
+          <ion-button fill="outline" (click)="back()" data-testid="project-cover-go-back">Go Back</ion-button>
+          <ion-button *ngIf="!state.authenticated" (click)="login()" data-testid="project-cover-login">Login To Join</ion-button>
           <ng-container *ngIf="state.authenticated">
             <ion-button *ngIf="state.buttonState === 'loading'" [disabled]="true">
               <ion-spinner name="crescent"></ion-spinner>
@@ -120,10 +120,11 @@
               *ngIf="state.buttonState === 'notApplied'"
               [disabled]="state.projectState === ProjectStatus.closed"
               (click)="startApplication(state.project)"
+              data-testid="project-cover-join-closed-btn"
             >
               {{ state.projectState === ProjectStatus.open ? 'Join' : 'Closed' }}
             </ion-button>
-            <ion-button *ngIf="state.buttonState === 'createCmProfile'" (click)="createCmProfile()">
+            <ion-button *ngIf="state.buttonState === 'createCmProfile'" (click)="createCmProfile()" data-testid="project-cover-create-cm-profile">
               Create ChangeMaker Profile to Join
             </ion-button>
             <ng-container *ngIf="state.enrollment as enrollment">
@@ -131,6 +132,7 @@
                 <ion-button
                   *imLoadingRoute="this.route.rawRoutes.path.cm.enrollments.ROOT"
                   (click)="viewEnrollment(enrollment)"
+                  data-testid="project-cover-finish-application"
                 >
                   Finish Application
                 </ion-button>
@@ -139,6 +141,7 @@
                 <ion-button
                   *imLoadingRoute="this.route.rawRoutes.path.cm.enrollments.ROOT"
                   (click)="viewEnrollment(enrollment)"
+                  data-testid="project-cover-view-enrollment"
                 >
                   View Enrollment
                 </ion-button>
@@ -147,6 +150,7 @@
                 <ion-button
                   *imLoadingRoute="this.route.rawRoutes.path.cm.enrollments.ROOT"
                   (click)="createPOI(enrollment)"
+                  data-testid="project-cover-earn-credits"
                 >
                   Earn Credits
                 </ion-button>
@@ -154,12 +158,14 @@
               <ion-button
                 *ngIf="state.buttonState === EnrollmentStatus.denied"
                 (click)="startApplication(state.project)"
+                data-testid="project-cover-denied-rejoin"
               >
                 Rejoin
               </ion-button>
               <ion-button
                 *ngIf="state.buttonState === EnrollmentStatus.retired"
                 (click)="startApplication(state.project)"
+                data-testid="project-cover-retired-rejoin"
               >
                 Rejoin
               </ion-button>

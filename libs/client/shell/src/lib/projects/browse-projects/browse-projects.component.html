@@ -29,6 +29,7 @@
           *ngFor="let project of state.projects"
           [images]="project.imagesFilePaths"
           (click)="gotoCoverPage(project)"
+          data-testid="browse-project-card-title"
         >
           <div header class="im-primary-text">{{ project.title }}</div>
           <div body class="card-body">

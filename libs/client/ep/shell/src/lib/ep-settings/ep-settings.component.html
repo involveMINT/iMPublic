@@ -52,7 +52,7 @@
               Your business description is too long.
             </im-error>
           </im-item>
-          <im-item [touched]="true" label="Website">
+          <im-item [touched]="true" label="Website" data-testid="exchange-partner-settings-website">
             <ion-icon slot="start" name="phone-portrait-outline"></ion-icon>
             <input formControlName="website" placeholder="http://google.com" />
             <im-error *ngIf="!form.controls.website.valid">Please enter a valid website.</im-error>
@@ -62,7 +62,7 @@
               <input formControlName="address1" placeholder="address" />
               <im-error *ngIf="!form.get('address.address1').valid">Please enter a valid address.</im-error>
             </im-item>
-            <im-item [touched]="true" label="City">
+            <im-item [touched]="true" label="City" data-testid="exchange-partner-settings-city">
               <input formControlName="city" placeholder="city" />
               <im-error *ngIf="!form.get('address.city').valid">Please enter a valid city.</im-error>
             </im-item>
@@ -74,12 +74,12 @@
               </ion-select>
               <im-error *ngIf="!form.get('address.state').valid">Please enter a valid state.</im-error>
             </im-item>
-            <im-item [touched]="true" label="Zip">
+            <im-item [touched]="true" label="Zip" data-testid="exchange-partner-settings-zip">
               <input formControlName="zip" placeholder="00000" />
               <im-error *ngIf="!form.get('address.zip').valid">Please enter a valid zip.</im-error>
             </im-item>
           </ng-container>
-          <im-item [touched]="true" label="Phone Number">
+          <im-item [touched]="true" label="Phone Number" data-testid="exchange-partner-settings-phone">
             <ion-icon slot="start" name="phone-portrait-outline"></ion-icon>
             <input imPhoneMask formControlName="phone" placeholder="Phone Number" />
             <im-error *ngIf="!form.controls.phone.valid">Please enter a valid phone number.</im-error>

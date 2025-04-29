@@ -96,7 +96,7 @@
           <div body>
             <div class="row">
               <div>Remaining Monthly Budget</div>
-              <div>
+              <div data-testid="ep-dashboard-budget-remaining">
                 {{ (profile.budget - profile.view.receivedThisMonth) / 100 | currency: '':'' }}
                 <ion-icon src="/assets/icons/cc.svg"></ion-icon>
               </div>
@@ -120,7 +120,7 @@
             </div>
             <div class="row">
               <div>Received This Month</div>
-              <div>
+              <div data-testid="ep-dashboard-budget-received">
                 {{ profile.view.receivedThisMonth / 100 | currency: '':'' }}
                 <ion-icon src="/assets/icons/cc.svg"></ion-icon>
               </div>
