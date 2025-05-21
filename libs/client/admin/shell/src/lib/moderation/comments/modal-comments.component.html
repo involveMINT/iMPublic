@@ -1,0 +1,59 @@
+<ng-container *ngIf="state$ | async as state">
+
+  <ion-header>
+    <ion-toolbar>
+      <ion-title>
+        Comments
+      </ion-title>
+      <ion-buttons slot="end">
+        <ion-button (click)="cancel()">
+          <ion-icon slot="icon-only" name="close"></ion-icon>
+        </ion-button>
+      </ion-buttons>
+    </ion-toolbar>
+  </ion-header>
+
+  <ion-content id="content" class="modal-content">
+    <ion-label class="empty-comments" *ngIf="state.comments.length === 0">
+      No comments yet.
+    </ion-label>
+    <ion-label class="empty-comments" *ngIf="state.comments.length === 0">
+      Be the first!
+    </ion-label>
+    <ion-list lines="none">
+        <ion-item *ngFor="let comment of state.comments">
+          <div class="comment-container">
+            <div class="member-handle">
+              <div
+                  class="im-profile-pic feed"
+                  *ngIf="comment.profilePicFilePath | imStorageUrl | async as url"
+                  [ngStyle]="{ 'background-image': 'url(' + url + ')' }"
+                ></div>
+            </div>
+            <ion-list class="comment">
+              <ion-list class="name-info-handle">
+                <ion-label class="name"><b>{{ comment.name }}</b></ion-label>
+                <ion-icon class="information-circle" (click)="viewProfile(comment.handleId)" name="information-circle"></ion-icon>
+                <ion-label class="date" color="medium">{{ comment.dateCreated | date: 'longDate' }}</ion-label>
+              </ion-list>
+              <ion-label class="handle" color="medium">@{{ comment.handleId }}</ion-label>
+              <ion-label class="ion-text-wrap"> {{ comment.text }} </ion-label>     
+            </ion-list>
+          </div>
+          <div class="flag-container">
+            <ion-icon [name]="comment.flagCount > 0 ? 'flag' : 'flag-outline'"></ion-icon>
+          </div>
+          <div class="flag-container">
+            <p>{{comment.flagCount}}</p>
+          </div>
+          <div *ngIf="!checkCommentHidden(comment)">
+            <ion-button class="hide-button" color="danger" (click)="hide(comment.id)">Hide</ion-button>
+          </div>
+          <div *ngIf="checkCommentHidden(comment)">
+            <ion-button class="unhide-button" color="medium" (click)="unhide(comment.id)">Unhide</ion-button>
+          </div>
+        </ion-item>
+    </ion-list>
+  </ion-content>
+
+</ng-container>
