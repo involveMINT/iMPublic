@@ -35,7 +35,7 @@
         <im-block [join]="true" icon="timer">
           <div header class="im-primary-text">1. Record Your Time (hh:mm:ss)</div>
           <div body>
-            <div class="timer">
+            <div class="timer" data-testid="cm-poi-timer">
               <div>{{ state.timeElapsedHour | number: '2.0' }}</div>
               <div>:</div>
               <div>{{ state.timeElapsedMinute | number: '2.0' }}</div>
@@ -118,7 +118,7 @@
             {{ (poi.enrollment.project!.questions.length || 0) + 2 }}.
             {{ poi.enrollment.project.requireImages ? '' : 'Optionally' }} Upload Photos of Impact
           </div>
-          <div body class="im-images-cont">
+          <div body class="im-images-cont" data-testid="cm-poi-images">
             <ng-container *ngIf="state.status! >= PoiStatus.submitted">
               <ng-container *ngIf="poi.imagesFilePaths | imStorageUrl | async as urls">
                 <ng-container *ngFor="let url of urls; index as i">

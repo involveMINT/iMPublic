@@ -25,7 +25,7 @@
                     class="budget"
                     [style.grid-template-columns]="budget.value.toFixed(2).length + 'ch auto'"
                   >
-                    <input #budgetInp currencyMask [formControl]="budget" />
+                    <input data-testid="budget-amount-input" #budgetInp currencyMask [formControl]="budget" />
                     <ion-icon *ngIf="!state.saving" src="/assets/icons/cc.svg"></ion-icon>
                     <ion-spinner
                       *ngIf="state.saving === 'saving'"
@@ -103,7 +103,7 @@
                 <div class="tc-math">
                   <div class="pop-text">Received</div>
                   <div class="amount">
-                    <span>
+                    <span data-testid="budget-amount-received">
                       {{ state.profile!.view.receivedThisMonth / 100 | currency: '':'' }}
                     </span>
                     <ion-icon src="/assets/icons/cc.svg"></ion-icon>
@@ -116,7 +116,7 @@
                     <ion-icon src="/assets/icons/cc.svg"></ion-icon>
                   </div>
                   <div class="amount" *ngIf="profile!.budget">
-                    <span>
+                    <span data-testid="budget-amount-remaining">
                       {{
                         (state.profile!.budget - state.profile!.view.receivedThisMonth) / 100
                           | currency: '':''
@@ -132,7 +132,7 @@
                     <ion-icon src="/assets/icons/cc.svg"></ion-icon>
                   </div>
                   <div class="amount" *ngIf="profile!.budget as budget">
-                    <span>{{ budget / 100 | currency: '':'' }}</span>
+                    <span data-testid="budget-total">{{ budget / 100 | currency: '':'' }}</span>
                     <ion-icon src="/assets/icons/cc.svg"></ion-icon>
                   </div>
                 </div>

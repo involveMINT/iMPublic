@@ -31,6 +31,7 @@
             *ngFor="let project of state.projects; trackBy: projectTrack"
             [images]="project.imagesFilePaths"
             (click)="editProject(project)"
+            data-testid="project"
           >
             <div header class="im-primary-text" header (click)="editProject(project)">
               <span *ngIf="project.title">{{ project.title }}</span>

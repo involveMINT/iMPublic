@@ -2,13 +2,13 @@
   <ion-header [class.ion-no-border]="true">
     <ion-toolbar>
       <ion-buttons slot="start">
-        <ion-button class="no-padding" (click)="back()">
+        <ion-button class="no-padding" (click)="back()" data-testid="serve-partner-project-back-button">
           <ion-icon name="chevron-back" color="primary"></ion-icon>
         </ion-button>
       </ion-buttons>
-      <ion-title>{{ state.project?.title || 'Project Editor' }}</ion-title>
+      <ion-title data-testid="serve-partner-project-title">{{ state.project?.title || 'Project Editor' }}</ion-title>
       <ion-buttons slot="end">
-        <ion-button (click)="refresh()">
+        <ion-button data-testid="serve-partner-project-refresh-button" (click)="refresh()">
           <ion-icon slot="icon-only" name="refresh"></ion-icon>
         </ion-button>
       </ion-buttons>
@@ -17,7 +17,7 @@
   </ion-header>
 
   <ion-content>
-    <div class="im-centered" *ngIf="!state.project && state.loaded">Project not found.</div>
+    <div class="im-centered" *ngIf="!state.project && state.loaded" data-testid="serve-partner-project-not-found">Project not found.</div>
     <im-tabs
       *ngIf="state.project"
       [activeTabIndex]="state.activeTabIndex"
@@ -44,8 +44,9 @@
                 [disable]="state.project!.imagesFilePaths.length < i"
                 (uploadImg)="uploadImage(state.project, $event)"
                 (deleteImg)="deleteImage(state.project, i)"
+                data-testid="serve-partner-project-image"
               >
-                <div *ngIf="i > 0" class="cover" (click)="makeCoverImage(state.project, i)">Make Cover</div>
+                <div *ngIf="i > 0" class="cover" (click)="makeCoverImage(state.project, i)" data-testid="serve-partner-project-image-make-cover">Make Cover</div>
               </im-image>
             </div>
 
@@ -53,6 +54,7 @@
               <ion-select
                 (ionChange)="listingStatusChanged($event)"
                 [value]="projectForm.value.listingStatus"
+                data-testid="serve-partner-project-listing"
               >
                 <ion-select-option *ngFor="let list of listingOptions" [value]="list">
                   {{ list | titlecase }}
@@ -62,12 +64,12 @@
                 Please enter a valid listing status.
               </im-error>
               <div end [ngSwitch]="state.project!.listingStatus">
-                <div *ngSwitchCase="'public'">
+                <div *ngSwitchCase="'public'" data-testid="serve-partner-project-listing-public">
                   This project is public and is listed
                   <a [href]="deepLink" target="_blank">here.</a>
                 </div>
-                <div *ngSwitchCase="'private'">This project is private and cannot be seen.</div>
-                <div *ngSwitchCase="'unlisted'">
+                <div *ngSwitchCase="'private'" data-testid="serve-partner-project-listing-private">This project is private and cannot be seen.</div>
+                <div *ngSwitchCase="'unlisted'" data-testid="serve-partner-project-listing-unlisted">
                   This project is unlisted and only can be viewed with
                   <a [href]="deepLink" target="_blank">this link.</a>
                 </div>
@@ -75,30 +77,30 @@
               </div>
             </im-item>
 
-            <im-item [touched]="true" label="Title">
-              <input formControlName="title" />
+            <im-item [touched]="true" label="Title" data-testid="serve-partner-project-title">
+              <input formControlName="title" data-testid="serve-partner-project-title-input"/>
               <im-error *ngIf="!projectForm.controls.title.valid">Please enter a title.</im-error>
             </im-item>
 
-            <im-item [touched]="true" label="Description">
-              <textarea formControlName="description"></textarea>
+            <im-item [touched]="true" label="Description" data-testid="serve-partner-project-description">
+              <textarea formControlName="description" data-testid="serve-partner-project-description-input"></textarea>
               <im-error *ngIf="!projectForm.controls.description.valid">
                 Please enter a valid description (max character length of {{ maxCharLen }}).
               </im-error>
             </im-item>
 
-            <im-item [touched]="true" label="Address">
-              <input formControlName="address1" type="address1" placeholder="Address" />
+            <im-item [touched]="true" label="Address" data-testid="serve-partner-project-address">
+              <input formControlName="address1" type="address1" placeholder="Address" data-testid="serve-partner-project-address-input"/>
               <im-error *ngIf="!projectForm.controls.address1.valid">Please enter a valid address.</im-error>
             </im-item>
 
-            <im-item [touched]="true" label="Address 2">
-              <input formControlName="address2" type="address2" placeholder="Address 2" />
+            <im-item [touched]="true" label="Address 2" data-testid="serve-partner-project-address2">
+              <input formControlName="address2" type="address2" placeholder="Address 2" data-testid="serve-partner-project-address2-input"/>
               <im-error *ngIf="!projectForm.controls.address2.valid">Please enter a valid address.</im-error>
             </im-item>
 
-            <im-item [touched]="true" label="City">
-              <input formControlName="city" type="city" placeholder="City" />
+            <im-item [touched]="true" label="City" data-testid="serve-partner-project-city">
+              <input formControlName="city" type="city" placeholder="City" data-testid="serve-partner-project-city-input"/>
               <im-error *ngIf="!projectForm.controls.city.valid">Please enter a valid city.</im-error>
             </im-item>
 
@@ -107,11 +109,13 @@
               label="State"
               [required]="true"
               [hasError]="!projectForm.controls.state.valid"
+              data-testid="serve-partner-project-state"
             >
               <ion-select
                 test-attr="state-project-editor"
                 (ionChange)="USStateChange($event)"
                 [value]="selectedUSState"
+                data-testid="serve-partner-project-state-select"
               >
                 <ion-select-option *ngFor="let state of USStates" [value]="state">
                   {{ state }}
@@ -120,55 +124,56 @@
               <im-error *ngIf="!projectForm.controls.state.valid">Please enter a valid state.</im-error>
             </im-item>
 
-            <im-item [touched]="true" label="Zip Code">
-              <input formControlName="zip" type="zip" placeholder="Zip Code" />
+            <im-item [touched]="true" label="Zip Code" data-testid="serve-partner-project-zip">
+              <input formControlName="zip" type="zip" placeholder="Zip Code" data-testid="serve-partner-project-zip-input"/>
               <im-error *ngIf="!projectForm.controls.zip.valid">Please enter a valid zip code.</im-error>
             </im-item>
 
-            <im-item [touched]="true" label="Preferred Schedule of Work">
-              <input formControlName="preferredScheduleOfWork" placeholder="Ex.: 4 hours per shift" />
+            <im-item [touched]="true" label="Preferred Schedule of Work" data-testid="serve-partner-project-work-schedule">
+              <input formControlName="preferredScheduleOfWork" placeholder="Ex.: 4 hours per shift" data-testid="serve-partner-project-work-schedule-input"/>
               <im-error *ngIf="!projectForm.controls.preferredScheduleOfWork.valid">
                 Please enter the Preferred Schedule of Work.
               </im-error>
             </im-item>
 
-            <im-item [touched]="true" label="Maximum CommunityCredits Earned Per Day" [required]="true">
-              <input formControlName="creditsEarned" currencyMask />
+            <im-item [touched]="true" label="Maximum CommunityCredits Earned Per Day" [required]="true" data-testid="serve-partner-project-max-credits">
+              <input formControlName="creditsEarned" currencyMask data-testid="serve-partner-project-max-credits-input"/>
               <im-error *ngIf="!projectForm.controls.creditsEarned.valid">
                 Please enter the daily maximum Credit amount earned for this Project.
               </im-error>
             </im-item>
 
-            <im-item [touched]="true" label="Maximum ChangeMaker Enrollments">
-              <input formControlName="maxChangeMakers" placeholder="Ex.: 5" />
+            <im-item [touched]="true" label="Maximum ChangeMaker Enrollments" data-testid="serve-partner-project-max-changemakers">
+              <input formControlName="maxChangeMakers" placeholder="Ex.: 5" data-testid="serve-partner-project-max-changemakers-input"/>
               <im-error *ngIf="!projectForm.controls.maxChangeMakers.valid">
                 Please enter a positive number.
               </im-error>
             </im-item>
 
-            <im-item [touched]="true" label="Require Location for POI">
+            <im-item [touched]="true" label="Require Location for POI" data-testid="serve-partner-project-require-locaton">
               <ion-label text-wrap>
                 {{
                   projectForm.value.requireLocation ? 'Location is required.' : 'Location is not required.'
                 }}
               </ion-label>
-              <ion-toggle mode="md" slot="start" formControlName="requireLocation"></ion-toggle>
+              <ion-toggle mode="md" slot="start" formControlName="requireLocation" data-testid="serve-partner-project-require-locaton-radio"></ion-toggle>
             </im-item>
 
-            <im-item [touched]="true" label="Require Images for POI">
+            <im-item [touched]="true" label="Require Images for POI" data-testid="serve-partner-project-require-images">
               <ion-label text-wrap>
                 {{ projectForm.value.requireImages ? 'Images are required.' : 'Images are not required.' }}
               </ion-label>
-              <ion-toggle mode="md" slot="start" formControlName="requireImages"></ion-toggle>
+              <ion-toggle mode="md" slot="start" formControlName="requireImages" data-testid="serve-partner-project-require-images-radio"></ion-toggle>
             </im-item>
 
-            <im-item [touched]="true" label="Start Date">
+            <im-item [touched]="true" label="Start Date" data-testid="serve-partner-project-start-date">
               <input
                 formControlName="startDate"
                 type="date"
                 value="{{ projectForm.value.startDate | date: 'yyyy-MM-dd' }}"
+                data-testid="serve-partner-project-start-date-input"
               />
-              <im-error *ngIf="!projectForm.controls.startDate.valid">
+              <im-error *ngIf="!projectForm.controls.startDate.valid" data-testid="serve-partner-project-start-date-error">
                 Please enter Project Start Date.
               </im-error>
             </im-item>
@@ -177,13 +182,15 @@
               [touched]="true"
               label="End Date"
               [hasError]="projectForm.controls.endDate.touched && projectForm.getError('endDateNotAfter')"
+              data-testid="serve-partner-project-end-date"
             >
               <input
                 formControlName="endDate"
                 type="date"
                 value="{{ projectForm.value.endDate | date: 'yyyy-MM-dd' }}"
+                data-testid="serve-partner-project-end-date-input"
               />
-              <im-error *ngIf="!projectForm.controls.endDate.valid">
+              <im-error *ngIf="!projectForm.controls.endDate.valid" data-testid="serve-partner-project-start-date-error">
                 End date must come after start date.
               </im-error>
             </im-item>
@@ -192,7 +199,8 @@
               [touched]="true"
               label="Waiver"
               info="This is a custom Waiver document that a ChangeMaker will have to sign (in addition to the Standard Waiver) in order to apply for this Project."
-            >
+              data-testid="serve-partner-project-require-custom-waiver"
+              >
               <ion-label text-wrap>
                 {{
                   projectForm.value.requireCustomWaiver
@@ -200,13 +208,13 @@
                     : 'Use only standard waiver.'
                 }}
               </ion-label>
-              <ion-toggle mode="md" slot="start" formControlName="requireCustomWaiver"></ion-toggle>
+              <ion-toggle mode="md" slot="start" formControlName="requireCustomWaiver" data-testid="serve-partner-project-require-custom-waiver-radio"></ion-toggle>
             </im-item>
             <im-block *ngIf="projectForm.value.requireCustomWaiver" [style.margin-bottom]="'5px'">
               <div header class="im-primary-text">Custom Waiver</div>
-              <div body class="waiver">
+              <div body class="waiver" data-testid="serve-partner-project-custom-waiver">
                 <div class="im-buttons">
-                  <ion-button (click)="uploadCustomWaiverButtonClick()">
+                  <ion-button (click)="uploadCustomWaiverButtonClick()" data-testid="serve-partner-project-custom-waiver-button">
                     Upload
                     <input type="file" (change)="uploadCustomWaiver($event, state.project)" #waiverInp />
                   </ion-button>
@@ -226,11 +234,12 @@
               label="Collect SDG Data"
               [generic]="true"
               info="These are questions that each ChangeMaker will be required to answer upon POI submission."
+              data-testid="serve-partner-project-questions"
             >
               <ng-container formArrayName="questions" *ngFor="let _ of questions.controls; index as i">
                 <div [style.padding-top]="i > 0 ? '1.5rem' : ''"></div>
                 <ng-container [formGroupName]="i">
-                  <im-item label="Question {{ i + 1 }}">
+                  <im-item label="Question {{ i + 1 }}" data-testid="serve-partner-project-question-textarea">
                     <textarea test-attr="question-textarea" formControlName="text"></textarea>
                   </im-item>
                 </ng-container>
@@ -248,18 +257,19 @@
               label="Clearances"
               [generic]="true"
               info="These are clearance documents that a ChangeMaker will be required to upload to qualify for this Project's service."
+              data-testid="serve-partner-project-clearances"
             >
               <ng-container formArrayName="projectDocuments" *ngFor="let _ of documents.controls; index as i">
                 <div [style.padding-top]="i > 0 ? 'var(--im-padding)' : ''"></div>
                 <ng-container [formGroupName]="i">
                   <im-item label="Clearance {{ i + 1 }}">
-                    <input formControlName="title" />
+                    <input formControlName="title" data-testid="clearance-title" />
                   </im-item>
                   <im-item label="Description {{ i + 1 }}">
-                    <textarea formControlName="description"></textarea>
+                    <textarea formControlName="description" data-testid="clearance-description"></textarea>
                   </im-item>
                   <im-item label="Info Url {{ i + 1 }}">
-                    <input formControlName="infoUrl" type="url" />
+                    <input formControlName="infoUrl" type="url" data-testid="clearance-url"/>
                   </im-item>
                 </ng-container>
                 <ion-button (click)="deleteDoc(i)" fill="outline" class="delete-btn" color="danger">
@@ -267,7 +277,7 @@
                 </ion-button>
               </ng-container>
               <span [style.width]="'100%'"></span>
-              <ion-button (click)="addDocument()" class="add" [disabled]="documents.length >= maxDocuments">
+              <ion-button (click)="addDocument()" class="add" [disabled]="documents.length >= maxDocuments" data-testid="serve-partner-project-clearances-add-button">
                 <ion-icon slot="icon-only" name="add" *ngIf="documents.length < maxDocuments"></ion-icon>
                 <span *ngIf="documents.length >= maxDocuments">Max Documents Reached</span>
               </ion-button>
@@ -472,6 +482,7 @@
           </div>
           <div
             *ngFor="let poi of state.pois | paginate: { itemsPerPage: 10, currentPage: poiPage, id: 'poi' }"
+            data-testid="project-upsert-activity-poi"
           >
             <im-block [join]="true">
               <div header [ngSwitch]="poi.status">
