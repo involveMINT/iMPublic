@@ -159,8 +159,37 @@
               </ng-container>
               <div footer class="im-buttons">
                 <ion-button fill="outline" (click)="prev()">Back</ion-button>
+                <ion-button (click)="next()" [disabled]="createProfileForm.controls.phone.invalid">
+                  Next
+                </ion-button>
+              </div>
+            </im-block>
+          </div>
+        </ion-slide>
+        <ion-slide class="slide">
+          <div class="im-cont small">
+            <div class="info">
+              <div class="im-primary-text">Accept this waiver.</div>
+              <span class="description">
+                Accept waiver blah
+              </span>
+            </div>
+            <im-block>
+              <ng-container body>
+                <im-block [style.cursor]="'pointer'" icon="create" (click)="openWaiver(enrollment)">
+                  <div header class="im-primary-text">Accept Waiver</div>
+                  <div body>Click to View Waiver.</div>
+                  <ion-checkbox
+                    end
+                    (click)="checkboxClicked($event)"
+                    [checked]="enrollment.acceptedWaiver"
+                  ></ion-checkbox>
+                </im-block>
+              </ng-container>
+              <div footer class="im-buttons">
+                <ion-button fill="outline" (click)="prev()">Back</ion-button>
                 <ion-button (click)="submit()" [disabled]="!createProfileForm.valid || state.verifyingHandle">
-                  Submit
+                  Accept Waiver
                 </ion-button>
               </div>
             </im-block>
@@ -170,3 +199,4 @@
     </div>
   </ion-content>
 </ng-container>
+goal
