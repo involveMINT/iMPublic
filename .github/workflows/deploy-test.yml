@@ -91,5 +91,6 @@ jobs:
 
       - name: Deploy API to App Engine
         run: |
-          firebase use ${{ env.TEST_FIREBASE_PROJECT }} && firebase deploy
+          firebase use ${{ env.TEST_FIREBASE_PROJECT }} && \
+          firebase deploy --message "Test deploy (${GITHUB_REF#refs/heads/})"
 
