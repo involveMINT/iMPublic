@@ -119,7 +119,6 @@ export class UserService {
    * @param query Orcha query of the admins's signed token.
    */
   async adminLogin(password: string, query: IQuery<{ token: string }>) {
-    console.log(await this.auth.createPasswordHash(password, ''));
     const compare = await this.auth.comparePasswordToHashed(password, environment.adminPasswordHash, '');
     if (!compare) {
       throw new HttpException(`Username or password incorrect.`, HttpStatus.UNAUTHORIZED);
