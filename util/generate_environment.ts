@@ -1,9 +1,6 @@
 import * as fs from 'fs';
 import * as path from 'path';
-import { Env } from '../../libs/shared/domain/src/lib/environments/environment.interface';
-import { TypeOrmModuleOptions } from '@nestjs/typeorm';
-import { FirebaseScryptOptions } from 'firebase-scrypt';
-import * as geocoder from 'node-geocoder';
+import { Env } from '../libs/shared/domain/src/lib/environments/environment.interface';
 
 
 /**
