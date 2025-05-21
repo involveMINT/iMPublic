@@ -13,6 +13,7 @@ env:
 jobs:
   deploy-server:
     name: ▶️ API → Test
+    environment: test
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -27,7 +28,7 @@ jobs:
       - name: Generate Angular environment (test)
         run: |
           ls -R .
-          npx ts-node ./util/generate-environment.ts test
+          npx ts-node ./util/generate_environment.ts test
         env:
           INVOLVEMINT_SETTINGS: ${{ secrets.INVOLEMINT_TEST_SETTINGS_SERVER }}
           # HOST:                          ${{ vars.TEST_HOST }}
@@ -66,6 +67,7 @@ jobs:
   deploy-client:
     name: ▶️ Client → Test
     runs-on: ubuntu-latest
+    environment: test
     steps:
       - uses: actions/checkout@v3
 
@@ -77,7 +79,7 @@ jobs:
       - run: npm ci
 
       - name: Generate Angular environment (test)
-        run: npx ts-node ./util/generate-environment.ts test
+        run: npx ts-node ./util/generate_environment.ts test
         env:
           INVOLVEMINT_SETTINGS: ${{ secrets.INVOLEMINT_TEST_SETTINGS_CLIENT }}
 
