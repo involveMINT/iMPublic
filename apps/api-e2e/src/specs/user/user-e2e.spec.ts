@@ -14,7 +14,7 @@ describe('User Orchestration Integration Tests', () => {
 
   let userOrcha: ITestOrchestration<IUserOrchestration>;
 
-  const creds = { id: 'email@email.com', password: 'GoodPwd341' };
+  const creds = { id: 'email@email.com', password: 'GoodPwd@341' };
   let auth: { body: { token: string }; statusCode: HttpStatus };
 
   beforeAll(async () => {
@@ -83,10 +83,10 @@ describe('User Orchestration Integration Tests', () => {
      * token without verifying their email, but check anyways.
      */
     it('should not give user data if unverified email', async () => {
-      environment.production = true;
+      environment.environment = 'production';
       const { statusCode } = await userOrcha.getUserData({}, auth.body.token);
       expect(statusCode).toBe(HttpStatus.UNAUTHORIZED);
-      environment.production = false;
+      environment.environment = 'local';
     });
   });
 

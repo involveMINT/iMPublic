@@ -57,6 +57,7 @@ import * as fs from 'fs';
 import * as geocoder from 'node-geocoder';
 import { getConnection } from 'typeorm';
 import * as uuid from 'uuid';
+import { getDefaultAddress } from '@involvemint/shared/domain';
 
 @Injectable()
 export class AppService {
@@ -103,6 +104,26 @@ export class AppService {
         const user = passwords.find((p) => p.email === cm.email);
         const priv = changeMakersPrivate.find((p) => p.id === cm.id);
 
+        let address;
+
+        if(environment.environment === 'local')
+        {
+          address = getDefaultAddress();
+          address.address1 = '';
+          address.zip = '';
+        }
+        else
+        {
+          address = cm.city &&
+            cm.state && {
+              id: uuid.v4(),
+              address1: '',
+              city: cm.city,
+              state: cm.state,
+              zip: '',
+            };
+        }
+
         return {
           id: cm.id,
           firstName: cm.firstName,
@@ -110,14 +131,7 @@ export class AppService {
           handle: { id: cm.handle },
           bio: cm.bio,
           profilePicFilePath: cm.profilePicUrl,
-          address: cm.city &&
-            cm.state && {
-              id: uuid.v4(),
-              address1: '',
-              city: cm.city,
-              state: cm.state,
-              zip: '',
-            },
+          address: address,
           credits: [],
           dateCreated: user?.createdAt ? new Date(Number(user.createdAt)) : new Date(),
           enrollments: [],
@@ -328,15 +342,27 @@ export class AppService {
     await this.projectRepo.upsertMany(
       projects
         .map((p): IUpsertEntity<Project> => {
-          return {
-            id: p.id,
-            address: {
+          let address;
+
+          if(environment.environment === 'local')
+          {
+            address = getDefaultAddress();
+            address.zip = '';
+          }
+          else
+          {
+            address = {
               id: uuid.v4(),
               city: p.city,
               state: p.state,
               address1: p.address,
               zip: '',
-            },
+            };
+          }
+
+          return {
+            id: p.id,
+            address: address,
             description: p.description,
             listingStatus: p.listed ? 'public' : 'private',
             title: p.title,
@@ -722,6 +748,24 @@ export class AppService {
     await this.offerRepo.upsertMany(
       await Promise.all(
         CmOffers.map(async (e): Promise<IUpsertEntity<Offer>> => {
+          let address;
+
+          if(environment.environment === 'local')
+          {
+            address = getDefaultAddress();
+            address.zip = '';
+          }
+          else
+          {
+            address = e.address && {
+              id: uuid.v4(),
+              address1: e.address,
+              city: e.city,
+              state: e.state,
+              zip: '',
+            };
+          }
+
           return {
             id: e.id,
             name: e.title,
@@ -730,13 +774,7 @@ export class AppService {
             dateUpdated: e.dateListed,
             imagesFilePaths: e.photoUrls,
             changeMaker: e.changeMakerId,
-            address: e.address && {
-              id: uuid.v4(),
-              address1: e.address,
-              city: e.city,
-              state: e.state,
-              zip: '',
-            },
+            address: address,
             listingStatus: e.listed ? 'public' : 'private',
             price: e.price,
           };
@@ -854,9 +892,17 @@ export class AppService {
     if (!address) {
       return null;
     }
+    let res: geocoder.Entry[];
 
-    const geo = geocoder.default({ provider: 'google', apiKey: environment.gcpApiKey });
-    const res = await geo.geocode(address);
+    if(environment.environment === 'local')
+    {
+      res = environment.defaultLocalAddress;
+    }
+    else
+    {
+      const geo = geocoder.default({ provider: 'google', apiKey: environment.gcpApiKey });
+      res = await geo.geocode(address);
+    }
 
     const a = res[0];
 

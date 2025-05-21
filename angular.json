@@ -50,7 +50,7 @@
               "fileReplacements": [
                 {
                   "replace": "libs/shared/domain/src/lib/environments/environment.ts",
-                  "with": "libs/shared/domain/src/lib/environments/environment.prod.ts"
+                  "with": "libs/shared/domain/src/lib/environments/environment.prod.ui.ts"
                 }
               ],
               "optimization": true,
@@ -77,7 +77,7 @@
               "fileReplacements": [
                 {
                   "replace": "libs/shared/domain/src/lib/environments/environment.ts",
-                  "with": "libs/shared/domain/src/lib/environments/environment.test.ts"
+                  "with": "libs/shared/domain/src/lib/environments/environment.test.ui.ts"
                 }
               ],
               "optimization": true,
@@ -100,11 +100,11 @@
                 }
               ]
             },
-            "org": {
+            "local": {
               "fileReplacements":[
                 {
                   "replace": "libs/shared/domain/src/lib/environments/environment.ts",
-                  "with": "libs/shared/domain/src/lib/environments/environment.org.ts"
+                  "with": "libs/shared/domain/src/lib/environments/environment.local.ts"
                 }
               ]
             }
@@ -124,8 +124,8 @@
             "test": {
               "browserTarget": "involvemint:build:test"
             },
-            "org": {
-              "browserTarget": "involvemint:build:org"
+            "local": {
+              "browserTarget": "involvemint:build:local"
             }
           }
         },
@@ -170,8 +170,8 @@
             "test": {
               "devServerTarget": "involvemint:serve:test"
             },
-            "org": {
-              "devServerTarget": "involvemint:serve"
+            "local": {
+              "devServerTarget": "involvemint:serve:local"
             }
           }
         },
@@ -205,7 +205,7 @@
               "fileReplacements": [
                 {
                   "replace": "libs/shared/domain/src/lib/environments/environment.ts",
-                  "with": "libs/shared/domain/src/lib/environments/environment.prod.ts"
+                  "with": "libs/shared/domain/src/lib/environments/environment.prod.api.ts"
                 }
               ]
             },
@@ -216,7 +216,15 @@
               "fileReplacements": [
                 {
                   "replace": "libs/shared/domain/src/lib/environments/environment.ts",
-                  "with": "libs/shared/domain/src/lib/environments/environment.test.ts"
+                  "with": "libs/shared/domain/src/lib/environments/environment.test.api.ts"
+                }
+              ]
+            },
+            "local": {
+              "fileReplacements":[
+                {
+                  "replace": "libs/shared/domain/src/lib/environments/environment.ts",
+                  "with": "libs/shared/domain/src/lib/environments/environment.local.ts"
                 }
               ]
             },
@@ -237,8 +245,8 @@
             "port": 2324
           },
           "configurations": {
-            "org":{
-              "buildTarget": "api:build:org"
+            "local":{
+              "buildTarget": "api:build:local"
             }
           }
         },
@@ -858,7 +866,7 @@
               "fileReplacements": [
                 {
                   "replace": "apps/migrate/src/environments/environment.ts",
-                  "with": "apps/migrate/src/environments/environment.prod.ts"
+                  "with": "apps/migrate/src/environments/environment.prod.api.ts"
                 }
               ]
             },
@@ -869,7 +877,7 @@
               "fileReplacements": [
                 {
                   "replace": "apps/migrate/src/environments/environment.ts",
-                  "with": "apps/migrate/src/environments/environment.test.ts"
+                  "with": "apps/migrate/src/environments/environment.test.api.ts"
                 }
               ]
             }

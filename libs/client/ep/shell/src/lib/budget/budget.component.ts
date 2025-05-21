@@ -26,7 +26,7 @@ export class BudgetComponent extends StatefulComponent<State> implements OnInit 
   @ViewChild('budgetInp') budgetInp!: ElementRef<HTMLInputElement>;
 
   readonly budget = new FormControl<number>(0, (e) => Validators.required(e));
-
+  
   constructor(private readonly user: UserFacade) {
     super({ profile: null, saving: null });
   }

@@ -140,7 +140,7 @@
                 </div>
                 <im-item [touched]="true">
                   <ion-icon slot="start" src="/assets/icons/cc.svg"></ion-icon>
-                  <input formControlName="budget" currencyMask />
+                  <input data-testid="budget-amount-input" formControlName="budget" currencyMask />
                   <im-error
                     *ngIf="
                       createProfileForm.controls.budget.invalid && createProfileForm.controls.budget.touched

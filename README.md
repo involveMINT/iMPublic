@@ -24,14 +24,14 @@ Run the following commands.
 3. `[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"`
 4. Refresh your shell (close and reopen). If you're using zsh, here's a shortcut: `source ~/.zshrc`
 5. If the following command does not throw an error, you're good so far: `nvm -v`
-6. `nvm install --lts`
-7. `nvm use --lts`
+6. `nvm install lts/gallium`
+7. `nvm use lts/gallium`
 
 ### Configuring Firebase
 
 In order to run this code, you will need to navigate to [firebase](https://console.firebase.google.com/). You will see a screen that looks like ![firebase-landing](/assets/firebase-landing.png) and click "Create a project" (if you don't already have a GCP account and an existing project where you want to use Firebase). Once you have a project, you should see a screen like ![this](assets/firebase-dashboard.png) Once here, click the little gear and you'll see a screen that looks like ![this](assets/firebase-settings.png) Select the "Service accounts" tab and you'll see a screen that looks like ![this](assets/firebase-service-accounts.png) Hit the "Manage service account permissions" hyperlink which will take you to your GCP project. You will see a screen that looks like ![this](/assets/googlecloud-service-accounts.png). Click the account and then hit the "Keys" tab. You should see a screen that looks like ![this](/assets/service-account-keys.png). Click "Add Key" and then choose the "JSON" option to download it as a JSON file.
 
-Ensure you are in the project directory (the directory that this file is in). Run the following command: `cp libs/shared/domain/src/lib/environments/environment.ts libs/shared/domain/src/lib/environments/environment.prod.ts` and open the new file (environment.prod.ts) in your editor. It should look like this at first:
+Ensure you are in the project directory (the directory that this file is in). Run the following command: `cp libs/shared/domain/src/lib/environments/environment.ts libs/shared/domain/src/lib/environments/environment.local.ts` and open the new file (environment.prod.ts) in your editor. It should look like this at first:
 
 ```typescript
 import { Env } from './environment.interface';
@@ -52,7 +52,7 @@ export const environment: Env = {
   typeOrmConfig: {
     type: 'postgres',
     host: '127.0.0.1',
-    port: 5432,
+    port: 5433,
     username: 'postgres',
     password: '1Qazxsw2',
     database: 'involvemint',
@@ -99,6 +99,18 @@ export const environment: Env = {
     saltSeparator: 'Bw==',
     signerKey: 'de/PQ/Gy53mgslvUgDUKDCgHJPArYqbFnGILLQZNe5My/CvqIThVL/CsndU8oudZ9lc4B7PT8w3sAar2/luQxA==',
   },
+  defaultLocalAddress: [{
+    streetNumber: '5000',
+    streetName: 'Forbes Ave',
+    formattedAddress: '5000 Forbes Ave, Pittsburgh, PA 15213',
+    city: 'Pittsburgh',
+    administrativeLevels: {
+      level1short: 'PA'
+    },
+    zipcode: '15213',
+    latitude: 40.444229,
+    longitude: -79.943367
+  }]
 };
 ```
 
@@ -106,10 +118,25 @@ Under the key "typeOrmConfig", please change the password field to "postgres". U
 
 ### Starting the Containers
 
-Run `docker compose up` in the root directory, which will spin up a PostgreSQL database on port 5432 and a PgAdmin UI on port 8889.
+Run `docker compose up` in the root directory, which will spin up a PostgreSQL database on port 5433, a PgAdmin UI on port 8889, and a firestore emulator available at http://127.0.0.1:4000.
+
+If you are prompted for the pasword (below screenshot) when opening PgAdmin at http://localhost:8889 enter `postgres`. 
+![postgres_db_password_required](/assets/postgres_db_password_required.png)
+
 
 ### Starting the Apps
 
-Open a terminal and run `npm i` to install all the required packages. Once done, run `export NODE_OPTIONS=--openssl-legacy-provider` because otherwise there will be an error with OpenSSL. To start the client, run `npm run start:client`. To start the server, open a new terminal, export the same environment variable as before (`export NODE_OPTIONS=--openssl-legacy-provider`), run `npm run build`, and then `npm run start`.
+- Open a terminal and run `npm i` from root directory to install all the required packages. 
+- Run `export FIREBASE_STORAGE_EMULATOR_HOST=localhost:9199`. 
+- Run `export FIRESTORE_EMULATOR_HOST='localhost:8080'`. 
+- Run `npm run start:client:local` which will start the client app.
+- Leave that terminal open and running and open a new terminal
+- In the new terminal: Run `export FIREBASE_STORAGE_EMULATOR_HOST=localhost:9199`. 
+- In the new terminal: Run `export FIRESTORE_EMULATOR_HOST='localhost:8080'`. 
+- Then Run `npm run start:server:local` which will start the server app.
+
+Once running, the client can be accessed via `http://localhost:4202` and the api/server will be running on `http://127.0.0.1:3335`
+
+
 
 For any issues, or to suggest improvements to this documentation, please contact Anish Sinha <<anish@developforgood.org>>

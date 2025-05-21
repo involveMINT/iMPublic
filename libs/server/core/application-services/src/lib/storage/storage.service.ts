@@ -37,13 +37,16 @@ export class StorageService {
     }
 
     const file = this.bucket.file(pathWithName);
-
     const urlOptions = {
       version: 'v4',
       action: 'read',
       expires: ImConfig.storageExpiration(),
     } as const;
 
+    
+    if (process.env.FIREBASE_STORAGE_EMULATOR_HOST) {
+      return file.publicUrl();
+    }
     const [url] = await file.getSignedUrl(urlOptions);
     return url;
   }

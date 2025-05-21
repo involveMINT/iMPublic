@@ -1,5 +1,5 @@
 <div class="header">
-  <div>
+  <div data-testid="im-voucher-status">
     <span class="status">Status:&nbsp;</span>
     <ng-container [ngSwitch]="status">
       <b [style.color]="'var(--im-voucher-active)'" *ngSwitchCase="VoucherStatus.active">Active</b>
@@ -10,16 +10,16 @@
   </div>
   <div class="dates">
     <div>
-      <span>Purchased:&nbsp;</span>
-      <span>{{ voucher!.dateCreated | date: 'M/dd/yy' }}</span>
+      <span data-testid="im-voucher-dates-purchased-label">Purchased:&nbsp;</span>
+      <span data-testid="im-voucher-dates-purchased-value">{{ voucher!.dateCreated | date: 'M/dd/yy' }}</span>
     </div>
     <div>
-      <span>Expires:&nbsp;</span>
-      <span>{{ voucher!.dateExpires | date: 'M/dd/yy' }}</span>
+      <span data-testid="im-voucher-dates-expire-label">Expires:&nbsp;</span>
+      <span data-testid="im-voucher-dates-expire-value">{{ voucher!.dateExpires | date: 'M/dd/yy' }}</span>
     </div>
   </div>
   <div>
-    <span class="status">Purchased from:</span>
+    <span class="status" data-testid="im-voucher-purchased-from">Purchased from:</span>
     {{ voucher!.seller.name }} (
     <im-handle [handle]="voucher!.seller.handle.id"></im-handle>
     )
@@ -28,7 +28,7 @@
 
 <div class="block">
   <div class="block-header">
-    <div class="code">{{ voucher.code }}</div>
+    <div class="code" data-testid="im-voucher-code">{{ voucher.code }}</div>
     <div class="purchaser">
       <div class="profile-pic">
         <ion-icon
@@ -50,6 +50,7 @@
             voucher!.exchangePartnerReceiver!.handle.id ||
             voucher!.servePartnerReceiver!.handle.id
           "
+          data-testid="im-voucher-purchaser-handle"
         ></im-handle>
       </span>
     </div>
@@ -57,7 +58,7 @@
   <div class="body">
     <div class="items" *ngIf="voucher!.offers.length > 0">
       <div class="subtitle-text manrope">Requested Items:</div>
-      <div *ngFor="let offer of voucher!.offers" class="offer">
+      <div *ngFor="let offer of voucher!.offers" class="offer" data-testid="im-voucher-offer">
         <img
           *ngIf="offer.offer.imagesFilePaths[0] | imStorageUrl | async as url; else noImg"
           class="img"
@@ -66,15 +67,15 @@
         <ng-template #noImg><div class="img"></div></ng-template>
         <div class="offer-text-cont">
           <div style="display: grid; width: 100%">
-            <b style="width: 100%" *ngIf="offer.offer.name">{{ offer.offer.name }}</b>
+            <b style="width: 100%" *ngIf="offer.offer.name" data-testid="im-voucher-offer-name">{{ offer.offer.name }}</b>
             <i style="width: 100%" *ngIf="!offer.offer.name">(empty offer)</i>
           </div>
           <span class="offer-price">
-            <span class="im-primary-text" style="color: var(--ion-text-color)">
+            <span class="im-primary-text" style="color: var(--ion-text-color)" data-testid="im-voucher-offer-price">
               {{ offer.offer.price / 100 | currency: '':'' }}
             </span>
             <ion-icon class="im-primary-text" src="/assets/icons/cc.svg"></ion-icon>
-            <span>&nbsp;x{{ offer.quantity }}</span>
+            <span data-testid="im-voucher-offer-quantity">&nbsp;x{{ offer.quantity }}</span>
           </span>
         </div>
       </div>
@@ -83,7 +84,7 @@
       <div class="subtitle-text manrope">Amount:</div>
       <div class="credit-cont">
         <div class="tc">
-          <div class="amount manrope">{{ voucher!.amount / 100 | currency: '':'' }}</div>
+          <div class="amount manrope" data-testid="im-voucher-amount">{{ voucher!.amount / 100 | currency: '':'' }}</div>
           <ion-icon src="/assets/icons/cc.svg" class="amount"></ion-icon>
         </div>
         <div class="equal-to">

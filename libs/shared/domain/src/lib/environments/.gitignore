@@ -1,3 +1,1 @@
-environment.prod.ts
-environment.test.ts
-environment.org.ts
+environment.*.ts
