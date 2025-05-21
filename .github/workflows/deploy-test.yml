@@ -28,7 +28,7 @@ jobs:
       - name: Generate Angular environment (test)
         run: npx ts-node ./util/generate_environment.ts test
         env:
-          INVOLVEMINT_SETTINGS: ${{ secrets.INVOLEMINT_TEST_SETTINGS_SERVER }}
+          INVOLVEMINT_SETTINGS: ${{ secrets.INVOLVEMINT_TEST_SETTINGS_SERVER }}
           # HOST:                          ${{ vars.TEST_HOST }}
           # API_URL:                       ${{ vars.TEST_API_URL }}
           # APP_URL:                       ${{ vars.TEST_APP_URL }}
@@ -79,7 +79,7 @@ jobs:
       - name: Generate Angular environment (test)
         run: npx ts-node ./util/generate_environment.ts test
         env:
-          INVOLVEMINT_SETTINGS: ${{ secrets.INVOLEMINT_TEST_SETTINGS_CLIENT }}
+          INVOLVEMINT_SETTINGS: ${{ secrets.INVOLVEMINT_TEST_SETTINGS_CLIENT }}
 
       - name: Build Client (test)
         run: |
