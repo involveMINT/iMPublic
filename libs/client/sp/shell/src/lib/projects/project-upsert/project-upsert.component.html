@@ -482,6 +482,7 @@
           </div>
           <div
             *ngFor="let poi of state.pois | paginate: { itemsPerPage: 10, currentPage: poiPage, id: 'poi' }"
+            data-testid="project-upsert-activity-poi"
           >
             <im-block [join]="true">
               <div header [ngSwitch]="poi.status">

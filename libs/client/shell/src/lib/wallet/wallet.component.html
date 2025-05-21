@@ -24,7 +24,7 @@
           <div class="im-primary-text title">Balance</div>
           <div class="current-balance" *ngIf="state.creditsLoaded">
             <div class="cur-balance-number-cont">
-              <div class="cur-balance-number">{{ state.balance | currency: '':'' }}</div>
+              <div class="cur-balance-number" data-testid="wallet-balance">{{ state.balance | currency: '':'' }}</div>
               <ion-icon src="/assets/icons/cc.svg" class="cur-balance-icon"></ion-icon>
               <div class="float-shadow text"></div>
               <div class="float-shadow icon"></div>
@@ -35,7 +35,7 @@
             <span class="escrow">
               <span #connectedTo>
                 Credits in Escrow:
-                <b>{{ state.escrowBalance | currency: '':'' }}</b>
+                <b data-testid="wallet-escrow">{{ state.escrowBalance | currency: '':'' }}</b>
               </span>
               <ion-icon src="/assets/icons/cc.svg"></ion-icon>
               &nbsp;
@@ -182,6 +182,7 @@
                   #amountInp
                   currencyMask
                   [formControl]="amount"
+                  data-testid="wallet-send-amount-input"
                 />
                 <ion-icon src="/assets/icons/cc.svg" class="amount-icon"></ion-icon>
               </div>

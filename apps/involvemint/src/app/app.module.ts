@@ -21,6 +21,8 @@ import { JoyrideModule } from 'ngx-joyride';
 import { fancyAnimation } from './animaitons';
 import { AppComponent } from './app.component';
 import { ImRouteStrategy } from './route-reuse-strategy';
+import { USE_EMULATOR as USE_FIRESTORE_EMULATOR } from '@angular/fire/firestore';
+
 
 const ngrxDebugFactory = <T>() => {
   return (reducer: ActionReducer<T>): ActionReducer<T> => {
@@ -105,6 +107,10 @@ const ngrxDebugFactory = <T>() => {
           provide: USER_PROVIDED_META_REDUCERS,
           useFactory: () => [ngrxDebugFactory()],
         },
+  { 
+    provide: USE_FIRESTORE_EMULATOR, 
+    useValue: environment.environment === 'local' ? ['localhost', 8080] : undefined },
+
   ],
   bootstrap: [AppComponent],
 })

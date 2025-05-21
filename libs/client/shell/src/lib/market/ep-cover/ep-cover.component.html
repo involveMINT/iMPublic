@@ -41,7 +41,7 @@
             <div body class="info-disp">
               <div class="b-item">
                 <b>Budget Left:</b>
-                <div class="cash">
+                <div class="cash" data-testid="marketplace-ep-budget-left">
                   {{ (ep.budget - ep.view.receivedThisMonth) / 100 | currency: '':'' }}
                   <ion-icon src="/assets/icons/cc.svg"></ion-icon>
                 </div>
@@ -57,6 +57,7 @@
                     *ngIf="ep.address"
                     target="_blank"
                     href="http://maps.google.com/?q={{ state.fullAddress }}"
+                    data-testid="marketplace-ep-address"
                   >
                     {{ state.fullAddress }}
                   </a>
@@ -77,7 +78,7 @@
           <div class="im-primary-text" style="text-align: center">Items For Sale</div>
           <div style="text-align: center" *ngIf="ep.offers.length === 0">No offers listed.</div>
           <div>
-            <im-block [join]="true" *ngFor="let offer of ep.offers">
+            <im-block [join]="true" *ngFor="let offer of ep.offers" data-testid="ep-offer">
               <div body class="offers">
                 <ion-thumbnail class="thumbnail" *ngIf="offer.imagesFilePaths[0]">
                   <img [src]="offer.imagesFilePaths[0] | imStorageUrl | async" />
@@ -109,6 +110,7 @@
                           quantity: (context.offer?.quantity || 0) - 1
                         })
                       "
+                      data-testid="ep-offer-subtract-one"
                     ></ion-icon>
                     <span>{{ context.offer?.quantity || 0 }}</span>
                     <ion-icon
@@ -122,6 +124,7 @@
                           quantity: (context.offer?.quantity || 0) + 1
                         })
                       "
+                      data-testid="ep-offer-add-one"
                     ></ion-icon>
                   </div>
                   <div></div>

@@ -84,7 +84,7 @@
           <div class="im-cont impact-cont">
             <div class="impact-row">
               <div>
-                <div class="main-text">
+                <div class="main-text" data-testId="cm-profile-impact-credits-earned">
                   {{ state.profile.view.earnedCredits / 100 | currency: '':'' }}
                   <ion-icon [style.margin-bottom]="'-2px'" src="/assets/icons/cc.svg"></ion-icon>
                 </div>
@@ -95,7 +95,7 @@
                 </div>
               </div>
               <div>
-                <div class="main-text">
+                <div class="main-text" data-testId="cm-profile-impact-credits-spent">
                   {{ state.profile.view.spentCredits / 100 | currency: '':'' }}
                   <ion-icon [style.margin-bottom]="'-2px'" src="/assets/icons/cc.svg"></ion-icon>
                 </div>
@@ -108,7 +108,7 @@
             </div>
             <div class="impact-row">
               <div>
-                <div class="main-text">
+                <div class="main-text" data-testId="cm-profile-impact-hours-completed">
                   {{ state.profile.view.secondsCompleted / 3600 | number: '1.2-2' }}
                 </div>
                 <div>
@@ -118,7 +118,7 @@
                 </div>
               </div>
               <div>
-                <div class="main-text" data-testId="cm-profile-poi-approved">{{ state.profile.view.poiApproved }}</div>
+                <div class="main-text" data-testId="cm-profile-impact-poi-approved">{{ state.profile.view.poiApproved }}</div>
                 <div>
                   Proofs of Impact
                   <br />
@@ -126,7 +126,7 @@
                 </div>
               </div>
               <div>
-                <div class="main-text" data-testId="cm-profile-projects-held">{{ state.projectsHeld }}</div>
+                <div class="main-text" data-testId="cm-profile-impact-projects-held">{{ state.projectsHeld }}</div>
                 <div>
                   Projects
                   <br />

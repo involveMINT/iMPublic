@@ -74,7 +74,7 @@
               [style.cursor]="'pointer'"
               (click)="viewVoucher(voucher)"
             >
-              <span>
+              <span data-testid="ep-unredeemed-vouchers-receiver-handle">
                 @{{
                   voucher?.changeMakerReceiver?.handle?.id ||
                     voucher.exchangePartnerReceiver?.handle?.id ||

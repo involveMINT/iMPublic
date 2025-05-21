@@ -828,7 +828,7 @@ export class ImAppComponent extends StatefulComponent<State> implements OnInit {
                 <div style="display: grid">
                   <span style="font-size: 1p6x">
                     Purchase
-                    <b style="font-family: 'Roboto Mono', monospace">${voucher.code}</b>
+                    <b style="font-family: 'Roboto Mono', monospace" data-testid="voucher-buy-popup-code">${voucher.code}</b>
                     is stored under <b>Vouchers</b>.
                   </span>
                   <span>Please present upon checkout.</span>
