@@ -1,0 +1,71 @@
+name: Deploy to Production
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+env:
+  PROD_GCP_PROJECT: ${{ vars.IM_PROD_PROJECT_ID }}
+  PROD_FIREBASE_PROJECT: ${{ vars.IM_PROD_PROJECT_ID }}
+  NODE_VERSION: 22.13.0
+
+jobs:
+  deploy-server:
+    name: 🚀 API → Prod
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Use Node.js ${{ env.NODE_VERSION }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - run: npm ci
+
+      - name: Build API (prod)
+        run: npm run build:server
+
+      - name: Authenticate to GCP
+        uses: google-github-actions/setup-gcloud@v2
+        with:
+          project_id: ${{ env.PROD_GCP_PROJECT }}
+          service_account_key: ${{ secrets.GCP_SA_KEY }}
+
+      - name: Deploy API to App Engine
+        run: |
+          TAG=${GITHUB_REF#refs/tags/}
+          # replace dots so version names are valid
+          VERSION=${TAG//./-}
+          gcloud app deploy app.yaml \
+            --quiet \
+            --stop-previous-version \
+            --promote \
+            --version=${VERSION}
+
+  deploy-client:
+    name: 🚀 Client → Prod
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Use Node.js ${{ env.NODE_VERSION }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - run: npm ci
+
+      - name: Build Client (prod)
+        run: npm run build:client
+
+      - name: Deploy to Firebase Hosting
+        uses: w9jds/firebase-action@v1
+        with:
+          args: deploy --only hosting \
+            --project ${{ env.PROD_FIREBASE_PROJECT }} \
+            --message "Prod deploy (${GITHUB_REF#refs/tags/})"
+        env:
+          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
+

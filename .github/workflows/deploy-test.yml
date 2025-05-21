@@ -1,0 +1,95 @@
+name: Deploy to Test
+
+on:
+  push:
+    branches:
+      - 'feature/AddCICD'
+
+env:
+  TEST_GCP_PROJECT: ${{ vars.IM_TEST_PROJECT_ID }}
+  TEST_FIREBASE_PROJECT: ${{ vars.IM_TEST_PROJECT_ID }}
+  NODE_VERSION: 22.13.0
+
+jobs:
+  deploy-server:
+    name: ▶️ API → Test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Use Node.js ${{ env.NODE_VERSION }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - run: npm ci
+
+      - name: Generate Angular environment (test)
+        run: npx ts-node tools/generate-env.ts test
+        env:
+          INVOLVEMINT_SETTINGS: ${{ secrets.INVOLEMINT_TEST_SETTINGS_SERVER }}
+          # HOST:                          ${{ vars.TEST_HOST }}
+          # API_URL:                       ${{ vars.TEST_API_URL }}
+          # APP_URL:                       ${{ vars.TEST_APP_URL }}
+          # STORAGE_BUCKET:                ${{ vars.TEST_STORAGE_BUCKET }}
+          # ADMIN_PASSWORD_HASH:           ${{ secrets.TEST_ADMIN_PASSWORD_HASH }}
+          # GCP_API_KEY:                   ${{ secrets.TEST_GCP_API_KEY }}
+          # TYPEORM_CONFIG:                ${{ secrets.TEST_TYPEORM_CONFIG }}
+          # FIREBASE_ENV:                  ${{ vars.TEST_FIREBASE_ENV }}
+          # MAILGUN:                       ${{ vars.TEST_MAILGUN }}
+          # TWILIO:                        ${{ vars.TEST_TWILIO }}
+          # GCP:                           ${{ secrets.TEST_GCP }}
+          # SCRYPT:                        ${{ secrets.TEST_SCRYPT }}
+          # DEFAULT_LOCAL_ADDRESS:         ${{ secrets.TEST_DEFAULT_LOCAL_ADDRESS }}
+
+      - name: Build API (test)
+        run: |
+          export NODE_OPTIONS=--openssl-legacy-provider && \
+          nx run-many --target=build --projects=api --configuration=test --skip-nx-cache
+      
+      - name: Authenticate to GCP & Firebase
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: ${{ secrets.GCP_SA_KEY }}
+
+      - name: Deploy API to App Engine
+        run: |
+          BRANCH=${GITHUB_REF#refs/heads/}
+          gcloud config set project ${{ env.TEST_GCP_PROJECT }} && \
+          gcloud app deploy app.yaml \
+            --stop-previous-version \
+            --quiet
+            --version=release-${BRANCH}
+
+  deploy-client:
+    name: ▶️ Client → Test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Use Node.js ${{ env.NODE_VERSION }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - run: npm ci
+
+      - name: Generate Angular environment (test)
+        run: npx ts-node tools/generate-env.ts test
+        env:
+          INVOLVEMINT_SETTINGS: ${{ secrets.INVOLEMINT_TEST_SETTINGS_CLIENT }}
+
+      - name: Build Client (test)
+        run: |
+          export NODE_OPTIONS=--openssl-legacy-provider && \
+          nx run-many --target=build --projects=involvemint --configuration=test --skip-nx-cache
+
+      - name: Authenticate to GCP & Firebase
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: ${{ secrets.GCP_SA_KEY }}
+
+      - name: Deploy API to App Engine
+        run: |
+          firebase use ${{ env.TEST_FIREBASE_PROJECT }} && firebase deploy
+
