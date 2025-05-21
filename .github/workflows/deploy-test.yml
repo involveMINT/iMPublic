@@ -25,7 +25,7 @@ jobs:
       - run: npm ci
 
       - name: Generate Angular environment (test)
-        run: npx ts-node tools/generate-env.ts test
+        run: npx ts-node /tools/generate-env.ts test
         env:
           INVOLVEMINT_SETTINGS: ${{ secrets.INVOLEMINT_TEST_SETTINGS_SERVER }}
           # HOST:                          ${{ vars.TEST_HOST }}
@@ -75,7 +75,7 @@ jobs:
       - run: npm ci
 
       - name: Generate Angular environment (test)
-        run: npx ts-node tools/generate-env.ts test
+        run: npx ts-node /tools/generate-env.ts test
         env:
           INVOLVEMINT_SETTINGS: ${{ secrets.INVOLEMINT_TEST_SETTINGS_CLIENT }}
 
