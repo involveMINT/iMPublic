@@ -55,12 +55,15 @@ jobs:
 
       - name: Deploy API to App Engine
         run: |
-          BRANCH=${GITHUB_REF#refs/heads/}
+          v=${GITHUB_REF#refs/heads/}
+          v=${v,,}; v=${v//[^a-z0-9-]/-}; v=${v:0:63}
+          # if it starts with a digit or hyphen, prefix a letter
+          [[ $v =~ ^[-] ]] && v=v$v
           gcloud config set project ${{ env.TEST_GCP_PROJECT }} && \
           gcloud app deploy app.yaml \
             --stop-previous-version \
             --quiet \
-            --version=release-${BRANCH} \
+            --version=release-${v} \
             --verbosity=debug \
 
   deploy-client:
