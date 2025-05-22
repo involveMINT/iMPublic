@@ -153,7 +153,6 @@
     "@nrwl/nx-cloud": "12.1.10",
     "@nrwl/tao": "12.3.6",
     "@nrwl/workspace": "12.3.6",
-    "nx": "^12.3.6",
     "@orcha/testing": "0.2.16",
     "@types/cron": "1.7.2",
     "@types/jest": "26.0.23",

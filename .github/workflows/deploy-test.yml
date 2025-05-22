@@ -23,7 +23,7 @@ jobs:
         with:
           node-version: ${{ env.NODE_VERSION }}
 
-      - run: npm ci
+      - run: npm ci && npm install -g nx@12.3.6
 
       - name: Generate Angular environment (test)
         run: npx ts-node ./util/generate_environment.ts test
