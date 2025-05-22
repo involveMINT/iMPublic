@@ -59,9 +59,9 @@ jobs:
           gcloud config set project ${{ env.TEST_GCP_PROJECT }} && \
           gcloud app deploy app.yaml \
             --stop-previous-version \
-            --quiet
-            --version=release-${BRANCH}
-            --verbosity=debug
+            --quiet \
+            --version=release-${BRANCH} \
+            --verbosity=debug \
 
   deploy-client:
     name: ▶️ Client → Test
