@@ -64,7 +64,7 @@ jobs:
           gcloud app deploy app.yaml \
             --stop-previous-version \
             --quiet \
-            --version=${{ needs.deploy.outputs.NEW_VERSION }}
+            --version=${{ needs.deploy-test.outputs.NEW_VERSION }}
 
       - name: Delete API Environment (test)
         run: npx ts-node ./util/generate_environment.ts delete test
@@ -80,7 +80,7 @@ jobs:
       - name: Deploy Client to Firebase
         run: |
           firebase use ${{ env.TEST_FIREBASE_PROJECT }}
-          firebase deploy --message "${{ needs.deploy.outputs.NEW_VERSION }}"
+          firebase deploy --message "${{ needs.deploy-test.outputs.NEW_VERSION }}"
 
       - name: Roll back to previous version on failure
         if: ${{ failure() }}
