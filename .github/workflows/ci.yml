@@ -1,41 +1,3 @@
-# name: CI
-
-# # Run on all pushes (except release/* and tags) and on every PR
-# on:
-#   push:
-#     branches-ignore:
-#       - '*'
-#     tags-ignore:
-#       - 'v*'
-#   pull_request: {}
-
-# jobs:
-#   build-and-test:
-#     runs-on: ubuntu-latest
-#     strategy:
-#       matrix:
-#         node-version: [16.20.2]
-#     steps:
-#       - name: Checkout code
-#         uses: actions/checkout@v3
-
-#       - name: Use Node.js ${{ matrix.node-version }}
-#         uses: actions/setup-node@v3
-#         with:
-#           node-version: ${{ matrix.node-version }}
-
-#       - name: Install dependencies
-#         run: npm ci
-
-#       - name: Lint
-#         run: npm run lint
-
-#       - name: Run tests
-#         run: npm run test
-
-#       - name: Build all
-#         run: npm run build
-
 name: Merge To Main
 
 on:
@@ -45,7 +7,7 @@ on:
 
 env:
   TEST_GCP_PROJECT: ${{ vars.IM_TEST_PROJECT_ID }}
-  TEST_FIREBASE_PROJECT: ${{ vars.IM_TEST_PROJECT_ID }}
+  TEST_FIREBASE_PROJECT: "FORCE_FIREBASE_ERROR" #${{ vars.IM_TEST_PROJECT_ID }}
   NODE_VERSION: 22.13.0
 
 jobs:
@@ -86,22 +48,23 @@ jobs:
           export NODE_OPTIONS=--openssl-legacy-provider
           nx run-many --target=build --projects=api,involvemint --configuration=test --skip-nx-cache
 
+      - name: Determine new version name
+        id: get-version
+        run: |
+          TAG=${GITHUB_REF#refs/heads/}
+          SHORT_SHA=${GITHUB_SHA:0:7}
+          V="${TAG,,}-${SHORT_SHA}"
+          echo "::set-output name=new_version::$V"
+        shell: bash
+
       - name: Deploy API to App Engine (Test)
         run: |
           # sanitize
-          BRANCH=${{github.sha}}
-          BRANCH=${BRANCH,,};                   # lowercase
-          BRANCH=${BRANCH//[^a-z0-9-]/-};       # replace invalid chars
-          BRANCH=${BRANCH:0:63}               # trim to 63 chars
-          # if it starts with a digit or hyphen, prefix a letter
-          [[ $BRANCH =~ ^[0-9-] ]] && BRANCH="v$BRANCH"
-          CALCVERSION="test-${BRANCH}"             # e.g. "test-feature-xyz"
-
           gcloud config set project ${{ env.TEST_GCP_PROJECT }}
           gcloud app deploy app.yaml \
             --stop-previous-version \
             --quiet \
-            --version=${CALCVERSION}
+            --version=${{ needs.deploy.outputs.NEW_VERSION }}
 
       - name: Delete API Environment (test)
         run: npx ts-node ./util/generate_environment.ts delete test
@@ -113,11 +76,36 @@ jobs:
       
       - name: Install firebase-tools@13.29.0
         run: npm install -g firebase-tools@13.29.0
-      
+
       - name: Deploy Client to Firebase
         run: |
           firebase use ${{ env.TEST_FIREBASE_PROJECT }}
-          firebase deploy --message "Test deploy: ${{ github.sha }}"
+          firebase deploy --message "${{ needs.deploy.outputs.NEW_VERSION }}"
+
+      - name: Roll back to previous version on failure
+        if: ${{ failure() }}
+        run: |
+          # 1) List the last two deployed versions (sorted by creation time)
+          PREV=$(gcloud app versions list \
+            --service=default \
+            --format="value(version.id)" \
+            --sort-by="~version.createTime" \
+            --limit=2 \
+          )
+          # 2) The first returned is the NEW (failed) version; the second is the one before it.
+          #    So split on newline, take the second line.
+          PREV_VERSION=$(echo "$PREV" | sed -n '2p')
+
+          if [[ -z "$PREV_VERSION" ]]; then
+            echo "❌ No previous version found to roll back to."
+            exit 1
+          fi
+
+          echo "🔄 Rolling back to version: $PREV_VERSION"
+          gcloud app services set-traffic default \
+            --splits="$PREV_VERSION=1" \
+            --quiet
+        shell: bash
 
   test-env-verified:
     name: ✅ Approve Test Env Validation (MANUAL)
