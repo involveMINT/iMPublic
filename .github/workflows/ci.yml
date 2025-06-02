@@ -54,7 +54,7 @@ jobs:
           TAG=${GITHUB_REF#refs/heads/}
           SHORT_SHA=${GITHUB_SHA:0:7}
           V="${TAG,,}-${SHORT_SHA}"
-          echo "::set-output name=new_version::$V"
+          echo "::set-output name=NEW_VERSION::$V"
         shell: bash
 
       - name: Deploy API to App Engine (Test)
