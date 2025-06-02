@@ -36,6 +36,7 @@ jobs:
           V=${V//[^a-z0-9-]/-}
           echo $V
           echo "NEW_VERSION=${V}" >> $GITHUB_OUTPUT
+          echo $GITHUB_OUTPUT
         shell: bash
 
       - name: print new version name
