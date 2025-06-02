@@ -47,7 +47,7 @@ function generateEnvironmentFile(fileName: string) {
 const command = process.argv[2] || 'generate'
 const configName = process.argv[3] || 'test';
 try {
-  const fileName = `../libs/shared/domain/src/lib/environments/${configName}`;
+  const fileName = `../libs/shared/domain/src/lib/environments/environment.${configName}.ts`;
   if(command === 'generate')
     generateEnvironmentFile(fileName);
   else
