@@ -36,13 +36,12 @@ jobs:
           V=${V//[^a-z0-9-]/-}
           echo $V
           echo "NEW_VERSION=${V}" >> $GITHUB_OUTPUT
-          echo $GITHUB_OUTPUT
         shell: bash
 
       - name: print new version name
         id: get-version
         run: |
-          echo ${{ needs.deploy-test.outputs.NEW_VERSION }}
+          echo ${{ steps.get-version.outputs.NEW_VERSION }}
 
       - name: Install dependencies
         run: npm ci
@@ -73,7 +72,7 @@ jobs:
           gcloud app deploy app.yaml \
             --stop-previous-version \
             --quiet \
-            --version=${{ needs.deploy-test.outputs.NEW_VERSION }}
+            --version=${{ steps.get-version.outputs.NEW_VERSION }}
 
       - name: Delete API Environment (test)
         run: npx ts-node ./util/generate_environment.ts delete test
@@ -89,7 +88,7 @@ jobs:
       - name: Deploy Client to Firebase
         run: |
           firebase use ${{ env.TEST_FIREBASE_PROJECT }}
-          firebase deploy --message "${{ needs.deploy-test.outputs.NEW_VERSION }}"
+          firebase deploy --message "${{ steps.get-version.outputs.NEW_VERSION }}"
 
       - name: Roll back to previous version on failure
         if: ${{ failure() && steps.deploy-api.outcome == 'success' }}
