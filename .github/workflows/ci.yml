@@ -58,6 +58,7 @@ jobs:
         shell: bash
 
       - name: Deploy API to App Engine (Test)
+        id: deploy-api
         run: |
           # sanitize
           gcloud config set project ${{ env.TEST_GCP_PROJECT }}
@@ -83,8 +84,7 @@ jobs:
           firebase deploy --message "${{ needs.deploy-test.outputs.NEW_VERSION }}"
 
       - name: Roll back to previous version on failure
-        needs: Deploy API to App Engine (Test)
-        if: ${{ failure() }}
+        if: ${{ failure() && steps.deploy-api.outcome == 'success' }}
         run: |
           # 1) List the last two deployed versions (sorted by creation time)
           PREV=$(gcloud app versions list \
