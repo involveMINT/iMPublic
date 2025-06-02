@@ -34,6 +34,7 @@ jobs:
           TAG=${TAG#merge}
           SHORT_SHA=${GITHUB_SHA:0:7}
           V="${TAG,,}-${SHORT_SHA}"
+          V=${V//[^a-z0-9-]/-}
           echo $V
           echo "::set-output name=NEW_VERSION::$V"
         shell: bash
