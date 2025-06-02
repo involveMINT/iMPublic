@@ -35,7 +35,7 @@ jobs:
           V="${TAG,,}-${SHORT_SHA}"
           V=${V//[^a-z0-9-]/-}
           echo $V
-          echo "NEW_VERSION=${{V}}" >> $GITHUB_OUTPUT
+          echo "NEW_VERSION=${V}" >> $GITHUB_OUTPUT
         shell: bash
 
       - name: print new version name
