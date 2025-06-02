@@ -28,7 +28,6 @@ jobs:
           node-version: ${{ env.NODE_VERSION }}
 
       - name: Determine new version name
-        id: get-version
         run: |
           TAG=${GITHUB_REF#refs/}
           TAG=${TAG#merge}
