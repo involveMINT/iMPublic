@@ -88,8 +88,8 @@ jobs:
 
       - name: Deploy API to App Engine (Test)
         run: |
-          # Strip off "refs/heads/" prefix and sanitize
-          BRANCH=${github.sha}
+          # sanitize
+          BRANCH=${{github.sha}}
           BRANCH=${BRANCH,,};                   # lowercase
           BRANCH=${BRANCH//[^a-z0-9-]/-};       # replace invalid chars
           BRANCH=${BRANCH:0:63}               # trim to 63 chars
