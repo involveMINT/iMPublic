@@ -120,7 +120,7 @@ jobs:
           firebase deploy --message "Test deploy: ${{ github.sha }}"
 
   test-env-verified:
-    name: ▶️ Deploy → Test (MANUAL)
+    name: ✅ Approve Test Env Validation (MANUAL)
     environment: Test
     runs-on: ubuntu-latest
     needs: deploy-test
