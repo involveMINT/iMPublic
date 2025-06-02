@@ -64,7 +64,13 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: ${{ env.NODE_VERSION }}
-        
+      
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install nx@12.3.6
+        run: npm install -g nx@12.3.6
+
       - name: Authenticate to GCP
         uses: google-github-actions/auth@v2
         with:
@@ -74,12 +80,6 @@ jobs:
         run: npx ts-node ./util/generate_environment.ts -- generate test
         env:
           INVOLVEMINT_SETTINGS: ${{ secrets.INVOLVEMINT_TEST_SETTINGS_SERVER }}
-
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Install nx@12.3.6
-        run: npm install -g nx@12.3.6
 
       - name: Build (test)
         run: |
