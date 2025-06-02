@@ -40,7 +40,6 @@ jobs:
         shell: bash
 
       - name: print new version name
-        id: get-version
         run: |
           echo ${{ steps.get-version.outputs.NEW_VERSION }}
 
