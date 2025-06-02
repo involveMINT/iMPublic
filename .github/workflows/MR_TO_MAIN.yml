@@ -116,6 +116,10 @@ jobs:
     environment: Test
     runs-on: ubuntu-latest
     needs: deploy-test
+    concurrency:
+      group: test-environment
+      # allow only one "waiting for approval" + "running" job in that group
+      cancel-in-progress: false
     steps:
       - run: echo "Testing in TEST environment has been completed, approved by."
 
