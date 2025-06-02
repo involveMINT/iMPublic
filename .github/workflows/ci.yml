@@ -26,7 +26,17 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: ${{ env.NODE_VERSION }}
-      
+
+      - name: Determine new version name
+        id: get-version
+        run: |
+          TAG=${GITHUB_REF#refs/heads/}
+          SHORT_SHA=${GITHUB_SHA:0:7}
+          V="${TAG,,}-${SHORT_SHA}"
+          echo $V
+          echo "::set-output name=NEW_VERSION::$V"
+        shell: bash
+
       - name: Install dependencies
         run: npm ci
 
@@ -47,16 +57,6 @@ jobs:
         run: |
           export NODE_OPTIONS=--openssl-legacy-provider
           nx run-many --target=build --projects=api,involvemint --configuration=test --skip-nx-cache
-
-      - name: Determine new version name
-        id: get-version
-        run: |
-          TAG=${GITHUB_REF#refs/heads/}
-          SHORT_SHA=${GITHUB_SHA:0:7}
-          V="${TAG,,}-${SHORT_SHA}"
-          echo $V
-          echo "::set-output name=NEW_VERSION::$V"
-        shell: bash
 
       - name: Deploy API to App Engine (Test)
         id: deploy-api
