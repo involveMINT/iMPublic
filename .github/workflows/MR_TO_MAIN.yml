@@ -78,6 +78,11 @@ jobs:
         env:
           INVOLVEMINT_SETTINGS: ${{ secrets.INVOLVEMINT_TEST_SETTINGS_CLIENT }}
       
+      - name: Build (test)
+        run: |
+          export NODE_OPTIONS=--openssl-legacy-provider
+          nx run-many --target=build --projects=involvemint --configuration=test --skip-nx-cache
+
       - name: Install firebase-tools@13.29.0
         run: npm install -g firebase-tools@13.29.0
 
