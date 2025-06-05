@@ -114,6 +114,7 @@ export const environment: Env = {
 };
 ```
 
+
 Under the key "typeOrmConfig", please change the password field to "postgres". Under the key "gcp", please change the fields to match the fields in your service account JSON file that you just downloaded in the previous step.
 
 ### Starting the Containers
