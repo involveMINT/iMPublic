@@ -55,7 +55,7 @@ jobs:
         env:
           INVOLVEMINT_SETTINGS: ${{ secrets.INVOLVEMINT_TEST_SETTINGS_SERVER }}
 
-      - name: Build (test)
+      - name: Build API (test)
         run: |
           export NODE_OPTIONS=--openssl-legacy-provider
           nx run-many --target=build --projects=api,involvemint --configuration=test --skip-nx-cache
@@ -78,7 +78,7 @@ jobs:
         env:
           INVOLVEMINT_SETTINGS: ${{ secrets.INVOLVEMINT_TEST_SETTINGS_CLIENT }}
       
-      - name: Build (test)
+      - name: Build Client (test)
         run: |
           export NODE_OPTIONS=--openssl-legacy-provider
           nx run-many --target=build --projects=involvemint --configuration=test --skip-nx-cache

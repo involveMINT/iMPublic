@@ -58,7 +58,7 @@ jobs:
         env:
           INVOLVEMINT_SETTINGS: ${{ secrets.INVOLVEMINT_PROD_SETTINGS_SERVER }}
 
-      - name: Build (PROD)
+      - name: Build API (PROD)
         run: |
           export NODE_OPTIONS=--openssl-legacy-provider
           nx run-many --target=build --projects=api,involvemint --configuration=prod --skip-nx-cache
@@ -83,6 +83,11 @@ jobs:
       
       - name: Install firebase-tools@13.29.0
         run: npm install -g firebase-tools@13.29.0
+
+      - name: Build API (PROD)
+        run: |
+          export NODE_OPTIONS=--openssl-legacy-provider
+          nx run-many --target=build --projects=api,involvemint --configuration=prod --skip-nx-cache
 
       - name: 🚀 Deploy Client to Firebase
         run: |
