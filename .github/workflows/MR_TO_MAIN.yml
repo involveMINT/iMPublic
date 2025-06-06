@@ -1,0 +1,128 @@
+name: Merge To Main
+
+on:
+  pull_request:
+    branches:
+      - main
+
+env:
+  TEST_GCP_PROJECT: ${{ vars.IM_TEST_PROJECT_ID }}
+  TEST_FIREBASE_PROJECT: ${{ vars.IM_TEST_PROJECT_ID }}
+  NODE_VERSION: 22.13.0
+
+jobs:
+  deploy-test:
+    name: ▶️ Deploy → Test (MANUAL)
+    environment: Test
+    runs-on: ubuntu-latest
+    concurrency:
+      group: test-environment
+      # allow only one "waiting for approval" + "running" job in that group
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Use Node.js ${{ env.NODE_VERSION }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Determine new version name
+        id: get-version
+        run: |
+          TAG=${GITHUB_REF#refs/}
+          TAG=${TAG#merge}
+          SHORT_SHA=${GITHUB_SHA:0:7}
+          V="${TAG,,}-${SHORT_SHA}"
+          V=${V//[^a-z0-9-]/-}
+          echo $V
+          echo "NEW_VERSION=${V}" >> $GITHUB_OUTPUT
+        shell: bash
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install nx@12.3.6
+        run: npm install -g nx@12.3.6
+
+      - name: Authenticate to GCP
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: ${{ secrets.GCP_SA_KEY }}
+
+      - name: Generate API Environment (test)
+        run: npx ts-node ./util/generate_environment.ts generate test
+        env:
+          INVOLVEMINT_SETTINGS: ${{ secrets.INVOLVEMINT_TEST_SETTINGS_SERVER }}
+
+      - name: Build API (test)
+        run: |
+          export NODE_OPTIONS=--openssl-legacy-provider
+          nx run-many --target=build --projects=api,involvemint --configuration=test --skip-nx-cache
+
+      - name: 🚀 Deploy API to App Engine (Test)
+        id: deploy-api
+        run: |
+          # sanitize
+          gcloud config set project ${{ env.TEST_GCP_PROJECT }}
+          gcloud app deploy app.yaml \
+            --stop-previous-version \
+            --quiet \
+            --version=${{ steps.get-version.outputs.NEW_VERSION }}
+
+      - name: Delete API Environment (test)
+        run: npx ts-node ./util/generate_environment.ts delete test
+      
+      - name: Generate Client Environment (test)
+        run: npx ts-node ./util/generate_environment.ts generate test
+        env:
+          INVOLVEMINT_SETTINGS: ${{ secrets.INVOLVEMINT_TEST_SETTINGS_CLIENT }}
+      
+      - name: Build Client (test)
+        run: |
+          export NODE_OPTIONS=--openssl-legacy-provider
+          nx run-many --target=build --projects=involvemint --configuration=test --skip-nx-cache
+
+      - name: Install firebase-tools@13.29.0
+        run: npm install -g firebase-tools@13.29.0
+
+      - name: 🚀 Deploy Client to Firebase
+        run: |
+          firebase use ${{ env.TEST_FIREBASE_PROJECT }}
+          firebase deploy --message "${{ steps.get-version.outputs.NEW_VERSION }}"
+
+      - name: Roll back to previous version on failure
+        if: ${{ failure() && steps.deploy-api.outcome == 'success' }}
+        run: |
+          # 1) List the last two deployed versions (sorted by creation time)
+          PREV=$(gcloud app versions list \
+            --service=default \
+            --format="value(version.id)" \
+            --sort-by="~version.createTime" \
+            --limit=2 \
+          )
+          # 2) The first returned is the NEW (failed) version; the second is the one before it.
+          #    So split on newline, take the second line.
+          PREV_VERSION=$(echo "$PREV" | sed -n '2p')
+
+          if [[ -z "$PREV_VERSION" ]]; then
+            echo "❌ No previous version found to roll back to."
+            exit 1
+          fi
+
+          echo "🔄 Rolling back to version: $PREV_VERSION"
+          gcloud app services set-traffic default \
+            --splits="$PREV_VERSION=1" \
+            --quiet
+        shell: bash
+
+  test-env-verified:
+    name: ✅ Approve Test Env Validation (MANUAL)
+    environment: Test
+    runs-on: ubuntu-latest
+    needs: deploy-test
+    steps:
+      - run: echo "Testing in TEST environment has been completed, approved by."
+
+
+

@@ -10,7 +10,7 @@ const sendingPhone = environment.twilio.sendingPhone;
 export class SMSService {
   private t = environment.environment !== 'local' ? twilio.default(accountSid, authToken) : null;
 
-  shouldNotSendNotification = environment.environment === 'local';
+  shouldNotSendNotification = environment.environment !== 'production';
 
   sendInfoSMS({ message, phone }: { message: string; phone: string }) {
     if (this.shouldNotSendNotification || !phone || !message) return;
