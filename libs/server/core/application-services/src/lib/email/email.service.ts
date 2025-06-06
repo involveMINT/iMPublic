@@ -7,7 +7,7 @@ export class EmailService {
   mg = environment.environment !== 'local' ? mailgun.default(environment.mailgun) : null;
   noreply = 'your no reply <noreply@example.com>';
 
-  shouldNotSendNotification = environment.environment === 'local';
+  shouldNotSendNotification = environment.environment !== 'production';
 
   constructor(@Inject(FRONTEND_ROUTES_TOKEN) private readonly route: FrontendRoutes) { }
 
