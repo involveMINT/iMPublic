@@ -9,6 +9,13 @@ env:
   TEST_GCP_PROJECT: ${{ vars.IM_TEST_PROJECT_ID }}
   TEST_FIREBASE_PROJECT: ${{ vars.IM_TEST_PROJECT_ID }}
   NODE_VERSION: 22.13.0
+  DB_HOST: ${{ secrets.DB_HOST }}
+  DB_PORT: ${{ secrets.DB_PORT }}
+  DB_USER: ${{ secrets.DB_USER }}
+  DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+  DB_NAME: ${{ secrets.DB_NAME }}
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
 
 jobs:
   deploy-test:
@@ -54,7 +61,84 @@ jobs:
         run: npx ts-node ./util/generate_environment.ts generate test
         env:
           INVOLVEMINT_SETTINGS: ${{ secrets.INVOLVEMINT_TEST_SETTINGS_SERVER }}
+      
+      - name: Sync DB migrations (loop)
+        run: |
+          set -e
+          MAX=5
+          COUNT=0
+          BACKED_UP=false
 
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git remote set-url origin https://x-access-token:$GITHUB_TOKEN@github.com/${{ github.repository }}
+
+          while [ $COUNT -lt $MAX ]; do
+            echo "🔁 Loop attempt $((COUNT+1))"
+
+            echo "🔍 Checking for unapplied migrations..."
+            npx ts-node util/check_for_pending_migrations.ts > pending.log
+            PENDING=$(grep 'MIGRATION_PENDING=true' pending.log || echo "")
+
+            if [ -n "$PENDING" ]; then
+              if [ "$BACKED_UP" = false ]; then
+                echo "📦 Backing up the database before first change..."
+                if ! PGPASSWORD="$DB_PASSWORD" pg_dump -h "$DB_HOST" -U "$DB_USER" -p "$DB_PORT" -Fc "$DB_NAME" > db_backup.dump; then
+                  echo "❌ Failed to take database backup. Aborting."
+                  exit 1
+                fi
+                BACKED_UP=true
+                echo "DB_BACKED_UP=true" >> $GITHUB_OUTPUT
+              fi
+            fi
+
+            if [ -n "$PENDING" ]; then
+              echo "⚙️ Applying unapplied migrations..."
+              npx typeorm migration:run
+              COUNT=$((COUNT+1))
+              continue
+            fi
+
+            echo "📦 Checking for missing migrations..."
+            npx ts-node util/detect_db_entity_drift.ts > drift.log
+            NEEDED=$(grep 'MIGRATION_NEEDED=true' drift.log || echo "")
+
+            if [ -n "$NEEDED" ]; then
+              if [ "$BACKED_UP" = false ]; then
+                echo "📦 Backing up the database before first change..."
+                if ! PGPASSWORD="$DB_PASSWORD" pg_dump -h "$DB_HOST" -U "$DB_USER" -p "$DB_PORT" -Fc "$DB_NAME" > db_backup.dump; then
+                  echo "❌ Failed to take database backup. Aborting."
+                  exit 1
+                fi
+                BACKED_UP=true
+                echo "DB_BACKED_UP=true" >> $GITHUB_OUTPUT
+              fi
+              echo "💾 Committing generated migration..."
+              git add src/migration/*.ts
+              git commit -m "chore: auto-generated migration"
+              git push origin HEAD
+
+              echo "⚙️ Applying new migration..."
+              npx typeorm migration:run
+              COUNT=$((COUNT+1))
+              continue
+            fi
+
+            echo "✅ Schema and DB are in sync."
+            break
+          done
+
+          if [ $COUNT -eq $MAX ]; then
+            echo "❌ Migration loop exceeded max attempts. Rolling back..."
+            if [ -f db_backup.dump ]; then
+              echo "♻️ Restoring database from backup..."
+              PGPASSWORD="$DB_PASSWORD" pg_restore -h "$DB_HOST" -U "$DB_USER" -p "$DB_PORT" -d "$DB_NAME" --clean db_backup.dump
+            else
+              echo "⚠️ No backup file found. Cannot restore DB."
+            fi
+            exit 1
+          fi
+      
       - name: Build API (test)
         run: |
           export NODE_OPTIONS=--openssl-legacy-provider
@@ -115,6 +199,23 @@ jobs:
             --splits="$PREV_VERSION=1" \
             --quiet
         shell: bash
+
+      - name: Roll back database on deploy failure
+        if: failure() && hashFiles('db_backup.dump') != ''
+        env:
+          DB_HOST: ${{ secrets.DB_HOST }}
+          DB_PORT: ${{ secrets.DB_PORT }}
+          DB_USER: ${{ secrets.DB_USER }}
+          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+          DB_NAME: ${{ secrets.DB_NAME }}
+        run: |
+          echo "❌ Deployment failed. Rolling back database..."
+          if [ -f db_backup.dump ]; then
+            PGPASSWORD="$DB_PASSWORD" pg_restore -h "$DB_HOST" -U "$DB_USER" -p "$DB_PORT" -d "$DB_NAME" --clean db_backup.dump
+          else
+            echo "⚠️ No backup file found. Cannot restore DB."
+          fi
+          exit 1
 
   test-env-verified:
     name: ✅ Approve Test Env Validation (MANUAL)
