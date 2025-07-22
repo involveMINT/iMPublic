@@ -9,12 +9,167 @@ env:
   TEST_GCP_PROJECT: ${{ vars.IM_TEST_PROJECT_ID }}
   TEST_FIREBASE_PROJECT: ${{ vars.IM_TEST_PROJECT_ID }}
   NODE_VERSION: 22.13.0
+  DB_HOST: ${{ secrets.DB_HOST }}
+  DB_PORT: ${{ secrets.DB_PORT }}
+  DB_USER: ${{ secrets.DB_USER }}
+  DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+  DB_NAME: ${{ secrets.DB_NAME }}
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
 jobs:
+  # ===== MIGRATION PIPELINE (Pre-Deployment) =====
+  
+  check-migrations:
+    name: 🔍 Check Database Migrations
+    runs-on: ubuntu-latest
+    outputs:
+      pending-migrations: ${{ steps.check-pending.outputs.pending-migrations }}
+      migration-needed: ${{ steps.check-drift.outputs.migration-needed }}
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Use Node.js ${{ env.NODE_VERSION }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          
+      - name: Install dependencies
+        run: npm ci
+      
+      - name: Check for pending migrations
+        id: check-pending
+        run: |
+          npx ts-node util/check_for_pending_migrations.ts > pending.log
+          if grep -q 'MIGRATION_PENDING=true' pending.log; then
+            echo "pending-migrations=true" >> $GITHUB_OUTPUT
+            echo "⚠️ Pending migrations detected"
+          else
+            echo "pending-migrations=false" >> $GITHUB_OUTPUT
+            echo "✅ No pending migrations"
+          fi
+          
+      - name: Check for schema drift
+        id: check-drift
+        run: |
+          npx ts-node util/detect_db_entity_drift.ts > drift.log
+          if grep -q 'MIGRATION_NEEDED=true' drift.log; then
+            echo "migration-needed=true" >> $GITHUB_OUTPUT
+            echo "📈 Schema drift detected - new migration needed"
+          else
+            echo "migration-needed=false" >> $GITHUB_OUTPUT
+            echo "✅ No schema drift detected"
+          fi
+
+  review-pending-migrations:
+    name: 🔍 Review Pending Migrations (MANUAL)
+    runs-on: ubuntu-latest
+    environment: Migration-Review-Pending
+    needs: check-migrations
+    if: needs.check-migrations.outputs.pending-migrations == 'true'
+    steps:
+      - name: Pending migration review required
+        run: |
+          echo "🔍 PENDING MIGRATIONS DETECTED"
+          echo ""
+          echo "⚠️ There are unapplied migrations in the database."
+          echo ""
+          echo "Please verify:"
+          echo "- Review the pending migration files"
+          echo "- Ensure migrations are safe to apply"
+          echo "- Confirm no data loss will occur"
+          echo ""
+          echo "✅ Approve to proceed with applying pending migrations."
+
+  apply-pending-migrations:
+    name: ⚙️ Apply Pending Migrations
+    runs-on: ubuntu-latest
+    needs: [check-migrations, review-pending-migrations]
+    if: always() && needs.check-migrations.outputs.pending-migrations == 'true' && needs.review-pending-migrations.result == 'success'
+    steps:
+      - uses: actions/checkout@v3
+      - name: Use Node.js ${{ env.NODE_VERSION }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+      - name: Install dependencies
+        run: npm ci
+      - name: Create database backup
+        run: |
+          echo "📦 Creating database backup..."
+          PGPASSWORD="$DB_PASSWORD" pg_dump -h "$DB_HOST" -U "$DB_USER" -p "$DB_PORT" -Fc "$DB_NAME" > db_backup_pending_$(date +%Y%m%d_%H%M%S).dump
+          echo "✅ Database backup created"
+      - name: Apply pending migrations
+        run: |
+          echo "⚙️ Applying pending migrations..."
+          npx typeorm migration:run
+          echo "✅ Pending migrations applied successfully"
+
+  review-new-migration:
+    name: 🔍 Review New Migration (MANUAL)
+    runs-on: ubuntu-latest
+    environment: Migration-Review-New
+    needs: [check-migrations, apply-pending-migrations]
+    if: always() && needs.check-migrations.outputs.migration-needed == 'true' && (needs.apply-pending-migrations.result == 'success' || needs.apply-pending-migrations.result == 'skipped')
+    steps:
+      - name: New migration review required
+        run: |
+          echo "🔍 NEW MIGRATION REQUIRED"
+          echo ""
+          echo "📈 Schema changes detected that require a new migration."
+          echo ""
+          echo "After approval, the system will:"
+          echo "- Generate a new migration file"
+          echo "- Commit it to this PR"
+          echo "- Apply the migration to the database"
+          echo ""
+          echo "✅ Approve to proceed with generating and applying the new migration."
+
+  generate-and-apply-migration:
+    name: ⚙️ Generate & Apply New Migration
+    runs-on: ubuntu-latest
+    needs: [check-migrations, review-new-migration]
+    if: always() && needs.check-migrations.outputs.migration-needed == 'true' && needs.review-new-migration.result == 'success'
+    steps:
+      - uses: actions/checkout@v3
+      - name: Use Node.js ${{ env.NODE_VERSION }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+      - name: Install dependencies
+        run: npm ci
+      - name: Configure git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git remote set-url origin https://x-access-token:$GITHUB_TOKEN@github.com/${{ github.repository }}
+      - name: Create database backup (if not already done)
+        run: |
+          echo "📦 Creating database backup for new migration..."
+          PGPASSWORD="$DB_PASSWORD" pg_dump -h "$DB_HOST" -U "$DB_USER" -p "$DB_PORT" -Fc "$DB_NAME" > db_backup_new_$(date +%Y%m%d_%H%M%S).dump
+          echo "✅ Database backup created"
+      - name: Generate and apply migration
+        run: |
+          echo "🔄 Generating new migration..."
+          npx typeorm migration:generate -n AutoMigration-$(date +%Y%m%d%H%M%S) --pretty
+          
+          echo "💾 Committing generated migration..."
+          git add libs/migration/*.ts
+          git commit -m "chore: auto-generated migration - approved
+
+🤖 This migration was automatically generated and approved.
+Generated and applied at: $(date -u)"
+          git push origin HEAD
+          
+          echo "⚙️ Applying new migration..."
+          npx typeorm migration:run
+          echo "✅ New migration applied successfully"
+
   deploy-test:
     name: ▶️ Deploy → Test (MANUAL)
     environment: Test
     runs-on: ubuntu-latest
+    needs: [check-migrations, apply-pending-migrations, generate-and-apply-migration]
+    if: always() && (needs.apply-pending-migrations.result == 'success' || needs.apply-pending-migrations.result == 'skipped') && (needs.generate-and-apply-migration.result == 'success' || needs.generate-and-apply-migration.result == 'skipped')
     concurrency:
       group: test-environment
       # allow only one "waiting for approval" + "running" job in that group
