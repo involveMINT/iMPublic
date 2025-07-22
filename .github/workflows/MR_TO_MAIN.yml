@@ -19,12 +19,11 @@ env:
 jobs:
   # ===== MIGRATION PIPELINE (Pre-Deployment) =====
   
-  check-migrations:
-    name: 🔍 Check Database Migrations
+  check-pending-migrations:
+    name: 🔍 Check for Pending Migrations
     runs-on: ubuntu-latest
     outputs:
       pending-migrations: ${{ steps.check-pending.outputs.pending-migrations }}
-      migration-needed: ${{ steps.check-drift.outputs.migration-needed }}
     steps:
       - uses: actions/checkout@v3
       
@@ -47,25 +46,13 @@ jobs:
             echo "pending-migrations=false" >> $GITHUB_OUTPUT
             echo "✅ No pending migrations"
           fi
-          
-      - name: Check for schema drift
-        id: check-drift
-        run: |
-          npx ts-node util/detect_db_entity_drift.ts > drift.log
-          if grep -q 'MIGRATION_NEEDED=true' drift.log; then
-            echo "migration-needed=true" >> $GITHUB_OUTPUT
-            echo "📈 Schema drift detected - new migration needed"
-          else
-            echo "migration-needed=false" >> $GITHUB_OUTPUT
-            echo "✅ No schema drift detected"
-          fi
 
   review-pending-migrations:
     name: 🔍 Review Pending Migrations (MANUAL)
     runs-on: ubuntu-latest
     environment: Migration-Review-Pending
-    needs: check-migrations
-    if: needs.check-migrations.outputs.pending-migrations == 'true'
+    needs: check-pending-migrations
+    if: needs.check-pending-migrations.outputs.pending-migrations == 'true'
     steps:
       - name: Pending migration review required
         run: |
@@ -83,8 +70,8 @@ jobs:
   apply-pending-migrations:
     name: ⚙️ Apply Pending Migrations
     runs-on: ubuntu-latest
-    needs: [check-migrations, review-pending-migrations]
-    if: always() && needs.check-migrations.outputs.pending-migrations == 'true' && needs.review-pending-migrations.result == 'success'
+    needs: [check-pending-migrations, review-pending-migrations]
+    if: always() && needs.check-pending-migrations.outputs.pending-migrations == 'true' && needs.review-pending-migrations.result == 'success'
     steps:
       - uses: actions/checkout@v3
       - name: Use Node.js ${{ env.NODE_VERSION }}
@@ -104,12 +91,42 @@ jobs:
           npx typeorm migration:run
           echo "✅ Pending migrations applied successfully"
 
+  check-schema-drift:
+    name: 🔍 Check for Schema Drift
+    runs-on: ubuntu-latest
+    needs: [check-pending-migrations, apply-pending-migrations]
+    if: always() && (needs.apply-pending-migrations.result == 'success' || needs.apply-pending-migrations.result == 'skipped')
+    outputs:
+      migration-needed: ${{ steps.check-drift.outputs.migration-needed }}
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Use Node.js ${{ env.NODE_VERSION }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          
+      - name: Install dependencies
+        run: npm ci
+          
+      - name: Check for schema drift
+        id: check-drift
+        run: |
+          npx ts-node util/detect_db_entity_drift.ts > drift.log
+          if grep -q 'MIGRATION_NEEDED=true' drift.log; then
+            echo "migration-needed=true" >> $GITHUB_OUTPUT
+            echo "📈 Schema drift detected - new migration needed"
+          else
+            echo "migration-needed=false" >> $GITHUB_OUTPUT
+            echo "✅ No schema drift detected"
+          fi
+
   review-new-migration:
     name: 🔍 Review New Migration (MANUAL)
     runs-on: ubuntu-latest
     environment: Migration-Review-New
-    needs: [check-migrations, apply-pending-migrations]
-    if: always() && needs.check-migrations.outputs.migration-needed == 'true' && (needs.apply-pending-migrations.result == 'success' || needs.apply-pending-migrations.result == 'skipped')
+    needs: [check-schema-drift]
+    if: needs.check-schema-drift.outputs.migration-needed == 'true'
     steps:
       - name: New migration review required
         run: |
@@ -127,8 +144,8 @@ jobs:
   generate-and-apply-migration:
     name: ⚙️ Generate & Apply New Migration
     runs-on: ubuntu-latest
-    needs: [check-migrations, review-new-migration]
-    if: always() && needs.check-migrations.outputs.migration-needed == 'true' && needs.review-new-migration.result == 'success'
+    needs: [check-schema-drift, review-new-migration]
+    if: always() && needs.check-schema-drift.outputs.migration-needed == 'true' && needs.review-new-migration.result == 'success'
     steps:
       - uses: actions/checkout@v3
       - name: Use Node.js ${{ env.NODE_VERSION }}
@@ -168,7 +185,7 @@ Generated and applied at: $(date -u)"
     name: ▶️ Deploy → Test (MANUAL)
     environment: Test
     runs-on: ubuntu-latest
-    needs: [check-migrations, apply-pending-migrations, generate-and-apply-migration]
+    needs: [check-pending-migrations, apply-pending-migrations, check-schema-drift, generate-and-apply-migration]
     if: always() && (needs.apply-pending-migrations.result == 'success' || needs.apply-pending-migrations.result == 'skipped') && (needs.generate-and-apply-migration.result == 'success' || needs.generate-and-apply-migration.result == 'skipped')
     concurrency:
       group: test-environment
