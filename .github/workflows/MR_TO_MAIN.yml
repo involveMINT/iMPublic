@@ -157,7 +157,7 @@ jobs:
       DB_USER: ${{ secrets.DB_USER }}
       DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
       DB_NAME: ${{ secrets.DB_NAME }}
-    if: needs.check-pending-migrations.outputs.pending-migrations == 'true' && needs.review-pending-migrations.result == 'success'
+    if: needs.check-pending-migrations.result == 'success' && (needs.check-pending-migrations.outputs.pending-migrations == 'false' || needs.review-pending-migrations.result == 'success')
     steps:
       - uses: actions/checkout@v3
       - name: Use Node.js ${{ env.NODE_VERSION }}
@@ -194,16 +194,19 @@ jobs:
           
           echo "✅ Cloud SQL Proxy is ready"
 
-      - name: Create database backup
+      - name: Apply pending migrations (if any)
         run: |
-          echo "📦 Creating database backup..."
-          PGPASSWORD="$DB_PASSWORD" pg_dump -h "$DB_HOST" -U "$DB_USER" -p "$DB_PORT" -Fc "$DB_NAME" > db_backup_pending_$(date +%Y%m%d_%H%M%S).dump
-          echo "✅ Database backup created"
-      - name: Apply pending migrations
-        run: |
-          echo "⚙️ Applying pending migrations..."
-          npx typeorm migration:run -f util/ormconfig.js
-          echo "✅ Pending migrations applied successfully"
+          if [[ "${{ needs.check-pending-migrations.outputs.pending-migrations }}" == "true" ]]; then
+            echo "📦 Creating database backup..."
+            PGPASSWORD="$DB_PASSWORD" pg_dump -h "$DB_HOST" -U "$DB_USER" -p "$DB_PORT" -Fc "$DB_NAME" > db_backup_pending_$(date +%Y%m%d_%H%M%S).dump
+            echo "✅ Database backup created"
+            
+            echo "⚙️ Applying pending migrations..."
+            npx typeorm migration:run -f util/ormconfig.js
+            echo "✅ Pending migrations applied successfully"
+          else
+            echo "✅ No pending migrations to apply"
+          fi
 
   check-schema-drift:
     name: 🔍 Check for Schema Drift
@@ -216,7 +219,7 @@ jobs:
       DB_USER: ${{ secrets.DB_USER }}
       DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
       DB_NAME: ${{ secrets.DB_NAME }}
-    if: needs.check-pending-migrations.outputs.pending-migrations == 'false' || needs.apply-pending-migrations.result == 'success'
+    if: needs.apply-pending-migrations.result == 'success'
     outputs:
       migration-needed: ${{ steps.check-drift.outputs.migration-needed }}
     steps:
