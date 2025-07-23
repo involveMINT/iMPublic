@@ -9,11 +9,6 @@ env:
   TEST_GCP_PROJECT: ${{ vars.IM_TEST_PROJECT_ID }}
   TEST_FIREBASE_PROJECT: ${{ vars.IM_TEST_PROJECT_ID }}
   NODE_VERSION: 22.13.0
-  DB_HOST: ${{ secrets.DB_HOST }}
-  DB_PORT: ${{ secrets.DB_PORT }}
-  DB_USER: ${{ secrets.DB_USER }}
-  DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
-  DB_NAME: ${{ secrets.DB_NAME }}
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
 jobs:
@@ -22,6 +17,13 @@ jobs:
   check-pending-migrations:
     name: 🔍 Check for Pending Migrations
     runs-on: ubuntu-latest
+    environment: Database-NoApproval
+    env:
+      DB_HOST: ${{ secrets.DB_HOST }}
+      DB_PORT: ${{ secrets.DB_PORT }}
+      DB_USER: ${{ secrets.DB_USER }}
+      DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+      DB_NAME: ${{ secrets.DB_NAME }}
     outputs:
       pending-migrations: ${{ steps.check-pending.outputs.pending-migrations }}
     steps:
@@ -50,7 +52,13 @@ jobs:
   review-pending-migrations:
     name: 🔍 Review Pending Migrations (MANUAL)
     runs-on: ubuntu-latest
-    environment: Migration-Review-Pending
+    environment: Database-Approval
+    env:
+      DB_HOST: ${{ secrets.DB_HOST }}
+      DB_PORT: ${{ secrets.DB_PORT }}
+      DB_USER: ${{ secrets.DB_USER }}
+      DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+      DB_NAME: ${{ secrets.DB_NAME }}
     needs: check-pending-migrations
     if: needs.check-pending-migrations.outputs.pending-migrations == 'true'
     steps:
@@ -71,6 +79,13 @@ jobs:
     name: ⚙️ Apply Pending Migrations
     runs-on: ubuntu-latest
     needs: [check-pending-migrations, review-pending-migrations]
+    environment: Database-NoApproval
+    env:
+      DB_HOST: ${{ secrets.DB_HOST }}
+      DB_PORT: ${{ secrets.DB_PORT }}
+      DB_USER: ${{ secrets.DB_USER }}
+      DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+      DB_NAME: ${{ secrets.DB_NAME }}
     if: always() && needs.check-pending-migrations.outputs.pending-migrations == 'true' && needs.review-pending-migrations.result == 'success'
     steps:
       - uses: actions/checkout@v3
@@ -95,6 +110,13 @@ jobs:
     name: 🔍 Check for Schema Drift
     runs-on: ubuntu-latest
     needs: [check-pending-migrations, apply-pending-migrations]
+    environment: Database-NoApproval
+    env:
+      DB_HOST: ${{ secrets.DB_HOST }}
+      DB_PORT: ${{ secrets.DB_PORT }}
+      DB_USER: ${{ secrets.DB_USER }}
+      DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+      DB_NAME: ${{ secrets.DB_NAME }}
     if: always() && (needs.apply-pending-migrations.result == 'success' || needs.apply-pending-migrations.result == 'skipped')
     outputs:
       migration-needed: ${{ steps.check-drift.outputs.migration-needed }}
@@ -124,7 +146,13 @@ jobs:
   review-new-migration:
     name: 🔍 Review New Migration (MANUAL)
     runs-on: ubuntu-latest
-    environment: Migration-Review-New
+    environment: Database-Approval
+    env:
+      DB_HOST: ${{ secrets.DB_HOST }}
+      DB_PORT: ${{ secrets.DB_PORT }}
+      DB_USER: ${{ secrets.DB_USER }}
+      DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+      DB_NAME: ${{ secrets.DB_NAME }}
     needs: [check-schema-drift]
     if: needs.check-schema-drift.outputs.migration-needed == 'true'
     steps:
@@ -144,6 +172,13 @@ jobs:
   generate-and-apply-migration:
     name: ⚙️ Generate & Apply New Migration
     runs-on: ubuntu-latest
+    environment: Database-NoApproval
+    env:
+      DB_HOST: ${{ secrets.DB_HOST }}
+      DB_PORT: ${{ secrets.DB_PORT }}
+      DB_USER: ${{ secrets.DB_USER }}
+      DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+      DB_NAME: ${{ secrets.DB_NAME }}
     needs: [check-schema-drift, review-new-migration]
     if: always() && needs.check-schema-drift.outputs.migration-needed == 'true' && needs.review-new-migration.result == 'success'
     steps:
@@ -171,10 +206,7 @@ jobs:
           
           echo "💾 Committing generated migration..."
           git add libs/migration/*.ts
-          git commit -m "chore: auto-generated migration - approved
-
-🤖 This migration was automatically generated and approved.
-Generated and applied at: $(date -u)"
+          git commit -m "chore: auto-generated migration - approved 🤖 This migration was automatically generated and approved. Generated and applied at: $(date -u)"
           git push origin HEAD
           
           echo "⚙️ Applying new migration..."
