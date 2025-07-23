@@ -52,6 +52,9 @@ jobs:
           # Start proxy in background
           ./cloud-sql-proxy --port 5432 im-test-395400:us-central1:im-test
 
+      - name: Check for pending migrations
+        id: check-pending
+        run: |
           npx ts-node --project ./util/tsconfig.json ./util/check_for_pending_migrations.ts
 
 
