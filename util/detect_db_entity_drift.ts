@@ -13,7 +13,7 @@ async function checkMigrationDrift() {
 
   try {
     // Generate a migration to detect drift
-    execSync(`npx typeorm migration:generate -n DriftCheck --pretty`, {
+    execSync(`npx typeorm migration:generate -f util/ormconfig.js -n DriftCheck --pretty`, {
       stdio: 'ignore',
     });
 

@@ -14,6 +14,7 @@ async function checkPendingMigrations() {
       console.log('MIGRATION_PENDING=true');
     } else {
       console.log('✅ All migrations applied.');
+      console.log('MIGRATION_PENDING=false');
     }
 
     await connection.close();

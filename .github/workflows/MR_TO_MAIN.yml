@@ -38,7 +38,7 @@ jobs:
       - name: Check for pending migrations
         id: check-pending
         run: |
-          npx ts-node util/check_for_pending_migrations.ts > pending.log
+          cd util && npx ts-node --project ./tsconfig.json check_for_pending_migrations.ts > ../pending.log
           if grep -q 'MIGRATION_PENDING=true' pending.log; then
             echo "pending-migrations=true" >> $GITHUB_OUTPUT
             echo "⚠️ Pending migrations detected"
@@ -88,7 +88,7 @@ jobs:
       - name: Apply pending migrations
         run: |
           echo "⚙️ Applying pending migrations..."
-          npx typeorm migration:run
+          npx typeorm migration:run -f util/ormconfig.js
           echo "✅ Pending migrations applied successfully"
 
   check-schema-drift:
@@ -112,7 +112,7 @@ jobs:
       - name: Check for schema drift
         id: check-drift
         run: |
-          npx ts-node util/detect_db_entity_drift.ts > drift.log
+          cd util && npx ts-node --project ./tsconfig.json detect_db_entity_drift.ts > ../drift.log
           if grep -q 'MIGRATION_NEEDED=true' drift.log; then
             echo "migration-needed=true" >> $GITHUB_OUTPUT
             echo "📈 Schema drift detected - new migration needed"
@@ -167,7 +167,7 @@ jobs:
       - name: Generate and apply migration
         run: |
           echo "🔄 Generating new migration..."
-          npx typeorm migration:generate -n AutoMigration-$(date +%Y%m%d%H%M%S) --pretty
+          npx typeorm migration:generate -f util/ormconfig.js -n AutoMigration-$(date +%Y%m%d%H%M%S) --pretty
           
           echo "💾 Committing generated migration..."
           git add libs/migration/*.ts
@@ -178,7 +178,7 @@ Generated and applied at: $(date -u)"
           git push origin HEAD
           
           echo "⚙️ Applying new migration..."
-          npx typeorm migration:run
+          npx typeorm migration:run -f util/ormconfig.js
           echo "✅ New migration applied successfully"
 
   deploy-test:
