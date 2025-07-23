@@ -10,6 +10,7 @@ env:
   TEST_FIREBASE_PROJECT: ${{ vars.IM_TEST_PROJECT_ID }}
   NODE_VERSION: 22.13.0
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  ACTIONS_STEP_DEBUG: true
   
 
 jobs:
@@ -69,7 +70,6 @@ jobs:
         id: check-pending
         run: |
           npx ts-node --project ./util/tsconfig.json ./util/check_for_pending_migrations.ts
-
 
   review-pending-migrations:
     name: 🔍 Review Pending Migrations (MANUAL)
@@ -157,7 +157,7 @@ jobs:
       DB_USER: ${{ secrets.DB_USER }}
       DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
       DB_NAME: ${{ secrets.DB_NAME }}
-    if: needs.check-pending-migrations.outputs.pending-migrations == 'true' && (needs.review-pending-migrations.result == 'success' )
+    if: needs.check-pending-migrations.outputs.pending-migrations == 'true' && needs.review-pending-migrations.result == 'success'
     steps:
       - uses: actions/checkout@v3
       - name: Use Node.js ${{ env.NODE_VERSION }}
@@ -216,7 +216,7 @@ jobs:
       DB_USER: ${{ secrets.DB_USER }}
       DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
       DB_NAME: ${{ secrets.DB_NAME }}
-    if: (needs.apply-pending-migrations.result == 'success' || needs.apply-pending-migrations.result == 'skipped')
+    if: needs.apply-pending-migrations.result == 'success' || needs.apply-pending-migrations.result == 'skipped'
     outputs:
       migration-needed: ${{ steps.check-drift.outputs.migration-needed }}
     steps:
