@@ -44,10 +44,16 @@ jobs:
           credentials_json: ${{ secrets.GCP_SA_KEY }}
       
       - name: Setup Cloud SQL Proxy
-        uses: google-github-actions/setup-cloud-sql-proxy@v2
-        with:
-          instance-connection-names: ${{ vars.IM_TEST_PROJECT_ID }}:us-central1:involvemint
-          port: 5432
+        run: |
+          # Download Cloud SQL Proxy v2
+          curl -o cloud-sql-proxy https://storage.googleapis.com/cloud-sql-connectors/cloud-sql-proxy/v2.18.0/cloud-sql-proxy.linux.amd64
+          chmod +x cloud-sql-proxy
+          
+          # Start proxy in background
+          ./cloud-sql-proxy --port 5432 ${{ vars.IM_TEST_PROJECT_ID }}:us-central1:involvemint &
+          
+          # Wait for proxy to be ready
+          sleep 5
       
       - name: Check for pending migrations
         id: check-pending
@@ -84,10 +90,16 @@ jobs:
           credentials_json: ${{ secrets.GCP_SA_KEY }}
 
       - name: Setup Cloud SQL Proxy
-        uses: google-github-actions/setup-cloud-sql-proxy@v2
-        with:
-          instance-connection-names: ${{ vars.IM_TEST_PROJECT_ID }}:us-central1:involvemint
-          port: 5432
+        run: |
+          # Download Cloud SQL Proxy v2
+          curl -o cloud-sql-proxy https://storage.googleapis.com/cloud-sql-connectors/cloud-sql-proxy/v2.18.0/cloud-sql-proxy.linux.amd64
+          chmod +x cloud-sql-proxy
+          
+          # Start proxy in background
+          ./cloud-sql-proxy --port 5432 ${{ vars.IM_TEST_PROJECT_ID }}:us-central1:involvemint &
+          
+          # Wait for proxy to be ready
+          sleep 5
 
       - name: Show pending migrations
         id: show-migrations
@@ -142,10 +154,16 @@ jobs:
           credentials_json: ${{ secrets.GCP_SA_KEY }}
 
       - name: Setup Cloud SQL Proxy
-        uses: google-github-actions/setup-cloud-sql-proxy@v2
-        with:
-          instance-connection-names: ${{ vars.IM_TEST_PROJECT_ID }}:us-central1:involvemint
-          port: 5432
+        run: |
+          # Download Cloud SQL Proxy v2
+          curl -o cloud-sql-proxy https://storage.googleapis.com/cloud-sql-connectors/cloud-sql-proxy/v2.18.0/cloud-sql-proxy.linux.amd64
+          chmod +x cloud-sql-proxy
+          
+          # Start proxy in background
+          ./cloud-sql-proxy --port 5432 ${{ vars.IM_TEST_PROJECT_ID }}:us-central1:involvemint &
+          
+          # Wait for proxy to be ready
+          sleep 5
 
       - name: Create database backup
         run: |
@@ -189,10 +207,16 @@ jobs:
           credentials_json: ${{ secrets.GCP_SA_KEY }}
 
       - name: Setup Cloud SQL Proxy
-        uses: google-github-actions/setup-cloud-sql-proxy@v2
-        with:
-          instance-connection-names: ${{ vars.IM_TEST_PROJECT_ID }}:us-central1:involvemint
-          port: 5432
+        run: |
+          # Download Cloud SQL Proxy v2
+          curl -o cloud-sql-proxy https://storage.googleapis.com/cloud-sql-connectors/cloud-sql-proxy/v2.18.0/cloud-sql-proxy.linux.amd64
+          chmod +x cloud-sql-proxy
+          
+          # Start proxy in background
+          ./cloud-sql-proxy --port 5432 ${{ vars.IM_TEST_PROJECT_ID }}:us-central1:involvemint &
+          
+          # Wait for proxy to be ready
+          sleep 5
 
       - name: Check for schema drift
         id: check-drift
@@ -235,10 +259,16 @@ jobs:
           credentials_json: ${{ secrets.GCP_SA_KEY }}
       
       - name: Setup Cloud SQL Proxy
-        uses: google-github-actions/setup-cloud-sql-proxy@v2
-        with:
-          instance-connection-names: ${{ vars.IM_TEST_PROJECT_ID }}:us-central1:involvemint
-          port: 5432
+        run: |
+          # Download Cloud SQL Proxy v2
+          curl -o cloud-sql-proxy https://storage.googleapis.com/cloud-sql-connectors/cloud-sql-proxy/v2.18.0/cloud-sql-proxy.linux.amd64
+          chmod +x cloud-sql-proxy
+          
+          # Start proxy in background
+          ./cloud-sql-proxy --port 5432 ${{ vars.IM_TEST_PROJECT_ID }}:us-central1:involvemint &
+          
+          # Wait for proxy to be ready
+          sleep 5
 
       - name: Preview new migration
         id: preview-migration
@@ -308,10 +338,16 @@ jobs:
           credentials_json: ${{ secrets.GCP_SA_KEY }}
 
       - name: Setup Cloud SQL Proxy
-        uses: google-github-actions/setup-cloud-sql-proxy@v2
-        with:
-          instance-connection-names: ${{ vars.IM_TEST_PROJECT_ID }}:us-central1:involvemint
-          port: 5432
+        run: |
+          # Download Cloud SQL Proxy v2
+          curl -o cloud-sql-proxy https://storage.googleapis.com/cloud-sql-connectors/cloud-sql-proxy/v2.18.0/cloud-sql-proxy.linux.amd64
+          chmod +x cloud-sql-proxy
+          
+          # Start proxy in background
+          ./cloud-sql-proxy --port 5432 ${{ vars.IM_TEST_PROJECT_ID }}:us-central1:involvemint &
+          
+          # Wait for proxy to be ready
+          sleep 5
 
       - name: Configure git
         run: |
