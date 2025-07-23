@@ -54,10 +54,7 @@ jobs:
           
           # Wait for proxy to be ready
           sleep 5
-      
-      - name: Check for pending migrations
-        id: check-pending
-        run: |
+
           npx ts-node --project ./util/tsconfig.json ./util/check_for_pending_migrations.ts
 
 
