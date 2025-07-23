@@ -50,7 +50,10 @@ jobs:
           chmod +x cloud-sql-proxy
           
           # Start proxy in background
-          ./cloud-sql-proxy --port 5432 im-test-395400:us-central1:im-test
+          ./cloud-sql-proxy --port 5432 im-test-395400:us-central1:im-test &
+          
+          # Wait for proxy to be ready
+          sleep 5
 
       - name: Check for pending migrations
         id: check-pending
