@@ -51,9 +51,6 @@ jobs:
           
           # Start proxy in background
           ./cloud-sql-proxy --port 5432 im-test-395400:us-central1:im-test
-          
-          # Wait for proxy to be ready
-          sleep 5
 
           npx ts-node --project ./util/tsconfig.json ./util/check_for_pending_migrations.ts
 
