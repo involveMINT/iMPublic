@@ -38,7 +38,7 @@ jobs:
       - name: Check for pending migrations
         id: check-pending
         run: |
-          cd util && npx ts-node --project ./tsconfig.json check_for_pending_migrations.ts > ../pending.log
+          npx ts-node --project ./util/tsconfig.json check_for_pending_migrations.ts > ./pending.log
           if grep -q 'MIGRATION_PENDING=true' pending.log; then
             echo "pending-migrations=true" >> $GITHUB_OUTPUT
             echo "⚠️ Pending migrations detected"
@@ -112,7 +112,7 @@ jobs:
       - name: Check for schema drift
         id: check-drift
         run: |
-          cd util && npx ts-node --project ./tsconfig.json detect_db_entity_drift.ts > ../drift.log
+          npx ts-node --project ./util/tsconfig.json detect_db_entity_drift.ts > ./drift.log
           if grep -q 'MIGRATION_NEEDED=true' drift.log; then
             echo "migration-needed=true" >> $GITHUB_OUTPUT
             echo "📈 Schema drift detected - new migration needed"
