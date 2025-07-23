@@ -50,7 +50,7 @@ jobs:
           chmod +x cloud-sql-proxy
           
           # Start proxy in background
-          ./cloud-sql-proxy --port 5432 im-test-395400:us-central1:involvemint &
+          ./cloud-sql-proxy --port 5432 im-test-395400:us-central1:im-test
           
           # Wait for proxy to be ready
           sleep 5
@@ -69,7 +69,7 @@ jobs:
       DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
       DB_NAME: ${{ secrets.DB_NAME }}
     needs: check-pending-migrations
-    if: needs.check-pending-migrations.outputs.pending-migrations == 'true' && vars.EMERGENCY_DEPLOY != 'true'
+    if: needs.check-pending-migrations.outputs.pending-migrations == 'true'
     steps:
       - uses: actions/checkout@v3
       
@@ -122,7 +122,6 @@ jobs:
           echo ""
           echo "✅ Approve to proceed with applying pending migrations."
           echo ""
-          echo "🚨 Emergency bypass: Set EMERGENCY_DEPLOY=true repository variable to skip this approval"
 
   apply-pending-migrations:
     name: ⚙️ Apply Pending Migrations
@@ -135,7 +134,7 @@ jobs:
       DB_USER: ${{ secrets.DB_USER }}
       DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
       DB_NAME: ${{ secrets.DB_NAME }}
-    if: always() && needs.check-pending-migrations.outputs.pending-migrations == 'true' && (needs.review-pending-migrations.result == 'success' || vars.EMERGENCY_DEPLOY == 'true')
+    if: needs.check-pending-migrations.outputs.pending-migrations == 'true' && (needs.review-pending-migrations.result == 'success' )
     steps:
       - uses: actions/checkout@v3
       - name: Use Node.js ${{ env.NODE_VERSION }}
@@ -184,7 +183,7 @@ jobs:
       DB_USER: ${{ secrets.DB_USER }}
       DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
       DB_NAME: ${{ secrets.DB_NAME }}
-    if: always() && (needs.apply-pending-migrations.result == 'success' || needs.apply-pending-migrations.result == 'skipped')
+    if: (needs.apply-pending-migrations.result == 'success' || needs.apply-pending-migrations.result == 'skipped')
     outputs:
       migration-needed: ${{ steps.check-drift.outputs.migration-needed }}
     steps:
@@ -238,7 +237,7 @@ jobs:
       DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
       DB_NAME: ${{ secrets.DB_NAME }}
     needs: [check-schema-drift]
-    if: needs.check-schema-drift.outputs.migration-needed == 'true' && vars.EMERGENCY_DEPLOY != 'true'
+    if: needs.check-schema-drift.outputs.migration-needed == 'true' && true
     steps:
       - uses: actions/checkout@v3
       
@@ -306,7 +305,6 @@ jobs:
           echo ""
           echo "✅ Approve to proceed with generating and applying the new migration."
           echo ""
-          echo "🚨 Emergency bypass: Set EMERGENCY_DEPLOY=true repository variable to skip this approval"
 
   generate-and-apply-migration:
     name: ⚙️ Generate & Apply New Migration
@@ -319,7 +317,7 @@ jobs:
       DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
       DB_NAME: ${{ secrets.DB_NAME }}
     needs: [check-schema-drift, review-new-migration]
-    if: always() && needs.check-schema-drift.outputs.migration-needed == 'true' && (needs.review-new-migration.result == 'success' || vars.EMERGENCY_DEPLOY == 'true')
+    if: needs.check-schema-drift.outputs.migration-needed == 'true' && (needs.review-new-migration.result == 'success' )
     steps:
       - uses: actions/checkout@v3
       - name: Use Node.js ${{ env.NODE_VERSION }}
@@ -375,7 +373,7 @@ jobs:
     environment: Test
     runs-on: ubuntu-latest
     needs: [check-pending-migrations, apply-pending-migrations, check-schema-drift, generate-and-apply-migration]
-    if: always() && (needs.apply-pending-migrations.result == 'success' || needs.apply-pending-migrations.result == 'skipped') && (needs.generate-and-apply-migration.result == 'success' || needs.generate-and-apply-migration.result == 'skipped') && vars.EMERGENCY_DEPLOY != 'skip-deploy'
+    if: (needs.apply-pending-migrations.result == 'success' || needs.apply-pending-migrations.result == 'skipped') && (needs.generate-and-apply-migration.result == 'success' || needs.generate-and-apply-migration.result == 'skipped')
     concurrency:
       group: test-environment
       # allow only one "waiting for approval" + "running" job in that group
