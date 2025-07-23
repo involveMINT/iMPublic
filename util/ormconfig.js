@@ -5,7 +5,7 @@ module.exports = {
   username: process.env.DB_USER,
   password: process.env.DB_PASSWORD,
   database: process.env.DB_NAME,
-  entities: ['libs/**/*.entity.ts'],
+  entities: ['libs/**/*.entity.ts', 'libs/**/*.view.ts'],
   migrations: ['libs/migration/*.ts'],
   cli: {
     migrationsDir: 'libs/migration'
