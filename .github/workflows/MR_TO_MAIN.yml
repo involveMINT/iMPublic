@@ -19,13 +19,6 @@ jobs:
   check-pending-migrations:
     name: 🔍 Check for Pending Migrations
     runs-on: ubuntu-latest
-    environment: Test-Database-NoApproval
-    env:
-      DB_HOST: ${{ secrets.DB_HOST }}
-      DB_PORT: ${{ secrets.DB_PORT }}
-      DB_USER: ${{ secrets.DB_USER }}
-      DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
-      DB_NAME: ${{ secrets.DB_NAME }}
     outputs:
       pending-migrations: ${{ steps.check-pending.outputs.pending-migrations }}
     steps:
@@ -41,10 +34,12 @@ jobs:
 
       - name: Authenticate to GCP
         uses: google-github-actions/auth@v2
+        environment: Test-Database-NoApproval
         with:
           credentials_json: ${{ secrets.GCP_SA_KEY }}
       
       - name: Setup Cloud SQL Proxy
+        environment: Test-Database-NoApproval
         run: |
           # Download Cloud SQL Proxy v2
           curl -o cloud-sql-proxy https://storage.googleapis.com/cloud-sql-connectors/cloud-sql-proxy/v2.18.0/cloud-sql-proxy.linux.amd64
@@ -68,11 +63,34 @@ jobs:
 
       - name: Check for pending migrations
         id: check-pending
+        environment: Test-Database-NoApproval
+        env:
+          DB_HOST: ${{ secrets.DB_HOST }}
+          DB_PORT: ${{ secrets.DB_PORT }}
+          DB_USER: ${{ secrets.DB_USER }}
+          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+          DB_NAME: ${{ secrets.DB_NAME }}
         run: |
-          npx ts-node --project ./util/tsconfig.json ./util/check_for_pending_migrations.ts
+          npx ts-node --project ./util/tsconfig.json ./util/check_for_pending_migrations.ts > ./migration_check.log
+          if grep -q 'MIGRATION_PENDING=true' migration_check.log; then
+            echo "pending-migrations=true" >> $GITHUB_OUTPUT
+            echo "⚠️ Pending migrations detected"
+          else
+            echo "pending-migrations=false" >> $GITHUB_OUTPUT
+            echo "✅ No pending migrations"
+          fi
+          cat migration_check.log
       
       - name: Show pending migrations
         id: show-migrations
+        environment: Test-Database-NoApproval
+        if: steps.check-pending.outputs.pending-migrations == 'true'
+        env:
+          DB_HOST: ${{ secrets.DB_HOST }}
+          DB_PORT: ${{ secrets.DB_PORT }}
+          DB_USER: ${{ secrets.DB_USER }}
+          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+          DB_NAME: ${{ secrets.DB_NAME }}
         run: |
           echo "📋 PENDING MIGRATIONS PREVIEW:"
           echo ""
@@ -81,87 +99,28 @@ jobs:
           echo "📁 Migration files to be applied:"
           ls -la libs/migration/*.ts 2>/dev/null || echo "No migration files found in libs/migration/"
       
-      - name: Pending migration review required
-        run: |
-          echo "🔍 PENDING MIGRATIONS DETECTED"
-          echo ""
-          echo "⚠️ There are unapplied migrations in the database."
-          echo ""
-          echo "Please verify:"
-          echo "- Review the pending migration files listed above"
-          echo "- Ensure migrations are safe to apply"
-          echo "- Confirm no data loss will occur"
-          echo "- Check migration preview output above"
-          echo ""
-          echo "✅ Approve to proceed with applying pending migrations."
-          echo ""
-
-  apply-pending-migrations:
-    name: ⚙️ Apply Pending Migrations
-    runs-on: ubuntu-latest
-    needs: [check-pending-migrations]
-    if: needs.check-pending-migrations.result == 'success'
-    environment: Test-Database-NoApproval
-    env:
-      DB_HOST: ${{ secrets.DB_HOST }}
-      DB_PORT: ${{ secrets.DB_PORT }}
-      DB_USER: ${{ secrets.DB_USER }}
-      DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
-      DB_NAME: ${{ secrets.DB_NAME }}
-    steps:
-      - uses: actions/checkout@v3
-      - name: Use Node.js ${{ env.NODE_VERSION }}
-        uses: actions/setup-node@v3
-        with:
-          node-version: ${{ env.NODE_VERSION }}
-      - name: Install dependencies
-        run: npm ci
-      
-      - name: Authenticate to GCP
-        uses: google-github-actions/auth@v2
-        with:
-          credentials_json: ${{ secrets.GCP_SA_KEY }}
-
-      - name: Setup Cloud SQL Proxy
-        run: |
-          # Download Cloud SQL Proxy v2
-          curl -o cloud-sql-proxy https://storage.googleapis.com/cloud-sql-connectors/cloud-sql-proxy/v2.18.0/cloud-sql-proxy.linux.amd64
-          chmod +x cloud-sql-proxy
-          
-          # Start proxy in background
-          ./cloud-sql-proxy --port 5432 im-test-395400:us-east4:im-test &
-          PROXY_PID=$!
-          
-          # Wait for proxy to be ready
-          sleep 10
-          
-          # Test if proxy is listening
-          if ! nc -z 127.0.0.1 5432; then
-            echo "❌ Proxy not ready on port 5432"
-            kill $PROXY_PID 2>/dev/null || true
-            exit 1
-          fi
-          
-          echo "✅ Cloud SQL Proxy is ready"
-
       - name: Apply pending migrations (if any)
+        environment: Test-Database-Approval
+        if: steps.check-pending.outputs.pending-migrations == 'true'
+        env:
+          DB_HOST: ${{ secrets.DB_HOST }}
+          DB_PORT: ${{ secrets.DB_PORT }}
+          DB_USER: ${{ secrets.DB_USER }}
+          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+          DB_NAME: ${{ secrets.DB_NAME }}
         run: |
-          if [[ "${{ needs.check-pending-migrations.outputs.pending-migrations }}" == "true" ]]; then
-            echo "📦 Creating database backup..."
-            PGPASSWORD="$DB_PASSWORD" pg_dump -h "$DB_HOST" -U "$DB_USER" -p "$DB_PORT" -Fc "$DB_NAME" > db_backup_pending_$(date +%Y%m%d_%H%M%S).dump
-            echo "✅ Database backup created"
-            
-            echo "⚙️ Applying pending migrations..."
-            npx typeorm migration:run -f util/ormconfig.js
-            echo "✅ Pending migrations applied successfully"
-          else
-            echo "✅ No pending migrations to apply"
-          fi
+          echo "📦 Creating database backup..."
+          PGPASSWORD="$DB_PASSWORD" pg_dump -h "$DB_HOST" -U "$DB_USER" -p "$DB_PORT" -Fc "$DB_NAME" > db_backup_pending_$(date +%Y%m%d_%H%M%S).dump
+          echo "✅ Database backup created"
+          
+          echo "⚙️ Applying pending migrations..."
+          npx typeorm migration:run -f util/ormconfig.js
+          echo "✅ Pending migrations applied successfully"
 
   check-schema-drift:
     name: 🔍 Check for Schema Drift
     runs-on: ubuntu-latest
-    needs: [apply-pending-migrations]
+    needs: [check-pending-migrations]
     environment: Test-Database-NoApproval
     env:
       DB_HOST: ${{ secrets.DB_HOST }}
@@ -169,7 +128,7 @@ jobs:
       DB_USER: ${{ secrets.DB_USER }}
       DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
       DB_NAME: ${{ secrets.DB_NAME }}
-    if: needs.apply-pending-migrations.result == 'skipped' || needs.apply-pending-migrations.result == 'success'
+    if: needs.check-pending-migrations.result == 'success'
     outputs:
       migration-needed: ${{ steps.check-drift.outputs.migration-needed }}
     steps:
