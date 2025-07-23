@@ -45,14 +45,8 @@ jobs:
       - name: Check for pending migrations
         id: check-pending
         run: |
-          npx ts-node --project ./util/tsconfig.json ./util/check_for_pending_migrations.ts > ./pending.log
-          if grep -q 'MIGRATION_PENDING=true' pending.log; then
-            echo "pending-migrations=true" >> $GITHUB_OUTPUT
-            echo "⚠️ Pending migrations detected"
-          else
-            echo "pending-migrations=false" >> $GITHUB_OUTPUT
-            echo "✅ No pending migrations"
-          fi
+          npx ts-node --project ./util/tsconfig.json ./util/check_for_pending_migrations.ts
+
 
   review-pending-migrations:
     name: 🔍 Review Pending Migrations (MANUAL)
