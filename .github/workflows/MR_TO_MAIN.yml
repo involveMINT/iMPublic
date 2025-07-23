@@ -50,7 +50,7 @@ jobs:
           chmod +x cloud-sql-proxy
           
           # Start proxy in background
-          ./cloud-sql-proxy --port 5432 im-test-395400:us-central1:im-test &
+          ./cloud-sql-proxy --port 5432 im-test-395400:us-east4:im-test &
           PROXY_PID=$!
           
           # Wait for proxy to be ready
@@ -106,10 +106,20 @@ jobs:
           chmod +x cloud-sql-proxy
           
           # Start proxy in background
-          ./cloud-sql-proxy --port 5432 ${{ vars.IM_TEST_PROJECT_ID }}:us-central1:involvemint &
+          ./cloud-sql-proxy --port 5432 im-test-395400:us-east4:im-test &
+          PROXY_PID=$!
           
           # Wait for proxy to be ready
-          sleep 5
+          sleep 10
+          
+          # Test if proxy is listening
+          if ! nc -z 127.0.0.1 5432; then
+            echo "❌ Proxy not ready on port 5432"
+            kill $PROXY_PID 2>/dev/null || true
+            exit 1
+          fi
+          
+          echo "✅ Cloud SQL Proxy is ready"
 
       - name: Show pending migrations
         id: show-migrations
@@ -169,10 +179,20 @@ jobs:
           chmod +x cloud-sql-proxy
           
           # Start proxy in background
-          ./cloud-sql-proxy --port 5432 ${{ vars.IM_TEST_PROJECT_ID }}:us-central1:involvemint &
+          ./cloud-sql-proxy --port 5432 im-test-395400:us-east4:im-test &
+          PROXY_PID=$!
           
           # Wait for proxy to be ready
-          sleep 5
+          sleep 10
+          
+          # Test if proxy is listening
+          if ! nc -z 127.0.0.1 5432; then
+            echo "❌ Proxy not ready on port 5432"
+            kill $PROXY_PID 2>/dev/null || true
+            exit 1
+          fi
+          
+          echo "✅ Cloud SQL Proxy is ready"
 
       - name: Create database backup
         run: |
@@ -222,10 +242,20 @@ jobs:
           chmod +x cloud-sql-proxy
           
           # Start proxy in background
-          ./cloud-sql-proxy --port 5432 ${{ vars.IM_TEST_PROJECT_ID }}:us-central1:involvemint &
+          ./cloud-sql-proxy --port 5432 im-test-395400:us-east4:im-test &
+          PROXY_PID=$!
           
           # Wait for proxy to be ready
-          sleep 5
+          sleep 10
+          
+          # Test if proxy is listening
+          if ! nc -z 127.0.0.1 5432; then
+            echo "❌ Proxy not ready on port 5432"
+            kill $PROXY_PID 2>/dev/null || true
+            exit 1
+          fi
+          
+          echo "✅ Cloud SQL Proxy is ready"
 
       - name: Check for schema drift
         id: check-drift
@@ -274,10 +304,20 @@ jobs:
           chmod +x cloud-sql-proxy
           
           # Start proxy in background
-          ./cloud-sql-proxy --port 5432 ${{ vars.IM_TEST_PROJECT_ID }}:us-central1:involvemint &
+          ./cloud-sql-proxy --port 5432 im-test-395400:us-east4:im-test &
+          PROXY_PID=$!
           
           # Wait for proxy to be ready
-          sleep 5
+          sleep 10
+          
+          # Test if proxy is listening
+          if ! nc -z 127.0.0.1 5432; then
+            echo "❌ Proxy not ready on port 5432"
+            kill $PROXY_PID 2>/dev/null || true
+            exit 1
+          fi
+          
+          echo "✅ Cloud SQL Proxy is ready"
 
       - name: Preview new migration
         id: preview-migration
@@ -352,10 +392,20 @@ jobs:
           chmod +x cloud-sql-proxy
           
           # Start proxy in background
-          ./cloud-sql-proxy --port 5432 ${{ vars.IM_TEST_PROJECT_ID }}:us-central1:involvemint &
+          ./cloud-sql-proxy --port 5432 im-test-395400:us-east4:im-test &
+          PROXY_PID=$!
           
           # Wait for proxy to be ready
-          sleep 5
+          sleep 10
+          
+          # Test if proxy is listening
+          if ! nc -z 127.0.0.1 5432; then
+            echo "❌ Proxy not ready on port 5432"
+            kill $PROXY_PID 2>/dev/null || true
+            exit 1
+          fi
+          
+          echo "✅ Cloud SQL Proxy is ready"
 
       - name: Configure git
         run: |
