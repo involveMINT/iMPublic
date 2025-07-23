@@ -70,57 +70,7 @@ jobs:
         id: check-pending
         run: |
           npx ts-node --project ./util/tsconfig.json ./util/check_for_pending_migrations.ts
-
-  review-pending-migrations:
-    name: 🔍 Review Pending Migrations (MANUAL)
-    runs-on: ubuntu-latest
-    environment: Test-Database-Approval
-    env:
-      DB_HOST: ${{ secrets.DB_HOST }}
-      DB_PORT: ${{ secrets.DB_PORT }}
-      DB_USER: ${{ secrets.DB_USER }}
-      DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
-      DB_NAME: ${{ secrets.DB_NAME }}
-    needs: check-pending-migrations
-    if: needs.check-pending-migrations.outputs.pending-migrations == 'true'
-    steps:
-      - uses: actions/checkout@v3
       
-      - name: Use Node.js ${{ env.NODE_VERSION }}
-        uses: actions/setup-node@v3
-        with:
-          node-version: ${{ env.NODE_VERSION }}
-          
-      - name: Install dependencies
-        run: npm ci
-      
-      - name: Authenticate to GCP
-        uses: google-github-actions/auth@v2
-        with:
-          credentials_json: ${{ secrets.GCP_SA_KEY }}
-
-      - name: Setup Cloud SQL Proxy
-        run: |
-          # Download Cloud SQL Proxy v2
-          curl -o cloud-sql-proxy https://storage.googleapis.com/cloud-sql-connectors/cloud-sql-proxy/v2.18.0/cloud-sql-proxy.linux.amd64
-          chmod +x cloud-sql-proxy
-          
-          # Start proxy in background
-          ./cloud-sql-proxy --port 5432 im-test-395400:us-east4:im-test &
-          PROXY_PID=$!
-          
-          # Wait for proxy to be ready
-          sleep 10
-          
-          # Test if proxy is listening
-          if ! nc -z 127.0.0.1 5432; then
-            echo "❌ Proxy not ready on port 5432"
-            kill $PROXY_PID 2>/dev/null || true
-            exit 1
-          fi
-          
-          echo "✅ Cloud SQL Proxy is ready"
-
       - name: Show pending migrations
         id: show-migrations
         run: |
@@ -149,15 +99,15 @@ jobs:
   apply-pending-migrations:
     name: ⚙️ Apply Pending Migrations
     runs-on: ubuntu-latest
-    needs: [check-pending-migrations, review-pending-migrations]
-    environment: Test-Database-NoApproval
+    needs: [check-pending-migrations]
+    if: needs.check-pending-migrations.result == 'success' && needs.check-pending-migrations.outputs.pending-migrations == 'true'
+    environment: Test-Database-Approval
     env:
       DB_HOST: ${{ secrets.DB_HOST }}
       DB_PORT: ${{ secrets.DB_PORT }}
       DB_USER: ${{ secrets.DB_USER }}
       DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
       DB_NAME: ${{ secrets.DB_NAME }}
-    if: needs.check-pending-migrations.result == 'success' && (needs.check-pending-migrations.outputs.pending-migrations == 'false' || needs.review-pending-migrations.result == 'success')
     steps:
       - uses: actions/checkout@v3
       - name: Use Node.js ${{ env.NODE_VERSION }}
@@ -275,7 +225,7 @@ jobs:
   review-new-migration:
     name: 🔍 Review New Migration (MANUAL)
     runs-on: ubuntu-latest
-    environment: Test-Database-Approval
+    environment: Test-Database-NoApproval
     env:
       DB_HOST: ${{ secrets.DB_HOST }}
       DB_PORT: ${{ secrets.DB_PORT }}
@@ -365,7 +315,7 @@ jobs:
   generate-and-apply-migration:
     name: ⚙️ Generate & Apply New Migration
     runs-on: ubuntu-latest
-    environment: Test-Database-NoApproval
+    environment: Test-Database-Approval
     env:
       DB_HOST: ${{ secrets.DB_HOST }}
       DB_PORT: ${{ secrets.DB_PORT }}
