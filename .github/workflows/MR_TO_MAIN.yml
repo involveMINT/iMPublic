@@ -211,7 +211,7 @@ jobs:
   check-schema-drift:
     name: 🔍 Check for Schema Drift
     runs-on: ubuntu-latest
-    needs: [check-pending-migrations, apply-pending-migrations]
+    needs: [apply-pending-migrations]
     environment: Test-Database-NoApproval
     env:
       DB_HOST: ${{ secrets.DB_HOST }}
@@ -219,7 +219,7 @@ jobs:
       DB_USER: ${{ secrets.DB_USER }}
       DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
       DB_NAME: ${{ secrets.DB_NAME }}
-    if: needs.apply-pending-migrations.result == 'success'
+    if: needs.apply-pending-migrations.result == 'skipped' || needs.apply-pending-migrations.result == 'success'
     outputs:
       migration-needed: ${{ steps.check-drift.outputs.migration-needed }}
     steps:
