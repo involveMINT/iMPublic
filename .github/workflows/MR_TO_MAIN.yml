@@ -99,8 +99,8 @@ jobs:
   apply-pending-migrations:
     name: ⚙️ Apply Pending Migrations
     runs-on: ubuntu-latest
-    needs: [check-pending-migrations, review-pending-migrations]
-    if: needs.check-pending-migrations.result == 'success' && (needs.check-pending-migrations.outputs.pending-migrations == 'false' || needs.review-pending-migrations.result == 'success')
+    needs: [check-pending-migrations]
+    if: needs.check-pending-migrations.result == 'success'
     environment: Test-Database-NoApproval
     env:
       DB_HOST: ${{ secrets.DB_HOST }}
