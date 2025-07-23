@@ -50,7 +50,7 @@ jobs:
           chmod +x cloud-sql-proxy
           
           # Start proxy in background
-          ./cloud-sql-proxy --port 5432 ${{ vars.IM_TEST_PROJECT_ID }}:us-central1:involvemint &
+          ./cloud-sql-proxy --port 5432 im-test-395400:us-central1:involvemint &
           
           # Wait for proxy to be ready
           sleep 5
