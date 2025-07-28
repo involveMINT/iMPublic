@@ -255,7 +255,7 @@ jobs:
       
       - name: Preview new migration
         id: preview-migration
-        if: steps.check-drift.outputs.migration-needed
+        if: steps.check-drift.outputs.migration-needed == 'true'
         run: |
           echo "📋 NEW MIGRATION PREVIEW:"
           echo ""
@@ -275,7 +275,7 @@ jobs:
           }
       
       - name: New migration review required
-        if: steps.check-drift.outputs.migration-needed
+        if: steps.check-drift.outputs.migration-needed == 'true'
         run: |
           echo "🔍 NEW MIGRATION REQUIRED"
           echo ""
