@@ -96,7 +96,7 @@ jobs:
         run: |
           echo "📋 PENDING MIGRATIONS PREVIEW:"
           echo ""
-          npx typeorm migration:show -c util/ormconfig.js || echo "Unable to show migrations - will be visible during application"
+          npx typeorm migration:show -f util/ormconfig.js || echo "Unable to show migrations - will be visible during application"
           echo ""
           echo "📁 Migration files to be applied:"
           ls -la libs/migration/*.ts 2>/dev/null || echo "No migration files found in libs/migration/"
@@ -174,7 +174,7 @@ jobs:
         if: needs.check-pending-migrations.outputs.pending-migrations == 'true'
         run: |
           echo "⚙️ Applying pending migrations..."
-          npx typeorm migration:run -c util/ormconfig.js
+          npx typeorm migration:run -f util/ormconfig.js
           echo "✅ Pending migrations applied successfully"
 
   check-schema-drift:
@@ -254,9 +254,9 @@ jobs:
           echo "📋 NEW MIGRATION PREVIEW:"
           echo ""
           echo "🔄 Generating migration preview (dry-run)..."
-          npx typeorm migration:generate -n PreviewMigration-$(date +%Y%m%d%H%M%S) -c util/ormconfig.js --dry-run 2>/dev/null || {
+          npx typeorm migration:generate -n PreviewMigration-$(date +%Y%m%d%H%M%S) -f util/ormconfig.js --dryrun 2>/dev/null || {
             echo "⚠️ TypeORM dry-run not supported, generating actual migration for preview..."
-            npx typeorm migration:generate -n PreviewMigration-$(date +%Y%m%d%H%M%S) -c util/ormconfig.js
+            npx typeorm migration:generate -n PreviewMigration-$(date +%Y%m%d%H%M%S) -f util/ormconfig.js
             echo ""
             echo "📁 Generated migration preview:"
             ls -la libs/migration/*PreviewMigration*.ts 2>/dev/null | tail -1
@@ -378,7 +378,7 @@ jobs:
           
           echo "🔄 Generating new migration..."
           MIGRATION_NAME="AutoMigration-$(date +%Y%m%d%H%M%S)"
-          if ! npx typeorm migration:generate -n "$MIGRATION_NAME" -c util/ormconfig.js; then
+          if ! npx typeorm migration:generate -n "$MIGRATION_NAME" -f util/ormconfig.js; then
             echo "❌ Failed to generate migration"
             exit 1
           fi
