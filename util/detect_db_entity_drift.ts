@@ -14,7 +14,7 @@ async function checkMigrationDrift() {
   try {
     // Generate a migration to detect drift
     console.log('🔍 Checking for schema drift...');
-    execSync(`npx typeorm migration:generate -n DriftCheck -f util/ormconfig.js`, {
+    execSync(`npx ts-node --project ./util/tsconfig.json ./node_modules/typeorm/cli.js migration:generate -n DriftCheck -f util/ormconfig.js`, {
       stdio: 'pipe',
     });
 
@@ -41,7 +41,7 @@ async function checkMigrationDrift() {
     // Try alternative syntax for TypeORM 0.2.x
     console.log('🔄 Trying alternative TypeORM syntax...');
     try {
-      execSync(`npx typeorm migration:generate -n DriftCheck -c default -f util/ormconfig.js`, {
+      execSync(`npx ts-node --project ./util/tsconfig.json ./node_modules/typeorm/cli.js migration:generate -n DriftCheck -c default -f util/ormconfig.js`, {
         stdio: 'pipe',
       });
       
