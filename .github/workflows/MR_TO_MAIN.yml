@@ -19,6 +19,13 @@ jobs:
   check-pending-migrations:
     name: 🔍 Check for Pending Migrations
     runs-on: ubuntu-latest
+    environment: Test-Database-NoApproval
+    env:
+      DB_HOST: ${{ secrets.DB_HOST }}
+      DB_PORT: ${{ secrets.DB_PORT }}
+      DB_USER: ${{ secrets.DB_USER }}
+      DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+      DB_NAME: ${{ secrets.DB_NAME }}
     outputs:
       pending-migrations: ${{ steps.check-pending.outputs.pending-migrations }}
     steps:
@@ -63,13 +70,6 @@ jobs:
 
       - name: Check for pending migrations
         id: check-pending
-        environment: Test-Database-NoApproval
-        env:
-          DB_HOST: ${{ secrets.DB_HOST }}
-          DB_PORT: ${{ secrets.DB_PORT }}
-          DB_USER: ${{ secrets.DB_USER }}
-          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
-          DB_NAME: ${{ secrets.DB_NAME }}
         run: |
           npx ts-node --project ./util/tsconfig.json ./util/check_for_pending_migrations.ts > ./migration_check.log
           if grep -q 'MIGRATION_PENDING=true' migration_check.log; then
@@ -80,17 +80,10 @@ jobs:
             echo "✅ No pending migrations"
           fi
           cat migration_check.log
-      
+
       - name: Show pending migrations
-        id: show-migrations
-        environment: Test-Database-NoApproval
         if: steps.check-pending.outputs.pending-migrations == 'true'
-        env:
-          DB_HOST: ${{ secrets.DB_HOST }}
-          DB_PORT: ${{ secrets.DB_PORT }}
-          DB_USER: ${{ secrets.DB_USER }}
-          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
-          DB_NAME: ${{ secrets.DB_NAME }}
+        id: show-migrations
         run: |
           echo "📋 PENDING MIGRATIONS PREVIEW:"
           echo ""
@@ -98,16 +91,62 @@ jobs:
           echo ""
           echo "📁 Migration files to be applied:"
           ls -la libs/migration/*.ts 2>/dev/null || echo "No migration files found in libs/migration/"
+
+  apply-pending-migrations:
+    name: 🔍 Apply Pending Migrations (View Check Pending Migrations job to see migrations before running)
+    runs-on: ubuntu-latest
+    needs: [check-pending-migrations]
+    environment: Test-Database-Approval
+    env:
+      DB_HOST: ${{ secrets.DB_HOST }}
+      DB_PORT: ${{ secrets.DB_PORT }}
+      DB_USER: ${{ secrets.DB_USER }}
+      DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+      DB_NAME: ${{ secrets.DB_NAME }}
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Use Node.js ${{ env.NODE_VERSION }}
+        uses: actions/setup-node@v3
+        if: needs.check-pending-migrations.outputs.pending-migrations == 'true'
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          
+      - name: Install dependencies
+        if: needs.check-pending-migrations.outputs.pending-migrations == 'true'
+        run: npm ci
+
+      - name: Authenticate to GCP
+        uses: google-github-actions/auth@v2
+        if: needs.check-pending-migrations.outputs.pending-migrations == 'true'
+        with:
+          credentials_json: ${{ secrets.GCP_SA_KEY }}
+      
+      - name: Setup Cloud SQL Proxy
+        if: needs.check-pending-migrations.outputs.pending-migrations == 'true'
+        run: |
+          # Download Cloud SQL Proxy v2
+          curl -o cloud-sql-proxy https://storage.googleapis.com/cloud-sql-connectors/cloud-sql-proxy/v2.18.0/cloud-sql-proxy.linux.amd64
+          chmod +x cloud-sql-proxy
+          
+          # Start proxy in background
+          ./cloud-sql-proxy --port 5432 im-test-395400:us-east4:im-test &
+          PROXY_PID=$!
+          
+          # Wait for proxy to be ready
+          sleep 10
+          
+          # Test if proxy is listening
+          if ! nc -z 127.0.0.1 5432; then
+            echo "❌ Proxy not ready on port 5432"
+            kill $PROXY_PID 2>/dev/null || true
+            exit 1
+          fi
+          
+          echo "✅ Cloud SQL Proxy is ready"
       
       - name: Apply pending migrations (if any)
-        environment: Test-Database-Approval
         if: steps.check-pending.outputs.pending-migrations == 'true'
-        env:
-          DB_HOST: ${{ secrets.DB_HOST }}
-          DB_PORT: ${{ secrets.DB_PORT }}
-          DB_USER: ${{ secrets.DB_USER }}
-          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
-          DB_NAME: ${{ secrets.DB_NAME }}
         run: |
           echo "📦 Creating database backup..."
           PGPASSWORD="$DB_PASSWORD" pg_dump -h "$DB_HOST" -U "$DB_USER" -p "$DB_PORT" -Fc "$DB_NAME" > db_backup_pending_$(date +%Y%m%d_%H%M%S).dump
@@ -120,7 +159,7 @@ jobs:
   check-schema-drift:
     name: 🔍 Check for Schema Drift
     runs-on: ubuntu-latest
-    needs: [check-pending-migrations]
+    needs: [apply-pending-migrations]
     environment: Test-Database-NoApproval
     env:
       DB_HOST: ${{ secrets.DB_HOST }}
@@ -128,7 +167,6 @@ jobs:
       DB_USER: ${{ secrets.DB_USER }}
       DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
       DB_NAME: ${{ secrets.DB_NAME }}
-    if: needs.check-pending-migrations.result == 'success'
     outputs:
       migration-needed: ${{ steps.check-drift.outputs.migration-needed }}
     steps:
@@ -180,59 +218,10 @@ jobs:
             echo "migration-needed=false" >> $GITHUB_OUTPUT
             echo "✅ No schema drift detected"
           fi
-
-  review-new-migration:
-    name: 🔍 Review New Migration (MANUAL)
-    runs-on: ubuntu-latest
-    environment: Test-Database-NoApproval
-    env:
-      DB_HOST: ${{ secrets.DB_HOST }}
-      DB_PORT: ${{ secrets.DB_PORT }}
-      DB_USER: ${{ secrets.DB_USER }}
-      DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
-      DB_NAME: ${{ secrets.DB_NAME }}
-    needs: [check-schema-drift]
-    if: needs.check-schema-drift.outputs.migration-needed == 'true'
-    steps:
-      - uses: actions/checkout@v3
       
-      - name: Use Node.js ${{ env.NODE_VERSION }}
-        uses: actions/setup-node@v3
-        with:
-          node-version: ${{ env.NODE_VERSION }}
-          
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Authenticate to GCP
-        uses: google-github-actions/auth@v2
-        with:
-          credentials_json: ${{ secrets.GCP_SA_KEY }}
-      
-      - name: Setup Cloud SQL Proxy
-        run: |
-          # Download Cloud SQL Proxy v2
-          curl -o cloud-sql-proxy https://storage.googleapis.com/cloud-sql-connectors/cloud-sql-proxy/v2.18.0/cloud-sql-proxy.linux.amd64
-          chmod +x cloud-sql-proxy
-          
-          # Start proxy in background
-          ./cloud-sql-proxy --port 5432 im-test-395400:us-east4:im-test &
-          PROXY_PID=$!
-          
-          # Wait for proxy to be ready
-          sleep 10
-          
-          # Test if proxy is listening
-          if ! nc -z 127.0.0.1 5432; then
-            echo "❌ Proxy not ready on port 5432"
-            kill $PROXY_PID 2>/dev/null || true
-            exit 1
-          fi
-          
-          echo "✅ Cloud SQL Proxy is ready"
-
       - name: Preview new migration
         id: preview-migration
+        if: steps.check-drift.outputs.migration-needed
         run: |
           echo "📋 NEW MIGRATION PREVIEW:"
           echo ""
@@ -252,6 +241,7 @@ jobs:
           }
       
       - name: New migration review required
+        if: steps.check-drift.outputs.migration-needed
         run: |
           echo "🔍 NEW MIGRATION REQUIRED"
           echo ""
@@ -275,14 +265,14 @@ jobs:
     name: ⚙️ Generate & Apply New Migration
     runs-on: ubuntu-latest
     environment: Test-Database-Approval
+    needs: [check-schema-drift]
     env:
       DB_HOST: ${{ secrets.DB_HOST }}
       DB_PORT: ${{ secrets.DB_PORT }}
       DB_USER: ${{ secrets.DB_USER }}
       DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
       DB_NAME: ${{ secrets.DB_NAME }}
-    needs: [check-schema-drift, review-new-migration]
-    if: needs.check-schema-drift.outputs.migration-needed == 'true' && needs.review-new-migration.result == 'success'
+    needs: [check-schema-drift]
     steps:
       - uses: actions/checkout@v3
       - name: Use Node.js ${{ env.NODE_VERSION }}
@@ -290,14 +280,17 @@ jobs:
         with:
           node-version: ${{ env.NODE_VERSION }}
       - name: Install dependencies
+        if: needs.check-schema-drift.outputs.migration-needed == 'true'
         run: npm ci
       
       - name: Authenticate to GCP
         uses: google-github-actions/auth@v2
+        if: needs.check-schema-drift.outputs.migration-needed == 'true'
         with:
           credentials_json: ${{ secrets.GCP_SA_KEY }}
 
       - name: Setup Cloud SQL Proxy
+        if: needs.check-schema-drift.outputs.migration-needed == 'true'
         run: |
           # Download Cloud SQL Proxy v2
           curl -o cloud-sql-proxy https://storage.googleapis.com/cloud-sql-connectors/cloud-sql-proxy/v2.18.0/cloud-sql-proxy.linux.amd64
@@ -320,16 +313,21 @@ jobs:
           echo "✅ Cloud SQL Proxy is ready"
 
       - name: Configure git
+        if: needs.check-schema-drift.outputs.migration-needed == 'true'
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git remote set-url origin https://x-access-token:$GITHUB_TOKEN@github.com/${{ github.repository }}
+      
       - name: Create database backup (if not already done)
+        if: needs.check-schema-drift.outputs.migration-needed == 'true'
         run: |
           echo "📦 Creating database backup for new migration..."
           PGPASSWORD="$DB_PASSWORD" pg_dump -h "$DB_HOST" -U "$DB_USER" -p "$DB_PORT" -Fc "$DB_NAME" > db_backup_new_$(date +%Y%m%d_%H%M%S).dump
           echo "✅ Database backup created"
+      
       - name: Generate and apply migration
+        if: needs.check-schema-drift.outputs.migration-needed == 'true'
         run: |
           echo "🔄 Generating new migration..."
           npx typeorm migration:generate -f util/ormconfig.js -n AutoMigration-$(date +%Y%m%d%H%M%S) --pretty
@@ -347,8 +345,8 @@ jobs:
     name: ▶️ Deploy → Test (MANUAL)
     environment: Test
     runs-on: ubuntu-latest
-    needs: [check-pending-migrations, apply-pending-migrations, check-schema-drift, generate-and-apply-migration]
-    if: (needs.apply-pending-migrations.result == 'success' || needs.apply-pending-migrations.result == 'skipped') && (needs.generate-and-apply-migration.result == 'success' || needs.generate-and-apply-migration.result == 'skipped')
+    needs: [generate-and-apply-migration]
+    if: needs.generate-and-apply-migration.result == 'success'
     concurrency:
       group: test-environment
       # allow only one "waiting for approval" + "running" job in that group
