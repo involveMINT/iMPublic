@@ -31,6 +31,7 @@ jobs:
       DB_NAME: ${{ secrets.DB_NAME }}
     outputs:
       pending-migrations: ${{ steps.check-pending.outputs.pending-migrations }}
+      backup-id: ${{ steps.create-backup-pending.outputs.backup-id }}
     steps:
       - uses: actions/checkout@v4
       
@@ -162,13 +163,18 @@ jobs:
             sleep 2
           done
       
+      - name: Create database backup for pending migrations
+        id: create-backup-pending
+        if: needs.check-pending-migrations.outputs.pending-migrations == 'true'
+        run: |
+          echo "📦 Creating on-demand database backup for pending migrations..."
+          BACKUP_ID=$(gcloud sql backups create --instance=${{ env.TEST_DB_INSTANCE }} --description="Pending migration backup $(date +%Y-%m-%d_%H:%M:%S)" --format="value(name)")
+          echo "backup-id=$BACKUP_ID" >> $GITHUB_OUTPUT
+          echo "✅ On-demand backup created: $BACKUP_ID"
+          
       - name: Apply pending migrations (if any)
         if: needs.check-pending-migrations.outputs.pending-migrations == 'true'
         run: |
-          echo "📦 Creating database backup..."
-          PGPASSWORD="$DB_PASSWORD" pg_dump -h "$DB_HOST" -U "$DB_USER" -p "$DB_PORT" -Fc "$DB_NAME" > db_backup_pending_$(date +%Y%m%d_%H%M%S).dump
-          echo "✅ Database backup created"
-          
           echo "⚙️ Applying pending migrations..."
           npx typeorm migration:run -f util/ormconfig.js
           echo "✅ Pending migrations applied successfully"
@@ -289,7 +295,9 @@ jobs:
     name: ⚙️ Generate & Apply New Migration
     runs-on: ubuntu-latest
     environment: Test-Database-Approval
-    needs: [check-schema-drift]
+    needs: [check-schema-drift, apply-pending-migrations]
+    outputs:
+      backup-id: ${{ steps.create-backup-new.outputs.backup-id || steps.use-existing-backup.outputs.backup-id }}
     env:
       DB_HOST: ${{ secrets.DB_HOST }}
       DB_PORT: ${{ secrets.DB_PORT }}
@@ -350,11 +358,20 @@ jobs:
           git remote set-url origin https://x-access-token:$GITHUB_TOKEN@github.com/${{ github.repository }}
       
       - name: Create database backup (if not already done)
-        if: needs.check-schema-drift.outputs.migration-needed == 'true'
+        id: create-backup-new
+        if: needs.check-schema-drift.outputs.migration-needed == 'true' && needs.apply-pending-migrations.outputs.backup-id == ''
         run: |
-          echo "📦 Creating database backup for new migration..."
-          PGPASSWORD="$DB_PASSWORD" pg_dump -h "$DB_HOST" -U "$DB_USER" -p "$DB_PORT" -Fc "$DB_NAME" > db_backup_new_$(date +%Y%m%d_%H%M%S).dump
-          echo "✅ Database backup created"
+          echo "📦 Creating on-demand database backup for new migration..."
+          BACKUP_ID=$(gcloud sql backups create --instance=${{ env.TEST_DB_INSTANCE }} --description="New migration backup $(date +%Y-%m-%d_%H:%M:%S)" --format="value(name)")
+          echo "backup-id=$BACKUP_ID" >> $GITHUB_OUTPUT
+          echo "✅ On-demand backup created: $BACKUP_ID"
+          
+      - name: Use existing backup if available
+        id: use-existing-backup
+        if: needs.check-schema-drift.outputs.migration-needed == 'true' && needs.apply-pending-migrations.outputs.backup-id != ''
+        run: |
+          echo "♾️ Using existing backup from pending migrations: ${{ needs.apply-pending-migrations.outputs.backup-id }}"
+          echo "backup-id=${{ needs.apply-pending-migrations.outputs.backup-id }}" >> $GITHUB_OUTPUT
       
       - name: Generate and apply migration
         if: needs.check-schema-drift.outputs.migration-needed == 'true'
@@ -549,6 +566,17 @@ jobs:
             else
               echo "❌ No previous API version found for rollback"
             fi
+          fi
+          
+          # Database rollback if migrations were applied
+          BACKUP_ID="${{ needs.generate-and-apply-migration.outputs.backup-id }}"
+          if [ -n "$BACKUP_ID" ] && [ "$BACKUP_ID" != "" ]; then
+            echo "🔄 Rolling back database to backup: $BACKUP_ID"
+            echo "⚠️  Note: Database rollback from backup requires manual approval due to data loss risk"
+            echo "📋 Backup ID available for manual restore: $BACKUP_ID"
+            echo "🔧 To restore: gcloud sql backups restore $BACKUP_ID --restore-instance=${{ env.TEST_DB_INSTANCE }}"
+          else
+            echo "ℹ️  No database backup available for rollback"
           fi
           
           # TODO: Add Firebase client rollback when available
