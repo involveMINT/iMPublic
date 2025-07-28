@@ -238,7 +238,7 @@ jobs:
       - name: Check for schema drift
         id: check-drift
         run: |
-          npx ts-node --project ./util/tsconfig.json detect_db_entity_drift.ts > ./drift.log
+          npx ts-node --project ./util/tsconfig.json ./util/detect_db_entity_drift.ts > ./drift.log
           if grep -q 'MIGRATION_NEEDED=true' drift.log; then
             echo "migration-needed=true" >> $GITHUB_OUTPUT
             echo "📈 Schema drift detected - new migration needed"
