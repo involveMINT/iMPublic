@@ -14,6 +14,7 @@ env:
   CLOUD_SQL_PROXY_CHECKSUM: e48f49397a69a1b509a74ce025dcf76019da0dcaae17f744c524dd19e9824800
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   ACTIONS_STEP_DEBUG: true
+  IM_DB_INSTANCE_NAME: ${{ vars.IM_DB_INSTANCE_NAME }}
   
 
 jobs:
@@ -166,7 +167,7 @@ jobs:
         if: needs.check-pending-migrations.outputs.pending-migrations == 'true'
         run: |
           echo "📦 Creating on-demand database backup for pending migrations..."
-          BACKUP_ID=$(gcloud sql backups create --instance=${{ env.TEST_GCP_PROJECT }} --description="Pending migration backup $(date +%Y-%m-%d_%H:%M:%S)" --format="value(name)")
+          BACKUP_ID=$(gcloud sql backups create --instance=${{ env.IM_DB_INSTANCE_NAME }} --description="Pending migration backup $(date +%Y-%m-%d_%H:%M:%S)" --format="value(name)")
           echo "backup-id=$BACKUP_ID" >> $GITHUB_OUTPUT
           echo "✅ On-demand backup created: $BACKUP_ID"
           
@@ -360,7 +361,7 @@ jobs:
         if: needs.check-schema-drift.outputs.migration-needed == 'true' && needs.apply-pending-migrations.outputs.backup-id == ''
         run: |
           echo "📦 Creating on-demand database backup for new migration..."
-          BACKUP_ID=$(gcloud sql backups create --instance=${{ env.TEST_GCP_PROJECT }} --description="New migration backup $(date +%Y-%m-%d_%H:%M:%S)" --format="value(name)")
+          BACKUP_ID=$(gcloud sql backups create --instance=${{ env.IM_DB_INSTANCE_NAME }} --description="New migration backup $(date +%Y-%m-%d_%H:%M:%S)" --format="value(name)")
           echo "backup-id=$BACKUP_ID" >> $GITHUB_OUTPUT
           echo "✅ On-demand backup created: $BACKUP_ID"
           
