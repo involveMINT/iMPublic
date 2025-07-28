@@ -178,13 +178,22 @@ jobs:
           BACKUP_OUTPUT=$(gcloud sql backups create --instance=${{ env.IM_DB_INSTANCE_NAME }} --description="Pending migration backup $(date +%Y-%m-%d_%H:%M:%S)" --format="json")
           echo "🔍 Raw backup output: $BACKUP_OUTPUT"
           
-          # Extract backup ID from JSON response
-          BACKUP_ID=$(echo "$BACKUP_OUTPUT" | jq -r '.name // .id // empty')
+          # Extract backup ID from JSON response (handle both object and array formats)
+          BACKUP_ID=$(echo "$BACKUP_OUTPUT" | jq -r 'if type == "array" then .[0].name // .[0].id else .name // .id end // empty')
           echo "🆔 Extracted backup ID: '$BACKUP_ID'"
           
           if [ -z "$BACKUP_ID" ] || [ "$BACKUP_ID" = "null" ]; then
             echo "❌ Failed to extract backup ID from response"
-            exit 1
+            echo "🔍 Attempting to check if backup was created via list command..."
+            # Fallback: get the most recent backup
+            RECENT_BACKUP=$(gcloud sql backups list --instance=${{ env.IM_DB_INSTANCE_NAME }} --limit=1 --format="json" | jq -r '.[0].name // empty')
+            if [ -n "$RECENT_BACKUP" ] && [ "$RECENT_BACKUP" != "null" ]; then
+              echo "✅ Found recent backup: $RECENT_BACKUP"
+              BACKUP_ID="$RECENT_BACKUP"
+            else
+              echo "❌ No backup found, backup creation may have failed"
+              exit 1
+            fi
           fi
           
           echo "backup-id=$BACKUP_ID" >> $GITHUB_OUTPUT
@@ -390,13 +399,22 @@ jobs:
           BACKUP_OUTPUT=$(gcloud sql backups create --instance=${{ env.IM_DB_INSTANCE_NAME }} --description="New migration backup $(date +%Y-%m-%d_%H:%M:%S)" --format="json")
           echo "🔍 Raw backup output: $BACKUP_OUTPUT"
           
-          # Extract backup ID from JSON response
-          BACKUP_ID=$(echo "$BACKUP_OUTPUT" | jq -r '.name // .id // empty')
+          # Extract backup ID from JSON response (handle both object and array formats)
+          BACKUP_ID=$(echo "$BACKUP_OUTPUT" | jq -r 'if type == "array" then .[0].name // .[0].id else .name // .id end // empty')
           echo "🆔 Extracted backup ID: '$BACKUP_ID'"
           
           if [ -z "$BACKUP_ID" ] || [ "$BACKUP_ID" = "null" ]; then
             echo "❌ Failed to extract backup ID from response"
-            exit 1
+            echo "🔍 Attempting to check if backup was created via list command..."
+            # Fallback: get the most recent backup
+            RECENT_BACKUP=$(gcloud sql backups list --instance=${{ env.IM_DB_INSTANCE_NAME }} --limit=1 --format="json" | jq -r '.[0].name // empty')
+            if [ -n "$RECENT_BACKUP" ] && [ "$RECENT_BACKUP" != "null" ]; then
+              echo "✅ Found recent backup: $RECENT_BACKUP"
+              BACKUP_ID="$RECENT_BACKUP"
+            else
+              echo "❌ No backup found, backup creation may have failed"
+              exit 1
+            fi
           fi
           
           echo "backup-id=$BACKUP_ID" >> $GITHUB_OUTPUT
