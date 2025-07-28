@@ -45,12 +45,10 @@ jobs:
 
       - name: Authenticate to GCP
         uses: google-github-actions/auth@v2.1.0
-        environment: Test-Database-NoApproval
         with:
           credentials_json: ${{ secrets.GCP_SA_KEY }}
       
       - name: Setup Cloud SQL Proxy
-        environment: Test-Database-NoApproval
         run: |
           # Download Cloud SQL Proxy with checksum verification
           curl -o cloud-sql-proxy https://storage.googleapis.com/cloud-sql-connectors/cloud-sql-proxy/${{ env.CLOUD_SQL_PROXY_VERSION }}/cloud-sql-proxy.linux.amd64
