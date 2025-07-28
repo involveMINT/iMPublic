@@ -5,6 +5,10 @@ on:
     branches:
       - main
 
+permissions:
+  contents: write
+  pull-requests: write
+
 env:
   TEST_GCP_PROJECT: ${{ vars.IM_TEST_PROJECT_ID }}
   TEST_FIREBASE_PROJECT: ${{ vars.IM_TEST_PROJECT_ID }}
@@ -354,7 +358,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git remote set-url origin https://x-access-token:$GITHUB_TOKEN@github.com/${{ github.repository }}
+          git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
       
       - name: Create database backup (if not already done)
         id: create-backup-new
@@ -403,14 +407,14 @@ jobs:
             exit 1
           fi
           
-          if ! git push origin HEAD; then
+          if ! git push origin HEAD:${{ github.head_ref }}; then
             echo "❌ Failed to push migration commit"
             exit 1
           fi
           echo "✅ Migration committed and pushed"
           
           echo "⚙️ Applying new migration..."
-          if ! npx typeorm migration:run -f util/ormconfig.js; then
+          if ! npx ts-node --project ./util/tsconfig.json ./node_modules/typeorm/cli.js migration:run -f util/ormconfig.js; then
             echo "❌ Failed to apply migration"
             echo "⚠️  Migration was committed but failed to apply - manual intervention required"
             exit 1
