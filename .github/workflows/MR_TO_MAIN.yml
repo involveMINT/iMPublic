@@ -175,7 +175,12 @@ jobs:
           echo "🔧 Using instance: ${{ env.IM_DB_INSTANCE_NAME }}"
           
           # Create backup and capture the full output for debugging
-          BACKUP_OUTPUT=$(gcloud sql backups create --instance=${{ env.IM_DB_INSTANCE_NAME }} --description="Pending migration backup $(date +%Y-%m-%d_%H:%M:%S)" --format="json")
+          echo "🔄 Creating backup for instance: ${{ env.IM_DB_INSTANCE_NAME }}"
+          if ! BACKUP_OUTPUT=$(gcloud sql backups create --instance=${{ env.IM_DB_INSTANCE_NAME }} --description="Pending migration backup $(date +%Y-%m-%d_%H:%M:%S)" --format="json" 2>&1); then
+            echo "❌ Backup creation failed with error:"
+            echo "$BACKUP_OUTPUT"
+            exit 1
+          fi
           echo "🔍 Raw backup output: $BACKUP_OUTPUT"
           
           # Extract backup ID from JSON response (handle both object and array formats)
@@ -184,14 +189,36 @@ jobs:
           
           if [ -z "$BACKUP_ID" ] || [ "$BACKUP_ID" = "null" ]; then
             echo "❌ Failed to extract backup ID from response"
-            echo "🔍 Attempting to check if backup was created via list command..."
-            # Fallback: get the most recent backup
-            RECENT_BACKUP=$(gcloud sql backups list --instance=${{ env.IM_DB_INSTANCE_NAME }} --limit=1 --format="json" | jq -r '.[0].name // empty')
-            if [ -n "$RECENT_BACKUP" ] && [ "$RECENT_BACKUP" != "null" ]; then
-              echo "✅ Found recent backup: $RECENT_BACKUP"
-              BACKUP_ID="$RECENT_BACKUP"
+            echo "🔍 Attempting alternative backup creation method..."
+            
+            # Try alternative method: create backup without JSON format and get ID separately
+            TIMESTAMP=$(date +%Y%m%d%H%M%S)
+            BACKUP_DESC="PendingMigrationBackup-$TIMESTAMP"
+            
+            echo "🔄 Creating backup with description: $BACKUP_DESC"
+            if gcloud sql backups create --instance=${{ env.IM_DB_INSTANCE_NAME }} --description="$BACKUP_DESC" --quiet; then
+              echo "✅ Backup creation command succeeded"
+              
+              # Wait a moment for backup to appear in list
+              sleep 5
+              
+              # Find the backup we just created
+              BACKUP_ID=$(gcloud sql backups list --instance=${{ env.IM_DB_INSTANCE_NAME }} --filter="description:$BACKUP_DESC" --format="value(name)" --limit=1)
+              
+              if [ -n "$BACKUP_ID" ]; then
+                echo "✅ Found backup with ID: $BACKUP_ID"
+              else
+                echo "⏳ Backup not yet visible, checking recent backups..."
+                BACKUP_ID=$(gcloud sql backups list --instance=${{ env.IM_DB_INSTANCE_NAME }} --limit=1 --format="value(name)")
+                if [ -n "$BACKUP_ID" ]; then
+                  echo "✅ Using most recent backup: $BACKUP_ID"
+                else
+                  echo "❌ No backup found after creation"
+                  exit 1
+                fi
+              fi
             else
-              echo "❌ No backup found, backup creation may have failed"
+              echo "❌ Alternative backup creation also failed"
               exit 1
             fi
           fi
@@ -396,7 +423,12 @@ jobs:
           echo "🔧 Using instance: ${{ env.IM_DB_INSTANCE_NAME }}"
           
           # Create backup and capture the full output for debugging
-          BACKUP_OUTPUT=$(gcloud sql backups create --instance=${{ env.IM_DB_INSTANCE_NAME }} --description="New migration backup $(date +%Y-%m-%d_%H:%M:%S)" --format="json")
+          echo "🔄 Creating backup for instance: ${{ env.IM_DB_INSTANCE_NAME }}"
+          if ! BACKUP_OUTPUT=$(gcloud sql backups create --instance=${{ env.IM_DB_INSTANCE_NAME }} --description="New migration backup $(date +%Y-%m-%d_%H:%M:%S)" --format="json" 2>&1); then
+            echo "❌ Backup creation failed with error:"
+            echo "$BACKUP_OUTPUT"
+            exit 1
+          fi
           echo "🔍 Raw backup output: $BACKUP_OUTPUT"
           
           # Extract backup ID from JSON response (handle both object and array formats)
@@ -405,14 +437,36 @@ jobs:
           
           if [ -z "$BACKUP_ID" ] || [ "$BACKUP_ID" = "null" ]; then
             echo "❌ Failed to extract backup ID from response"
-            echo "🔍 Attempting to check if backup was created via list command..."
-            # Fallback: get the most recent backup
-            RECENT_BACKUP=$(gcloud sql backups list --instance=${{ env.IM_DB_INSTANCE_NAME }} --limit=1 --format="json" | jq -r '.[0].name // empty')
-            if [ -n "$RECENT_BACKUP" ] && [ "$RECENT_BACKUP" != "null" ]; then
-              echo "✅ Found recent backup: $RECENT_BACKUP"
-              BACKUP_ID="$RECENT_BACKUP"
+            echo "🔍 Attempting alternative backup creation method..."
+            
+            # Try alternative method: create backup without JSON format and get ID separately
+            TIMESTAMP=$(date +%Y%m%d%H%M%S)
+            BACKUP_DESC="PendingMigrationBackup-$TIMESTAMP"
+            
+            echo "🔄 Creating backup with description: $BACKUP_DESC"
+            if gcloud sql backups create --instance=${{ env.IM_DB_INSTANCE_NAME }} --description="$BACKUP_DESC" --quiet; then
+              echo "✅ Backup creation command succeeded"
+              
+              # Wait a moment for backup to appear in list
+              sleep 5
+              
+              # Find the backup we just created
+              BACKUP_ID=$(gcloud sql backups list --instance=${{ env.IM_DB_INSTANCE_NAME }} --filter="description:$BACKUP_DESC" --format="value(name)" --limit=1)
+              
+              if [ -n "$BACKUP_ID" ]; then
+                echo "✅ Found backup with ID: $BACKUP_ID"
+              else
+                echo "⏳ Backup not yet visible, checking recent backups..."
+                BACKUP_ID=$(gcloud sql backups list --instance=${{ env.IM_DB_INSTANCE_NAME }} --limit=1 --format="value(name)")
+                if [ -n "$BACKUP_ID" ]; then
+                  echo "✅ Using most recent backup: $BACKUP_ID"
+                else
+                  echo "❌ No backup found after creation"
+                  exit 1
+                fi
+              fi
             else
-              echo "❌ No backup found, backup creation may have failed"
+              echo "❌ Alternative backup creation also failed"
               exit 1
             fi
           fi
