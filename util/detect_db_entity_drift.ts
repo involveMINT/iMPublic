@@ -32,8 +32,17 @@ async function checkMigrationDrift() {
       }
     } else {
       console.log('✅ No schema drift detected.');
+      console.log('MIGRATION_NEEDED=false');
     }
   } catch (err: any) {
+    // Check if this is the "no changes" case, which is actually success
+    const errorOutput = err.stdout?.toString() || err.stderr?.toString() || err.message;
+    if (errorOutput.includes('No changes in database schema were found')) {
+      console.log('✅ No schema drift detected.');
+      console.log('MIGRATION_NEEDED=false');
+      return;
+    }
+    
     console.error('❌ Error checking migration drift:', err.message);
     if (err.stdout) console.error('stdout:', err.stdout.toString());
     if (err.stderr) console.error('stderr:', err.stderr.toString());
@@ -59,8 +68,17 @@ async function checkMigrationDrift() {
         }
       } else {
         console.log('✅ No schema drift detected.');
+        console.log('MIGRATION_NEEDED=false');
       }
     } catch (err2: any) {
+      // Check if this is also the "no changes" case
+      const errorOutput2 = err2.stdout?.toString() || err2.stderr?.toString() || err2.message;
+      if (errorOutput2.includes('No changes in database schema were found')) {
+        console.log('✅ No schema drift detected.');
+        console.log('MIGRATION_NEEDED=false');
+        return;
+      }
+      
       console.error('❌ Alternative syntax also failed:', err2.message);
       if (err2.stdout) console.error('stdout:', err2.stdout.toString());
       if (err2.stderr) console.error('stderr:', err2.stderr.toString());

@@ -367,7 +367,7 @@ jobs:
       
       - name: Create database backup (if not already done)
         id: create-backup-new
-        if: needs.check-schema-drift.outputs.migration-needed == 'true' && needs.apply-pending-migrations.outputs.backup-id == ''
+        if: needs.check-schema-drift.outputs.migration-needed == 'true' && (needs.apply-pending-migrations.outputs.backup-id == '' || needs.apply-pending-migrations.outputs.backup-id == null)
         run: |
           echo "📦 Creating on-demand database backup for new migration..."
           BACKUP_ID=$(gcloud sql backups create --instance=${{ env.IM_DB_INSTANCE_NAME }} --description="New migration backup $(date +%Y-%m-%d_%H:%M:%S)" --format="value(name)")
@@ -376,7 +376,7 @@ jobs:
           
       - name: Use existing backup if available
         id: use-existing-backup
-        if: needs.check-schema-drift.outputs.migration-needed == 'true' && needs.apply-pending-migrations.outputs.backup-id != ''
+        if: needs.check-schema-drift.outputs.migration-needed == 'true' && needs.apply-pending-migrations.outputs.backup-id != '' && needs.apply-pending-migrations.outputs.backup-id != null
         run: |
           echo "♾️ Using existing backup from pending migrations: ${{ needs.apply-pending-migrations.outputs.backup-id }}"
           echo "backup-id=${{ needs.apply-pending-migrations.outputs.backup-id }}" >> $GITHUB_OUTPUT
