@@ -359,6 +359,10 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
+          
+          # Checkout the actual branch instead of detached HEAD
+          git fetch origin ${{ github.head_ref }}
+          git checkout -B ${{ github.head_ref }} origin/${{ github.head_ref }}
       
       - name: Create database backup (if not already done)
         id: create-backup-new
@@ -407,7 +411,10 @@ jobs:
             exit 1
           fi
           
-          if ! git push origin HEAD:${{ github.head_ref }}; then
+          # Pull any remote changes before pushing
+          git pull origin ${{ github.head_ref }} --rebase || echo "No remote changes to pull"
+          
+          if ! git push origin ${{ github.head_ref }}; then
             echo "❌ Failed to push migration commit"
             exit 1
           fi
