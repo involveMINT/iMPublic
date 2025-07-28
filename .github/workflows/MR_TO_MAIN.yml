@@ -176,12 +176,18 @@ jobs:
           
           # Create backup and capture the full output for debugging
           echo "🔄 Creating backup for instance: ${{ env.IM_DB_INSTANCE_NAME }}"
-          if ! BACKUP_OUTPUT=$(gcloud sql backups create --instance=${{ env.IM_DB_INSTANCE_NAME }} --description="Pending migration backup $(date +%Y-%m-%d_%H:%M:%S)" --format="json" 2>&1); then
-            echo "❌ Backup creation failed with error:"
-            echo "$BACKUP_OUTPUT"
+          
+          # Create backup with quiet flag to reduce noise, capture JSON output separately
+          if gcloud sql backups create --instance=${{ env.IM_DB_INSTANCE_NAME }} --description="Pending migration backup $(date +%Y-%m-%d_%H:%M:%S)" --quiet; then
+            echo "✅ Backup creation command completed"
+            
+            # Get the most recent backup (the one we just created)
+            BACKUP_OUTPUT=$(gcloud sql backups list --instance=${{ env.IM_DB_INSTANCE_NAME }} --limit=1 --format="json" 2>/dev/null)
+            echo "🔍 Recent backup info: $BACKUP_OUTPUT"
+          else
+            echo "❌ Backup creation failed"
             exit 1
           fi
-          echo "🔍 Raw backup output: $BACKUP_OUTPUT"
           
           # Extract backup ID from JSON response (handle both object and array formats)
           BACKUP_ID=$(echo "$BACKUP_OUTPUT" | jq -r 'if type == "array" then .[0].name // .[0].id else .name // .id end // empty')
@@ -424,12 +430,18 @@ jobs:
           
           # Create backup and capture the full output for debugging
           echo "🔄 Creating backup for instance: ${{ env.IM_DB_INSTANCE_NAME }}"
-          if ! BACKUP_OUTPUT=$(gcloud sql backups create --instance=${{ env.IM_DB_INSTANCE_NAME }} --description="New migration backup $(date +%Y-%m-%d_%H:%M:%S)" --format="json" 2>&1); then
-            echo "❌ Backup creation failed with error:"
-            echo "$BACKUP_OUTPUT"
+          
+          # Create backup with quiet flag to reduce noise, capture JSON output separately
+          if gcloud sql backups create --instance=${{ env.IM_DB_INSTANCE_NAME }} --description="New migration backup $(date +%Y-%m-%d_%H:%M:%S)" --quiet; then
+            echo "✅ Backup creation command completed"
+            
+            # Get the most recent backup (the one we just created)
+            BACKUP_OUTPUT=$(gcloud sql backups list --instance=${{ env.IM_DB_INSTANCE_NAME }} --limit=1 --format="json" 2>/dev/null)
+            echo "🔍 Recent backup info: $BACKUP_OUTPUT"
+          else
+            echo "❌ Backup creation failed"
             exit 1
           fi
-          echo "🔍 Raw backup output: $BACKUP_OUTPUT"
           
           # Extract backup ID from JSON response (handle both object and array formats)
           BACKUP_ID=$(echo "$BACKUP_OUTPUT" | jq -r 'if type == "array" then .[0].name // .[0].id else .name // .id end // empty')
