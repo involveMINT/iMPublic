@@ -56,10 +56,10 @@ export class ProjectEntity implements Required<Project> {
   @Column({ default: 5 })
   maxChangeMakers!: number;
 
-  @Column({ default: 'NOW()' })
+  @Column({ default: () => "now()" })
   dateCreated!: Date;
 
-  @Column({ default: 'NOW()' })
+  @Column({ default: () => "now()" })
   dateUpdated!: Date;
 
   @Column({ default: false })

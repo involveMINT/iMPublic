@@ -29,7 +29,7 @@ export class ChangeMakerEntity implements Required<ChangeMaker> {
   phone!: string;
   @Column('text')
   onboardingState!: CmOnboardingState;
-  @Column({ default: 'NOW()' })
+  @Column({ default: () => "now()" })
   dateCreated!: Date;
 
   @OneToOne(() => HandleEntity, (e) => e.changeMaker, { cascade: true })

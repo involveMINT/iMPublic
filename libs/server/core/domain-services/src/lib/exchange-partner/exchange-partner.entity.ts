@@ -46,7 +46,7 @@ export class ExchangePartnerEntity implements Required<ExchangePartner> {
   latitude!: number;
   @Column({ nullable: true, type: 'float8' })
   longitude!: number;
-  @Column({ default: 'NOW()' })
+  @Column({ default: () => "now()" })
   dateCreated!: Date;
   @Column('text', { default: EpOnboardingState.profile })
   onboardingState!: EpOnboardingState;

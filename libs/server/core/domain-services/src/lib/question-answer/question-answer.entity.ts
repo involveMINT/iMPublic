@@ -12,7 +12,7 @@ export class QuestionAnswerEntity implements Required<QuestionAnswer> {
   @Column()
   answer!: string;
 
-  @Column({ default: 'NOW()' })
+  @Column({ default: () => "now()" })
   dateAnswered!: Date;
 
   @ManyToOne(() => QuestionEntity, (p) => p.answers, { onUpdate: 'CASCADE', onDelete: 'CASCADE' })
