@@ -1,7 +1,7 @@
 import {MigrationInterface, QueryRunner} from "typeorm";
 
-export class AutoMigration202507281726221753723583797 implements MigrationInterface {
-    name = 'AutoMigration202507281726221753723583797'
+export class AutoMigration202507281726221753723583755 implements MigrationInterface {
+    name = 'AutoMigration202507281726221753723583755'
 
     public async up(queryRunner: QueryRunner): Promise<void> {
         await queryRunner.query(`ALTER TABLE "public"."Offer" ALTER COLUMN "dateUpdated" SET DEFAULT 'NOW()'`);
