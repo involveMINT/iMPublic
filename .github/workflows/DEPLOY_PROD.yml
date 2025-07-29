@@ -28,11 +28,11 @@ jobs:
     runs-on: ubuntu-latest
     environment: Prod-Database-NoApproval
     env:
-      DB_HOST: ${{ secrets.PROD_DB_HOST }}
-      DB_PORT: ${{ secrets.PROD_DB_PORT }}
-      DB_USER: ${{ secrets.PROD_DB_USER }}
-      DB_PASSWORD: ${{ secrets.PROD_DB_PASSWORD }}
-      DB_NAME: ${{ secrets.PROD_DB_NAME }}
+      DB_HOST: ${{ secrets.DB_HOST }}
+      DB_PORT: ${{ secrets.DB_PORT }}
+      DB_USER: ${{ secrets.DB_USER }}
+      DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+      DB_NAME: ${{ secrets.DB_NAME }}
     outputs:
       pending-migrations: ${{ steps.check-pending.outputs.pending-migrations }}
     steps:
@@ -110,11 +110,11 @@ jobs:
     needs: [check-pending-migrations]
     environment: Prod-Database-Approval
     env:
-      DB_HOST: ${{ secrets.PROD_DB_HOST }}
-      DB_PORT: ${{ secrets.PROD_DB_PORT }}
-      DB_USER: ${{ secrets.PROD_DB_USER }}
-      DB_PASSWORD: ${{ secrets.PROD_DB_PASSWORD }}
-      DB_NAME: ${{ secrets.PROD_DB_NAME }}
+      DB_HOST: ${{ secrets.DB_HOST }}
+      DB_PORT: ${{ secrets.DB_PORT }}
+      DB_USER: ${{ secrets.DB_USER }}
+      DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+      DB_NAME: ${{ secrets.DB_NAME }}
     outputs:
       backup-id: ${{ steps.create-backup-pending.outputs.backup-id }}
     steps:
@@ -245,11 +245,11 @@ jobs:
     needs: [apply-pending-migrations]
     environment: Prod-Database-NoApproval
     env:
-      DB_HOST: ${{ secrets.PROD_DB_HOST }}
-      DB_PORT: ${{ secrets.PROD_DB_PORT }}
-      DB_USER: ${{ secrets.PROD_DB_USER }}
-      DB_PASSWORD: ${{ secrets.PROD_DB_PASSWORD }}
-      DB_NAME: ${{ secrets.PROD_DB_NAME }}
+      DB_HOST: ${{ secrets.DB_HOST }}
+      DB_PORT: ${{ secrets.DB_PORT }}
+      DB_USER: ${{ secrets.DB_USER }}
+      DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+      DB_NAME: ${{ secrets.DB_NAME }}
     outputs:
       migration-needed: ${{ steps.check-drift.outputs.migration-needed }}
     steps:
