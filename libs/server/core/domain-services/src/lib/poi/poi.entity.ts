@@ -11,7 +11,7 @@ export class PoiEntity implements Required<Poi> {
   @PrimaryColumn('text')
   id!: string;
 
-  @Column({ default: 'NOW()' })
+  @Column({ default: () => "now()" })
   dateCreated!: Date;
 
   @Column({ nullable: true })

@@ -27,10 +27,10 @@ export class OfferEntity implements Required<Offer> {
   @Column('text', { array: true, default: '{}' })
   imagesFilePaths!: string[];
 
-  @Column({ default: 'NOW()' })
+  @Column({ default: () => "now()" })
   dateUpdated!: Date;
 
-  @Column({ default: 'NOW()' })
+  @Column({ default: () => "now()" })
   dateCreated!: Date;
 
   @OneToOne(() => AddressEntity, (e) => e.offer, { nullable: true, cascade: true })

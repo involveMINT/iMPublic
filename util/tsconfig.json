@@ -1,0 +1,116 @@
+{
+  "extends": "../tsconfig.base.json",
+  "angularCompilerOptions": {
+    "strictInjectionParameters": true,
+    "strictTemplates": true
+  },
+  "compilerOptions": {
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "resolveJsonModule": true,
+    "forceConsistentCasingInFileNames": true,
+    "noImplicitReturns": true,
+    "strict": true,
+    "noFallthroughCasesInSwitch": true,
+    "noUnusedLocals": false,
+    "noErrorTruncation": false,
+    "rootDir": "..",
+    "sourceMap": true,
+    "declaration": false,
+    "moduleResolution": "node",
+    "importHelpers": true,
+    "target": "es2015",
+    "module": "commonjs",
+    "lib": [
+      "es2019",
+      "dom"
+    ],
+    "skipLibCheck": true,
+    "skipDefaultLibCheck": true,
+    "baseUrl": "..",
+    "paths": {
+      "@involvemint/server/core/application-services": [
+        "libs/server/core/application-services/src/index.ts"
+      ],
+      "@involvemint/server/core/domain-services": [
+        "libs/server/core/domain-services/src/index.ts"
+      ],
+      "@involvemint/shared/domain": [
+        "libs/shared/domain/src/index.ts"
+      ],
+      "@involvemint/shared/util": [
+        "libs/shared/util/src/index.ts"
+      ],
+      "@involvemint/client/shared/data-access": [
+        "libs/client/shared/data-access/src/index.ts"
+      ],
+      "@involvemint/client/shared/util": [
+        "libs/client/shared/util/src/index.ts"
+      ],
+      "@involvemint/client/shared/ui": [
+        "libs/client/shared/ui/src/index.ts"
+      ],
+      "@involvemint/client/shared/assets": [
+        "libs/client/shared/assets/src/index.ts"
+      ],
+      "@involvemint/client/shared/scss": [
+        "libs/client/shared/scss/src/index.ts"
+      ],
+      "@involvemint/client/shared/routes": [
+        "libs/client/shared/routes/src/index.ts"
+      ],
+      "@involvemint/client/shell": [
+        "libs/client/shell/src/index.ts"
+      ],
+      "@involvemint/client/login": [
+        "libs/client/login/src/index.ts"
+      ],
+      "@involvemint/client/cm/shell": [
+        "libs/client/cm/shell/src/index.ts"
+      ],
+      "@involvemint/client/cm/data-access": [
+        "libs/client/cm/data-access/src/index.ts"
+      ],
+      "@involvemint/client/admin/data-access": [
+        "libs/client/admin/data-access/src/index.ts"
+      ],
+      "@involvemint/client/admin/shell": [
+        "libs/client/admin/shell/src/index.ts"
+      ],
+      "@involvemint/client/sp/data-access": [
+        "libs/client/sp/data-access/src/index.ts"
+      ],
+      "@involvemint/client/sp/shell": [
+        "libs/client/sp/shell/src/index.ts"
+      ],
+      "@involvemint/client/ep/shell": [
+        "libs/client/ep/shell/src/index.ts"
+      ],
+      "@involvemint/client/ep/data-access": [
+        "libs/client/ep/data-access/src/index.ts"
+      ],
+      "@involvemint/client/cm/api": [
+        "libs/client/cm/api/src/index.ts"
+      ],
+      "@involvemint/client/ba/shell": [
+        "libs/client/ba/shell/src/index.ts"
+      ],
+      "@involvemint/client/ba/data-access": [
+        "libs/client/ba/data-access/src/index.ts"
+      ],
+      "@involvemint/server/orcha": [
+        "libs/server/orcha/src/index.ts"
+      ]
+    }
+  },
+  "ts-node": {
+    "esm": false,
+    "require": ["tsconfig-paths/register"]
+  },
+  "include": [
+    "./**/*.ts",
+    "../libs/**/*.entity.ts"
+  ]
+}

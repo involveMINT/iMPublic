@@ -27,10 +27,10 @@ export class RequestEntity implements Required<Request> {
   @Column('text', { array: true, default: '{}' })
   imagesFilePaths!: string[];
 
-  @Column({ default: 'NOW()' })
+  @Column({ default: () => "now()" })
   dateUpdated!: Date;
 
-  @Column({ default: 'NOW()' })
+  @Column({ default: () => "now()" })
   dateCreated!: Date;
 
   @ManyToOne(() => ChangeMakerEntity, (e) => e.requests, { nullable: true })

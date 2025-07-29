@@ -22,7 +22,7 @@ export class SpApplicationEntity implements Required<SpApplication> {
   @Column()
   website!: string;
 
-  @Column({ default: 'NOW()' })
+  @Column({ default: () => "now()" })
   dateCreated!: Date;
 
   @ManyToOne(() => UserEntity, (e) => e.spApplications)

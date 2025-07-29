@@ -18,7 +18,7 @@ export class UserEntity implements Required<User> {
   @Column()
   salt!: string;
 
-  @Column({ default: 'NOW()' })
+  @Column({ default: () => "now()" })
   dateCreated!: Date;
 
   @Column({ nullable: true })

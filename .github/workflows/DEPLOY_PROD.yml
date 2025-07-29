@@ -5,25 +5,333 @@ on:
     tags:
       - 'v*'
 
+permissions:
+  contents: write
+
 env:
   PROD_GCP_PROJECT: ${{ vars.IM_PROD_PROJECT_ID }}
   PROD_FIREBASE_PROJECT: ${{ vars.IM_PROD_PROJECT_ID }}
+  PROD_DB_INSTANCE: ${{ vars.IM_PROD_DB_INSTANCE }}
   NODE_VERSION: 22.13.0
+  CLOUD_SQL_PROXY_VERSION: v2.18.0
+  CLOUD_SQL_PROXY_CHECKSUM: e48f49397a69a1b509a74ce025dcf76019da0dcaae17f744c524dd19e9824800
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  ACTIONS_STEP_DEBUG: true
+  IM_DB_INSTANCE_NAME: ${{ vars.IM_PROD_DB_INSTANCE_NAME }}
+  
 
 jobs:
+  # ===== MIGRATION PIPELINE (Pre-Deployment) =====
+  
+  check-pending-migrations:
+    name: 🔍 Check for Pending Migrations
+    runs-on: ubuntu-latest
+    environment: Prod-Database-NoApproval
+    env:
+      DB_HOST: ${{ secrets.PROD_DB_HOST }}
+      DB_PORT: ${{ secrets.PROD_DB_PORT }}
+      DB_USER: ${{ secrets.PROD_DB_USER }}
+      DB_PASSWORD: ${{ secrets.PROD_DB_PASSWORD }}
+      DB_NAME: ${{ secrets.PROD_DB_NAME }}
+    outputs:
+      pending-migrations: ${{ steps.check-pending.outputs.pending-migrations }}
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Use Node.js ${{ env.NODE_VERSION }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Authenticate to GCP
+        uses: google-github-actions/auth@v2.1.0
+        with:
+          credentials_json: ${{ secrets.GCP_SA_KEY }}
+      
+      - name: Setup Cloud SQL Proxy
+        run: |
+          # Download Cloud SQL Proxy with checksum verification
+          curl -o cloud-sql-proxy https://storage.googleapis.com/cloud-sql-connectors/cloud-sql-proxy/${{ env.CLOUD_SQL_PROXY_VERSION }}/cloud-sql-proxy.linux.amd64
+          echo "${{ env.CLOUD_SQL_PROXY_CHECKSUM }}  cloud-sql-proxy" | sha256sum --check
+          chmod +x cloud-sql-proxy
+          
+          # Start proxy in background
+          ./cloud-sql-proxy --port 5432 ${{ env.PROD_DB_INSTANCE }} &
+          PROXY_PID=$!
+          
+          # Wait for proxy to be ready with retry logic
+          echo "⏳ Waiting for Cloud SQL Proxy to be ready..."
+          for i in {1..30}; do
+            if nc -z 127.0.0.1 5432; then
+              echo "✅ Cloud SQL Proxy is ready (attempt $i)"
+              break
+            fi
+            if [ $i -eq 30 ]; then
+              echo "❌ Cloud SQL Proxy failed to start after 30 attempts"
+              echo "📋 Proxy logs:"
+              ps aux | grep cloud-sql-proxy || echo "No proxy process found"
+              kill $PROXY_PID 2>/dev/null || true
+              exit 1
+            fi
+            echo "⏳ Attempt $i: Proxy not ready, waiting 2 seconds..."
+            sleep 2
+          done
+
+      - name: Check for pending migrations
+        id: check-pending
+        run: |
+          npx ts-node --project ./util/tsconfig.json ./util/check_for_pending_migrations.ts > ./migration_check.log
+          if grep -q 'MIGRATION_PENDING=true' migration_check.log; then
+            echo "pending-migrations=true" >> $GITHUB_OUTPUT
+            echo "⚠️ Pending migrations detected"
+          else
+            echo "pending-migrations=false" >> $GITHUB_OUTPUT
+            echo "✅ No pending migrations"
+          fi
+          cat migration_check.log
+
+      - name: Show pending migrations
+        if: steps.check-pending.outputs.pending-migrations == 'true'
+        id: show-migrations
+        run: |
+          echo "📋 PENDING MIGRATIONS PREVIEW:"
+          echo ""
+          npx ts-node --project ./util/tsconfig.json ./node_modules/typeorm/cli.js migration:show -f util/ormconfig.js || echo "Unable to show migrations - will be visible during application"
+          echo ""
+          echo "📁 Migration files to be applied:"
+          ls -la libs/migration/*.ts 2>/dev/null || echo "No migration files found in libs/migration/"
+
+  apply-pending-migrations:
+    name: 🔍 Apply Pending Migrations (View Check Pending Migrations job to see migrations before running)
+    runs-on: ubuntu-latest
+    needs: [check-pending-migrations]
+    environment: Prod-Database-Approval
+    env:
+      DB_HOST: ${{ secrets.PROD_DB_HOST }}
+      DB_PORT: ${{ secrets.PROD_DB_PORT }}
+      DB_USER: ${{ secrets.PROD_DB_USER }}
+      DB_PASSWORD: ${{ secrets.PROD_DB_PASSWORD }}
+      DB_NAME: ${{ secrets.PROD_DB_NAME }}
+    outputs:
+      backup-id: ${{ steps.create-backup-pending.outputs.backup-id }}
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Use Node.js ${{ env.NODE_VERSION }}
+        uses: actions/setup-node@v4
+        if: needs.check-pending-migrations.outputs.pending-migrations == 'true'
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          
+      - name: Install dependencies
+        if: needs.check-pending-migrations.outputs.pending-migrations == 'true'
+        run: npm ci
+
+      - name: Authenticate to GCP
+        uses: google-github-actions/auth@v2.1.0
+        if: needs.check-pending-migrations.outputs.pending-migrations == 'true'
+        with:
+          credentials_json: ${{ secrets.GCP_SA_KEY }}
+      
+      - name: Setup Cloud SQL Proxy
+        if: needs.check-pending-migrations.outputs.pending-migrations == 'true'
+        run: |
+          # Download Cloud SQL Proxy with checksum verification
+          curl -o cloud-sql-proxy https://storage.googleapis.com/cloud-sql-connectors/cloud-sql-proxy/${{ env.CLOUD_SQL_PROXY_VERSION }}/cloud-sql-proxy.linux.amd64
+          echo "${{ env.CLOUD_SQL_PROXY_CHECKSUM }}  cloud-sql-proxy" | sha256sum --check
+          chmod +x cloud-sql-proxy
+          
+          # Start proxy in background
+          ./cloud-sql-proxy --port 5432 ${{ env.PROD_DB_INSTANCE }} &
+          PROXY_PID=$!
+          
+          # Wait for proxy to be ready with retry logic
+          echo "⏳ Waiting for Cloud SQL Proxy to be ready..."
+          for i in {1..30}; do
+            if nc -z 127.0.0.1 5432; then
+              echo "✅ Cloud SQL Proxy is ready (attempt $i)"
+              break
+            fi
+            if [ $i -eq 30 ]; then
+              echo "❌ Cloud SQL Proxy failed to start after 30 attempts"
+              echo "📋 Proxy logs:"
+              ps aux | grep cloud-sql-proxy || echo "No proxy process found"
+              kill $PROXY_PID 2>/dev/null || true
+              exit 1
+            fi
+            echo "⏳ Attempt $i: Proxy not ready, waiting 2 seconds..."
+            sleep 2
+          done
+      
+      
+      - name: Create database backup for pending migrations
+        id: create-backup-pending
+        if: needs.check-pending-migrations.outputs.pending-migrations == 'true'
+        run: |
+          echo "📦 Creating on-demand database backup for pending migrations..."
+          echo "🔧 Using instance: ${{ env.IM_DB_INSTANCE_NAME }}"
+          
+          # Create backup and capture the full output for debugging
+          echo "🔄 Creating backup for instance: ${{ env.IM_DB_INSTANCE_NAME }}"
+          
+          # Create backup with quiet flag to reduce noise, capture JSON output separately
+          if gcloud sql backups create --instance=${{ env.IM_DB_INSTANCE_NAME }} --description="Pending migration backup $(date +%Y-%m-%d_%H:%M:%S)" --quiet; then
+            echo "✅ Backup creation command completed"
+            
+            # Get the most recent backup (the one we just created)
+            BACKUP_OUTPUT=$(gcloud sql backups list --instance=${{ env.IM_DB_INSTANCE_NAME }} --limit=1 --format="json" 2>/dev/null)
+            echo "🔍 Recent backup info: $BACKUP_OUTPUT"
+          else
+            echo "❌ Backup creation failed"
+            exit 1
+          fi
+          
+          # Extract backup ID from JSON response (handle both object and array formats)
+          BACKUP_ID=$(echo "$BACKUP_OUTPUT" | jq -r 'if type == "array" then .[0].name // .[0].id else .name // .id end // empty')
+          echo "🆔 Extracted backup ID: '$BACKUP_ID'"
+          
+          if [ -z "$BACKUP_ID" ] || [ "$BACKUP_ID" = "null" ]; then
+            echo "❌ Failed to extract backup ID from response"
+            echo "🔍 Attempting alternative backup creation method..."
+            
+            # Try alternative method: create backup without JSON format and get ID separately
+            TIMESTAMP=$(date +%Y%m%d%H%M%S)
+            BACKUP_DESC="PendingMigrationBackup-$TIMESTAMP"
+            
+            echo "🔄 Creating backup with description: $BACKUP_DESC"
+            if gcloud sql backups create --instance=${{ env.IM_DB_INSTANCE_NAME }} --description="$BACKUP_DESC" --quiet; then
+              echo "✅ Backup creation command succeeded"
+              
+              # Wait a moment for backup to appear in list
+              sleep 5
+              
+              # Find the backup we just created
+              BACKUP_ID=$(gcloud sql backups list --instance=${{ env.IM_DB_INSTANCE_NAME }} --filter="description:$BACKUP_DESC" --format="value(name)" --limit=1)
+              
+              if [ -n "$BACKUP_ID" ]; then
+                echo "✅ Found backup with ID: $BACKUP_ID"
+              else
+                echo "⏳ Backup not yet visible, checking recent backups..."
+                BACKUP_ID=$(gcloud sql backups list --instance=${{ env.IM_DB_INSTANCE_NAME }} --limit=1 --format="value(name)")
+                if [ -n "$BACKUP_ID" ]; then
+                  echo "✅ Using most recent backup: $BACKUP_ID"
+                else
+                  echo "❌ No backup found after creation"
+                  exit 1
+                fi
+              fi
+            else
+              echo "❌ Alternative backup creation also failed"
+              exit 1
+            fi
+          fi
+          
+          echo "backup-id=$BACKUP_ID" >> $GITHUB_OUTPUT
+          echo "✅ On-demand backup created: $BACKUP_ID"
+          
+      - name: Apply pending migrations (if any)
+        if: needs.check-pending-migrations.outputs.pending-migrations == 'true'
+        run: |
+          echo "⚙️ Applying pending migrations..."
+          npx ts-node --project ./util/tsconfig.json ./node_modules/typeorm/cli.js migration:run -f util/ormconfig.js
+          echo "✅ Pending migrations applied successfully"
+
+  check-schema-drift:
+    name: 🔍 Check for Schema Drift
+    runs-on: ubuntu-latest
+    needs: [apply-pending-migrations]
+    environment: Prod-Database-NoApproval
+    env:
+      DB_HOST: ${{ secrets.PROD_DB_HOST }}
+      DB_PORT: ${{ secrets.PROD_DB_PORT }}
+      DB_USER: ${{ secrets.PROD_DB_USER }}
+      DB_PASSWORD: ${{ secrets.PROD_DB_PASSWORD }}
+      DB_NAME: ${{ secrets.PROD_DB_NAME }}
+    outputs:
+      migration-needed: ${{ steps.check-drift.outputs.migration-needed }}
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Use Node.js ${{ env.NODE_VERSION }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          
+      - name: Install dependencies
+        run: npm ci
+      
+      - name: Authenticate to GCP
+        uses: google-github-actions/auth@v2.1.0
+        with:
+          credentials_json: ${{ secrets.GCP_SA_KEY }}
+
+      - name: Setup Cloud SQL Proxy
+        run: |
+          # Download Cloud SQL Proxy with checksum verification
+          curl -o cloud-sql-proxy https://storage.googleapis.com/cloud-sql-connectors/cloud-sql-proxy/${{ env.CLOUD_SQL_PROXY_VERSION }}/cloud-sql-proxy.linux.amd64
+          echo "${{ env.CLOUD_SQL_PROXY_CHECKSUM }}  cloud-sql-proxy" | sha256sum --check
+          chmod +x cloud-sql-proxy
+          
+          # Start proxy in background
+          ./cloud-sql-proxy --port 5432 ${{ env.PROD_DB_INSTANCE }} &
+          PROXY_PID=$!
+          
+          # Wait for proxy to be ready with retry logic
+          echo "⏳ Waiting for Cloud SQL Proxy to be ready..."
+          for i in {1..30}; do
+            if nc -z 127.0.0.1 5432; then
+              echo "✅ Cloud SQL Proxy is ready (attempt $i)"
+              break
+            fi
+            if [ $i -eq 30 ]; then
+              echo "❌ Cloud SQL Proxy failed to start after 30 attempts"
+              echo "📋 Proxy logs:"
+              ps aux | grep cloud-sql-proxy || echo "No proxy process found"
+              kill $PROXY_PID 2>/dev/null || true
+              exit 1
+            fi
+            echo "⏳ Attempt $i: Proxy not ready, waiting 2 seconds..."
+            sleep 2
+          done
+
+      - name: Check for schema drift
+        id: check-drift
+        run: |
+          npx ts-node --project ./util/tsconfig.json ./util/detect_db_entity_drift.ts > ./drift.log
+          if grep -q 'MIGRATION_NEEDED=true' drift.log; then
+            echo "migration-needed=true" >> $GITHUB_OUTPUT
+            echo "❌ Schema drift detected after applying pending migrations - this indicates a problem with the migration files"
+            echo "📋 Drift details:"
+            cat drift.log
+            echo ""
+            echo "🚨 PRODUCTION DEPLOYMENT BLOCKED"
+            echo "This suggests that the existing migration files do not properly sync the database schema."
+            echo "Manual intervention required to resolve schema inconsistencies before production deployment."
+            exit 1
+          else
+            echo "migration-needed=false" >> $GITHUB_OUTPUT
+            echo "✅ No schema drift detected"
+          fi
+      
+
   deploy-prod:
     name: ▶️ Deploy → PROD (MANUAL)
     environment: Production
     runs-on: ubuntu-latest
+    needs: [check-schema-drift, apply-pending-migrations]
+    if: needs.check-schema-drift.result == 'success'
     concurrency:
       group: prod-environment
       # allow only one "waiting for approval" + "running" job in that group
       cancel-in-progress: false
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Use Node.js ${{ env.NODE_VERSION }}
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
 
@@ -38,10 +346,6 @@ jobs:
           echo "NEW_VERSION=${V}" >> $GITHUB_OUTPUT
         shell: bash
 
-      - name: print new version name
-        run: |
-          echo ${{ steps.get-version.outputs.NEW_VERSION }}
-
       - name: Install dependencies
         run: npm ci
 
@@ -49,73 +353,132 @@ jobs:
         run: npm install -g nx@12.3.6
 
       - name: Authenticate to GCP
-        uses: google-github-actions/auth@v2
+        uses: google-github-actions/auth@v2.1.0
         with:
           credentials_json: ${{ secrets.GCP_SA_KEY }}
 
-      - name: Generate API Environment (PROD)
+      - name: Generate API Environment (prod)
         run: npx ts-node ./util/generate_environment.ts generate prod
         env:
           INVOLVEMINT_SETTINGS: ${{ secrets.INVOLVEMINT_PROD_SETTINGS_SERVER }}
 
-      - name: Build API (PROD)
+      - name: Build API (prod)
         run: |
           export NODE_OPTIONS=--openssl-legacy-provider
           nx run-many --target=build --projects=api,involvemint --configuration=prod --skip-nx-cache
 
-      - name: 🚀 Deploy API to App Engine (PROD)
+      - name: Store current versions for rollback
+        id: store-versions
+        run: |
+          # Store current API version
+          CURRENT_API_VERSION=$(gcloud app versions list \
+            --service=default \
+            --format="value(version.id)" \
+            --sort-by="~version.createTime" \
+            --limit=1 2>/dev/null || echo "none")
+          echo "current-api-version=$CURRENT_API_VERSION" >> $GITHUB_OUTPUT
+          echo "📋 Current API version: $CURRENT_API_VERSION"
+
+      - name: 🚀 Deploy API to App Engine (Prod) - No Traffic Initially
         id: deploy-api
         run: |
-          # sanitize
+          set -e
           gcloud config set project ${{ env.PROD_GCP_PROJECT }}
+          
+          # Deploy without stopping previous version and without traffic
+          echo "🚀 Deploying new API version without traffic..."
           gcloud app deploy app.yaml \
-            --stop-previous-version \
+            --no-stop-previous-version \
+            --no-promote \
             --quiet \
             --version=${{ steps.get-version.outputs.NEW_VERSION }}
+          
+          echo "✅ API deployed successfully (no traffic yet)"
 
-      - name: Delete API Environment (PROD)
+      - name: Delete API Environment (prod)
+        if: steps.deploy-api.outcome == 'success'
         run: npx ts-node ./util/generate_environment.ts delete prod
       
-      - name: Generate Client Environment (PROD)
+      - name: Generate Client Environment (prod)
+        if: steps.deploy-api.outcome == 'success'
         run: npx ts-node ./util/generate_environment.ts generate prod
         env:
           INVOLVEMINT_SETTINGS: ${{ secrets.INVOLVEMINT_PROD_SETTINGS_CLIENT }}
       
-      - name: Install firebase-tools@13.29.0
-        run: npm install -g firebase-tools@13.29.0
-
-      - name: Build API (PROD)
+      - name: Build Client (prod)
+        if: steps.deploy-api.outcome == 'success'
         run: |
           export NODE_OPTIONS=--openssl-legacy-provider
-          nx run-many --target=build --projects=api,involvemint --configuration=prod --skip-nx-cache
+          nx run-many --target=build --projects=involvemint --configuration=prod --skip-nx-cache
+
+      - name: Install firebase-tools@13.29.0
+        if: steps.deploy-api.outcome == 'success'
+        run: npm install -g firebase-tools@13.29.0
 
       - name: 🚀 Deploy Client to Firebase
+        id: deploy-client
+        if: steps.deploy-api.outcome == 'success'
         run: |
+          set -e
           firebase use ${{ env.PROD_FIREBASE_PROJECT }}
           firebase deploy --message "${{ steps.get-version.outputs.NEW_VERSION }}"
+          echo "✅ Client deployed successfully"
 
-      - name: Roll back to previous version on failure
-        if: ${{ failure() && steps.deploy-api.outcome == 'success' }}
+      - name: Promote API version (switch traffic)
+        id: promote-api
+        if: steps.deploy-client.outcome == 'success'
         run: |
-          # 1) List the last two deployed versions (sorted by creation time)
-          PREV=$(gcloud app versions list \
-            --service=default \
-            --format="value(version.id)" \
-            --sort-by="~version.createTime" \
-            --limit=2 \
-          )
-          # 2) The first returned is the NEW (failed) version; the second is the one before it.
-          #    So split on newline, take the second line.
-          PREV_VERSION=$(echo "$PREV" | sed -n '2p')
-
-          if [[ -z "$PREV_VERSION" ]]; then
-            echo "❌ No previous version found to roll back to."
-            exit 1
-          fi
-
-          echo "🔄 Rolling back to version: $PREV_VERSION"
+          set -e
+          echo "🔄 Switching traffic to new API version..."
           gcloud app services set-traffic default \
-            --splits="$PREV_VERSION=1" \
+            --splits="${{ steps.get-version.outputs.NEW_VERSION }}=1" \
             --quiet
+          
+          echo "🧹 Cleaning up old API versions (keeping last 3)..."
+          # Keep the last 3 versions for rollback capability, delete older ones
+          gcloud app versions list --service=default --format="value(version.id)" --sort-by="~version.createTime" --limit=10 | tail -n +4 | xargs -r gcloud app versions delete --quiet || echo "⚠️ Could not delete old versions"
+          
+          echo "✅ Atomic deployment completed successfully"
+
+      - name: Comprehensive rollback on failure
+        if: ${{ failure() }}
+        run: |
+          set -e
+          echo "🚨 Deployment failed - initiating rollback procedures..."
+          
+          # Rollback API if it was deployed but not yet promoted
+          if [ "${{ steps.deploy-api.outcome }}" == "success" ] && [ "${{ steps.promote-api.outcome }}" != "success" ]; then
+            echo "🔄 Cleaning up failed API deployment..."
+            gcloud app versions delete ${{ steps.get-version.outputs.NEW_VERSION }} --quiet || echo "⚠️ Could not delete failed API version"
+          fi
+          
+          # Rollback API traffic if promotion happened but client deployment failed
+          if [ "${{ steps.promote-api.outcome }}" == "success" ] && [ "${{ steps.deploy-client.outcome }}" != "success" ]; then
+            echo "🔄 Rolling back API traffic to previous version..."
+            PREV_VERSION="${{ steps.store-versions.outputs.current-api-version }}"
+            if [ "$PREV_VERSION" != "none" ] && [ -n "$PREV_VERSION" ]; then
+              gcloud app services set-traffic default --splits="$PREV_VERSION=1" --quiet
+              gcloud app versions delete ${{ steps.get-version.outputs.NEW_VERSION }} --quiet || echo "⚠️ Could not delete failed API version"
+              echo "✅ API traffic rolled back to $PREV_VERSION"
+            else
+              echo "❌ No previous API version found for rollback"
+            fi
+          fi
+          
+          # Database rollback if migrations were applied
+          BACKUP_ID="${{ needs.apply-pending-migrations.outputs.backup-id }}"
+          if [ -n "$BACKUP_ID" ] && [ "$BACKUP_ID" != "" ]; then
+            echo "🔄 Rolling back database to backup: $BACKUP_ID"
+            echo "⚠️  Note: Database rollback from backup requires manual approval due to data loss risk"
+            echo "📋 Backup ID available for manual restore: $BACKUP_ID"
+            echo "🔧 To restore: gcloud sql backups restore $BACKUP_ID --restore-instance=${{ env.PROD_DB_INSTANCE }}"
+          else
+            echo "ℹ️  No database backup available for rollback"
+          fi
+          
+          # TODO: Add Firebase client rollback when available
+          # Note: Firebase doesn't have built-in version rollback, would need custom implementation
+          
+          echo "🔄 Rollback procedures completed"
         shell: bash
 

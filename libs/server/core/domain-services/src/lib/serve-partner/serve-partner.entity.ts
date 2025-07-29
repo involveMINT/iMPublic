@@ -33,7 +33,7 @@ export class ServePartnerEntity implements Required<ServePartner> {
   latitude!: number;
   @Column({ nullable: true, type: 'float8' })
   longitude!: number;
-  @Column({ default: 'NOW()' })
+  @Column({ default: () => "now()" })
   dateCreated!: Date;
 
   @OneToOne(() => HandleEntity, (e) => e.servePartner, { cascade: true })

@@ -25,7 +25,7 @@ export class EpApplicationEntity implements Required<EpApplication> {
   @Column()
   ein!: string;
 
-  @Column({ default: 'NOW()' })
+  @Column({ default: () => "now()" })
   dateCreated!: Date;
 
   @ManyToOne(() => UserEntity, (e) => e.epApplications)
