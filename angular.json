@@ -50,7 +50,7 @@
               "fileReplacements": [
                 {
                   "replace": "libs/shared/domain/src/lib/environments/environment.ts",
-                  "with": "libs/shared/domain/src/lib/environments/environment.prod.ui.ts"
+                  "with": "libs/shared/domain/src/lib/environments/environment.prod.ts"
                 }
               ],
               "optimization": true,
@@ -205,7 +205,7 @@
               "fileReplacements": [
                 {
                   "replace": "libs/shared/domain/src/lib/environments/environment.ts",
-                  "with": "libs/shared/domain/src/lib/environments/environment.prod.api.ts"
+                  "with": "libs/shared/domain/src/lib/environments/environment.prod.ts"
                 }
               ]
             },
@@ -858,7 +858,7 @@
               "fileReplacements": [
                 {
                   "replace": "apps/migrate/src/environments/environment.ts",
-                  "with": "apps/migrate/src/environments/environment.prod.api.ts"
+                  "with": "apps/migrate/src/environments/environment.prod.ts"
                 }
               ]
             },
