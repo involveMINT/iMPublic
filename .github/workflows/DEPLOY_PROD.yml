@@ -365,7 +365,7 @@ jobs:
       - name: Build API (prod)
         run: |
           export NODE_OPTIONS=--openssl-legacy-provider
-          nx run-many --target=build --projects=api,involvemint --configuration=prod --skip-nx-cache
+          nx run-many --target=build --projects=api,involvemint --configuration=production --skip-nx-cache
 
       - name: Store current versions for rollback
         id: store-versions
