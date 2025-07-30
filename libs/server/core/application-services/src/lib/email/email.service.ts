@@ -5,7 +5,7 @@ import * as mailgun from 'mailgun-js';
 @Injectable()
 export class EmailService {
   mg = environment.environment !== 'local' ? mailgun.default(environment.mailgun) : null;
-  noreply = 'your no reply <noreply@example.com>';
+  noreply = 'InvolveMINT No Reply <noreply@involvemint.io>';
 
   shouldNotSendNotification = environment.environment !== 'production';
 

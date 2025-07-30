@@ -660,9 +660,9 @@ jobs:
             --splits="${{ steps.get-version.outputs.NEW_VERSION }}=1" \
             --quiet
           
-          echo "🧹 Cleaning up old API versions (keeping last 3)..."
+          # echo "🧹 Cleaning up old API versions (keeping last 3)..."
           # Keep the last 3 versions for rollback capability, delete older ones
-          gcloud app versions list --service=default --format="value(version.id)" --sort-by="~version.createTime" --limit=10 | tail -n +4 | xargs -r gcloud app versions delete --quiet || echo "⚠️ Could not delete old versions"
+          # gcloud app versions list --service=default --format="value(version.id)" --sort-by="~version.createTime" --limit=10 | tail -n +4 | xargs -r gcloud app versions delete --quiet || echo "⚠️ Could not delete old versions"
           
           echo "✅ Atomic deployment completed successfully"
 
