@@ -7,10 +7,12 @@ import { ImFormsModule } from '@involvemint/client/shared/ui';
 import { IonicModule } from '@ionic/angular';
 import { CreateCmProfileComponent } from './create-cm-profile.component';
 import { CreateCmProfileGuard } from './create-cm-profile.guard';
+import { EnrollmentsModule } from 'libs/client/cm/shell/src/lib/enrollments/enrollments.module';
 
 @NgModule({
   imports: [
     CommonModule,
+    EnrollmentsModule,
     IonicModule,
     RouterModule.forChild([
       { path: '', component: CreateCmProfileComponent, canActivate: [CreateCmProfileGuard] },
