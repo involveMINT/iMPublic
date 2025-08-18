@@ -9,8 +9,8 @@
     "start": "export NODE_OPTIONS=--openssl-legacy-provider && node dist/apps/api/main.js",
     "start:client": "ng serve involvemint",
     "start:server": "ng serve api",
-    "start:client:local": "ng serve involvemint -c local",
-    "start:server:local": "ng serve api -c local",
+    "start:client:local": "export NODE_OPTIONS=--openssl-legacy-provider && export FIRESTORE_EMULATOR_HOST='localhost:8080' && export FIREBASE_STORAGE_EMULATOR_HOST=localhost:9199 && ng serve involvemint -c local",
+    "start:server:local": "export NODE_OPTIONS=--openssl-legacy-provider && export FIRESTORE_EMULATOR_HOST='localhost:8080' && export FIREBASE_STORAGE_EMULATOR_HOST=localhost:9199 && ng serve api -c local",
     "orcha": "npm i ../orcha/dist/libs/angular/orcha-angular-0.2.10.tgz ../orcha/dist/libs/common/orcha-common-0.2.10.tgz ../orcha/dist/libs/nestjs/orcha-nestjs-0.2.10.tgz ../orcha/dist/libs/testing/orcha-testing-0.2.10.tgz ../orcha/dist/libs/typeorm/orcha-typeorm-0.2.10.tgz && npm dedupe",
     "build": "nx run-many --target=build --projects=involvemint,api --prod --skip-nx-cache",
     "build:client": "nx run-many --target=build --projects=involvemint --prod --skip-nx-cache",
@@ -52,10 +52,6 @@
     "hooks": {
       "pre-commit": "pretty-quick --staged"
     }
-  },
-  "engines": {
-    "npm": "8.19.4",
-    "node": "16.20.2"
   },
   "private": true,
   "dependencies": {
