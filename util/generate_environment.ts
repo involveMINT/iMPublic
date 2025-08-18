@@ -19,7 +19,6 @@ function generateEnvironmentFile(filePath: string) {
   console.log(`✅ Generated ${filePath}`);
 }
 
-
 // Entry point: first CLI arg is the config name (e.g. 'test', 'prod', or 'local')
 const command = process.argv[2] || 'generate'
 const configName = process.argv[3] || 'test';
