@@ -127,17 +127,17 @@ If you are prompted for the pasword (below screenshot) when opening PgAdmin at h
 
 ### Starting the Apps
 
-- Open a terminal and run `npm i` from root directory to install all the required packages. 
-- Run `export FIREBASE_STORAGE_EMULATOR_HOST=localhost:9199`. 
-- Run `export FIRESTORE_EMULATOR_HOST='localhost:8080'`. 
+- Open a terminal and run `npm i` from root directory to install all the required packages.
+- Run `export FIREBASE_STORAGE_EMULATOR_HOST=localhost:9199`.
+- Run `export FIRESTORE_EMULATOR_HOST='localhost:8080'`.
+- Run `export NODE_OPTIONS=--openssl-legacy-provider` because otherwise there will be an error with OpenSSL.
 - Run `npm run start:client:local` which will start the client app.
 - Leave that terminal open and running and open a new terminal
-- In the new terminal: Run `export FIREBASE_STORAGE_EMULATOR_HOST=localhost:9199`. 
-- In the new terminal: Run `export FIRESTORE_EMULATOR_HOST='localhost:8080'`. 
+- In the new terminal: Run `export FIREBASE_STORAGE_EMULATOR_HOST=localhost:9199`.
+- In the new terminal: Run `export FIRESTORE_EMULATOR_HOST='localhost:8080'`.
+- In the new terminal: Run `export NODE_OPTIONS=--openssl-legacy-provider`.
 - Then Run `npm run start:server:local` which will start the server app.
 
 Once running, the client can be accessed via `http://localhost:4202` and the api/server will be running on `http://127.0.0.1:3335`
-
-
 
 For any issues, or to suggest improvements to this documentation, please contact Anish Sinha <<anish@developforgood.org>>
