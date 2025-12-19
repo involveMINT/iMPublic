@@ -24,8 +24,8 @@ Run the following commands.
 3. `[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"`
 4. Refresh your shell (close and reopen). If you're using zsh, here's a shortcut: `source ~/.zshrc`
 5. If the following command does not throw an error, you're good so far: `nvm -v`
-6. `nvm install lts/gallium`
-7. `nvm use lts/gallium`
+6. `nvm install lts/jod`
+7. `nvm use lts/jod`
 
 ### Configuring Firebase
 
