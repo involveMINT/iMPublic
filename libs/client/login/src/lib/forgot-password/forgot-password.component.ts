@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { Validators } from '@angular/forms';
-import { UserOrchestration } from '@involvemint/client/shared/data-access';
+import { UserRestClient } from '@involvemint/client/shared/data-access';
 import { RouteService } from '@involvemint/client/shared/routes';
 import { StatefulComponent, StatusService } from '@involvemint/client/shared/util';
 import { ImConfig } from '@involvemint/shared/domain';
@@ -23,7 +23,7 @@ export class ForgotPasswordComponent extends StatefulComponent {
 
   constructor(
     private readonly route: RouteService,
-    private readonly userOrcha: UserOrchestration,
+    private readonly userClient: UserRestClient,
     private readonly status: StatusService
   ) {
     super({});
@@ -35,7 +35,7 @@ export class ForgotPasswordComponent extends StatefulComponent {
 
   async submit() {
     await this.status.showLoader();
-    this.userOrcha
+    this.userClient
       .forgotPassword({}, { email: this.form.value.email })
       .pipe(
         take(1),

@@ -1,4 +1,4 @@
-import { createQuery } from '@orcha/common';
+import { createQuery } from '../repository';
 import { ExchangePartner } from '../exchange-partner';
 import { EpApplication } from './ep-application.model';
 

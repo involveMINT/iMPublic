@@ -1,4 +1,4 @@
-import { IOneToOne } from '@orcha/common';
+import { IOneToOne } from '../repository';
 import { ExchangePartner } from './exchange-partner.model';
 
 export interface ExchangePartnerView {

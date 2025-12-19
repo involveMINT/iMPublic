@@ -1,4 +1,4 @@
-import { createQuery } from '@orcha/common';
+import { createQuery } from '../repository';
 import { ServeAdmin } from './serve-admin.model';
 
 export const SpAdminQuery = createQuery<ServeAdmin[]>()({

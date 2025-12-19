@@ -1,6 +1,5 @@
-import { GetEnrollmentsBySpProject } from '@involvemint/shared/domain';
+import { GetEnrollmentsBySpProject, APIOperationError } from '@involvemint/shared/domain';
 import { createAction, props } from '@ngrx/store';
-import { OrchaOperationError } from '@orcha/common';
 import { EnrollmentSpStoreModel } from './enrollments.reducer';
 
 export const loadEnrollments = createAction(
@@ -15,7 +14,7 @@ export const loadEnrollmentsSuccess = createAction(
 
 export const loadEnrollmentsError = createAction(
   '[ServePartner|Enrollments] Load Enrollments Error',
-  props<{ error: OrchaOperationError }>()
+  props<{ error: APIOperationError }>()
 );
 
 /*
@@ -38,7 +37,7 @@ export const processEnrollmentApplicationSuccess = createAction(
 
 export const processEnrollmentApplicationError = createAction(
   '[ServePartner|Projects] Process Enrollment Application Error',
-  props<{ error: OrchaOperationError }>()
+  props<{ error: APIOperationError }>()
 );
 
 /*
@@ -60,7 +59,7 @@ export const revertBackToPendingSuccess = createAction(
 
 export const revertBackToPendingError = createAction(
   '[ServePartner|Projects] Revert Enrollment Application Back To Pending Error',
-  props<{ error: OrchaOperationError }>()
+  props<{ error: APIOperationError }>()
 );
 
 /*
@@ -82,5 +81,5 @@ export const retireEnrollmentSuccess = createAction(
 
 export const retireEnrollmentError = createAction(
   '[ServePartner|Projects] Retire Enrollment Error',
-  props<{ error: OrchaOperationError }>()
+  props<{ error: APIOperationError }>()
 );

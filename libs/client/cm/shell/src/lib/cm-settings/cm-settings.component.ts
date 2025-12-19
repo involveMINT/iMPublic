@@ -1,10 +1,9 @@
 import { ChangeDetectionStrategy, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { Validators } from '@angular/forms';
-import { HandleOrchestration, UserFacade, UserStoreModel } from '@involvemint/client/shared/data-access';
+import { HandleRestClient, UserFacade, UserStoreModel } from '@involvemint/client/shared/data-access';
 import { parseOneImageFile, StatefulComponent, StatusService } from '@involvemint/client/shared/util';
-import { ChangeMaker, ImConfig, VerifyHandleQuery } from '@involvemint/shared/domain';
+import { ChangeMaker, ImConfig, VerifyHandleQuery, IParser } from '@involvemint/shared/domain';
 import { FormControl, FormGroup } from '@ngneat/reactive-forms';
-import { IParser } from '@orcha/common';
 import { merge } from 'rxjs';
 import { debounceTime, distinctUntilChanged, filter, map, skip, switchMap, tap } from 'rxjs/operators';
 
@@ -57,7 +56,7 @@ export class CmSettingsComponent extends StatefulComponent<State> implements OnI
   constructor(
     private readonly user: UserFacade,
     private readonly status: StatusService,
-    private readonly handleOrcha: HandleOrchestration
+    private readonly handleRestClient: HandleRestClient
   ) {
     super({ profile: null, saving: false, verifyingHandle: false });
   }
@@ -78,7 +77,7 @@ export class CmSettingsComponent extends StatefulComponent<State> implements OnI
         }),
         tap(() => this.updateState({ verifyingHandle: true })),
         debounceTime(ImConfig.formDebounceTime),
-        switchMap((handle) => this.handleOrcha.verifyHandle(VerifyHandleQuery, { handle: handle.id })),
+        switchMap((handle) => this.handleRestClient.verifyHandle(VerifyHandleQuery, { handle: handle.id })),
         tap(({ isUnique }) => {
           this.form.controls.handle.setErrors(isUnique ? null : { notUnique: true });
           this.updateState({ verifyingHandle: false });

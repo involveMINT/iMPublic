@@ -1,5 +1,5 @@
 import { parseDate } from '@involvemint/shared/util';
-import { createLogic } from '@orcha/common';
+import { createLogic } from '../repository';
 import { addSeconds, differenceInSeconds, formatDistanceStrict } from 'date-fns';
 import { ImConfig } from '../../config';
 import { Poi } from './poi.model';

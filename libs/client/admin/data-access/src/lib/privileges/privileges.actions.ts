@@ -1,6 +1,5 @@
-import { GrantBaPrivilegesDto, RevokeBaPrivilegesDto } from '@involvemint/shared/domain';
+import { GrantBaPrivilegesDto, APIOperationError, RevokeBaPrivilegesDto } from '@involvemint/shared/domain';
 import { createAction, props } from '@ngrx/store';
-import { OrchaOperationError } from '@orcha/common';
 import { BaPrivilegeStoreModel } from './privileges.reducer';
 
 export const refreshPrivileges = createAction('[Admin|Privileges] Refresh Privileges');
@@ -11,7 +10,7 @@ export const loadPrivilegesSuccess = createAction(
 );
 export const loadPrivilegesError = createAction(
   '[Admin|Privileges] Load Privileges Error',
-  props<{ error: OrchaOperationError }>()
+  props<{ error: APIOperationError }>()
 );
 
 export const grantBAPrivilege = createAction(
@@ -24,7 +23,7 @@ export const grantBAPrivilegeSuccess = createAction(
 );
 export const grantBAPrivilegeError = createAction(
   '[Admin|Privileges] Grant BA Privilege Error',
-  props<{ error: OrchaOperationError }>()
+  props<{ error: APIOperationError }>()
 );
 
 export const revokeBAPrivilege = createAction(
@@ -37,5 +36,5 @@ export const revokeBAPrivilegeSuccess = createAction(
 );
 export const revokeBAPrivilegeError = createAction(
   '[Admin|Privileges] Revoke BA Privilege Error',
-  props<{ error: OrchaOperationError }>()
+  props<{ error: APIOperationError }>()
 );

@@ -1,4 +1,4 @@
-import { IManyToOne, IOneToMany, IOneToOne } from '@orcha/common';
+import { IManyToOne, IOneToMany, IOneToOne } from '../repository';
 import { Credit } from '../credit';
 import { Enrollment } from '../enrollment';
 import { QuestionAnswer } from '../question-answer';

@@ -1,4 +1,4 @@
-import { createQuery } from '@orcha/common';
+import { createQuery } from '../repository';
 import { Voucher } from './voucher.model';
 
 export const VoucherQuery = createQuery<Voucher>()({

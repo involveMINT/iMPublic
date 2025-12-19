@@ -1,11 +1,10 @@
 import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
 import { StatefulComponent } from '@involvemint/client/shared/util';
-import { ImConfig, User, UserSearchQuery } from '@involvemint/shared/domain';
+import { ImConfig, User, UserSearchQuery, IParser } from '@involvemint/shared/domain';
 import { ModalController } from '@ionic/angular';
 import { FormControl } from '@ngneat/reactive-forms';
-import { IParser } from '@orcha/common';
 import { debounceTime, filter, switchMap, tap } from 'rxjs/operators';
-import { UserOrchestration } from '../../orchestrations';
+import { UserRestClient } from '../../rest-clients';
 
 export interface ImUserSearchModalInputs {
   title: string;
@@ -34,7 +33,7 @@ export class ImUserSearchModalComponent
 
   readonly search = new FormControl('');
 
-  constructor(private readonly userOrcha: UserOrchestration, private readonly modal: ModalController) {
+  constructor(private readonly userClient: UserRestClient, private readonly modal: ModalController) {
     super({ users: [], status: 'init' });
   }
 
@@ -50,7 +49,7 @@ export class ImUserSearchModalComponent
           return true;
         }),
         debounceTime(ImConfig.formDebounceTime),
-        switchMap((s) => this.userOrcha.searchUsers(UserSearchQuery, { emailSearchString: s })),
+        switchMap((s) => this.userClient.searchUsers(UserSearchQuery, { emailSearchString: s })),
         tap((users) => this.updateState({ users, status: 'done' }))
       )
     );

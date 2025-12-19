@@ -1,14 +1,13 @@
-import { Poi } from '@involvemint/shared/domain';
+import { Poi, IExactQuery, IParser, IProps, IQuery } from '@involvemint/shared/domain';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { IExactQuery, IParser, IProps, IQuery } from '@orcha/common';
-import { IOrchaTypeormRepository } from '@orcha/typeorm';
+import { IBaseRepository } from '../repository/typeorm-base-repository';
 import { In, Repository } from 'typeorm';
 import { EnrollmentRepository } from '../enrollment/enrollment.repository';
 import { PoiEntity } from './poi.entity';
 
 @Injectable()
-export class PoiRepository extends IOrchaTypeormRepository<Poi> {
+export class PoiRepository extends IBaseRepository<Poi> {
   constructor(
     @InjectRepository(PoiEntity) protected readonly repo: Repository<Poi>,
     private readonly enrollmentRepo: EnrollmentRepository

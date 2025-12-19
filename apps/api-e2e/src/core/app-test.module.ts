@@ -1,4 +1,4 @@
-import { ServerOrchaModule } from '@involvemint/server/orcha';
+import { ServerAPIModule } from '@involvemint/server/api';
 import { Module } from '@nestjs/common';
 import { ScheduleModule } from '@nestjs/schedule';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -14,7 +14,7 @@ patchTypeORMRepositoryWithBaseRepository();
 
 @Module({
   imports: [
-    ServerOrchaModule,
+    ServerAPIModule,
     TypeOrmModule.forRoot({
       type: 'postgres',
       host: '127.0.0.1',

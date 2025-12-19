@@ -1,8 +1,8 @@
 import { HttpEventType } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import {
-  EnrollmentOrchestration,
-  ProjectOrchestration,
+  EnrollmentRestClient,
+  ProjectRestClient,
   UserFacade,
 } from '@involvemint/client/shared/data-access';
 import { RouteService } from '@involvemint/client/shared/routes';
@@ -206,8 +206,8 @@ export class ProjectsEffects {
 
   constructor(
     private readonly actions$: Actions,
-    private readonly project: ProjectOrchestration,
-    private readonly enrollment: EnrollmentOrchestration,
+    private readonly project: ProjectRestClient,
+    private readonly enrollment: EnrollmentRestClient,
     private readonly user: UserFacade,
     private readonly route: RouteService,
     private readonly status: StatusService

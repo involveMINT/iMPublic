@@ -1,5 +1,5 @@
 import { parseDate } from '@involvemint/shared/util';
-import { createLogic } from '@orcha/common';
+import { createLogic } from '../repository';
 import { isAfter } from 'date-fns';
 import { EnrollmentStatus } from '../enrollment';
 import { calculateEnrollmentStatus } from '../enrollment/enrollment.logic';

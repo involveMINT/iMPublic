@@ -1,6 +1,6 @@
 import { createAction, props } from '@ngrx/store';
-import { OrchaOperationError } from '@orcha/common';
 import { EpAdminStoreModel } from './ep-admins.reducer';
+import { APIOperationError } from '@involvemint/shared/domain';
 
 export const refreshEpAdmins = createAction(
   '[ExchangePartner|Admins] Refresh Ep Admins',
@@ -15,7 +15,7 @@ export const loadEpAdminsSuccess = createAction(
 
 export const loadEpAdminsError = createAction(
   '[ExchangePartner|Admins] Load Ep Admins Error',
-  props<{ error: OrchaOperationError }>()
+  props<{ error: APIOperationError }>()
 );
 
 /*
@@ -34,7 +34,7 @@ export const addEpAdminSuccess = createAction(
 
 export const addEpAdminError = createAction(
   '[ExchangePartner|Admins] Add Ep Admin Error',
-  props<{ error: OrchaOperationError }>()
+  props<{ error: APIOperationError }>()
 );
 
 /*
@@ -56,5 +56,5 @@ export const removeEpAdminSuccess = createAction(
 
 export const removeEpAdminError = createAction(
   '[ExchangePartner|Admins] Remove Ep Admin Error',
-  props<{ error: OrchaOperationError }>()
+  props<{ error: APIOperationError }>()
 );

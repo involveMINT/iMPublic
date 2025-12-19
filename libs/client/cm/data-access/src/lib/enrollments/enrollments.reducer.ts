@@ -1,7 +1,6 @@
-import { Enrollment, EnrollmentsQuery } from '@involvemint/shared/domain';
+import { Enrollment, EnrollmentsQuery, IParser } from '@involvemint/shared/domain';
 import { createEntityAdapter, EntityState } from '@ngrx/entity';
 import { createReducer, on } from '@ngrx/store';
-import { IParser } from '@orcha/common';
 import * as EnrollmentActions from './enrollments.actions';
 
 export const ENROLLMENTS_KEY = 'enrollments';

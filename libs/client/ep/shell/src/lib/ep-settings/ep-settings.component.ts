@@ -2,10 +2,9 @@ import { ChangeDetectionStrategy, Component, ElementRef, Input, OnInit, ViewChil
 import { Validators } from '@angular/forms';
 import { UserFacade, UserStoreModel } from '@involvemint/client/shared/data-access';
 import { parseOneImageFile, StatefulComponent, StatusService } from '@involvemint/client/shared/util';
-import { ExchangePartner, ImConfig } from '@involvemint/shared/domain';
+import { ExchangePartner, ImConfig, IParser } from '@involvemint/shared/domain';
 import { STATES, UnArray } from '@involvemint/shared/util';
 import { FormControl, FormGroup } from '@ngneat/reactive-forms';
-import { IParser } from '@orcha/common';
 import { merge } from 'rxjs';
 import { tap } from 'rxjs/operators';
 

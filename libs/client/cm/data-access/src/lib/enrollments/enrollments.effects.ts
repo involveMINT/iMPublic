@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { EnrollmentOrchestration, UserFacade } from '@involvemint/client/shared/data-access';
+import { EnrollmentRestClient, UserFacade } from '@involvemint/client/shared/data-access';
 import { RouteService } from '@involvemint/client/shared/routes';
 import { InfoModalService, StatusService } from '@involvemint/client/shared/util';
 import { EnrollmentsQuery } from '@involvemint/shared/domain';
@@ -193,7 +193,7 @@ export class EnrollmentEffects {
 
   constructor(
     private readonly actions$: Actions,
-    private readonly enrollments: EnrollmentOrchestration,
+    private readonly enrollments: EnrollmentRestClient,
     private readonly user: UserFacade,
     private readonly cf: ChangeMakerFacade,
     private readonly status: StatusService,

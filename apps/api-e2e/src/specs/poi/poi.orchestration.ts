@@ -1,4 +1,4 @@
-import { InvolvemintOrchestrations, IPoiOrchestration } from '@involvemint/shared/domain';
+import { InvolvemintRoutes, IPoiOrchestration } from '@involvemint/shared/domain';
 import { INestApplication } from '@nestjs/common';
 import {
   createNestjsTestOrchestration,
@@ -7,7 +7,7 @@ import {
   TestOrchestration,
 } from '@orcha/testing';
 
-@TestOrchestration(InvolvemintOrchestrations.poi)
+@TestOrchestration(InvolvemintRoutes.poi)
 class PoiOrchestration implements ITestOrchestration<IPoiOrchestration> {
   @TestOperation()
   get!: ITestOrchestration<IPoiOrchestration>['get'];

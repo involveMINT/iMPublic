@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { EnrollmentOrchestration } from '@involvemint/client/shared/data-access';
+import { EnrollmentRestClient } from '@involvemint/client/shared/data-access';
 import { StatusService } from '@involvemint/client/shared/util';
 import { calculateEnrollmentStatus, EnrollmentsSpQuery, EnrollmentStatus } from '@involvemint/shared/domain';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
@@ -170,7 +170,7 @@ export class EnrollmentsSpEffects {
 
   constructor(
     private readonly actions$: Actions,
-    private readonly enrollment: EnrollmentOrchestration,
+    private readonly enrollment: EnrollmentRestClient,
     private readonly status: StatusService
   ) {}
 }

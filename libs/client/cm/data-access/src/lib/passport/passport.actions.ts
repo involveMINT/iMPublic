@@ -1,6 +1,6 @@
 import { createAction, props } from '@ngrx/store';
-import { OrchaOperationError } from '@orcha/common';
 import { PassportDocumentStoreModel } from './passport.reducer';
+import { APIOperationError } from '@involvemint/shared/domain';
 
 export const refreshPassport = createAction('[Passport|ChangeMaker] Refresh Passport');
 export const loadPassport = createAction('[Passport|ChangeMaker] Load Passport');
@@ -12,7 +12,7 @@ export const loadPassportSuccess = createAction(
 
 export const loadPassportError = createAction(
   '[Passport|ChangeMaker] Load Passport Error',
-  props<{ error: OrchaOperationError }>()
+  props<{ error: APIOperationError }>()
 );
 
 /*
@@ -35,7 +35,7 @@ export const createPassportDocumentSuccess = createAction(
 
 export const createPassportDocumentError = createAction(
   '[Passport|ChangeMaker] Create Passport Error',
-  props<{ error: OrchaOperationError }>()
+  props<{ error: APIOperationError }>()
 );
 
 /*
@@ -58,7 +58,7 @@ export const editPassportDocumentSuccess = createAction(
 
 export const editPassportDocumentError = createAction(
   '[Passport|ChangeMaker] Edit Passport Error',
-  props<{ error: OrchaOperationError }>()
+  props<{ error: APIOperationError }>()
 );
 
 /*
@@ -80,7 +80,7 @@ export const replacePassportDocumentSuccess = createAction(
 
 export const replacePassportDocumentError = createAction(
   '[Passport|ChangeMaker] Replace Passport Error',
-  props<{ error: OrchaOperationError }>()
+  props<{ error: APIOperationError }>()
 );
 
 /*
@@ -103,5 +103,5 @@ export const deletePassportDocumentSuccess = createAction(
 
 export const deletePassportDocumentError = createAction(
   '[Passport|ChangeMaker] Delete Passport Error',
-  props<{ error: OrchaOperationError }>()
+  props<{ error: APIOperationError }>()
 );

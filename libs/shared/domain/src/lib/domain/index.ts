@@ -34,3 +34,4 @@ export * from './activity-post';
 export * from './like';
 export * from './flag';
 export {CreateCommentDto} from './comment';
+export * from './repository';

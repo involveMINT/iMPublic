@@ -1,4 +1,4 @@
-import { InvolvemintOrchestrations, IUserOrchestration } from '@involvemint/shared/domain';
+import { InvolvemintRoutes, IUserOrchestration } from '@involvemint/shared/domain';
 import { INestApplication } from '@nestjs/common';
 import {
   createNestjsTestOrchestration,
@@ -7,7 +7,7 @@ import {
   TestOrchestration,
 } from '@orcha/testing';
 
-@TestOrchestration(InvolvemintOrchestrations.user)
+@TestOrchestration(InvolvemintRoutes.user)
 class UserOrchestration implements ITestOrchestration<IUserOrchestration> {
   @TestOperation()
   verifyUserEmail!: ITestOrchestration<IUserOrchestration>['verifyUserEmail'];

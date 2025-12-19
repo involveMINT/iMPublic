@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { UserOrchestration } from '@involvemint/client/shared/data-access';
+import { UserRestClient } from '@involvemint/client/shared/data-access';
 import { RouteService } from '@involvemint/client/shared/routes';
 import { StatefulComponent } from '@involvemint/client/shared/util';
 import { take } from 'rxjs/operators';
@@ -19,7 +19,7 @@ interface State {
 export class VerifyEmailComponent extends StatefulComponent<State> implements OnInit {
   constructor(
     private readonly activatedRoute: ActivatedRoute,
-    private readonly userOrcha: UserOrchestration,
+    private readonly userClient: UserRestClient,
     private readonly route: RouteService
   ) {
     super({ verified: false, error: null });
@@ -32,7 +32,7 @@ export class VerifyEmailComponent extends StatefulComponent<State> implements On
         return;
       }
       try {
-        await this.userOrcha.verifyEmail({}, { email, hash }).pipe(take(1)).toPromise();
+        await this.userClient.verifyEmail({}, { email, hash }).pipe(take(1)).toPromise();
         this.updateState({ verified: true });
       } catch (e) {
         this.updateState({ error: e.error.message });

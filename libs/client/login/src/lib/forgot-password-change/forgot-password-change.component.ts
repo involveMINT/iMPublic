@@ -1,9 +1,8 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-import { UserOrchestration } from '@involvemint/client/shared/data-access';
+import { UserRestClient } from '@involvemint/client/shared/data-access';
 import { RouteService } from '@involvemint/client/shared/routes';
-// import { RouteService } from '@involvemint/client/shared/routes';
 import { ConfirmPasswordValidator, StatusService } from '@involvemint/client/shared/util';
 import { ImConfig } from '@involvemint/shared/domain';
 import { FormControl, FormGroup } from '@ngneat/reactive-forms';
@@ -38,7 +37,7 @@ export class ForgotPasswordChangeComponent implements OnInit {
   constructor(
     private readonly activatedRoute: ActivatedRoute,
     private readonly route: RouteService,
-    private readonly userOrcha: UserOrchestration,
+    private readonly userClient: UserRestClient,
     private readonly status: StatusService
   ) {}
 
@@ -56,7 +55,7 @@ export class ForgotPasswordChangeComponent implements OnInit {
   async submit() {
     await this.status.showLoader();
     try {
-      await this.userOrcha
+      await this.userClient
         .forgotPasswordChange({}, { email: this.email, hash: this.hash, password: this.form.value.password })
         .pipe(take(1))
         .toPromise();

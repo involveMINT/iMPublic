@@ -12,9 +12,9 @@ import {
   SearchEpDto,
   UpdateEpLogoFileDto,
   UploadEpImagesDto,
+  IQuery
 } from '@involvemint/shared/domain';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { IQuery } from '@orcha/common';
 import * as geocoder from 'node-geocoder';
 import { Raw } from 'typeorm';
 import * as uuid from 'uuid';

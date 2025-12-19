@@ -1,4 +1,4 @@
-import { IManyToOne } from '@orcha/common';
+import { IManyToOne } from '../repository';
 import { Offer } from '../offer';
 import { Voucher } from '../voucher';
 

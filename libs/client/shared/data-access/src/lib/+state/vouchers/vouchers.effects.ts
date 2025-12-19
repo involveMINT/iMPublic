@@ -6,10 +6,10 @@ import { fetch } from '@nrwl/angular';
 import { EMPTY, from } from 'rxjs';
 import { delayWhen, filter, map, switchMap, tap } from 'rxjs/operators';
 import { ImProfileSelectModalService } from '../../modals/im-profile-select-modal/im-profile-select-modal.service';
-import { VoucherOrchestration } from '../../orchestrations';
 import { UserFacade } from '../user.facade';
 import { ConfirmVoucherPurchaseModalService } from './confirm-voucher-purchase-modal/confirm-voucher-purchase-modal.service';
 import * as VouchersActions from './vouchers.actions';
+import { VoucherRestClient } from '../../rest-clients';
 
 @Injectable()
 export class VouchersEffects {
@@ -80,7 +80,7 @@ export class VouchersEffects {
 
   constructor(
     private readonly actions$: Actions,
-    private readonly voucher: VoucherOrchestration,
+    private readonly voucher: VoucherRestClient,
     private readonly status: StatusService,
     private readonly profileSelect: ImProfileSelectModalService,
     private readonly user: UserFacade,

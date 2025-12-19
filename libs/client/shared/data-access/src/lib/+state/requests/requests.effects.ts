@@ -7,9 +7,9 @@ import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { fetch, pessimisticUpdate } from '@nrwl/angular';
 import { from } from 'rxjs';
 import { delayWhen, filter, map, switchMap, take, tap } from 'rxjs/operators';
-import { RequestOrchestration } from '../../orchestrations';
 import { UserFacade } from '../user.facade';
 import * as RequestsActions from './requests.actions';
+import { RequestRestClient } from '../../rest-clients';
 
 @Injectable()
 export class RequestsEffects {
@@ -174,7 +174,7 @@ export class RequestsEffects {
 
   constructor(
     private readonly actions$: Actions,
-    private readonly request: RequestOrchestration,
+    private readonly request: RequestRestClient,
     private readonly status: StatusService,
     private readonly user: UserFacade,
     private readonly route: RouteService

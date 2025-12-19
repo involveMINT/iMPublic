@@ -1,4 +1,4 @@
-import { InvolvemintOrchestrations, IProjectOrchestration } from '@involvemint/shared/domain';
+import { InvolvemintRoutes, IProjectOrchestration } from '@involvemint/shared/domain';
 import { INestApplication } from '@nestjs/common';
 import {
   createNestjsTestOrchestration,
@@ -7,7 +7,7 @@ import {
   TestOrchestration,
 } from '@orcha/testing';
 
-@TestOrchestration(InvolvemintOrchestrations.project)
+@TestOrchestration(InvolvemintRoutes.project)
 class ProjectOrchestration implements ITestOrchestration<IProjectOrchestration> {
   @TestOperation()
   getAll!: ITestOrchestration<IProjectOrchestration>['getAll'];

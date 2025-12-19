@@ -2,13 +2,13 @@ import { Pipe, PipeTransform } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
 import { combineLatest, Observable, of } from 'rxjs';
 import { catchError, map, startWith } from 'rxjs/operators';
-import { StorageOrchestration } from '../../orchestrations/storage.orchestration';
+import { StorageRestClient } from '../../rest-clients/storage.rest-client';
 
 const cache = new Map<string, string>();
 
 @Pipe({ name: 'imStorageUrl' })
 export class ImStorageUrlPipe implements PipeTransform {
-  constructor(private readonly storage: StorageOrchestration, private readonly sanitizer: DomSanitizer) {}
+  constructor(private readonly storage: StorageRestClient, private readonly sanitizer: DomSanitizer) {}
 
   transform(path?: string, iframe?: boolean): Observable<string>;
   transform(path?: string[], iframe?: boolean): Observable<string[]>;

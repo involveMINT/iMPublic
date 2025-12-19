@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { CreditOrchestration } from '@involvemint/client/shared/data-access';
+import { CreditRestClient } from '@involvemint/client/shared/data-access';
 import { StatusService } from '@involvemint/client/shared/util';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { pessimisticUpdate } from '@nrwl/angular';
@@ -15,7 +15,7 @@ export class CreditsEffects {
       delayWhen(() => from(this.status.showLoader('Minting'))),
       pessimisticUpdate({
         run: ({ dto }) =>
-          this.creditOrch.mint({}, dto).pipe(
+          this.creditClient.mint({}, dto).pipe(
             tap(async () => {
               await this.status.dismissLoader();
               await this.status.presentSuccess(`Credited @${dto.handle} ${(dto.amount / 100).toFixed(2)} CC`);
@@ -33,7 +33,7 @@ export class CreditsEffects {
 
   constructor(
     private readonly actions$: Actions,
-    private readonly creditOrch: CreditOrchestration,
+    private readonly creditClient: CreditRestClient,
     private readonly status: StatusService
   ) {}
 }

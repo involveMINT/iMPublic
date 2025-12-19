@@ -1,4 +1,4 @@
-import { createQuery } from '@orcha/common';
+import { createQuery } from '../repository';
 import { Project } from './project.model';
 
 export const ProjectFeedQuery = createQuery<Project[]>()({

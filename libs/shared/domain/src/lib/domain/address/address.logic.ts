@@ -1,4 +1,4 @@
-import { createLogic } from '@orcha/common';
+import { createLogic } from '../repository';
 import { Address } from './address.model';
 import * as uuid from 'uuid';
 import { environment } from '../../environments';

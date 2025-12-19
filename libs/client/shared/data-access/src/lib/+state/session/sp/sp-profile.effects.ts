@@ -6,9 +6,9 @@ import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { pessimisticUpdate } from '@nrwl/angular';
 import { from } from 'rxjs';
 import { delayWhen, filter, map, switchMap, take, tap } from 'rxjs/operators';
-import { ServePartnerOrchestration } from '../../../orchestrations';
 import { UserFacade } from '../../user.facade';
 import * as SpProfileActions from './sp-profile.actions';
+import { ServePartnerRestClient } from '../../../rest-clients';
 
 @Injectable()
 export class SpProfileEffects {
@@ -156,7 +156,7 @@ export class SpProfileEffects {
 
   constructor(
     private readonly actions$: Actions,
-    private readonly sp: ServePartnerOrchestration,
+    private readonly sp: ServePartnerRestClient,
     private readonly status: StatusService,
     private readonly uf: UserFacade
   ) {}

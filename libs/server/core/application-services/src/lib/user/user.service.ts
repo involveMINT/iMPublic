@@ -13,10 +13,11 @@ import {
   SearchUserDto,
   SignUpDto,
   SnoopDto,
-  User
+  User,
+  IQuery,
+  parseQuery
 } from '@involvemint/shared/domain';
 import { HttpException, HttpService, HttpStatus, Injectable } from '@nestjs/common';
-import { IQuery, parseQuery } from '@orcha/common';
 import { addMonths } from 'date-fns';
 import { first } from 'rxjs/operators';
 import { Raw } from 'typeorm';
@@ -43,7 +44,7 @@ export class UserService {
    * Initiates an involveMINT user's sign up sequence.
    * @param id User email address.
    * @param password User password.
-   * @param query Orcha query of the user's signed token.
+   * @param query query of the user's signed token.
    */
   async signUp(dto: SignUpDto, query: IQuery<{ token: string }>) {
     const conflictingUser = await this.userRepo.findOne(dto.id, { id: true });

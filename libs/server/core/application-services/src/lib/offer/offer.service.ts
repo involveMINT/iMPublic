@@ -11,9 +11,10 @@ import {
   QueryOffersDto,
   UpdateOfferDto,
   UploadOfferImageDto,
+  IQuery, 
+  parseQuery
 } from '@involvemint/shared/domain';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { IQuery, parseQuery } from '@orcha/common';
 import * as uuid from 'uuid';
 import { AuthService } from '../auth/auth.service';
 import { StorageService } from '../storage/storage.service';

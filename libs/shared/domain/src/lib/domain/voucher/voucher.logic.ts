@@ -1,5 +1,5 @@
 import { parseDate } from '@involvemint/shared/util';
-import { createLogic } from '@orcha/common';
+import { createLogic } from '../repository';
 import { addMonths, isBefore } from 'date-fns';
 import { Voucher } from './voucher.model';
 

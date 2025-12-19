@@ -1,4 +1,4 @@
-import { IChangeMakerOrchestration, InvolvemintOrchestrations } from '@involvemint/shared/domain';
+import { IChangeMakerOrchestration, InvolvemintRoutes } from '@involvemint/shared/domain';
 import { INestApplication } from '@nestjs/common';
 import {
   createNestjsTestOrchestration,
@@ -7,7 +7,7 @@ import {
   TestOrchestration,
 } from '@orcha/testing';
 
-@TestOrchestration(InvolvemintOrchestrations.changeMaker)
+@TestOrchestration(InvolvemintRoutes.changeMaker)
 export class ChangeMakerOrchestration implements ITestOrchestration<IChangeMakerOrchestration> {
   @TestOperation()
   createProfile!: ITestOrchestration<IChangeMakerOrchestration>['createProfile'];

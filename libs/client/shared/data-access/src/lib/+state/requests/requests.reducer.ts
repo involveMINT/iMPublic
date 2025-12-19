@@ -1,7 +1,6 @@
-import { Request, RequestQuery } from '@involvemint/shared/domain';
+import { Request, RequestQuery, IParser } from '@involvemint/shared/domain';
 import { createEntityAdapter, EntityState } from '@ngrx/entity';
 import { createReducer, on } from '@ngrx/store';
-import { IParser } from '@orcha/common';
 import * as RequestsActions from './requests.actions';
 
 export const REQUESTS_KEY = 'requests';

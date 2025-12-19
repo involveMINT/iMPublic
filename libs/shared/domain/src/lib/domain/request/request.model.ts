@@ -1,4 +1,4 @@
-import { IManyToOne } from '@orcha/common';
+import { IManyToOne } from '../repository';
 import { ChangeMaker } from '../change-maker';
 import { ExchangePartner } from '../exchange-partner';
 import { ProjectListingStatus } from '../project';

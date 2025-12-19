@@ -26,10 +26,12 @@ import {
   StartPoiTimerDto,
   StopPoiTimerDto,
   SubmitPoiDto,
+  createQuery,
+  IQuery,
+  parseQuery
 } from '@involvemint/shared/domain';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { SchedulerRegistry } from '@nestjs/schedule';
-import { createQuery, IQuery, parseQuery } from '@orcha/common';
 import sharp from 'sharp';
 import { CronJob, CronTime } from 'cron';
 import * as uuid from 'uuid';

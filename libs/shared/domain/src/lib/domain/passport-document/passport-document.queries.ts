@@ -1,4 +1,4 @@
-import { createQuery } from '@orcha/common';
+import { createQuery } from '../repository';
 import { PassportDocument } from './passport-document.model';
 
 export const PassportDocumentQuery = createQuery<PassportDocument>()({

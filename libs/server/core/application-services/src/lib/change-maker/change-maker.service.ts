@@ -5,9 +5,9 @@ import {
   EditCmProfileDto,
   generateChangeMakerProfileImageFilePath,
   ImStorageFileRoots,
+  IQuery
 } from '@involvemint/shared/domain';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { IQuery } from '@orcha/common';
 import * as uuid from 'uuid';
 import { AuthService } from '../auth/auth.service';
 import { FirestoreService } from '../firestore/firestore.service';
@@ -25,7 +25,7 @@ export class ChangeMakerService {
 
   /**
    * Creates a ChangeMaker profile and verifies handle is unique.
-   * @param query Orcha query of the newly created ChangeMaker profile.
+   * @param query query of the newly created ChangeMaker profile.
    * @param token User's auth token.
    * @param dto Essential ChangeMaker profile data.
    */
