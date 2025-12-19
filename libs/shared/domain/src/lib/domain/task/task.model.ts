@@ -1,4 +1,4 @@
-import { IOneToOne } from '@orcha/common';
+import { IOneToOne } from '../repository';
 import { Poi } from '../poi';
 
 export interface Task {

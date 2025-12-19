@@ -1,6 +1,6 @@
 import { createAction, props } from '@ngrx/store';
-import { OrchaOperationError } from '@orcha/common';
 import { EpVoucherStoreModel } from './ep-vouchers.reducer';
+import { APIOperationError } from '@involvemint/shared/domain';
 
 export const refreshVouchers = createAction(
   '[ExchangePartner|Vouchers] Refresh Vouchers',
@@ -16,7 +16,7 @@ export const loadVouchersSuccess = createAction(
 
 export const loadVouchersError = createAction(
   '[ExchangePartner|Vouchers] Load Vouchers Error',
-  props<{ error: OrchaOperationError }>()
+  props<{ error: APIOperationError }>()
 );
 
 /*
@@ -37,7 +37,7 @@ export const redeemVoucherSuccess = createAction(
 
 export const redeemVoucherError = createAction(
   '[ExchangePartner|Vouchers] Redeem Voucher Error',
-  props<{ error: OrchaOperationError }>()
+  props<{ error: APIOperationError }>()
 );
 
 /*
@@ -59,7 +59,7 @@ export const refundVoucherSuccess = createAction(
 
 export const refundVoucherError = createAction(
   '[ExchangePartner|Vouchers] Refund Voucher Error',
-  props<{ error: OrchaOperationError }>()
+  props<{ error: APIOperationError }>()
 );
 
 /*
@@ -82,7 +82,7 @@ export const archiveVoucherSuccess = createAction(
 
 export const archiveVoucherError = createAction(
   '[ExchangePartner|Vouchers] Archive Voucher Error',
-  props<{ error: OrchaOperationError }>()
+  props<{ error: APIOperationError }>()
 );
 
 /*
@@ -105,5 +105,5 @@ export const unarchiveVoucherSuccess = createAction(
 
 export const unarchiveVoucherError = createAction(
   '[ExchangePartner|Vouchers] Unarchive Voucher Error',
-  props<{ error: OrchaOperationError }>()
+  props<{ error: APIOperationError }>()
 );

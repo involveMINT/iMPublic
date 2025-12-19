@@ -4,8 +4,8 @@ import { ExchangePartnerMarketQuery, OfferMarketQuery, RequestMarketQuery } from
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { fetch } from '@nrwl/angular';
 import { map } from 'rxjs/operators';
-import { ExchangePartnerOrchestration, OfferOrchestration, RequestOrchestration } from '../../orchestrations';
 import * as MarketActions from './market.actions';
+import { ExchangePartnerRestClient, OfferRestClient, RequestRestClient } from '../../rest-clients';
 
 @Injectable()
 export class ProjectsEffects {
@@ -139,9 +139,9 @@ export class ProjectsEffects {
 
   constructor(
     private readonly actions$: Actions,
-    private readonly ep: ExchangePartnerOrchestration,
-    private readonly offer: OfferOrchestration,
-    private readonly request: RequestOrchestration,
+    private readonly ep: ExchangePartnerRestClient,
+    private readonly offer: OfferRestClient,
+    private readonly request: RequestRestClient,
     private readonly status: StatusService
   ) {}
 }

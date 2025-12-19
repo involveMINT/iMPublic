@@ -10,9 +10,10 @@ import {
   SpApplication,
   SubmitSpApplicationDto,
   WithdrawSpApplicationDto,
+  IQuery,
+  parseQuery
 } from '@involvemint/shared/domain';
 import { Injectable, UnauthorizedException } from '@nestjs/common';
-import { IQuery, parseQuery } from '@orcha/common';
 import * as geocoder from 'node-geocoder';
 import { Socket } from 'socket.io';
 import * as uuid from 'uuid';

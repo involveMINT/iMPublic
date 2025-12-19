@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { ExchangeAdminOrchestration, UserFacade } from '@involvemint/client/shared/data-access';
+import { ExchangeAdminRestClient, UserFacade } from '@involvemint/client/shared/data-access';
 import { StatusService } from '@involvemint/client/shared/util';
 import { EpAdminQuery } from '@involvemint/shared/domain';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
@@ -86,7 +86,7 @@ export class EpAdminsEffects {
 
   constructor(
     private readonly actions$: Actions,
-    private readonly exchangeAdmin: ExchangeAdminOrchestration,
+    private readonly exchangeAdmin: ExchangeAdminRestClient,
     private readonly status: StatusService,
     private readonly user: UserFacade
   ) {}

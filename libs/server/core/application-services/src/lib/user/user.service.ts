@@ -13,10 +13,11 @@ import {
   SearchUserDto,
   SignUpDto,
   SnoopDto,
-  User
+  User,
+  IQuery,
+  parseQuery
 } from '@involvemint/shared/domain';
 import { HttpException, HttpService, HttpStatus, Injectable } from '@nestjs/common';
-import { IQuery, parseQuery } from '@orcha/common';
 import { addMonths } from 'date-fns';
 import { first } from 'rxjs/operators';
 import { Raw } from 'typeorm';
@@ -43,7 +44,7 @@ export class UserService {
    * Initiates an involveMINT user's sign up sequence.
    * @param id User email address.
    * @param password User password.
-   * @param query Orcha query of the user's signed token.
+   * @param query query of the user's signed token.
    */
   async signUp(dto: SignUpDto, query: IQuery<{ token: string }>) {
     const conflictingUser = await this.userRepo.findOne(dto.id, { id: true });
@@ -72,7 +73,13 @@ export class UserService {
         serveAdmins: [],
         spApplications: [],
         joyride: true,
+        viewedAddNewAccount: false,
         baAdmin: false,
+        activityPosts: [],
+        likes: [],
+        comments: [],
+        updatedAt: new Date(),
+        flags: []
       },
       {}
     );
@@ -85,7 +92,7 @@ export class UserService {
    * Initiates an involveMINT user's login sequence.
    * @param id User email address.
    * @param password User password.
-   * @param query Orcha query of the user's signed token.
+   * @param query query of the user's signed token.
    */
   async login(id: string, password: string, query: IQuery<{ token: string }>) {
     const user = await this.userRepo.findOne(id);
@@ -99,14 +106,14 @@ export class UserService {
     if (!compare) {
       throw new HttpException(`Incorrect password.`, HttpStatus.UNAUTHORIZED);
     }
-    if (!user.active && (environment.environment === 'production')) {
+    if (!user.active && (environment.environment !== 'local')) {
       throw new HttpException(`User ${user.id} has not been verified.`, HttpStatus.UNAUTHORIZED);
     }
 
     /* Login */
 
     // If user correctly logs in, then don't allow for password reset.
-    await this.userRepo.update(user.id, { forgotPasswordHash: null!, dateLastLoggedIn: new Date() });
+    await this.userRepo.update(user.id, { forgotPasswordHash: null!, dateLastLoggedIn: user.updatedAt });
 
     // Generate token with the user's email as the token's hash to later verify a token's owner.
     const token = this.auth.createToken({ userId: id });
@@ -116,7 +123,7 @@ export class UserService {
   /**
    *  Initiates the involveMINT Super Admin's login sequence.
    * @param password Admin's password (found in environment variables).
-   * @param query Orcha query of the admins's signed token.
+   * @param query query of the admins's signed token.
    */
   async adminLogin(password: string, query: IQuery<{ token: string }>) {
     const compare = await this.auth.comparePasswordToHashed(password, environment.adminPasswordHash, '');
@@ -130,7 +137,7 @@ export class UserService {
    * Validates the admin's token to ensure that the given token belongs only to the admin.
    * An error will be thrown if the token does not belong to the admin.
    * @param token Admin's token.
-   * @returns Orcha query of inputted token.
+   * @returns query of inputted token.
    */
   async validateAdminToken(query: IQuery<{ token: string }>, token: string) {
     await this.auth.validateAdminToken(token);
@@ -139,7 +146,7 @@ export class UserService {
 
   /**
    * Validates a user's auth token and returns session data from the user associated with the token.
-   * @param query Orcha query of desired user data for the involveMINT client session.
+   * @param query query of desired user data for the involveMINT client session.
    * @param token User's auth token.
    * @returns The user's desired session data from the user associated with the token.
    */
@@ -181,7 +188,13 @@ export class UserService {
         serveAdmins: [],
         spApplications: [],
         joyride: true,
+        viewedAddNewAccount: false,
         baAdmin: false,
+        activityPosts: [],
+        likes: [],
+        comments: [],
+        flags: [],
+        updatedAt: new Date(),
       },
       { id: true }
     );
@@ -200,7 +213,7 @@ export class UserService {
   /**
    * * Admin only
    * Allows the super admin to login as any user.
-   * @param query Orcha query for user session data the admin wants to snoop on.
+   * @param query query for user session data the admin wants to snoop on.
    * @param token Admin's auth token.
    * @param dto User email of the user the admin is to snoop on.
    */
@@ -214,7 +227,7 @@ export class UserService {
   /**
    * * Admin only
    * Allows the super admin to get all users with privileges.
-   * @param query Orcha query of all users with privileges.
+   * @param query query of all users with privileges.
    * @param token Admin's auth token.
    */
   async getAllUserPrivileges(query: IQuery<User[]>, token: string) {
@@ -225,7 +238,7 @@ export class UserService {
   /**
    * * Admin only
    * Allows the super admin to grant BA privileges.
-   * @param query Orcha query of user with granted baAdmin privilege.
+   * @param query query of user with granted baAdmin privilege.
    * @param token The admin's authentication token.
    * @param dto User's Id to grant BA privileges
    */
@@ -237,7 +250,7 @@ export class UserService {
   /**
    * * Admin only
    * Allows the super admin to revoke BA privileges.
-   * @param query Orcha query of user with revoked baAdmin privilege.
+   * @param query query of user with revoked baAdmin privilege.
    * @param token The admin's authentication token.
    * @param dto User's Id to revoke BA privileges
    */
@@ -248,7 +261,7 @@ export class UserService {
 
   /**
    * Search all user's given an email search string criteria.
-   * @param query Orcha query of searched users.
+   * @param query query of searched users.
    * @param dto User search criteria.
    */
   async searchUsers(query: IQuery<User[]>, dto: SearchUserDto) {
@@ -450,6 +463,11 @@ export class UserService {
   async finishJoyride(token: string) {
     const user = await this.auth.validateUserToken(token);
     return this.userRepo.update(user.id, { joyride: false });
+  }
+
+  async viewedAccountSetupPage(token: string, query: IQuery<User>) {
+    const user = await this.auth.validateUserToken(token);
+    return this.userRepo.update(user.id, { viewedAddNewAccount: true }, query);
   }
 
   private addUserToMailChimpGeneralAudience(email: string) {

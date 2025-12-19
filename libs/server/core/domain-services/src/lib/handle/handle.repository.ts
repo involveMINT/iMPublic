@@ -1,12 +1,12 @@
 import { Handle } from '@involvemint/shared/domain';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { IOrchaTypeormRepository } from '@orcha/typeorm';
+import { IBaseRepository } from '../repository/typeorm-base-repository';
 import { Repository } from 'typeorm';
 import { HandleEntity } from './handle.entity';
 
 @Injectable()
-export class HandleRepository extends IOrchaTypeormRepository<Handle> {
+export class HandleRepository extends IBaseRepository<Handle> {
   constructor(@InjectRepository(HandleEntity) protected readonly repo: Repository<Handle>) {
     super(repo);
   }

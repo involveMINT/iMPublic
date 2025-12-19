@@ -4,11 +4,11 @@ import {
   ExchangePartner,
   FrontendRoutes,
   FRONTEND_ROUTES_TOKEN,
+  IParser
 } from '@involvemint/shared/domain';
 import { parseDate } from '@involvemint/shared/util';
 import { Inject, Injectable } from '@nestjs/common';
 import { Cron, CronExpression } from '@nestjs/schedule';
-import { IParser } from '@orcha/common';
 import { addMonths } from 'date-fns';
 import { LessThan } from 'typeorm';
 import { EmailService } from '../email/email.service';

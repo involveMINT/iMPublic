@@ -1,4 +1,4 @@
-import { IManyToOne } from '@orcha/common';
+import { IManyToOne } from '../repository';
 import { Poi } from '../poi/poi.model';
 import { Question } from '../question';
 

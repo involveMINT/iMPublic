@@ -1,7 +1,6 @@
-import { ServeAdmin, SpAdminQuery } from '@involvemint/shared/domain';
+import { ServeAdmin, SpAdminQuery, IParser } from '@involvemint/shared/domain';
 import { createEntityAdapter, EntityState } from '@ngrx/entity';
 import { createReducer, on } from '@ngrx/store';
-import { IParser } from '@orcha/common';
 import * as SpAdminsActions from './sp-admins.actions';
 
 export const SP_ADMINS_KEY = 'spAdmins';

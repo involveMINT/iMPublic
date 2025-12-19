@@ -4,9 +4,10 @@ import {
   GetServeAdminsForServePartnerDto,
   RemoveServeAdminDto,
   ServeAdmin,
+  IQuery,
+  parseQuery
 } from '@involvemint/shared/domain';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { IQuery, parseQuery } from '@orcha/common';
 import * as uuid from 'uuid';
 import { AuthService } from '../auth/auth.service';
 

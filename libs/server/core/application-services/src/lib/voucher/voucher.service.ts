@@ -20,10 +20,10 @@ import {
   Voucher,
   voucherCanBeRedeemed,
   voucherCanBeRefunded,
+  IQuery
 } from '@involvemint/shared/domain';
 import { guaranteeSixCharUidUniqueness } from '@involvemint/shared/util';
 import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
-import { IQuery } from '@orcha/common';
 import * as uuid from 'uuid';
 import { AuthService } from '../auth/auth.service';
 import { CreditService } from '../credit/credit.service';

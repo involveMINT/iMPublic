@@ -7,7 +7,7 @@ export class EmailService {
   mg = environment.environment !== 'local' ? mailgun.default(environment.mailgun) : null;
   noreply = 'InvolveMINT No Reply <noreply@involvemint.io>';
 
-  shouldNotSendNotification = environment.environment !== 'production';
+  shouldNotSendNotification = environment.environment === 'local';
 
   constructor(@Inject(FRONTEND_ROUTES_TOKEN) private readonly route: FrontendRoutes) { }
 
@@ -23,6 +23,7 @@ export class EmailService {
     email: string | string[];
   }) {
     if (this.shouldNotSendNotification) return;
+    if (this.shouldNotSendNotification) return;
 
     const msg = {
       from: this.noreply,
@@ -37,9 +38,14 @@ export class EmailService {
   }
 
   sendEmailVerification(email: string, hash: string, registerAs?: SignUpDto['registerAs']) {
-    if (this.shouldNotSendNotification) return;
-
-    const url = `${environment.appUrl}${this.route.path.verifyEmail.ROOT}?email=${email}&hash=${hash}&register=${registerAs}`;
+    const url = `${environment.appUrl}${this.route.path.verifyEmail.ROOT}` +
+      `?email=${encodeURIComponent(email)}` +
+      `&hash=${hash}` +
+      `&register=${registerAs}`;
+    if (this.shouldNotSendNotification) {
+      console.log('url', url);
+      return;
+    }
 
     const msg = {
       from: this.noreply,
@@ -54,6 +60,7 @@ export class EmailService {
   }
 
   sendForgotPassword(email: string, hash: string) {
+    if (this.shouldNotSendNotification) return;
     if (this.shouldNotSendNotification) return;
 
     const url = `${environment.appUrl}${this.route.path.forgotPasswordChange.ROOT}?email=${email}&hash=${hash}`;
@@ -79,6 +86,7 @@ export class EmailService {
     temporaryPassword: string,
     forgotPasswordHash: string
   ) {
+    if (this.shouldNotSendNotification) return;
     if (this.shouldNotSendNotification) return;
 
     const url = `${environment.appUrl}${this.route.path.activateUserAccount.ROOT}?email=${newUserEmail}&epId=${newEpId}&activationHash=${activationHash}&temporaryPassword=${temporaryPassword}&forgotPasswordHash=${forgotPasswordHash}`;

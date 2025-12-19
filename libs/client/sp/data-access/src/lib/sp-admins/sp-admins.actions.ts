@@ -1,6 +1,6 @@
 import { createAction, props } from '@ngrx/store';
-import { OrchaOperationError } from '@orcha/common';
 import { SpAdminStoreModel } from './sp-admins.reducer';
+import { APIOperationError } from '@involvemint/shared/domain';
 
 export const refreshSpAdmins = createAction(
   '[ServePartner|Admins] Refresh Sp Admins',
@@ -15,7 +15,7 @@ export const loadSpAdminsSuccess = createAction(
 
 export const loadSpAdminsError = createAction(
   '[ServePartner|Admins] Load Sp Admins Error',
-  props<{ error: OrchaOperationError }>()
+  props<{ error: APIOperationError }>()
 );
 
 /*
@@ -34,7 +34,7 @@ export const addSpAdminSuccess = createAction(
 
 export const addSpAdminError = createAction(
   '[ServePartner|Admins] Add Sp Admin Error',
-  props<{ error: OrchaOperationError }>()
+  props<{ error: APIOperationError }>()
 );
 
 /*
@@ -56,5 +56,5 @@ export const removeSpAdminSuccess = createAction(
 
 export const removeSpAdminError = createAction(
   '[ServePartner|Admins] Remove Sp Admin Error',
-  props<{ error: OrchaOperationError }>()
+  props<{ error: APIOperationError }>()
 );

@@ -2,7 +2,8 @@ import { AfterViewInit, ChangeDetectionStrategy, Component, OnInit, ViewChild } 
 import { Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import {
-  HandleOrchestration,
+  ChangeMakerRestClient,
+  HandleRestClient,
   UserFacade,
   verifyHandleUniqueness,
 } from '@involvemint/client/shared/data-access';
@@ -13,6 +14,8 @@ import { IonSlides } from '@ionic/angular';
 import { FormControl, FormGroup } from '@ngneat/reactive-forms';
 import { subYears } from 'date-fns';
 import { takeUntil, tap } from 'rxjs/operators';
+import { ImAuthTokenStorage } from '@involvemint/client/shared/data-access';
+
 
 /**
  * Schema to create ChangeMaker Profile
@@ -26,6 +29,8 @@ export interface CreateCmProfileFormData {
 
 interface State {
   verifyingHandle: boolean;
+  viewedAddNewAccount: boolean;
+  authenticated: boolean;
 }
 
 @Component({
@@ -57,14 +62,75 @@ export class CreateCmProfileComponent extends StatefulComponent<State> implement
 
   constructor(
     private readonly uf: UserFacade,
-    private readonly handleOrcha: HandleOrchestration,
-    private readonly route: ActivatedRoute
+    private readonly handleRestClient: HandleRestClient,
+    private readonly route: ActivatedRoute,
+    private readonly changeMakerRestClient: ChangeMakerRestClient
   ) {
-    super({ verifyingHandle: false });
+    super({ verifyingHandle: false, viewedAddNewAccount: false, 
+      authenticated: false  });
   }
 
   ngOnInit(): void {
-    this.effect(() => verifyHandleUniqueness(this.createProfileForm, this.handleOrcha, this));
+    // Get auth token from storage, similar to user-session.effects.ts
+    // const authToken = ImAuthTokenStorage.getValue()?.token;
+
+    // if (authToken) {
+    //   // Pre-populate form with data from the backend
+    //   this.changeMakerRestClient.getPrePopulatedData(authToken).then((data) => {
+    //     if (data) {
+    //       this.createProfileForm.patchValue({
+    //         firstName: data.firstName || '',
+    //         lastName: data.lastName || '',
+    //         phone: data.phone || '',
+    //       });
+    //     }
+    //   });
+    // } else {
+    //   console.error('Authentication token is missing');
+    // }
+
+    this.effect(() =>
+      this.uf.session.selectors.state$.pipe(
+        tap(({ viewedAddNewAccount, id}) =>
+          this.updateState({
+            viewedAddNewAccount : viewedAddNewAccount,
+            authenticated: !!id
+          })
+        )
+      )
+    );
+    // Verify handle uniqueness
+    this.effect(() => verifyHandleUniqueness(this.createProfileForm, this.handleRestClient, this));
+
+    this.effect(() => this.uf.session.selectors.state$.pipe(
+      tap(({ exchangeAdmins, serveAdmins }) => {
+        let existingPartnerData;
+        if (exchangeAdmins.length > 0) {
+          const exchangePartner = exchangeAdmins[0].exchangePartner;
+          existingPartnerData = exchangePartner;
+        } else if (serveAdmins.length > 0) {
+          const servePartner = serveAdmins[0].servePartner;
+          existingPartnerData = servePartner;
+        }
+
+        if (existingPartnerData) {
+          const [firstName, ...lastNameParts] = existingPartnerData.name.split(' ');
+          const lastName = lastNameParts.join(' ') || 'N/A'; 
+          const phone = existingPartnerData.phone || '';
+
+          this.createProfileForm.setValue(
+            {
+              firstName,
+              lastName,
+              phone,
+              handle: ''
+            }
+          );
+        }
+      })
+    ));
+
+    // Check for onboarding state from query parameters
     this.route.queryParams
       .pipe(
         tap((q) => {

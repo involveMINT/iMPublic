@@ -1,6 +1,5 @@
-import { GetProjectDto as ProjectActions } from '@involvemint/shared/domain';
+import { APIOperationError, GetProjectDto as ProjectActions } from '@involvemint/shared/domain';
 import { createAction, props } from '@ngrx/store';
-import { OrchaOperationError } from '@orcha/common';
 import { ProjectFeedStoreModel } from './projects.reducer';
 
 export const projectsLoad = createAction('[Projects] Projects Load', props<{ page: number }>());
@@ -13,7 +12,7 @@ export const projectsLoadSuccess = createAction(
 
 export const projectsLoadError = createAction(
   '[Projects] Projects Load Error',
-  props<{ error: OrchaOperationError }>()
+  props<{ error: APIOperationError }>()
 );
 
 /*
@@ -33,5 +32,5 @@ export const getProjectSuccess = createAction(
 
 export const getProjectError = createAction(
   '[Projects] Get Project Error',
-  props<{ error: OrchaOperationError }>()
+  props<{ error: APIOperationError }>()
 );

@@ -1,6 +1,6 @@
 import { createAction, props } from '@ngrx/store';
-import { OrchaOperationError } from '@orcha/common';
 import { PoiSpStoreModel } from './pois.reducer';
+import { APIOperationError } from '@involvemint/shared/domain';
 
 export const refreshPois = createAction('[Pois|ServePartner] Proofs of Impact Refresh');
 export const loadPoisByProject = createAction(
@@ -15,7 +15,7 @@ export const loadPoisByProjectSuccess = createAction(
 
 export const loadPoisByProjectError = createAction(
   '[Pois|ServePartner] Proofs of Impact By Project Load Error',
-  props<{ error: OrchaOperationError }>()
+  props<{ error: APIOperationError }>()
 );
 
 /*
@@ -37,5 +37,5 @@ export const approvePoiSuccess = createAction(
 
 export const approvePoiError = createAction(
   '[Pois|ServePartner] Approve Proof of Impact Error',
-  props<{ error: OrchaOperationError }>()
+  props<{ error: APIOperationError }>()
 );

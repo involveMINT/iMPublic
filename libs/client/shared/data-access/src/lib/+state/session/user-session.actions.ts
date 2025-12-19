@@ -3,6 +3,7 @@ import {
   ChangePasswordDto,
   CreateChangeMakerProfileDto,
   GetSuperAdminForExchangePartnerDto,
+  APIOperationError,
   SignUpDto,
   SubmitEpApplicationDto,
   SubmitSpApplicationDto,
@@ -10,7 +11,6 @@ import {
 } from '@involvemint/shared/domain';
 import { UnArray } from '@involvemint/shared/util';
 import { createAction, props } from '@ngrx/store';
-import { OrchaOperationError } from '@orcha/common';
 import { ExchangeAdminsWithBaDownloaded, UserSessionState, UserStoreModel } from './user-session.reducer';
 
 export const payTo = createAction('[UserSession] Pay To', props<{ handleId: string; amount?: number }>());
@@ -42,7 +42,21 @@ export const userLoginSuccess = createAction(
 
 export const userLoginError = createAction(
   '[UserSession]  User Login Error',
-  props<{ error: OrchaOperationError }>()
+  props<{ error: APIOperationError }>()
+);
+
+export const updateAccountSetupViewed = createAction(
+  '[UserSession] Update Account Setup Viewed'
+);
+
+export const updateAccountSetupViewedSuccess = createAction(
+  '[UserSession] Update Account Setup Viewed Success',
+  props<{ viewedAddNewAccount: boolean }>()
+);
+
+export const updateAccountSetupViewedError = createAction(
+  '[UserSession] Update Account Setup Viewed Error',
+  props<{ error: APIOperationError }>()
 );
 
 /*
@@ -61,7 +75,7 @@ export const adminLoginSuccess = createAction(
 
 export const adminLoginError = createAction(
   '[UserSession] Admin Login Error',
-  props<{ error: OrchaOperationError }>()
+  props<{ error: APIOperationError }>()
 );
 
 /*
@@ -81,7 +95,7 @@ export const userSignUpSuccess = createAction(
 
 export const userSignUpError = createAction(
   '[UserSession]  User SignUp Error',
-  props<{ error: OrchaOperationError }>()
+  props<{ error: APIOperationError }>()
 );
 
 /*
@@ -101,7 +115,7 @@ export const getUserDataSuccess = createAction(
 
 export const getUserDataError = createAction(
   '[UserSession] Get User Data Error',
-  props<{ error: OrchaOperationError }>()
+  props<{ error: APIOperationError }>()
 );
 
 /*
@@ -122,7 +136,7 @@ export const baDownloadEpAdminSuccess = createAction(
 );
 export const baDownloadEpAdminError = createAction(
   '[UserSession] Business Admin Download EP Admin Error',
-  props<{ error: OrchaOperationError }>()
+  props<{ error: APIOperationError }>()
 );
 
 export const baRemoveDownloadedEpAdmin = createAction(
@@ -135,7 +149,7 @@ export const baRemoveDownloadedEpAdminSuccess = createAction(
 );
 export const baRemoveDownloadedEpAdminError = createAction(
   '[UserSession] Business Admin Remove Downloaded EP Admin Error',
-  props<{ error: OrchaOperationError }>()
+  props<{ error: APIOperationError }>()
 );
 
 export const baSubmitEpApplication = createAction(
@@ -150,7 +164,7 @@ export const baSubmitEpApplicationSuccess = createAction(
 
 export const baSubmitEpApplicationError = createAction(
   '[UserSession] Business Admin Submit Ep Application Error',
-  props<{ error: OrchaOperationError }>()
+  props<{ error: APIOperationError }>()
 );
 
 /*
@@ -165,7 +179,7 @@ export const snoop = createAction('[UserSession] Snoop', props<{ userId: string 
 
 export const snoopSuccess = createAction('[UserSession] Snoop Success', props<UserStoreModel>());
 
-export const snoopError = createAction('[UserSession] Snoop Error', props<{ error: OrchaOperationError }>());
+export const snoopError = createAction('[UserSession] Snoop Error', props<{ error: APIOperationError }>());
 
 /*
     ___      _       _      _   _           ___          __ _ _
@@ -207,7 +221,7 @@ export const createChangeMakerProfileSuccess = createAction(
 
 export const createChangeMakerProfileError = createAction(
   '[UserSession] Create ChangeMaker Profile Error',
-  props<{ error: OrchaOperationError }>()
+  props<{ error: APIOperationError }>()
 );
 
 /*
@@ -229,7 +243,7 @@ export const submitEpApplicationSuccess = createAction(
 
 export const submitEpApplicationError = createAction(
   '[UserSession] Submit Ep Application Error',
-  props<{ error: OrchaOperationError }>()
+  props<{ error: APIOperationError }>()
 );
 
 /*
@@ -251,7 +265,7 @@ export const withdrawEpApplicationSuccess = createAction(
 
 export const withdrawEpApplicationError = createAction(
   '[UserSession] Withdraw Ep Application Error',
-  props<{ error: OrchaOperationError }>()
+  props<{ error: APIOperationError }>()
 );
 
 /*
@@ -274,7 +288,7 @@ export const submitSpApplicationSuccess = createAction(
 
 export const submitSpApplicationError = createAction(
   '[UserSession] Submit Sp Application Error',
-  props<{ error: OrchaOperationError }>()
+  props<{ error: APIOperationError }>()
 );
 
 /*
@@ -296,7 +310,7 @@ export const withdrawSpApplicationSuccess = createAction(
 
 export const withdrawSpApplicationError = createAction(
   '[UserSession] Withdraw Sp Application Error',
-  props<{ error: OrchaOperationError }>()
+  props<{ error: APIOperationError }>()
 );
 
 /*
@@ -329,7 +343,7 @@ export const changePasswordSuccess = createAction('[UserSession] Change Password
 
 export const changePasswordError = createAction(
   '[UserSession] Change Password Error',
-  props<{ error: OrchaOperationError }>()
+  props<{ error: APIOperationError }>()
 );
 
 /*
@@ -345,5 +359,5 @@ export const finishJoyrideSuccess = createAction('[UserSession] Finish Joyride S
 
 export const finishJoyrideError = createAction(
   '[UserSession] Finish Joyride Error',
-  props<{ error: OrchaOperationError }>()
+  props<{ error: APIOperationError }>()
 );

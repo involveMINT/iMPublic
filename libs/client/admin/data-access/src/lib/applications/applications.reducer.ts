@@ -3,10 +3,10 @@ import {
   EpApplicationQuery,
   SpApplication,
   SpApplicationQuery,
+  IParser
 } from '@involvemint/shared/domain';
 import { createEntityAdapter, EntityState } from '@ngrx/entity';
 import { createReducer, on } from '@ngrx/store';
-import { IParser } from '@orcha/common';
 import * as ApplicationsActions from './applications.actions';
 
 export const APPLICATIONS_FEATURE_KEY = 'adminApplications';

@@ -80,6 +80,7 @@ interface State {
   sideMenuBehavior: UserSessionState['sideMenuBehavior'];
   onboarding: 'cm' | 'ep' | 'mkt' | null;
   changeMaker: UserSessionState['changeMaker'] | null;
+  viewedAddNewAccount: boolean;
 }
 
 @Component({
@@ -167,6 +168,7 @@ export class ImAppComponent extends StatefulComponent<State> implements OnInit {
       sideMenuBehavior: 'hidden',
       changeMaker: null,
       profilesMenuOpen: false,
+      viewedAddNewAccount: false
     });
   }
 
@@ -177,6 +179,16 @@ export class ImAppComponent extends StatefulComponent<State> implements OnInit {
     this.listenSideMenuToggleAction();
     this.listenToToggleWalletAction();
     this.generateMainMenu();
+
+    this.effect(() =>
+      this.user.session.selectors.state$.pipe(
+        tap(({ viewedAddNewAccount}) =>
+          this.updateState({
+            viewedAddNewAccount : viewedAddNewAccount,
+          })
+        )
+      )
+    );
   }
 
   private listenSideMenuToggleAction() {
@@ -356,12 +368,22 @@ export class ImAppComponent extends StatefulComponent<State> implements OnInit {
                 inTabs: true,
               };
 
+              const moderation: MenuItem = {
+                title: "Comment Moderation",
+                icon: 'chatbox-ellipses',
+                color:'var(--im-green)',
+                route: this.route.rawRoutes.path.admin.moderation.ROOT,
+                click: () => this.route.to.admin.moderation.ROOT(),
+                inMenu: true,
+                inTabs: true,
+              };
+
               menus.push({
                 title: 'Admin',
                 color: 'var(--im-green)',
                 active: true,
                 uponActivation: () => setImPrimaryColors('none'),
-                items: [applications, snoop, assign, mint, users],
+                items: [applications, snoop, assign, mint, users, moderation],
               });
             }
 
@@ -373,11 +395,11 @@ export class ImAppComponent extends StatefulComponent<State> implements OnInit {
                              |___/
         */
             if (changeMaker) {
-              const profile: MenuItem = {
-                title: 'Profile',
-                icon: 'person-circle',
-                route: this.route.rawRoutes.path.cm.profile.ROOT,
-                click: () => this.route.to.cm.profile.ROOT({ queryParams: { [AP]: changeMaker.id } }),
+              const activityfeed: MenuItem = {
+                title: 'Activity',
+                icon: 'pulse',
+                route: this.route.rawRoutes.path.activityfeed.ROOT,
+                click: () => this.route.to.activityfeed.ROOT({ queryParams: { [AP]: changeMaker.id } }),
                 inMenu: true,
                 inTabs: true,
               };
@@ -405,14 +427,22 @@ export class ImAppComponent extends StatefulComponent<State> implements OnInit {
                 inMenu: !navTabs,
                 inTabs: true,
               };
-              const passport: MenuItem = {
-                title: 'Passport',
-                icon: 'globe',
-                route: this.route.rawRoutes.path.cm.passport.ROOT,
-                click: () => this.route.to.cm.passport.ROOT({ queryParams: { [AP]: changeMaker.id } }),
+              const profile: MenuItem = {
+                title: 'Profile',
+                icon: 'person-circle',
+                route: this.route.rawRoutes.path.cm.profile.ROOT,
+                click: () => this.route.to.cm.profile.ROOT({ queryParams: { [AP]: changeMaker.id } }),
                 inMenu: true,
                 inTabs: true,
               };
+              // const passport: MenuItem = {
+              //   title: 'Passport',
+              //   icon: 'globe',
+              //   route: this.route.rawRoutes.path.cm.passport.ROOT,
+              //   click: () => this.route.to.cm.passport.ROOT({ queryParams: { [AP]: changeMaker.id } }),
+              //   inMenu: true,
+              //   inTabs: true,
+              // };
               // const poi: MenuItem = {
               //   title: 'Proofs of Impact',
               //   icon: 'checkmark-done',
@@ -445,7 +475,7 @@ export class ImAppComponent extends StatefulComponent<State> implements OnInit {
                 color: 'var(--im-green)',
                 profile: changeMaker,
                 uponActivation: () => setImPrimaryColors('cm'),
-                items: [profile, enrollments, wallet, market, passport, chat, settings],
+                items: [activityfeed, enrollments, wallet, market, profile, chat, settings],
               });
             }
 
@@ -916,25 +946,26 @@ export class ImAppComponent extends StatefulComponent<State> implements OnInit {
         take(1),
         withLatestFrom(this.activatedRoute.queryParams),
         tap(([{ changeMaker, exchangeAdmins, serveAdmins, epApplications, spApplications }, query]) => {
-          const noProfiles =
-            !changeMaker &&
-            exchangeAdmins.length === 0 &&
-            serveAdmins.length === 0 &&
-            epApplications.length === 0 &&
-            spApplications.length === 0;
-          if (noProfiles) {
-            const register = {
-              cm: () => this.route.to.applications.cm.ROOT(),
-              sp: () => this.route.to.applications.sp.ROOT(),
-              ep: () => this.route.to.applications.ep.ROOT(),
-              market: () => this.route.to.applications.cm.ROOT(),
-            };
-            const fn = register[query['register'] as keyof typeof register];
-            if (fn) {
-              fn();
-            } else {
-              this.welcome.open();
-            }
+          // const noProfiles =
+          //   !changeMaker &&
+          //   exchangeAdmins.length === 0 &&
+          //   serveAdmins.length === 0 &&
+          //   epApplications.length === 0 &&
+          //   spApplications.length === 0;
+          if (!changeMaker) {
+            // const register = {
+            //   cm: () => this.route.to.applications.cm.ROOT(),
+            //   sp: () => this.route.to.applications.sp.ROOT(),
+            //   ep: () => this.route.to.applications.ep.ROOT(),
+            //   market: () => this.route.to.applications.cm.ROOT(),
+            // };
+            // const fn = register[query['register'] as keyof typeof register];
+            // if (fn) {
+            //   fn();
+            // } else {
+            //   this.welcome.open();
+            // }
+            this.route.to.applications.cm.ROOT();
           }
         }),
         switchMap(() =>
@@ -1177,5 +1208,13 @@ export class ImAppComponent extends StatefulComponent<State> implements OnInit {
         this.backDrop.remove();
       }
     });
+  }
+
+  isActivityFeedRoute(): boolean {
+    return this.router.url.startsWith('/activityfeed');
+  }
+
+  async markViewedNewAccount(): Promise<void> {
+    this.user.session.dispatchers.updateAccountSetupViewed();
   }
 }

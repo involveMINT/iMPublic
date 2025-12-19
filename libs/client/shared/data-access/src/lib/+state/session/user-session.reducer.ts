@@ -1,7 +1,6 @@
-import { ImConfig, User, UserQuery } from '@involvemint/shared/domain';
+import { ImConfig, User, UserQuery, IParser } from '@involvemint/shared/domain';
 import { UnArray } from '@involvemint/shared/util';
 import { createReducer, on } from '@ngrx/store';
-import { IParser } from '@orcha/common';
 import * as CmProfileActions from './cm/cm-profile.actions';
 import * as EpProfileActions from './ep/ep-profile.actions';
 import * as SpProfileActions from './sp/sp-profile.actions';
@@ -49,7 +48,9 @@ const initialState: UserSessionState = {
   changeMaker: undefined,
   loadingRoute: '',
   joyride: false,
+  viewedAddNewAccount: false,
   baAdmin: false,
+  dateLastLoggedIn: "",
 };
 
 export const UserSessionReducer = createReducer(
@@ -71,6 +72,10 @@ export const UserSessionReducer = createReducer(
       ...state,
     };
   }),
+  on(UserSessionActions.updateAccountSetupViewedSuccess, (state, { viewedAddNewAccount }) => ({
+    ...state,
+    viewedAddNewAccount,
+  })),
   on(UserSessionActions.userSignUp, (state): UserSessionState => {
     return {
       ...state,

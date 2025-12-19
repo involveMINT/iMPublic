@@ -1,4 +1,4 @@
-import { createLogic } from '@orcha/common';
+import { createLogic } from '../repository';
 import { Credit } from './credit.model';
 
 export const calculateTotalCreditsAmount = createLogic<Credit[], { escrow: true; amount: true }>()(

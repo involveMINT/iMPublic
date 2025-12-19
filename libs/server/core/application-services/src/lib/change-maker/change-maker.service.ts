@@ -1,13 +1,15 @@
 import { ChangeMakerRepository, HandleRepository } from '@involvemint/server/core/domain-services';
+import { ExchangePartnerRepository } from '@involvemint/server/core/domain-services';
+import { ServePartnerRepository } from '@involvemint/server/core/domain-services';
 import {
   ChangeMaker,
   CreateChangeMakerProfileDto,
   EditCmProfileDto,
   generateChangeMakerProfileImageFilePath,
   ImStorageFileRoots,
+  IQuery
 } from '@involvemint/shared/domain';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { IQuery } from '@orcha/common';
 import * as uuid from 'uuid';
 import { AuthService } from '../auth/auth.service';
 import { FirestoreService } from '../firestore/firestore.service';
@@ -17,6 +19,8 @@ import { StorageService } from '../storage/storage.service';
 export class ChangeMakerService {
   constructor(
     private readonly cmRepo: ChangeMakerRepository,
+    private readonly exchangePartnerRepo: ExchangePartnerRepository,  
+    private readonly servePartnerRepo: ServePartnerRepository,     
     private readonly auth: AuthService,
     private readonly handle: HandleRepository,
     private readonly storage: StorageService,
@@ -25,13 +29,15 @@ export class ChangeMakerService {
 
   /**
    * Creates a ChangeMaker profile and verifies handle is unique.
-   * @param query Orcha query of the newly created ChangeMaker profile.
+   * @param query query of the newly created ChangeMaker profile.
    * @param token User's auth token.
    * @param dto Essential ChangeMaker profile data.
    */
   async createProfile(query: IQuery<ChangeMaker>, token: string, dto: CreateChangeMakerProfileDto) {
+
     const user = await this.auth.validateUserToken(token);
     await this.handle.verifyHandleUniqueness(dto.handle);
+
     return this.cmRepo.upsert(
       {
         id: uuid.v4(),
@@ -100,4 +106,39 @@ export class ChangeMakerService {
 
     return this.cmRepo.update(user.changeMaker.id, { profilePicFilePath: path }, query);
   }
+
+  // This is for the frontend
+  async getPrePopulatedData(token: string): Promise<{ firstName: string; lastName: string; phone: string }> {
+    const user = await this.auth.validateUserToken(token);
+
+    let existingPartnerData;
+    if (user.exchangeAdmins.length > 0) {
+      const exchangePartner = user.exchangeAdmins[0].exchangePartner;
+      existingPartnerData = exchangePartner;
+    } else if (user.serveAdmins.length > 0) {
+      const servePartner = user.serveAdmins[0].servePartner;
+      existingPartnerData = servePartner;
+    }
+
+    if (existingPartnerData) {
+      const [firstName, ...lastNameParts] = existingPartnerData.name.split(' ');
+      const lastName = lastNameParts.join(' ') || 'N/A'; 
+      const phone = existingPartnerData.phone || '';
+
+      return {
+        firstName,
+        lastName,
+        phone,
+      };
+    }
+
+    // If no existing data, return default empty values
+    return {
+      firstName: '',
+      lastName: '',
+      phone: '',
+    };
+  }
+
+  
 }

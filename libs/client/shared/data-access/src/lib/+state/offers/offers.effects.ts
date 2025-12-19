@@ -7,9 +7,9 @@ import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { fetch, pessimisticUpdate } from '@nrwl/angular';
 import { from } from 'rxjs';
 import { delayWhen, filter, map, switchMap, take, tap } from 'rxjs/operators';
-import { OfferOrchestration } from '../../orchestrations';
 import { UserFacade } from '../user.facade';
 import * as OffersActions from './offers.actions';
+import { OfferRestClient } from '../../rest-clients';
 
 @Injectable()
 export class OffersEffects {
@@ -170,7 +170,7 @@ export class OffersEffects {
 
   constructor(
     private readonly actions$: Actions,
-    private readonly offer: OfferOrchestration,
+    private readonly offer: OfferRestClient,
     private readonly status: StatusService,
     private readonly user: UserFacade,
     private readonly route: RouteService

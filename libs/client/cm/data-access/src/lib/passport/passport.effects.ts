@@ -1,6 +1,6 @@
 import { HttpEventType } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { PassportDocumentOrchestration, UserFacade } from '@involvemint/client/shared/data-access';
+import { PassportDocumentRestClient, UserFacade } from '@involvemint/client/shared/data-access';
 import { RouteService } from '@involvemint/client/shared/routes';
 import { StatusService } from '@involvemint/client/shared/util';
 import { DeletePassportDocumentQuery, PassportDocumentQuery } from '@involvemint/shared/domain';
@@ -43,7 +43,7 @@ export class PassportEffects {
             take(1),
             switchMap((cm) => {
               if (!cm) throw new Error('No ChangeMaker Profile Found!');
-              return this.passport.create(PassportDocumentQuery, undefined, file);
+              return this.passport.create(PassportDocumentQuery, file);
             }),
             map((event) => {
               switch (event.type) {
@@ -189,7 +189,7 @@ export class PassportEffects {
 
   constructor(
     private readonly actions$: Actions,
-    private readonly passport: PassportDocumentOrchestration,
+    private readonly passport: PassportDocumentRestClient,
     private readonly user: UserFacade,
     private readonly status: StatusService,
     private readonly route: RouteService

@@ -6,9 +6,9 @@ import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { pessimisticUpdate } from '@nrwl/angular';
 import { from } from 'rxjs';
 import { delayWhen, filter, map, switchMap, take, tap } from 'rxjs/operators';
-import { ExchangePartnerOrchestration } from '../../../orchestrations';
 import { UserFacade } from '../../user.facade';
 import * as EpProfileActions from './ep-profile.actions';
+import { ExchangePartnerRestClient } from '../../../rest-clients';
 
 @Injectable()
 export class EpProfileEffects {
@@ -156,7 +156,7 @@ export class EpProfileEffects {
 
   constructor(
     private readonly actions$: Actions,
-    private readonly ep: ExchangePartnerOrchestration,
+    private readonly ep: ExchangePartnerRestClient,
     private readonly status: StatusService,
     private readonly uf: UserFacade
   ) {}

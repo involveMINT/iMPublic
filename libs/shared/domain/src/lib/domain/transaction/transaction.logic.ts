@@ -1,4 +1,4 @@
-import { createLogic } from '@orcha/common';
+import { createLogic } from '../repository';
 import { Transaction } from './transaction.model';
 
 export interface TransactionMetaData {

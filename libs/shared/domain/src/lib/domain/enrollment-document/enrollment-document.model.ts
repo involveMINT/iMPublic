@@ -1,4 +1,4 @@
-import { IManyToOne } from '@orcha/common';
+import { IManyToOne } from '../repository';
 import { Enrollment } from '../enrollment';
 import { PassportDocument } from '../passport-document';
 import { ProjectDocument } from '../project-document';

@@ -1,6 +1,5 @@
-import { TransactionDto } from '@involvemint/shared/domain';
+import { APIOperationError, TransactionDto } from '@involvemint/shared/domain';
 import { createAction, props } from '@ngrx/store';
-import { OrchaOperationError } from '@orcha/common';
 import { ActiveProfile } from '../session/user-session.reducer';
 import { TransactionStoreModel } from './transactions.reducer';
 
@@ -20,7 +19,7 @@ export const loadTransactionsForProfileSuccess = createAction(
 
 export const loadTransactionsForProfileError = createAction(
   '[Transactions] Transactions Load For Profile Error',
-  props<{ error: OrchaOperationError }>()
+  props<{ error: APIOperationError }>()
 );
 
 /*
@@ -39,5 +38,5 @@ export const transactionSuccess = createAction(
 
 export const transactionError = createAction(
   '[Transactions] Transaction Error',
-  props<{ error: OrchaOperationError }>()
+  props<{ error: APIOperationError }>()
 );

@@ -9,17 +9,16 @@ import { FormControl, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import {
   ChatService,
-  HandleOrchestration,
+  HandleRestClient,
   ImViewProfileModalService,
   UserFacade,
   viewProfileCache,
 } from '@involvemint/client/shared/data-access';
 import { RouteService } from '@involvemint/client/shared/routes';
 import { StatefulComponent } from '@involvemint/client/shared/util';
-import { FormattedChatRoom, Handle, Message, ViewProfileInfoQuery } from '@involvemint/shared/domain';
+import { FormattedChatRoom, Handle, Message, ViewProfileInfoQuery, IParser } from '@involvemint/shared/domain';
 import { tapOnce } from '@involvemint/shared/util';
 import { IonContent } from '@ionic/angular';
-import { IParser } from '@orcha/common';
 import { combineLatest, forkJoin, of } from 'rxjs';
 import { switchMap, tap } from 'rxjs/operators';
 
@@ -55,7 +54,7 @@ export class ChatComponent extends StatefulComponent<State> implements AfterView
     private readonly change: ChangeDetectorRef,
     private readonly route: RouteService,
     private readonly viewProfileModal: ImViewProfileModalService,
-    private readonly handle: HandleOrchestration
+    private readonly handle: HandleRestClient
   ) {
     super({ loaded: false, myHandle: '', sending: false, profiles: [] });
   }

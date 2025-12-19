@@ -1,6 +1,5 @@
-import { EditCmProfileDto } from '@involvemint/shared/domain';
+import { EditCmProfileDto, APIOperationError } from '@involvemint/shared/domain';
 import { createAction, props } from '@ngrx/store';
-import { OrchaOperationError } from '@orcha/common';
 import { UserStoreModel } from '../user-session.reducer';
 
 /*
@@ -22,7 +21,7 @@ export const editCmProfileSuccess = createAction(
 
 export const editCmProfileError = createAction(
   '[UserSession] Edit CM Profile Error',
-  props<{ error: OrchaOperationError }>()
+  props<{ error: APIOperationError }>()
 );
 
 /*
@@ -44,5 +43,5 @@ export const changeCmProfilePicSuccess = createAction(
 
 export const changeCmProfilePicError = createAction(
   '[UserSession] Change CM Profile Pic Error',
-  props<{ error: OrchaOperationError }>()
+  props<{ error: APIOperationError }>()
 );

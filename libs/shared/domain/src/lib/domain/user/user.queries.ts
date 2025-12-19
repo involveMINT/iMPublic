@@ -1,4 +1,4 @@
-import { createQuery } from '@orcha/common';
+import { createQuery } from '../repository';
 import { User } from './user.model';
 
 export const LoginQuery = createQuery<{ token: string }>()({ token: true });
@@ -9,7 +9,9 @@ export const ValidateAdminTokenQuery = LoginQuery;
 export const UserQuery = createQuery<User>()({
   id: true,
   joyride: true,
+  viewedAddNewAccount: true,
   baAdmin: true,
+  dateLastLoggedIn: true,
   changeMaker: {
     id: true,
     profilePicFilePath: true,
@@ -106,6 +108,36 @@ export const UserQuery = createQuery<User>()({
     name: true,
     handle: {
       id: true,
+    },
+  },
+});
+
+/** Using this instead of UserQuery because causes fail when trying to pull 'view' field 
+ * on .query() from the ActivityPostRepo.
+ */
+export const ActivityPostUserQuery = createQuery<User & { token: string }>()({
+  id: true,
+  dateLastLoggedIn: true,
+  changeMaker: {
+    id: true,
+    profilePicFilePath: true,
+    bio: true,
+    firstName: true,
+    lastName: true,
+    onboardingState: true,
+    phone: true,
+    handle: {
+      id: true,
+    },
+    address: {
+      id: true,
+      address1: true,
+      address2: true,
+      address3: true,
+      city: true,
+      state: true,
+      zip: true,
+      country: true,
     },
   },
 });

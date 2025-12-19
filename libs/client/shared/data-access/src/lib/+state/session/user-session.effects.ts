@@ -13,14 +13,10 @@ import { fetch, pessimisticUpdate } from '@nrwl/angular';
 import { from, of } from 'rxjs';
 import { delayWhen, filter, map, switchMap, take, tap } from 'rxjs/operators';
 import { ImInitLoaderService } from '../../im-init-loader/im-init-loader.service';
-import { ChangeMakerOrchestration } from '../../orchestrations/change-maker.orchestration';
-import { EpApplicationOrchestration } from '../../orchestrations/ep-application.orchestration';
-import { ExchangeAdminOrchestration } from '../../orchestrations/exchange-admin.orchestration';
-import { ExchangePartnerOrchestration } from '../../orchestrations/exchange-partner.orchestration';
-import { SpApplicationOrchestration } from '../../orchestrations/sp-application.orchestration';
-import { UserOrchestration } from '../../orchestrations/user.orchestration';
+import { ChangeMakerRestClient } from '../../rest-clients/change-maker.rest-client';
 import * as UserSessionActions from './user-session.actions';
 import { ImAuthTokenStorage } from './user-session.storage';
+import { EpApplicationRestClient, ExchangeAdminRestClient, SpApplicationRestClient, UserRestClient } from '../../rest-clients';
 
 @Injectable()
 export class UserSessionEffects {
@@ -33,7 +29,7 @@ export class UserSessionEffects {
           this.user.login({ token: true }, { id, password }).pipe(
             tap(({ token }) => ImAuthTokenStorage.setValue({ id, token })),
             map(({ token }) => {
-              this.route.to.ROOT();
+              this.route.to.activityfeed.ROOT();
               this.status.dismissLoader();
               ImAuthTokenStorage.setValue({ id, token });
               return UserSessionActions.userLoginSuccess({ id, token });
@@ -75,6 +71,27 @@ export class UserSessionEffects {
     )
   );
 
+  readonly updateAccountSetupViewed$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(UserSessionActions.updateAccountSetupViewed),
+      fetch({
+        run: () =>
+          this.user.setViewedAccountSetupPage({ viewedAddNewAccount: true }).pipe(
+            map(() => {
+              this.status.dismissLoader();
+              // On success, update the state to indicate the user has actioned on account setup.
+              return UserSessionActions.updateAccountSetupViewedSuccess({ viewedAddNewAccount: true });
+            })
+          ),
+        onError: (action, { error }) => {
+          this.status.dismissLoader();
+          this.status.presentNgRxActionAlert(action, error);
+          return UserSessionActions.updateAccountSetupViewedError({ error });
+        }
+      })
+    )
+  );
+
   readonly adminLogin$ = createEffect(() =>
     this.actions$.pipe(
       ofType(UserSessionActions.adminLogin),
@@ -109,7 +126,7 @@ export class UserSessionEffects {
           this.user.signUp({ token: true }, dto).pipe(
             map(({ token }) => {
               ImAuthTokenStorage.setValue({ id: dto.id, token });
-              if (environment.environment === 'production') {
+              if (environment.environment !== 'local') {
                 (async () => {
                   const modal = await this.infoModal.open({
                     title: 'Check your email',
@@ -121,7 +138,7 @@ export class UserSessionEffects {
                   await this.route.to.login.ROOT();
                 })();
               } else {
-                this.route.to.ROOT();
+                this.route.to.activityfeed.ROOT();
               }
               return UserSessionActions.userSignUpSuccess({ token });
             })
@@ -258,11 +275,11 @@ export class UserSessionEffects {
               from(
                 this.status.presentAlertWithAction({
                   alertData: {
-                    title: 'Add Business Profile',
+                    title: 'Invite a Business',
                     description: `Now that the application has been approved, would you like to temporarily add the business's ExchangePartner profile to your account? (You will need to go through the onboarding for the business)`,
                   },
-                  buttonText: 'Add',
-                  cancelButtonText: "Don't Add",
+                  buttonText: 'Invite',
+                  cancelButtonText: "Don't Invite",
                   buttonCssClass: 'im-alert-confirm',
                 })
               ).pipe(map((promptResult) => ({ newEp, promptResult })))
@@ -543,15 +560,14 @@ export class UserSessionEffects {
 
   constructor(
     private readonly actions$: Actions,
-    private readonly user: UserOrchestration,
-    private readonly exchangeAdmin: ExchangeAdminOrchestration,
-    private readonly exchangePartner: ExchangePartnerOrchestration,
+    private readonly user: UserRestClient,
+    private readonly exchangeAdmin: ExchangeAdminRestClient,
     private readonly route: RouteService,
-    private readonly cm: ChangeMakerOrchestration,
+    private readonly cm: ChangeMakerRestClient,
     private readonly status: StatusService,
     private readonly windowRef: WindowRefService,
-    private readonly epApp: EpApplicationOrchestration,
-    private readonly spApp: SpApplicationOrchestration,
+    private readonly epApp: EpApplicationRestClient,
+    private readonly spApp: SpApplicationRestClient,
     private readonly infoModal: InfoModalService,
     private readonly initLoader: ImInitLoaderService
   ) {}

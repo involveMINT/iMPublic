@@ -4,8 +4,8 @@ import { ProjectFeedQuery } from '@involvemint/shared/domain';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { fetch } from '@nrwl/angular';
 import { map } from 'rxjs/operators';
-import { ProjectOrchestration } from '../../orchestrations';
 import * as ProjectActions from './projects.actions';
+import { ProjectRestClient } from '../../rest-clients';
 
 @Injectable()
 export class MarketEffects {
@@ -58,7 +58,7 @@ export class MarketEffects {
 
   constructor(
     private readonly actions$: Actions,
-    private readonly projects: ProjectOrchestration,
+    private readonly projects: ProjectRestClient,
     private readonly status: StatusService
   ) {}
 }
