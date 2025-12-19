@@ -89,6 +89,34 @@ export class CreateCmProfileComponent extends StatefulComponent<State> implement
     // Verify handle uniqueness
     this.effect(() => verifyHandleUniqueness(this.createProfileForm, this.handleRestClient, this));
 
+    this.effect(() => this.uf.session.selectors.state$.pipe(
+      tap(({ exchangeAdmins, serveAdmins }) => {
+        let existingPartnerData;
+        if (exchangeAdmins.length > 0) {
+          const exchangePartner = exchangeAdmins[0].exchangePartner;
+          existingPartnerData = exchangePartner;
+        } else if (serveAdmins.length > 0) {
+          const servePartner = serveAdmins[0].servePartner;
+          existingPartnerData = servePartner;
+        }
+
+        if (existingPartnerData) {
+          const [firstName, ...lastNameParts] = existingPartnerData.name.split(' ');
+          const lastName = lastNameParts.join(' ') || 'N/A'; 
+          const phone = existingPartnerData.phone || '';
+
+          this.createProfileForm.setValue(
+            {
+              firstName,
+              lastName,
+              phone,
+              handle: ''
+            }
+          );
+        }
+      })
+    ));
+
     // Check for onboarding state from query parameters
     this.route.queryParams
       .pipe(

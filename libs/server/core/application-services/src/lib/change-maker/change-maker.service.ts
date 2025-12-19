@@ -38,27 +38,6 @@ export class ChangeMakerService {
     const user = await this.auth.validateUserToken(token);
     await this.handle.verifyHandleUniqueness(dto.handle);
 
-
-    let existingPartnerData;
-    // Fetch relevant data based on the user's role
-    if (user.exchangeAdmins.length > 0) {
-      const exchangePartner = user.exchangeAdmins[0].exchangePartner;
-      existingPartnerData = exchangePartner; 
-    } else if (user.serveAdmins.length > 0) {
-      const servePartner = user.serveAdmins[0].servePartner;
-      existingPartnerData = servePartner; 
-    }
-
-    // Pre-populate Changemaker profile if existing data is available
-    if (existingPartnerData) {
-      const [firstName, ...lastNameParts] = existingPartnerData.name.split(' ');
-      const lastName = lastNameParts.join(' ') || 'N/A'; // Default to 'N/A' if last name is missing
-
-      dto.firstName = dto.firstName || firstName;
-      dto.lastName = dto.lastName || lastName;
-      dto.phone = dto.phone || existingPartnerData.phone;
-    }
-
     return this.cmRepo.upsert(
       {
         id: uuid.v4(),

@@ -10,7 +10,20 @@
             "type": "chrome",
             "url": "http://localhost:4202/",
             "webRoot": "${workspaceFolder}"
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Debug Program",
+            "skipFiles": ["<node_internals>/**"],
+            "env": {
+                "NODE_OPTIONS": "--openssl-legacy-provider",
+                "FIREBASE_STORAGE_EMULATOR_HOST": "localhost:9199",
+                "FIRESTORE_EMULATOR_HOST": "localhost:8080"
+            },
+            "preLaunchTask": "npm: build:server:local",
+            "program": "${workspaceFolder}/dist/apps/api/main.js",
+            "console": "integratedTerminal"
         }
-        
     ]
 }
