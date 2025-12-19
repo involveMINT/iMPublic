@@ -19,7 +19,6 @@ import { JoyrideModule } from 'ngx-joyride';
 import { fancyAnimation } from './animaitons';
 import { AppComponent } from './app.component';
 import { ImRouteStrategy } from './route-reuse-strategy';
-import { USE_EMULATOR as USE_FIRESTORE_EMULATOR } from '@angular/fire/firestore';
 
 
 const ngrxDebugFactory = <T>() => {

@@ -14,6 +14,8 @@
     "build": "nx run-many --target=build --projects=involvemint,api --prod --skip-nx-cache",
     "build:client": "nx run-many --target=build --projects=involvemint --prod --skip-nx-cache",
     "build:server": "nx run-many --target=build --projects=api --prod --skip-nx-cache",
+    "build:client:local": "export NODE_OPTIONS=--openssl-legacy-provider && nx run-many --target=build --projects=involvemint -c local --skip-nx-cache",
+    "build:server:local": "export NODE_OPTIONS=--openssl-legacy-provider && nx run-many --target=build --projects=api -c local --skip-nx-cache",
     "deploy:server": "nx run-many --target=build --projects=api --prod --skip-nx-cache && gcloud config set project involvemint2 && gcloud app deploy app.yaml --stop-previous-version --quiet",
     "deploy:client": "nx run-many --target=build --projects=involvemint --prod --skip-nx-cache && firebase use involvemint2 && firebase deploy",
     "deploy": "nx run-many --target=build --projects=involvemint,api --prod --skip-nx-cache && gcloud config set project involvemint2 && gcloud app deploy app.yaml --stop-previous-version --quiet && firebase use involvemint2 && firebase deploy && gcloud config set project involvemint-test && gcloud app deploy app.yaml --stop-previous-version --quiet && firebase use involvemint-test && firebase deploy",

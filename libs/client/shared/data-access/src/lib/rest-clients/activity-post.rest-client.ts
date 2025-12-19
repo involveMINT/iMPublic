@@ -4,6 +4,7 @@ import {
   ActivityPost,
   ActivityPostQuery,
   CreateActivityPostDto,
+  DigestActivityPostDto,
   DTO_KEY,
   GetActivityPostDto,
   InvolvemintRoutes,
@@ -78,6 +79,18 @@ export class ActivityPostRestClient {
 
     return this.http.post<IParser<ActivityPost, typeof ActivityPostQuery>>(
       `${this.apiUrl}/unlike`,
+      body
+    );
+  }
+
+  digest(query: IQuery<ActivityPost[]>, dto: DigestActivityPostDto) {
+    const body = {
+      [QUERY_KEY]: query,
+      [DTO_KEY]: dto,
+    };
+
+    return this.http.post<IParser<ActivityPost, typeof ActivityPostQuery>[]>(
+      `${this.apiUrl}/digest`,
       body
     );
   }

@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, OnInit, ViewChild } from '@angular/core';
 import { ChangeMakerFacade } from '@involvemint/client/cm/data-access';
-import { UserFacade, PostStoreModel, ActivityPostOrchestration } from '@involvemint/client/shared/data-access';
+import { UserFacade, PostStoreModel, ActivityPostRestClient } from '@involvemint/client/shared/data-access';
 import { StatefulComponent } from '@involvemint/client/shared/util';
 import { ActivityPostQuery, PoiStatus } from '@involvemint/shared/domain';
 import { parseDate } from '@involvemint/shared/util';
@@ -52,7 +52,7 @@ export class ActivityFeedComponent extends StatefulComponent<State> implements O
   }
 
   constructor(
-    private readonly post: ActivityPostOrchestration,
+    private readonly post: ActivityPostRestClient,
     private readonly user: UserFacade,
     private readonly viewDigestModal: ModalController,
   ) {
