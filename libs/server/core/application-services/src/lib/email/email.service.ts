@@ -7,7 +7,7 @@ export class EmailService {
   mg = environment.environment !== 'local' ? mailgun.default(environment.mailgun) : null;
   noreply = 'InvolveMINT No Reply <noreply@involvemint.io>';
 
-  shouldNotSendNotification = environment.environment !== 'production';
+  shouldNotSendNotification = environment.environment === 'local';
 
   constructor(@Inject(FRONTEND_ROUTES_TOKEN) private readonly route: FrontendRoutes) { }
 
