@@ -7,12 +7,12 @@ import { IAnyRelation } from './relations';
 export type EmptyResponse = {};
 
 /**
- * Describes the fundamental type for an Orcha Query.
+ * Describes the fundamental type for a Query.
  */
 export type IQueryModel = { [k: string]: true | IQueryModel } | IPaginate;
 
 /**
- * Create a primitive Orcha Query from a model.
+ * Create a primitive Query from a model.
  */
 export type IQuery<T> = T extends Array<infer A> ? IQueryArray<A> & IPaginate : IQueryArray<T>;
 
@@ -45,7 +45,7 @@ export interface IPaginate {
 }
 
 /**
- * Utility type or an Orcha Query that does not allow for properties that are not specified in the model `T`.
+ * Utility type or an Query that does not allow for properties that are not specified in the model `T`.
  */
 export type IExactQuery<T, Q> = T extends Array<infer A> ? IExactQueryObject<A, Q> : IExactQueryObject<T, Q>;
 export type IExactQueryObject<T, Q> = Q & {

@@ -1,3 +1,5 @@
+import { IsNotEmpty, IsString } from "class-validator";
+
 export const enum ImStorageFileRoots {
   cmProfileImages = 'cm-profile-images',
   epImageFiles = 'ep-image-files',
@@ -10,4 +12,10 @@ export const enum ImStorageFileRoots {
   projectCustomWaiver = 'project-custom-waiver',
   spImageFiles = 'sp-image-files',
   spLogoFiles = 'sp-logo-files',
+}
+
+export abstract class GetStorageFileDto {
+  @IsNotEmpty()
+  @IsString()
+  path!: string;
 }

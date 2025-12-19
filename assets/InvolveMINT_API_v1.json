@@ -934,7 +934,7 @@
 	"variable": [
 		{
 			"key": "BASE_URL",
-			"value": "http://127.0.0.1:3335/orcha/",
+			"value": "http://127.0.0.1:3335/",
 			"type": "string"
 		}
 	]

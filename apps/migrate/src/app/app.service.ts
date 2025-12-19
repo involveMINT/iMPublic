@@ -33,6 +33,7 @@ import {
   EpOnboardingState,
   ExchangeAdmin,
   ExchangePartner,
+  IUpsertEntity,
   LinkedVoucherOffer,
   Offer,
   PassportDocument,
@@ -50,7 +51,6 @@ import {
   Voucher,
 } from '@involvemint/shared/domain';
 import { Injectable } from '@nestjs/common';
-import { IUpsertEntity } from '@orcha/common';
 import * as cp from 'child_process';
 import { addMonths, parseISO } from 'date-fns';
 import * as fs from 'fs';

@@ -5,7 +5,7 @@ import { IParser } from './parser';
 import { IExactQuery, IQuery } from './query';
 
 /**
- * Manually parse an Orcha Query.
+ * Manually parse an Query.
  *
  * This will recursively go through all `entities` and remove values that are not specified in the query.
  *
