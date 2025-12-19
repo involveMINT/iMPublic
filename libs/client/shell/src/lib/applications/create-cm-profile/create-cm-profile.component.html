@@ -160,8 +160,11 @@
               </ng-container>
               <div footer class="im-buttons">
                 <ion-button fill="outline" (click)="prev()">Back</ion-button>
-                <ion-button (click)="next()" [disabled]="createProfileForm.controls.phone.invalid">
-                  Next
+                <ion-button
+                  (click)="submit()"
+                  [disabled]="createProfileForm.controls.handle.invalid || state.verifyingHandle || createProfileForm.controls.handle.errors?.notUnique"
+                >
+                  Create Profile
                 </ion-button>
               </div>
             </im-block>
@@ -171,4 +174,3 @@
     </div>
   </ion-content>
 </ng-container>
-goal
