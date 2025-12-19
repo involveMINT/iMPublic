@@ -1,6 +1,5 @@
-import { ActivityPost, ActivityPostQuery } from '@involvemint/shared/domain';
+import { ActivityPost, ActivityPostQuery, IParser } from '@involvemint/shared/domain';
 import { createEntityAdapter, EntityState } from '@ngrx/entity';
-import { IParser } from '@orcha/common';
 import { createReducer, on } from '@ngrx/store';
 import * as PostsActions from './activity-posts.actions';
 

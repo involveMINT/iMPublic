@@ -1,13 +1,12 @@
 import { Injectable } from "@angular/core";
 import { StatusService } from "@involvemint/client/shared/util";
+import { CommentQuery } from "@involvemint/shared/domain";
 import { Actions, createEffect, ofType } from "@ngrx/effects";
 import * as CommentsActions from './comments.actions';
 import { map, delayWhen, tap } from 'rxjs/operators';
 import { fetch, pessimisticUpdate } from "@nrwl/angular";
 import { from } from 'rxjs';
-import { CommentOrchestration } from "../../orchestrations/comment.orchestration";
-// eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
-import { CommentQuery } from "libs/shared/domain/src/lib/domain/comment/comment.queries";
+import { CommentRestClient } from "../../rest-clients";
 
 @Injectable()
 export class CommentEffects {
@@ -143,6 +142,6 @@ readonly unhideComment$ = createEffect(() =>
     constructor(
         private readonly actions$: Actions,
         private readonly status: StatusService,
-        private readonly comments: CommentOrchestration,
+        private readonly comments: CommentRestClient,
     ) {}
 }

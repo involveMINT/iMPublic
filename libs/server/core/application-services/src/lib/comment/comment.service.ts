@@ -2,11 +2,8 @@ import { Injectable } from "@nestjs/common";
 // eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
 import { AuthService } from '@involvemint/server/core/application-services';
 import { CommentRepository, FlagRepository } from "@involvemint/server/core/domain-services";
-import { IQuery } from '@orcha/common';
+import { Comment, CommentQuery, CreateCommentDto, FlagCommentDto, flagQuery, HideCommentDto, IQuery, UnflagCommentDto, UnhideCommentDto } from "@involvemint/shared/domain";
 import * as uuid from 'uuid';
-import { CreateCommentDto, UnflagCommentDto } from "@involvemint/shared/domain";
-// eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
-import { Comment, CommentQuery, HideCommentDto, UnhideCommentDto, FlagCommentDto, flagQuery } from "@involvemint/shared/domain";
 
 @Injectable()
 export class CommentService {

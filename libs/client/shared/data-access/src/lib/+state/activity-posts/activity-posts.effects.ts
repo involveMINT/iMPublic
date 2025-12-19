@@ -6,7 +6,7 @@ import * as PostsActions from './activity-posts.actions';
 import { map, delayWhen, tap } from 'rxjs/operators';
 import { fetch, pessimisticUpdate } from "@nrwl/angular";
 import { from } from 'rxjs';
-import { ActivityPostOrchestration } from '../../orchestrations/activity-post.orchestration';
+import { ActivityPostRestClient } from '../../rest-clients';
 
 
 /**
@@ -132,6 +132,6 @@ export class PostEffects {
     constructor(
         private readonly actions$: Actions,
         private readonly status: StatusService,
-        private readonly posts: ActivityPostOrchestration,
+        private readonly posts: ActivityPostRestClient,
     ) {}
 }

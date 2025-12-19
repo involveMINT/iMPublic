@@ -1,4 +1,4 @@
-import { createQuery } from '@orcha/common';
+import { createQuery } from '../repository';
 import { Like } from './like.model';
 
 /** Unsure if this will be needed for same reason as like.dto */

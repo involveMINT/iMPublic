@@ -1,6 +1,5 @@
-import { CreateCommentDto, FlagCommentDto, HideCommentDto, UnflagCommentDto, UnhideCommentDto } from "@involvemint/shared/domain";
+import { APIOperationError, CreateCommentDto, FlagCommentDto, HideCommentDto, UnflagCommentDto, UnhideCommentDto } from "@involvemint/shared/domain";
 import { createAction, props } from "@ngrx/store";
-import { OrchaOperationError } from "@orcha/common";
 import { CommentStoreModel } from "./comments.reducer";
 
 
@@ -45,7 +44,7 @@ export const loadCommentsSuccess = createAction(
 
 export const loadCommentsError = createAction(
     LOAD_COMMENTS_ERROR,
-    props<{ error: OrchaOperationError }>()
+    props<{ error: APIOperationError }>()
 );
 
 
@@ -65,7 +64,7 @@ export const createCommentSuccess = createAction(
 
 export const createCommentError = createAction(
     CREATE_COMMENT_ERROR,
-    props<{ error: OrchaOperationError }>()
+    props<{ error: APIOperationError }>()
 );
 
 /**
@@ -92,7 +91,7 @@ export const flagCommentSuccess = createAction(
 
 export const flagCommentError = createAction(
     FLAG_COMMENT_ERROR,
-    props<{ error: OrchaOperationError }>()
+    props<{ error: APIOperationError }>()
 );
 
 export const unflagComment = createAction(
@@ -107,7 +106,7 @@ export const unflagCommentSuccess = createAction(
 
 export const unflagCommentError = createAction(
     UNFLAG_COMMENT_ERROR,
-    props<{ error: OrchaOperationError }>()
+    props<{ error: APIOperationError }>()
 );
 
 /**
@@ -126,7 +125,7 @@ export const hideCommentSuccess = createAction(
 
 export const hideCommentError = createAction(
     HIDE_COMMENT_ERROR,
-    props<{ error: OrchaOperationError }>()
+    props<{ error: APIOperationError }>()
 );
 
 /**
@@ -145,5 +144,5 @@ export const unhideCommentSuccess = createAction(
 
 export const unhideCommentError = createAction(
     UNHIDE_COMMENT_ERROR,
-    props<{ error: OrchaOperationError }>()
+    props<{ error: APIOperationError }>()
 );

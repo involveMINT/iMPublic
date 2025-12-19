@@ -1,10 +1,8 @@
 import { Injectable } from "@nestjs/common";
 import { ActivityPostRepository, LikeRepository, UserRepository } from "@involvemint/server/core/domain-services";
-import { IPaginate, IParserObject, IQuery } from "@orcha/common";
+import { ActivityPost, ActivityPostQuery, CreateActivityPostDto, DigestActivityPostDto, DisableActivityPostDto, EnableActivityPostDto, GetActivityPostDto, IPaginate, IParserObject, IQuery, IQueryObject, LikeActivityPostDto, likeQuery, UnlikeActivityPostDto } from "@involvemint/shared/domain";
 import { AuthService } from '../auth/auth.service';
 import * as uuid from 'uuid';
-import { IQueryObject } from "@orcha/common/src/lib/query";
-import { ActivityPost, ActivityPostQuery, CreateActivityPostDto, DigestActivityPostDto, DisableActivityPostDto, EnableActivityPostDto, GetActivityPostDto, LikeActivityPostDto, likeQuery, UnlikeActivityPostDto } from "@involvemint/shared/domain";
 import { Cron } from "@nestjs/schedule"
 import { SMSService } from "../sms/sms.service";
 import { UserQuery } from '@involvemint/shared/domain';

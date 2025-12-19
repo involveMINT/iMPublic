@@ -1,6 +1,5 @@
 import { createAction, props } from '@ngrx/store';
-import { OrchaOperationError } from '@orcha/common';
-import { CreateActivityPostDto, GetActivityPostDto, LikeActivityPostDto, UnlikeActivityPostDto } from '@involvemint/shared/domain';
+import { APIOperationError, CreateActivityPostDto, GetActivityPostDto, LikeActivityPostDto, UnlikeActivityPostDto } from '@involvemint/shared/domain';
 import { PostStoreModel } from './activity-posts.reducer';
 
 
@@ -59,7 +58,7 @@ export const loadPostsSuccess = createAction(
 
 export const loadPostsError = createAction(
     LOAD_POSTS_ERROR,
-    props<{ error: OrchaOperationError }>()
+    props<{ error: APIOperationError }>()
 );
 
 export const createPost = createAction(
@@ -74,7 +73,7 @@ export const createPostSuccess = createAction(
 
 export const createPostError = createAction(
     CREATE_POST_ERROR,
-    props<{ error: OrchaOperationError }>()
+    props<{ error: APIOperationError }>()
 );
 
 export const getPost = createAction(
@@ -89,7 +88,7 @@ export const getPostSuccess = createAction(
 
 export const getPostError = createAction(
     GET_POST_ERROR,
-    props<{ error: OrchaOperationError }>()
+    props<{ error: APIOperationError }>()
 );
 
 export const like = createAction(
@@ -104,7 +103,7 @@ export const likeSuccess = createAction(
 
 export const likeError = createAction(
     LIKE_POST_ERROR,
-    props<{ error: OrchaOperationError }>()
+    props<{ error: APIOperationError }>()
 );
 
 export const unlike = createAction(
@@ -119,5 +118,5 @@ export const unlikeSuccess = createAction(
 
 export const unlikeError = createAction(
     UNLIKE_POST_ERROR,
-    props<{ error: OrchaOperationError }>()
+    props<{ error: APIOperationError }>()
 );

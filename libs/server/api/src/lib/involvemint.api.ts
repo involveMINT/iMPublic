@@ -1,12 +1,14 @@
 import { ServerCoreApplicationServicesModule } from '@involvemint/server/core/application-services';
 import { Module } from '@nestjs/common';
 import { APP_FILTER } from '@nestjs/core';
-import { EnrollmentController } from './enrollment/enrollment.controller';
+import { ActivityPostController } from './activity-post/activity-post.controller';
 import { ChangeMakerController } from './change-maker/change-maker.controller';
 import { ChatController } from './chat/chat.controller';
+import { CommentController } from './comment/comment.controller';
 import { CreditController } from './credit/credit.controller';
-import { ExchangeAdminController } from './exchange-admin/exchange-admin.controller';
+import { EnrollmentController } from './enrollment/enrollment.controller';
 import { EpApplicationController } from './ep-application/ep-application.controller';
+import { ExchangeAdminController } from './exchange-admin/exchange-admin.controller';
 import { ExchangePartnerController } from './exchange-partner/exchange-partner.controller';
 import { HandleController } from './handle/handle.controller';
 import { OfferController } from './offer/offer.controller';
@@ -21,7 +23,7 @@ import { StorageController } from './storage/storage.controller';
 import { TransactionController } from './transaction/transaction.controller';
 import { UserController } from './user/user.controller';
 import { VoucherController } from './voucher/voucher.controller';
-import {  APIOperationErrorFilter } from './api-operation-error.filter';
+import { APIOperationErrorFilter } from './api-operation-error.filter';
 
 @Module({
   providers:[
@@ -31,12 +33,14 @@ import {  APIOperationErrorFilter } from './api-operation-error.filter';
     ServerCoreApplicationServicesModule,
   ],
   controllers: [
-    EnrollmentController,
+    ActivityPostController,
     ChangeMakerController,
     ChatController,
+    CommentController,
     CreditController,
-    ExchangeAdminController,
+    EnrollmentController,
     EpApplicationController,
+    ExchangeAdminController,
     ExchangePartnerController,
     HandleController,
     OfferController,
@@ -50,7 +54,7 @@ import {  APIOperationErrorFilter } from './api-operation-error.filter';
     StorageController,
     TransactionController,
     UserController,
-    VoucherController
+    VoucherController,
   ]
 })
 export class ServerAPIModule {}

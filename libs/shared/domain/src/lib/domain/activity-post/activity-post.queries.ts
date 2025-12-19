@@ -1,4 +1,4 @@
-import { createQuery } from '@orcha/common';
+import { createQuery } from '../repository';
 import { CommentQuery } from '../comment';
 import { PoiCmQuery } from '../poi';
 import { ActivityPostUserQuery } from '../user';

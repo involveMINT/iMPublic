@@ -1,4 +1,4 @@
-import { createQuery } from '@orcha/common';
+import { createQuery } from '../repository';
 import { Flag } from './flag.model';
 
 /** Unsure if this will be needed for same reason as flag.dto */

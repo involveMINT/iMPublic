@@ -1,14 +1,14 @@
 import { Like } from "@involvemint/shared/domain";
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { IOrchaTypeormRepository } from '@orcha/typeorm';
-import { LikeEntity } from './like.entity';
 import { Repository } from 'typeorm';
+import { IBaseRepository } from '../repository/typeorm-base-repository';
+import { LikeEntity } from './like.entity';
 
 
 @Injectable()
-export class LikeRepository extends IOrchaTypeormRepository<Like> {
-    constructor(@InjectRepository(LikeEntity) protected readonly repo: Repository<Like>) {
+export class LikeRepository extends IBaseRepository<Like> {
+    constructor(@InjectRepository(LikeEntity) repo: Repository<Like>) {
         super(repo);
     }
 }

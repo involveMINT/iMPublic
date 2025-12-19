@@ -77,9 +77,9 @@ Already in main_temp:
 - [x] CI/CD from main
 
 Missing from main_temp (pre-Orcha, from develop):
-- [ ] Docker port update (`a026599` - 2023-12-17)
-- [ ] pgadmin auto-add db (`69b2b38` - 2023-12-10)
-- [ ] Firebase emulator container (`e2a0cad` - 2024-01-16)
+- [x] Docker port update (`a026599` - 2023-12-17) ✅ Committed: 92ff864
+- [x] pgadmin auto-add db (`69b2b38` - 2023-12-10) ✅ Committed: c965785
+- [x] Firebase emulator container (`e2a0cad` - 2024-01-16) ✅ Committed: 70e4fa4
 
 **Action**: Cherry-pick or merge these changes from develop to main_temp
 
@@ -87,28 +87,26 @@ Missing from main_temp (pre-Orcha, from develop):
 **Goal**: Remove Orcha framework
 
 From develop:
-- [ ] Orcha removal (`ae8da81` - 2024-05-27)
+- [x] Orcha removal (`ae8da81` - 2024-05-27) ✅ Committed: dae21a4
 
-**Expected Conflicts**:
-- Activity feed files (use Orcha, need manual migration)
-- Any shared data-access files
-
-**Action**:
-1. Merge/cherry-pick Orcha removal
-2. Resolve conflicts by migrating activity feed to RestClient pattern
+**Conflicts Resolved**:
+- Activity feed state management preserved (effects, reducers, actions)
+- Firebase emulator configs maintained
+- Domain model imports updated to use repository pattern
 
 ### Phase 3: Post-Orcha Features
 **Goal**: Add features built after Orcha removal
 
 From develop/dfg/win25:
-- [ ] Win24 features (`f0fabfa` - 2024-06-03)
-- [ ] Photo aspect ratios (`0c49e5d` - 2024-06-06)
-- [ ] Win25 features (2025-01 to 2025-02):
-  - Issue 376 fix
-  - Auto-create ChangeMaker
-  - Email + validation
-  - "Invite business" rename
-  - Red dot (partial)
+- [x] Win24 features (`f0fabfa` - 2024-06-03) ✅ Committed: ca15391
+- [x] Photo aspect ratios (`0c49e5d` - 2024-06-06) ✅ Committed: eb9b259
+- [x] Win25 features (2025-01 to 2025-02):
+  - [x] Issue 376 fix ✅ Committed: 01cf447
+  - [x] Auto-create ChangeMaker ✅ Committed: 08d8b34
+  - [x] Email + validation ✅ Committed: ebf33cd
+  - [x] "Invite business" rename ✅ Committed: 38d4757
+  - [x] Prepopulate fixes ✅ Committed: 9429e47, 0111a10
+  - [x] Red dot (full) ✅ Committed: d0acd0c, 2e7b41d
 
 ### Phase 4: Feature Branches
 **Goal**: Integrate remaining standalone features
@@ -155,23 +153,23 @@ d102854 2025-02-18 Prepopulate backend fix
 When applying Orcha removal, these files need manual attention:
 
 ### Client Effects (use Orchestration → RestClient)
-- [ ] `activityfeed.effects.ts` - ActivityPostOrchestration → ActivityPostRestClient
-- [ ] Comment effects
-- [ ] Like effects
+- [x] `activityfeed.effects.ts` - Uses ActivityPostRestClient ✅
+- [x] Comment effects - Uses CommentRestClient ✅
+- [x] Like effects - Handled via ActivityPost like/unlike endpoints ✅
 
 ### Actions (may reference Orcha types)
-- [ ] `activityfeed.actions.ts`
-- [ ] Comment actions
+- [x] `activityfeed.actions.ts` - Already migrated ✅
+- [x] Comment actions - Already migrated ✅
 
 ### New RestClient Needed
-- [ ] Create `activity-post.rest-client.ts`
-- [ ] Create `comment.rest-client.ts`
-- [ ] Create `like.rest-client.ts`
-- [ ] Create `flag.rest-client.ts`
+- [x] Create `activity-post.rest-client.ts` ✅
+- [x] Create `comment.rest-client.ts` ✅
+- [x] Like/Flag - Handled via ActivityPost and Comment endpoints (not needed separately) ✅
 
 ### Server Side (likely needs controllers)
-- [ ] Add REST controllers for activity post endpoints
-- [ ] Verify domain services are compatible
+- [x] Add REST controllers for activity post endpoints ✅ Created: `activity-post.controller.ts`
+- [x] Add REST controllers for comment endpoints ✅ Created: `comment.controller.ts`
+- [x] Verify domain services are compatible ✅ Services already exist and work
 
 ---
 

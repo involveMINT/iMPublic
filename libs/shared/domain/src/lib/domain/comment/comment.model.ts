@@ -1,4 +1,4 @@
-import { IManyToOne, IOneToMany } from '@orcha/common';
+import { IManyToOne, IOneToMany } from '../repository';
 import { User } from '../user';
 import { ActivityPost } from '../activity-post'
 import { Flag } from '../flag';

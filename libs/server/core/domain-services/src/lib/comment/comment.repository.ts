@@ -1,14 +1,14 @@
 import { Injectable } from '@nestjs/common';
-import { IOrchaTypeormRepository } from '@orcha/typeorm';
 import { Comment } from '@involvemint/shared/domain';
 import { InjectRepository } from '@nestjs/typeorm';
-import { CommentEntity } from './comment.entity';
 import { Repository } from 'typeorm';
+import { IBaseRepository } from '../repository/typeorm-base-repository';
+import { CommentEntity } from './comment.entity';
 
 
 @Injectable()
-export class CommentRepository extends IOrchaTypeormRepository<Comment> {
-    constructor(@InjectRepository(CommentEntity) protected readonly repo: Repository<Comment>) {
+export class CommentRepository extends IBaseRepository<Comment> {
+    constructor(@InjectRepository(CommentEntity) repo: Repository<Comment>) {
         super(repo);
     }
 }

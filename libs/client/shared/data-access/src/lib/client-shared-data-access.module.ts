@@ -31,7 +31,7 @@ import { AuthInterceptor } from './auth.interceptor';
 import { ImProfileSelectModalModule } from './modals/im-profile-select-modal/im-profile-select-modal.module';
 import { COMMENTS_KEY, CommentsReducer } from './+state/comments/comments.reducer';
 import { CommentEffects } from './+state/comments/comments.effects';
-import { ChangeMakerRestClient, ChatRestClient, CreditRestClient, EnrollmentRestClient, EpApplicationRestClient, ExchangeAdminRestClient, ExchangePartnerRestClient, HandleRestClient, OfferRestClient, PassportDocumentRestClient, PoiRestClient, ProjectRestClient, RequestRestClient, ServeAdminRestClient, ServePartnerRestClient, SpApplicationRestClient, TransactionRestClient, UserRestClient, VoucherRestClient } from './rest-clients';
+import { ActivityPostRestClient, ChangeMakerRestClient, ChatRestClient, CommentRestClient, CreditRestClient, EnrollmentRestClient, EpApplicationRestClient, ExchangeAdminRestClient, ExchangePartnerRestClient, HandleRestClient, OfferRestClient, PassportDocumentRestClient, PoiRestClient, ProjectRestClient, RequestRestClient, ServeAdminRestClient, ServePartnerRestClient, SpApplicationRestClient, TransactionRestClient, UserRestClient, VoucherRestClient } from './rest-clients';
 import { StorageRestClient } from './rest-clients/storage.rest-client';
 
 @NgModule({
@@ -76,7 +76,9 @@ import { StorageRestClient } from './rest-clients/storage.rest-client';
       useClass: AuthInterceptor,
       multi: true,
     },
+    ActivityPostRestClient,
     ChangeMakerRestClient,
+    CommentRestClient,
     ChatRestClient,
     CreditRestClient,
     EnrollmentRestClient,

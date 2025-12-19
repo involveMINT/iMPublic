@@ -1,8 +1,7 @@
 import { createEntityAdapter, EntityState } from '@ngrx/entity';
-import { IParser } from '@orcha/common';
 import { createReducer, on } from '@ngrx/store';
 import * as CommentsActions from './comments.actions';
-import { Comment, CommentQuery } from '@involvemint/shared/domain';
+import { Comment, CommentQuery, IParser } from '@involvemint/shared/domain';
 
 
 export const COMMENTS_KEY = 'Comments';

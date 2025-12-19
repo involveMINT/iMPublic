@@ -1,4 +1,4 @@
-import { createQuery } from '@orcha/common';
+import { createQuery } from '../repository';
 import { Comment } from './comment.model';
 
 export const CommentQuery = createQuery<Comment>()({

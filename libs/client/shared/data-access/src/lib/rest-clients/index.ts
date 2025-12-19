@@ -1,4 +1,6 @@
+export * from './activity-post.rest-client';
 export * from './change-maker.rest-client';
+export * from './comment.rest-client';
 export * from './chat.rest-client';
 export * from './credit.rest-client';
 export * from './enrollment.rest-client';
