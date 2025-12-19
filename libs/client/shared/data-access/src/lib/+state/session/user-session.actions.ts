@@ -45,6 +45,20 @@ export const userLoginError = createAction(
   props<{ error: APIOperationError }>()
 );
 
+export const updateAccountSetupViewed = createAction(
+  '[UserSession] Update Account Setup Viewed'
+);
+
+export const updateAccountSetupViewedSuccess = createAction(
+  '[UserSession] Update Account Setup Viewed Success',
+  props<{ viewedAddNewAccount: boolean }>()
+);
+
+export const updateAccountSetupViewedError = createAction(
+  '[UserSession] Update Account Setup Viewed Error',
+  props<{ error: APIOperationError }>()
+);
+
 /*
       _      _       _        _              _
      /_\  __| |_ __ (_)_ _   | |   ___  __ _(_)_ _

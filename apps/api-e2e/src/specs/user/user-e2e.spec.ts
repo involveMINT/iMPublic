@@ -130,6 +130,7 @@ describe('User Integration Tests', () => {
       });
       expect(statusCode).toBe(HttpStatus.UNAUTHORIZED);
       environment.environment = 'local';
+      environment.environment = 'local';
     });
   });
 
