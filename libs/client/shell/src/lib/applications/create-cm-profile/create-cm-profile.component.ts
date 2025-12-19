@@ -29,6 +29,8 @@ export interface CreateCmProfileFormData {
 
 interface State {
   verifyingHandle: boolean;
+  viewedAddNewAccount: boolean;
+  authenticated: boolean;
 }
 
 @Component({
@@ -64,7 +66,8 @@ export class CreateCmProfileComponent extends StatefulComponent<State> implement
     private readonly route: ActivatedRoute,
     private readonly changeMakerRestClient: ChangeMakerRestClient
   ) {
-    super({ verifyingHandle: false });
+    super({ verifyingHandle: false, viewedAddNewAccount: false, 
+      authenticated: false  });
   }
 
   ngOnInit(): void {
@@ -86,6 +89,16 @@ export class CreateCmProfileComponent extends StatefulComponent<State> implement
     //   console.error('Authentication token is missing');
     // }
 
+    this.effect(() =>
+      this.uf.session.selectors.state$.pipe(
+        tap(({ viewedAddNewAccount, id}) =>
+          this.updateState({
+            viewedAddNewAccount : viewedAddNewAccount,
+            authenticated: !!id
+          })
+        )
+      )
+    );
     // Verify handle uniqueness
     this.effect(() => verifyHandleUniqueness(this.createProfileForm, this.handleRestClient, this));
 

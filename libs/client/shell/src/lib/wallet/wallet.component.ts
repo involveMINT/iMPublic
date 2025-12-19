@@ -43,6 +43,8 @@ interface State {
   activeProfile: ActiveProfile | null;
   vouchers: VoucherStoreModel[];
   vouchersLoaded: boolean;
+  viewedAddNewAccount: boolean;
+  authenticated: boolean;
 }
 
 @Component({
@@ -79,6 +81,8 @@ export class WalletComponent extends StatefulComponent<State> implements OnInit 
       activeProfile: null,
       vouchers: [],
       vouchersLoaded: false,
+      viewedAddNewAccount: false, 
+      authenticated: false 
     });
   }
 
@@ -159,6 +163,17 @@ export class WalletComponent extends StatefulComponent<State> implements OnInit 
         tap(() => {
           this.amount.reset();
         })
+      )
+    );
+
+    this.effect(() =>
+      this.user.session.selectors.state$.pipe(
+        tap(({ viewedAddNewAccount, id}) =>
+          this.updateState({
+            viewedAddNewAccount : viewedAddNewAccount,
+            authenticated: !!id
+          })
+        )
       )
     );
   }

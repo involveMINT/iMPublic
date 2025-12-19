@@ -12,6 +12,8 @@ interface State {
   epApplications: EpApplicationStoreModel[];
   spApplications: SpApplicationStoreModel[];
   loaded: boolean;
+  viewedAddNewAccount: boolean;
+  authenticated: boolean;
 }
 
 @Component({
@@ -22,7 +24,13 @@ interface State {
 })
 export class ApplicationsComponent extends StatefulComponent<State> implements OnInit {
   constructor(private readonly af: AdminFacade, private readonly uf: UserFacade) {
-    super({ epApplications: [], spApplications: [], loaded: false });
+    super({ 
+      epApplications: [], 
+      spApplications: [], 
+      loaded: false,
+      viewedAddNewAccount: false, 
+      authenticated: false 
+    });
   }
 
   ngOnInit(): void {
@@ -30,6 +38,16 @@ export class ApplicationsComponent extends StatefulComponent<State> implements O
       this.af.applications.selectors.state$.pipe(
         tap(({ epApplications, spApplications, loaded }) =>
           this.updateState({ epApplications, spApplications, loaded })
+        )
+      )
+    );
+    this.effect(() =>
+      this.uf.session.selectors.state$.pipe(
+        tap(({ viewedAddNewAccount, id}) =>
+          this.updateState({
+            viewedAddNewAccount : viewedAddNewAccount,
+            authenticated: !!id
+          })
         )
       )
     );
