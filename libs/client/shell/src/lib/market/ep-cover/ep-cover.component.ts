@@ -124,6 +124,9 @@ export class EpCoverComponent extends StatefulComponent<State> implements OnInit
     offer: UnArray<ExchangePartnerMarketStoreModel['offers']>;
     quantity: number;
   }) {
+    // Prevent negative quantities
+    if (evt.quantity < 0) return;
+
     if (evt.quantity === 0) evt.checked = false;
 
     if (evt.checked) {

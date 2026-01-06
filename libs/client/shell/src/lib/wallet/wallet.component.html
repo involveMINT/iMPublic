@@ -22,6 +22,32 @@
       <im-tab label="Balance">
         <div class="im-cont">
           <div class="im-primary-text title">Balance</div>
+
+          <!-- Negative Balance Warning Banners -->
+          <div
+            *ngIf="state.creditsLoaded && state.isAtLimit"
+            class="im-warning-banner im-warning-banner--error"
+            style="background-color: var(--im-red); color: white; padding: 12px; border-radius: 8px; margin-bottom: 16px; text-align: center;"
+          >
+            <ion-icon name="alert-circle" style="margin-right: 8px;"></ion-icon>
+            <strong>You have reached your negative balance limit.</strong>
+            <div style="font-size: 0.9em; margin-top: 4px;">
+              You cannot make transactions until your balance is above {{ -state.negativeLimit | currency: '':'' }} credits.
+            </div>
+          </div>
+
+          <div
+            *ngIf="state.creditsLoaded && state.isNegative && !state.isAtLimit"
+            class="im-warning-banner im-warning-banner--warning"
+            style="background-color: var(--ion-color-warning); color: var(--ion-color-warning-contrast); padding: 12px; border-radius: 8px; margin-bottom: 16px; text-align: center;"
+          >
+            <ion-icon name="warning" style="margin-right: 8px;"></ion-icon>
+            <strong>Your balance is negative.</strong>
+            <div style="font-size: 0.9em; margin-top: 4px;">
+              Current: {{ state.balance | currency: '':'' }} / Limit: {{ -state.negativeLimit | currency: '':'' }} credits
+            </div>
+          </div>
+
           <div class="current-balance" *ngIf="state.creditsLoaded">
             <div class="cur-balance-number-cont">
               <div class="cur-balance-number" data-testid="wallet-balance">{{ state.balance | currency: '':'' }}</div>
@@ -163,7 +189,13 @@
             <div class="send-amt">
               Balance Leftover:
               <ion-spinner *ngIf="!state.creditsLoaded" class="spin-loader" name="crescent"></ion-spinner>
-              <span *ngIf="state.creditsLoaded" [style.font-weight]="'700'">
+              <span
+                *ngIf="state.creditsLoaded"
+                [style.font-weight]="'700'"
+                [style.color]="(state.balance - amount.value) < 0
+                  ? ((state.balance - amount.value) <= -state.negativeLimit ? 'var(--im-red)' : 'var(--ion-color-warning)')
+                  : 'inherit'"
+              >
                 {{ state.balance - amount.value | currency: '':'' }}
               </span>
               <ion-icon
@@ -217,7 +249,7 @@
             <ion-button
               (click)="transaction(state.recipient!.id)"
               [disabled]="
-                !(state.recipient && memo.valid && amount.value && state.balance - amount.value >= 0)
+                !(state.recipient && memo.valid && amount.value && state.balance - amount.value >= -state.negativeLimit)
               "
             >
               Send

@@ -3,6 +3,8 @@ import {
   calculateTotalCreditsAmount,
   calculateTotalEscrowAmount,
   Credit,
+  EntityType,
+  getNegativeBalanceLimit,
   GetCreditsForProfileDto,
   MintDto,
 } from '@involvemint/shared/domain';
@@ -74,9 +76,10 @@ export class CreditService {
    * Transfers user's credits into Escrow.
    * @param profileId user's profile ID
    * @param amount
+   * @param entityType optional entity type for negative balance support
    */
-  transferCreditsInToEscrow(profileId: string, amount: number) {
-    return this.escrowTransfer(profileId, amount, true);
+  transferCreditsInToEscrow(profileId: string, amount: number, entityType?: EntityType) {
+    return this.escrowTransfer(profileId, amount, true, entityType);
   }
 
   /**
@@ -93,8 +96,9 @@ export class CreditService {
    * @param profileId user's profile ID
    * @param amount
    * @param intoEscrow True if transferring credits into Escrow, false if transferring credits out of Escrow.
+   * @param entityType optional entity type for negative balance support (only used when intoEscrow is true)
    */
-  private async escrowTransfer(profileId: string, amount: number, intoEscrow: boolean) {
+  private async escrowTransfer(profileId: string, amount: number, intoEscrow: boolean, entityType?: EntityType) {
     if (amount === 0 || isDecimal(amount)) {
       throw new InternalServerErrorException('Amount must be an non-zero integer.');
     }
@@ -108,11 +112,30 @@ export class CreditService {
     // This is so we don't unnecessarily split a large credit when smaller ones are present.
     credits.sort((a, b) => compareAsc(a.amount, b.amount));
 
-    if (
-      (intoEscrow && calculateTotalCreditsAmount(credits) < amount) ||
-      (!intoEscrow && calculateTotalEscrowAmount(credits) < amount)
-    ) {
-      throw new InternalServerErrorException('Insufficient credits to process transaction.');
+    const availableCredits = calculateTotalCreditsAmount(credits);
+    const escrowCredits = calculateTotalEscrowAmount(credits);
+
+    // Check if user has enough credits (with negative balance support for intoEscrow)
+    if (intoEscrow) {
+      if (entityType) {
+        // With negative balance support: check against negative limit
+        const negativeLimit = getNegativeBalanceLimit(entityType);
+        if (availableCredits - amount < -negativeLimit) {
+          throw new InternalServerErrorException(
+            `Transaction would exceed your negative balance limit of ${negativeLimit / 100} credits.`
+          );
+        }
+      } else {
+        // Without entity type: use original validation (no negative balance)
+        if (availableCredits < amount) {
+          throw new InternalServerErrorException('Insufficient credits to process transaction.');
+        }
+      }
+    } else {
+      // Moving out of escrow: must have enough escrowed credits
+      if (escrowCredits < amount) {
+        throw new InternalServerErrorException('Insufficient credits to process transaction.');
+      }
     }
 
     /** Amount transferred currently in queue. */
@@ -146,6 +169,40 @@ export class CreditService {
         // Loop will always break here since the difference is split between current credit and new credit.
         break;
       }
+    }
+
+    // Handle negative balance: if transferring into escrow and not enough credits
+    if (intoEscrow && amountTransferred < amount && entityType) {
+      const shortfall = amount - amountTransferred;
+
+      // Determine which entity type the profile belongs to based on entityType
+      const changeMakerId = entityType === 'changeMaker' ? profileId : null;
+      const servePartnerId = entityType === 'servePartner' ? profileId : null;
+      const exchangePartnerId = entityType === 'exchangePartner' ? profileId : null;
+
+      // Create a negative credit for the user (representing debt)
+      queue.push({
+        id: uuid.v4(),
+        amount: -shortfall,
+        dateMinted: new Date(),
+        escrow: false,
+        poi: null,
+        changeMaker: changeMakerId ? { id: changeMakerId } : null,
+        servePartner: servePartnerId ? { id: servePartnerId } : null,
+        exchangePartner: exchangePartnerId ? { id: exchangePartnerId } : null,
+      } as CreditStoreModel);
+
+      // Create a positive credit in escrow
+      queue.push({
+        id: uuid.v4(),
+        amount: shortfall,
+        dateMinted: new Date(),
+        escrow: true,
+        poi: null,
+        changeMaker: changeMakerId ? { id: changeMakerId } : null,
+        servePartner: servePartnerId ? { id: servePartnerId } : null,
+        exchangePartner: exchangePartnerId ? { id: exchangePartnerId } : null,
+      } as CreditStoreModel);
     }
 
     return this.creditRepo.upsertMany(queue);

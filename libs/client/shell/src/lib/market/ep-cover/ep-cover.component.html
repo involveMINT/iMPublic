@@ -100,7 +100,8 @@
                 <ng-container *ngIf="{ offer: getOffer(offer) } as context">
                   <div class="price-changer">
                     <ion-icon
-                      [style.cursor]="'pointer'"
+                      [style.cursor]="(context.offer?.quantity || 0) > 0 ? 'pointer' : 'not-allowed'"
+                      [style.opacity]="(context.offer?.quantity || 0) > 0 ? 1 : 0.4"
                       name="remove-circle"
                       style="color: #ee4a39; font-size: 23px"
                       (click)="

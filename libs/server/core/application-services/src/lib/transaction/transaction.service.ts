@@ -7,9 +7,11 @@ import {
 import {
   calculateTotalCreditsAmount,
   Credit,
+  EntityType,
   environment,
   FrontendRoutes,
   FRONTEND_ROUTES_TOKEN,
+  getNegativeBalanceLimit,
   GetTransactionsForProfileDto,
   ImConfig,
   IM_ACTIVE_PROFILE_QUERY_PARAM,
@@ -268,8 +270,22 @@ export class TransactionService {
         HttpStatus.BAD_REQUEST
       );
     }
-    if (sendersTotalAmount < dto.amount) {
-      throw new HttpException('Insufficient credits to fulfill transaction.', HttpStatus.BAD_REQUEST);
+
+    // Determine sender's entity type for negative balance limit
+    const senderEntityType: EntityType = sender.changeMaker
+      ? 'changeMaker'
+      : sender.exchangePartner
+      ? 'exchangePartner'
+      : 'servePartner';
+    const negativeLimit = getNegativeBalanceLimit(senderEntityType);
+
+    // Allow transactions as long as resulting balance doesn't exceed negative limit
+    // (balance can go negative up to the limit, like a credit card)
+    if (sendersTotalAmount - dto.amount < -negativeLimit) {
+      throw new HttpException(
+        `Transaction would exceed your negative balance limit of ${negativeLimit / 100} credits.`,
+        HttpStatus.BAD_REQUEST
+      );
     }
     if (receiver.exchangePartner) {
       if (!receiver.exchangePartner.budget) {
@@ -351,6 +367,36 @@ export class TransactionService {
         // Loop will always break here since the difference is split between sender and receiver.
         break;
       }
+    }
+
+    // Handle negative balance: if sender doesn't have enough credits, create the shortfall
+    // This allows the sender to go negative (like a credit card)
+    if (amountTransferred < dto.amount) {
+      const shortfall = dto.amount - amountTransferred;
+
+      // Create a negative credit for the sender (representing debt)
+      senderQueue.push({
+        id: uuid.v4(),
+        amount: -shortfall,
+        dateMinted: new Date(),
+        escrow: false,
+        poi: null,
+        changeMaker: sender.changeMaker ?? null,
+        exchangePartner: sender.exchangePartner ?? null,
+        servePartner: sender.servePartner ?? null,
+      } as CreditStoreModel);
+
+      // Create a positive credit for the receiver
+      receiverQueue.push({
+        id: uuid.v4(),
+        amount: shortfall,
+        dateMinted: new Date(),
+        escrow: false,
+        poi: null,
+        changeMaker: receiver.changeMaker ?? null,
+        exchangePartner: receiver.exchangePartner ?? null,
+        servePartner: receiver.servePartner ?? null,
+      } as CreditStoreModel);
     }
 
     // Add all receiver credits to their queue to do any potential POI merges

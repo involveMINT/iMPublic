@@ -8,6 +8,7 @@ import {
   BuyVoucherDto,
   calculateVoucherExpirationDate,
   calculateVoucherStatus,
+  EntityType,
   environment,
   FrontendRoutes,
   FRONTEND_ROUTES_TOKEN,
@@ -109,8 +110,16 @@ export class VoucherService {
 
     const voucherId = uuid.v4();
     const now = new Date();
+
+    // Determine buyer's entity type for negative balance support
+    const buyerEntityType: EntityType = buyer.changeMaker
+      ? 'changeMaker'
+      : buyer.exchangePartner
+      ? 'exchangePartner'
+      : 'servePartner';
+
     await this.dbTransaction.run(async () => {
-      await this.credit.transferCreditsInToEscrow(dto.buyerId, amount);
+      await this.credit.transferCreditsInToEscrow(dto.buyerId, amount, buyerEntityType);
       await this.voucherRepo.upsert({
         id: voucherId,
         amount,
