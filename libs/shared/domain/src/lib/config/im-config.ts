@@ -10,6 +10,16 @@ export const ImConfig = convertDeepReadonly({
   maxProjectDocuments: 5,
   maxProjectQuestions: 5,
   startingSpBudget: 20000,
+  /**
+   * Maximum negative balance allowed per entity type (in cents).
+   * Users can go negative up to this limit, like a credit card.
+   * Default: 100000 = -$1000.00
+   */
+  negativeBalanceLimit: {
+    changeMaker: 100000,
+    servePartner: 100000,
+    exchangePartner: 100000,
+  },
   walletHeight: '70vh',
   adminEmail: 'admin@admin.com',
   maxNeedLength: 15,

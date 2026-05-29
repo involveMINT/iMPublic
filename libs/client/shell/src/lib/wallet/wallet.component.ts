@@ -16,6 +16,7 @@ import { StatefulComponent } from '@involvemint/client/shared/util';
 import {
   calculateTransactionMetaData,
   calculateVoucherStatus,
+  ImConfig,
   TransactionMetaData,
   VoucherStatus,
   WalletTabs,
@@ -43,6 +44,12 @@ interface State {
   activeProfile: ActiveProfile | null;
   vouchers: VoucherStoreModel[];
   vouchersLoaded: boolean;
+  /** Negative balance limit for the current profile (in display units, e.g., dollars) */
+  negativeLimit: number;
+  /** True if balance is negative */
+  isNegative: boolean;
+  /** True if balance has reached or exceeded the negative limit */
+  isAtLimit: boolean;
 }
 
 @Component({
@@ -79,6 +86,9 @@ export class WalletComponent extends StatefulComponent<State> implements OnInit 
       activeProfile: null,
       vouchers: [],
       vouchersLoaded: false,
+      negativeLimit: ImConfig.negativeBalanceLimit.changeMaker / 100, // Default to CM limit
+      isNegative: false,
+      isAtLimit: false,
     });
   }
 
@@ -90,12 +100,17 @@ export class WalletComponent extends StatefulComponent<State> implements OnInit 
           let escrowBalance = 0;
           credits.forEach((credit) => (balance += credit.amount));
           escrowCredits.forEach((escrowCredit) => (escrowBalance += escrowCredit.amount));
+          const balanceInDisplayUnits = balance / 100;
+          const isNegative = balanceInDisplayUnits < 0;
+          const isAtLimit = balanceInDisplayUnits <= -this.state.negativeLimit;
           this.updateState({
             credits,
             creditsLoaded: loaded,
-            balance: balance / 100,
+            balance: balanceInDisplayUnits,
             escrowCredits,
             escrowBalance,
+            isNegative,
+            isAtLimit,
           });
         })
       )
@@ -123,7 +138,26 @@ export class WalletComponent extends StatefulComponent<State> implements OnInit 
 
     this.effect(() =>
       this.user.session.selectors.activeProfile$.pipe(
-        tap((activeProfile) => this.updateState({ activeProfile }))
+        tap((activeProfile) => {
+          // Determine the negative balance limit based on profile type
+          let negativeLimit = ImConfig.negativeBalanceLimit.changeMaker / 100;
+          if (activeProfile) {
+            switch (activeProfile.type) {
+              case 'cm':
+                negativeLimit = ImConfig.negativeBalanceLimit.changeMaker / 100;
+                break;
+              case 'ep':
+                negativeLimit = ImConfig.negativeBalanceLimit.exchangePartner / 100;
+                break;
+              case 'sp':
+                negativeLimit = ImConfig.negativeBalanceLimit.servePartner / 100;
+                break;
+            }
+          }
+          // Recalculate isAtLimit with the new negativeLimit
+          const isAtLimit = this.state.balance <= -negativeLimit;
+          this.updateState({ activeProfile, negativeLimit, isAtLimit });
+        })
       )
     );
 

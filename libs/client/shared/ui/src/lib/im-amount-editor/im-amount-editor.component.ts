@@ -20,6 +20,7 @@ interface Transactional extends ColorInput {
   mode: 'transaction';
   amount: number;
   remainingBalance: number;
+  negativeLimit?: number;
 }
 
 interface PricePicker extends ColorInput {
@@ -40,6 +41,7 @@ interface State {
   remainingBalance: number;
   afterAmount: number;
   overspendOrZero: boolean;
+  negativeLimit: number;
 }
 
 @Component({
@@ -53,6 +55,7 @@ export class ImAmountEditorComponent extends StatefulComponent<State> implements
   @Input() amount = 0;
   @Input() remainingBalance = 0;
   @Input() color?: ColorInput['color'];
+  @Input() negativeLimit = ImConfig.negativeBalanceLimit.changeMaker / 100;
 
   @Output() action = new EventEmitter<number | undefined>();
 
@@ -65,6 +68,7 @@ export class ImAmountEditorComponent extends StatefulComponent<State> implements
       amount: 0,
       afterAmount: 0,
       overspendOrZero: true,
+      negativeLimit: ImConfig.negativeBalanceLimit.changeMaker / 100,
     });
   }
 
@@ -78,6 +82,7 @@ export class ImAmountEditorComponent extends StatefulComponent<State> implements
       amount: this.amount ?? 0,
       remainingBalance: this.remainingBalance ?? 0,
       afterAmount: this.remainingBalance ?? 0,
+      negativeLimit: this.negativeLimit ?? ImConfig.negativeBalanceLimit.changeMaker / 100,
     });
     this.checkDisable();
   }
@@ -104,8 +109,11 @@ export class ImAmountEditorComponent extends StatefulComponent<State> implements
   checkDisable() {
     switch (this.state.mode) {
       case 'transaction':
+        // Allow going negative up to the negative limit
         this.updateState({
-          overspendOrZero: this.state.remainingBalance - this.state.amount < 0 || this.state.amount <= 0,
+          overspendOrZero:
+            this.state.remainingBalance - this.state.amount < -this.state.negativeLimit ||
+            this.state.amount <= 0,
         });
         break;
       case 'pricePicker':
