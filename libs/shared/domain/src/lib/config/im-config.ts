@@ -16,9 +16,9 @@ export const ImConfig = convertDeepReadonly({
    * Default: 100000 = -$1000.00
    */
   negativeBalanceLimit: {
-    changeMaker: 100000,
-    servePartner: 100000,
-    exchangePartner: 100000,
+    changeMaker: 200000,
+    servePartner: 200000,
+    exchangePartner: 200000,
   },
   walletHeight: '70vh',
   adminEmail: 'admin@admin.com',
