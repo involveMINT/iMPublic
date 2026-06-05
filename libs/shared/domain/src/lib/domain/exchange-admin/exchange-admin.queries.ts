@@ -20,6 +20,7 @@ export const BaDownloadEpAdminsQuery = createQuery<ExchangeAdmin[]>()({
       id: true,
     },
     onboardingState: true,
+    creditDebt: true,
     name: true,
     description: true,
     logoFilePath: true,

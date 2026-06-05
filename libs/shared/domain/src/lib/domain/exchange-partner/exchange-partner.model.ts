@@ -34,6 +34,8 @@ export interface ExchangePartner {
   longitude?: number;
   dateCreated: Date | string;
   onboardingState: EpOnboardingState;
+  /** Mutual-credit debt owed by this account, in cents (always >= 0). Spendable = credits - creditDebt. */
+  creditDebt?: number;
 
   address: IOneToOne<Address, 'exchangePartner'>;
   handle: IOneToOne<Handle, 'exchangePartner'>;

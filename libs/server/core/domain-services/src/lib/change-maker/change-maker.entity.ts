@@ -29,6 +29,8 @@ export class ChangeMakerEntity implements Required<ChangeMaker> {
   phone!: string;
   @Column('text')
   onboardingState!: CmOnboardingState;
+  @Column('integer', { default: 0 })
+  creditDebt!: number;
   @Column({ default: () => "now()" })
   dateCreated!: Date;
 

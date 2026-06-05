@@ -1,4 +1,10 @@
-import { CreditRepository } from '@involvemint/server/core/domain-services';
+import {
+  ChangeMakerRepository,
+  CreditRepository,
+  ExchangePartnerRepository,
+  HandleRepository,
+  ServePartnerRepository,
+} from '@involvemint/server/core/domain-services';
 import { InternalServerErrorException } from '@nestjs/common';
 import { Test } from '@nestjs/testing';
 import 'uuid';
@@ -17,6 +23,10 @@ describe('Transaction Service', () => {
         CreditService,
         { provide: CreditRepository, useValue: {} },
         { provide: AuthService, useValue: {} },
+        { provide: HandleRepository, useValue: {} },
+        { provide: ChangeMakerRepository, useValue: {} },
+        { provide: ExchangePartnerRepository, useValue: {} },
+        { provide: ServePartnerRepository, useValue: {} },
       ],
     }).compile();
 
