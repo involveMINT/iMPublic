@@ -301,6 +301,12 @@ export class VoucherService {
       voucher.servePartnerReceiver?.id ||
       voucher.exchangePartnerReceiver?.id) as string;
 
+    const buyerEntityType: EntityType = voucher.changeMakerReceiver
+      ? 'changeMaker'
+      : voucher.exchangePartnerReceiver
+      ? 'exchangePartner'
+      : 'servePartner';
+
     const buyerEmails =
       [voucher.changeMakerReceiver?.user.id as string] ||
       voucher.exchangePartnerReceiver?.admins.map((a) => a.user.id) ||
@@ -323,10 +329,12 @@ export class VoucherService {
         );
       });
     } else {
-      // If it was not redeemed, transfer Escrow credits.
+      // If it was not redeemed, transfer Escrow credits back to available.
       await this.dbTransaction.run(async () => {
         await this.voucherRepo.update(dto.voucherId, { dateRefunded: new Date() });
         await this.credit.transferCreditsOutOfEscrow(buyerId, voucher.amount);
+        // Returned funds pay down any mutual-credit debt the buyer carries.
+        await this.credit.settleDebt(buyerEntityType, buyerId);
       });
     }
 

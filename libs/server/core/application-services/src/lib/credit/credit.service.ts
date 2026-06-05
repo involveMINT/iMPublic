@@ -1,4 +1,10 @@
-import { CreditRepository, HandleRepository } from '@involvemint/server/core/domain-services';
+import {
+  ChangeMakerRepository,
+  CreditRepository,
+  ExchangePartnerRepository,
+  HandleRepository,
+  ServePartnerRepository,
+} from '@involvemint/server/core/domain-services';
 import {
   calculateTotalCreditsAmount,
   calculateTotalEscrowAmount,
@@ -33,8 +39,87 @@ export class CreditService {
   constructor(
     private readonly creditRepo: CreditRepository,
     private readonly auth: AuthService,
-    private readonly handle: HandleRepository
+    private readonly handle: HandleRepository,
+    private readonly cmRepo: ChangeMakerRepository,
+    private readonly epRepo: ExchangePartnerRepository,
+    private readonly spRepo: ServePartnerRepository
   ) {}
+
+  /**
+   * Reads an account's current mutual-credit debt (in cents, >= 0).
+   * Debt is a number on the account — never a `Credit` row — so it never enters the
+   * coin transfer/split/merge machinery.
+   */
+  async getDebt(entityType: EntityType, profileId: string): Promise<number> {
+    const profile = await this.getProfileDebt(entityType, profileId);
+    return profile?.creditDebt ?? 0;
+  }
+
+  /** Increases an account's debt by `amount` cents (used when a payment overdraws the account). */
+  async incurDebt(entityType: EntityType, profileId: string, amount: number): Promise<void> {
+    if (amount <= 0) return;
+    const current = await this.getDebt(entityType, profileId);
+    await this.setDebt(entityType, profileId, current + amount);
+  }
+
+  /**
+   * Repays an account's debt by burning its positive credits (smallest-first).
+   * Call after any inflow (transfer received, POI earned, voucher refund). Burning the
+   * credits destroys the money that was minted when the account went negative, keeping the
+   * total supply conserved. No-op when the account has no debt.
+   */
+  async settleDebt(entityType: EntityType, profileId: string): Promise<void> {
+    const debt = await this.getDebt(entityType, profileId);
+    if (debt <= 0) return;
+
+    const credits = (
+      await this.creditRepo.query(CreditQuery, {
+        where: [{ changeMaker: profileId }, { servePartner: profileId }, { exchangePartner: profileId }],
+      })
+    )
+      .filter((c) => !c.escrow && c.amount > 0)
+      .sort((a, b) => a.amount - b.amount);
+
+    let remaining = Math.min(debt, calculateTotalCreditsAmount(credits));
+    const settled = remaining;
+    const toDelete: string[] = [];
+    const toUpdate: CreditStoreModel[] = [];
+
+    for (const credit of credits) {
+      if (remaining <= 0) break;
+      if (credit.amount <= remaining) {
+        toDelete.push(credit.id);
+        remaining -= credit.amount;
+      } else {
+        toUpdate.push({ ...credit, amount: credit.amount - remaining });
+        remaining = 0;
+      }
+    }
+
+    if (toUpdate.length > 0) await this.creditRepo.upsertMany(toUpdate);
+    if (toDelete.length > 0) await this.creditRepo.deleteMany(toDelete);
+    await this.setDebt(entityType, profileId, debt - settled);
+  }
+
+  private async setDebt(entityType: EntityType, profileId: string, value: number): Promise<void> {
+    const creditDebt = Math.max(0, value);
+    if (entityType === 'changeMaker') {
+      await this.cmRepo.update(profileId, { creditDebt });
+    } else if (entityType === 'exchangePartner') {
+      await this.epRepo.update(profileId, { creditDebt });
+    } else {
+      await this.spRepo.update(profileId, { creditDebt });
+    }
+  }
+
+  private getProfileDebt(entityType: EntityType, profileId: string) {
+    if (entityType === 'changeMaker') {
+      return this.cmRepo.findOneOrFail(profileId, { id: true, creditDebt: true });
+    } else if (entityType === 'exchangePartner') {
+      return this.epRepo.findOneOrFail(profileId, { id: true, creditDebt: true });
+    }
+    return this.spRepo.findOneOrFail(profileId, { id: true, creditDebt: true });
+  }
 
   async getCreditsForProfile(query: IQuery<Credit>, token: string, dto: GetCreditsForProfileDto) {
     await this.auth.authenticateFromProfileId(dto.profileId, token);
@@ -118,9 +203,10 @@ export class CreditService {
     // Check if user has enough credits (with negative balance support for intoEscrow)
     if (intoEscrow) {
       if (entityType) {
-        // With negative balance support: check against negative limit
+        // With negative balance support: spendable = credits - existing debt; may go down to -limit.
         const negativeLimit = getNegativeBalanceLimit(entityType);
-        if (availableCredits - amount < -negativeLimit) {
+        const debt = await this.getDebt(entityType, profileId);
+        if (availableCredits - debt - amount < -negativeLimit) {
           throw new InternalServerErrorException(
             `Transaction would exceed your negative balance limit of ${negativeLimit / 100} credits.`
           );
@@ -149,6 +235,8 @@ export class CreditService {
       if (intoEscrow && credit.escrow) continue;
       // If transferring out of Escrow -> ignore Credit's currently not in Escrow.
       if (!intoEscrow && !credit.escrow) continue;
+      // Only positive credits move; debt is tracked on the account, never as a coin.
+      if (credit.amount <= 0) continue;
 
       /** Amount left to transfer (amount that still needs to be placed in `queue`). */
       const amountLeft = amount - amountTransferred;
@@ -163,6 +251,7 @@ export class CreditService {
       } else {
         // If the current credit is greater than `amountLeft`,
         // then split difference with the creation of new credit and the current credit.
+        amountTransferred += amountLeft;
         queue.push({ ...credit, id: uuid.v4(), amount: amountLeft, escrow: intoEscrow });
         queue.push({ ...credit, amount: credit.amount - amountLeft });
 
@@ -171,38 +260,24 @@ export class CreditService {
       }
     }
 
-    // Handle negative balance: if transferring into escrow and not enough credits
+    // Overdraft: not enough credits to fully fund the escrow reservation.
+    // Mint the shortfall as escrowed money (the voucher is made whole) and record the
+    // shortfall as account DEBT — never a negative coin (which would corrupt later transfers).
     if (intoEscrow && amountTransferred < amount && entityType) {
       const shortfall = amount - amountTransferred;
 
-      // Determine which entity type the profile belongs to based on entityType
-      const changeMakerId = entityType === 'changeMaker' ? profileId : null;
-      const servePartnerId = entityType === 'servePartner' ? profileId : null;
-      const exchangePartnerId = entityType === 'exchangePartner' ? profileId : null;
-
-      // Create a negative credit for the user (representing debt)
-      queue.push({
-        id: uuid.v4(),
-        amount: -shortfall,
-        dateMinted: new Date(),
-        escrow: false,
-        poi: null,
-        changeMaker: changeMakerId ? { id: changeMakerId } : null,
-        servePartner: servePartnerId ? { id: servePartnerId } : null,
-        exchangePartner: exchangePartnerId ? { id: exchangePartnerId } : null,
-      } as CreditStoreModel);
-
-      // Create a positive credit in escrow
       queue.push({
         id: uuid.v4(),
         amount: shortfall,
         dateMinted: new Date(),
         escrow: true,
         poi: null,
-        changeMaker: changeMakerId ? { id: changeMakerId } : null,
-        servePartner: servePartnerId ? { id: servePartnerId } : null,
-        exchangePartner: exchangePartnerId ? { id: exchangePartnerId } : null,
+        changeMaker: entityType === 'changeMaker' ? { id: profileId } : null,
+        servePartner: entityType === 'servePartner' ? { id: profileId } : null,
+        exchangePartner: entityType === 'exchangePartner' ? { id: profileId } : null,
       } as CreditStoreModel);
+
+      await this.incurDebt(entityType, profileId, shortfall);
     }
 
     return this.creditRepo.upsertMany(queue);

@@ -22,6 +22,8 @@ export interface ChangeMaker {
   dateCreated: Date | string;
   onboardingState: CmOnboardingState;
   profilePicFilePath?: string;
+  /** Mutual-credit debt owed by this account, in cents (always >= 0). Spendable = credits - creditDebt. */
+  creditDebt?: number;
 
   handle: IOneToOne<Handle, 'changeMaker'>;
   enrollments: IOneToMany<Enrollment, 'changeMaker'>;

@@ -38,7 +38,10 @@ interface State {
   allTransactions: TransactionWallet[];
   creditsLoaded: boolean;
   transactionsLoaded: boolean;
+  /** Spendable balance in display units (credits - creditDebt). */
   balance: number;
+  /** Mutual-credit debt owed by the active profile, in cents. */
+  creditDebt: number;
   escrowBalance: number;
   recipient: SearchResult | null;
   activeProfile: ActiveProfile | null;
@@ -81,6 +84,7 @@ export class WalletComponent extends StatefulComponent<State> implements OnInit 
       creditsLoaded: false,
       transactionsLoaded: false,
       balance: 0,
+      creditDebt: 0,
       escrowBalance: 0,
       recipient: null,
       activeProfile: null,
@@ -96,11 +100,12 @@ export class WalletComponent extends StatefulComponent<State> implements OnInit 
     this.effect(() =>
       this.user.credits.selectors.credits$.pipe(
         tap(({ credits, loaded, escrowCredits }) => {
-          let balance = 0;
+          let coinCents = 0;
           let escrowBalance = 0;
-          credits.forEach((credit) => (balance += credit.amount));
+          credits.forEach((credit) => (coinCents += credit.amount));
           escrowCredits.forEach((escrowCredit) => (escrowBalance += escrowCredit.amount));
-          const balanceInDisplayUnits = balance / 100;
+          // Spendable = coins held minus mutual-credit debt (debt is a number, not a coin).
+          const balanceInDisplayUnits = (coinCents - this.state.creditDebt) / 100;
           const isNegative = balanceInDisplayUnits < 0;
           const isAtLimit = balanceInDisplayUnits <= -this.state.negativeLimit;
           this.updateState({
@@ -154,9 +159,14 @@ export class WalletComponent extends StatefulComponent<State> implements OnInit 
                 break;
             }
           }
-          // Recalculate isAtLimit with the new negativeLimit
-          const isAtLimit = this.state.balance <= -negativeLimit;
-          this.updateState({ activeProfile, negativeLimit, isAtLimit });
+          // Re-derive spendable balance now that we know the profile's debt and limit.
+          const creditDebt = (activeProfile as { creditDebt?: number } | null)?.creditDebt ?? 0;
+          let coinCents = 0;
+          this.state.credits.forEach((credit) => (coinCents += credit.amount));
+          const balance = (coinCents - creditDebt) / 100;
+          const isNegative = balance < 0;
+          const isAtLimit = balance <= -negativeLimit;
+          this.updateState({ activeProfile, negativeLimit, creditDebt, balance, isNegative, isAtLimit });
         })
       )
     );

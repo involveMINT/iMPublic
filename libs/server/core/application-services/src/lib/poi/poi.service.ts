@@ -33,6 +33,7 @@ import { createQuery, IQuery, parseQuery } from '@orcha/common';
 import { CronJob, CronTime } from 'cron';
 import * as uuid from 'uuid';
 import { AuthService } from '../auth/auth.service';
+import { CreditService } from '../credit/credit.service';
 import { EmailService } from '../email/email.service';
 import { ProjectService } from '../project/project.service';
 import { StorageService } from '../storage/storage.service';
@@ -52,7 +53,8 @@ export class PoiService {
     private readonly creditRepo: CreditRepository,
     private readonly schedulerRegistry: SchedulerRegistry,
     private readonly taskRepo: TaskRepository,
-    private readonly email: EmailService
+    private readonly email: EmailService,
+    private readonly credit: CreditService
   ) {}
 
   async get(query: IQuery<Poi[]>, token: string) {
@@ -543,6 +545,8 @@ export class PoiService {
         poi: poi.id,
         changeMaker: poi.enrollment.changeMaker.id,
       });
+      // Earning impact pays down any mutual-credit debt first (burns coins, conserves supply).
+      await this.credit.settleDebt('changeMaker', poi.enrollment.changeMaker.id);
     });
     return this.poiRepo.findOneOrFail(dto.poiId, query);
   }

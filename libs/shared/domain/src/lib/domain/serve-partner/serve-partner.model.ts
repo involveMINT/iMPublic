@@ -21,6 +21,8 @@ export interface ServePartner {
   latitude?: number;
   longitude?: number;
   dateCreated: Date | string;
+  /** Mutual-credit debt owed by this account, in cents (always >= 0). Spendable = credits - creditDebt. */
+  creditDebt?: number;
 
   address: IOneToOne<Address, 'servePartner'>;
   handle: IOneToOne<Handle, 'servePartner'>;

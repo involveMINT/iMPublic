@@ -49,3 +49,6 @@ gcp-api-key-prod.json
 environment.prod.*.json
 reports/*
 !reports/readme.md
+
+# Local incident artifacts (private screenshots — do not commit)
+prod_issue/

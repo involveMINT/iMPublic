@@ -29,6 +29,8 @@ export class ServePartnerEntity implements Required<ServePartner> {
   imagesFilePaths!: string[];
   @Column({ nullable: true })
   description!: string;
+  @Column('integer', { default: 0 })
+  creditDebt!: number;
   @Column({ nullable: true, type: 'float8' })
   latitude!: number;
   @Column({ nullable: true, type: 'float8' })

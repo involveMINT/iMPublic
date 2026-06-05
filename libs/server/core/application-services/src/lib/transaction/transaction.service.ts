@@ -26,6 +26,7 @@ import { createQuery, IParser, IQuery } from '@orcha/common';
 import { compareAsc } from 'date-fns';
 import * as uuid from 'uuid';
 import { AuthService } from '../auth/auth.service';
+import { CreditService } from '../credit/credit.service';
 import { EmailService } from '../email/email.service';
 import { SMSService } from '../sms/sms.service';
 import { DbTransactionCreator } from '../transaction-creator/transaction-creator.service';
@@ -52,6 +53,7 @@ export class TransactionService {
     private readonly creditRepo: CreditRepository,
     private readonly handleRepo: HandleRepository,
     private readonly dbTransaction: DbTransactionCreator,
+    private readonly credit: CreditService,
     private readonly email: EmailService,
     private readonly sms: SMSService,
     @Inject(FRONTEND_ROUTES_TOKEN) private readonly route: FrontendRoutes
@@ -277,11 +279,24 @@ export class TransactionService {
       : sender.exchangePartner
       ? 'exchangePartner'
       : 'servePartner';
+    const senderId = (sender.changeMaker?.id ??
+      sender.exchangePartner?.id ??
+      sender.servePartner?.id) as string;
+    const receiverEntityType: EntityType = receiver.changeMaker
+      ? 'changeMaker'
+      : receiver.exchangePartner
+      ? 'exchangePartner'
+      : 'servePartner';
+    const receiverId = (receiver.changeMaker?.id ??
+      receiver.exchangePartner?.id ??
+      receiver.servePartner?.id) as string;
     const negativeLimit = getNegativeBalanceLimit(senderEntityType);
 
-    // Allow transactions as long as resulting balance doesn't exceed negative limit
-    // (balance can go negative up to the limit, like a credit card)
-    if (sendersTotalAmount - dto.amount < -negativeLimit) {
+    // Spendable = positive credits held minus existing debt. Allow the resulting balance to go
+    // negative only as far as the limit (like a credit card). Debt is a number on the account,
+    // never a coin (see commit()).
+    const senderDebt = await this.credit.getDebt(senderEntityType, senderId);
+    if (sendersTotalAmount - senderDebt - dto.amount < -negativeLimit) {
       throw new HttpException(
         `Transaction would exceed your negative balance limit of ${negativeLimit / 100} credits.`,
         HttpStatus.BAD_REQUEST
@@ -321,6 +336,9 @@ export class TransactionService {
     /** Amount transferred currently in queue. */
     let amountTransferred = 0;
 
+    /** Shortfall to record as sender debt when the sender overdraws (set below, applied in commit). */
+    let shortfallDebt = 0;
+
     /** Sender's update queue for Credits to be updated in DB. */
     const senderQueue: CreditStoreModel[] = [];
 
@@ -328,8 +346,12 @@ export class TransactionService {
     const receiverQueue: CreditStoreModel[] = [];
 
     for (const credit of senderCredits) {
+      // Only positive credits move between wallets; debt is tracked on the account, never as a coin.
+      if (credit.amount <= 0) continue;
+
       /** Amount left to transfer (amount that still needs to be placed in `queue`). */
       const amountLeft = dto.amount - amountTransferred;
+      if (amountLeft <= 0) break;
 
       // If sender's current credit's amount is <= `amountLeft` then transfer that credit to receiver.
       if (credit.amount <= amountLeft) {
@@ -349,6 +371,7 @@ export class TransactionService {
         // If the sender's current credit is greater than `amountLeft`,
         // then split difference with the creation of new credit (owned by the receiver)
         // and the sender's current credit.
+        amountTransferred += amountLeft;
         const splitCredit: UnArray<typeof receiverCredits> = {
           ...credit,
           id: uuid.v4(),
@@ -369,22 +392,13 @@ export class TransactionService {
       }
     }
 
-    // Handle negative balance: if sender doesn't have enough credits, create the shortfall
-    // This allows the sender to go negative (like a credit card)
+    // Overdraft: sender didn't have enough credits to cover the payment.
+    // The receiver is made whole with freshly-minted money, and the sender's shortfall is
+    // recorded as account DEBT (applied in commit()) — never a negative coin, which would be
+    // swept into the next transfer and corrupt unrelated wallets.
     if (amountTransferred < dto.amount) {
       const shortfall = dto.amount - amountTransferred;
-
-      // Create a negative credit for the sender (representing debt)
-      senderQueue.push({
-        id: uuid.v4(),
-        amount: -shortfall,
-        dateMinted: new Date(),
-        escrow: false,
-        poi: null,
-        changeMaker: sender.changeMaker ?? null,
-        exchangePartner: sender.exchangePartner ?? null,
-        servePartner: sender.servePartner ?? null,
-      } as CreditStoreModel);
+      shortfallDebt = shortfall;
 
       // Create a positive credit for the receiver
       receiverQueue.push({
@@ -451,6 +465,12 @@ export class TransactionService {
       });
       await this.creditRepo.upsertMany([...senderQueue, ...receiverMerged]);
       await this.creditRepo.deleteMany(receiverRemove.map((c) => c.id));
+      // Record the sender's overdraft as account debt (mutual credit) — no negative coin.
+      if (shortfallDebt > 0) {
+        await this.credit.incurDebt(senderEntityType, senderId, shortfallDebt);
+      }
+      // The receiver just got money; pay down any debt they carry (burns coins, conserves supply).
+      await this.credit.settleDebt(receiverEntityType, receiverId);
     };
 
     const transactionId = uuid.v4();

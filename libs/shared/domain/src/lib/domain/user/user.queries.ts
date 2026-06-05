@@ -18,6 +18,7 @@ export const UserQuery = createQuery<User>()({
     lastName: true,
     onboardingState: true,
     phone: true,
+    creditDebt: true,
     handle: {
       id: true,
     },
@@ -46,6 +47,7 @@ export const UserQuery = createQuery<User>()({
         id: true,
       },
       onboardingState: true,
+      creditDebt: true,
       name: true,
       description: true,
       logoFilePath: true,
@@ -78,6 +80,7 @@ export const UserQuery = createQuery<User>()({
       description: true,
       logoFilePath: true,
       website: true,
+      creditDebt: true,
       address: {
         id: true,
         address1: true,
