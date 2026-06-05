@@ -2,17 +2,21 @@
 -- RUN ON PROD. READ-ONLY (no writes). Requires table `recon_snapshot` loaded from recon-1
 --   (columns: pid, type, available_cents, escrow_cents).
 --
--- Reconciles on TOTAL holdings, then splits into available + escrow, so wallets that move money
--- through vouchers/escrow (e.g. Jrw740) are handled the same as everyone else:
---   correct_total     = snapshot_total + post-cutoff(received - sent)
---   correct_escrow    = SUM(still-active vouchers)            (escrow only backs active vouchers)
+-- Reconciles on TOTAL holdings, then splits into available + escrow.
+--   correct_total     = snapshot_total - post_sent + GREATEST(post_received, post_cutoff_positive_coins)
+--   correct_escrow    = SUM(still-active vouchers)
 --   correct_available = correct_total - correct_escrow
 --   target_debt       = max(0, -correct_available)
 --
--- FLAGS (need manual review, NOT auto-repaired by recon-3):
---   post_poi_cents > 0     -> wallet earned POI after cutoff; snapshot+ledger can't size it here.
---   missing_snapshot       -> no baseline; never guess.
--- SET cutoff to the snapshot/deploy moment.
+-- Why GREATEST(post_received, post_cutoff_positive_coins):
+--   post-cutoff inflows are either transfers (ledger: post_received) or fresh MINTS (admin/POI).
+--   Mints aren't in the ledger, but they show up as positive coins dated >= cutoff that the wallet
+--   holds. Taking the larger preserves legit post-cutoff mints (admin mints are correct) while not
+--   double-counting transaction "shortfall" coins (which already equal post_received).
+--
+-- A wallet that BOTH received transfers AND minted post-cutoff (review_mint_and_receive = true) can
+-- be mis-sized by this heuristic — eyeball those before repairing.
+-- Missing snapshot row = genuinely $0 pre-deploy (recon-1 covers the whole clone), not an error.
 WITH params AS (
   SELECT '2026-05-30 00:00:00'::timestamp AS cutoff
 ),
@@ -29,7 +33,7 @@ cur AS (
     COALESCE(SUM(amount) FILTER (WHERE escrow), 0)     AS current_escrow,
     COUNT(*) FILTER (WHERE amount < 0)                 AS negative_rows,
     COUNT(*) FILTER (WHERE escrow)                     AS escrow_rows,
-    COALESCE(SUM(amount) FILTER (WHERE "poiId" IS NOT NULL AND "dateMinted" >= (SELECT cutoff FROM params)), 0) AS post_poi_cents
+    COALESCE(SUM(amount) FILTER (WHERE NOT escrow AND amount > 0 AND "dateMinted" >= (SELECT cutoff FROM params)), 0) AS post_cutoff_pos
   FROM owned GROUP BY pid, type
 ),
 post_tx AS (
@@ -53,30 +57,39 @@ vouch AS (
 affected AS (
   SELECT DISTINCT pid FROM post_tx
   UNION SELECT pid FROM cur WHERE negative_rows > 0
+),
+calc AS (
+  SELECT c.type, c.pid,
+    COALESCE(s.available_cents,0) + COALESCE(s.escrow_cents,0)                                       AS snapshot_total,
+    COALESCE(p.post_received,0)                                                                      AS post_received,
+    COALESCE(p.post_sent,0)                                                                          AS post_sent,
+    c.post_cutoff_pos,
+    GREATEST(0, c.post_cutoff_pos - COALESCE(p.post_received,0))                                     AS inferred_mints,
+    COALESCE(v.active_escrow,0)                                                                      AS correct_escrow,
+    COALESCE(s.available_cents,0) + COALESCE(s.escrow_cents,0)
+      - COALESCE(p.post_sent,0)
+      + GREATEST(COALESCE(p.post_received,0), c.post_cutoff_pos)                                     AS correct_total,
+    c.current_available, c.current_escrow, c.negative_rows,
+    (s.pid IS NULL)                                                                                  AS missing_snapshot,
+    (COALESCE(p.post_received,0) > 0 AND c.post_cutoff_pos > 0)                                       AS review_mint_and_receive
+  FROM cur c
+  JOIN affected a ON a.pid = c.pid
+  LEFT JOIN recon_snapshot s ON s.pid = c.pid
+  LEFT JOIN post_tx p ON p.pid = c.pid
+  LEFT JOIN vouch v ON v.pid = c.pid
 )
 SELECT
-  c.type,
-  c.pid,
-  COALESCE(cm."handleId", ep."handleId", sp."handleId")                  AS handle,
-  (COALESCE(s.available_cents,0) + COALESCE(s.escrow_cents,0))           AS snapshot_total,
-  COALESCE(p.post_received,0)                                            AS post_received,
-  COALESCE(p.post_sent,0)                                                AS post_sent,
-  COALESCE(v.active_escrow,0)                                            AS correct_escrow,
-  (COALESCE(s.available_cents,0) + COALESCE(s.escrow_cents,0) + COALESCE(p.post_received,0) - COALESCE(p.post_sent,0)) AS correct_total,
-  (COALESCE(s.available_cents,0) + COALESCE(s.escrow_cents,0) + COALESCE(p.post_received,0) - COALESCE(p.post_sent,0)) - COALESCE(v.active_escrow,0) AS correct_available,
-  c.current_available,
-  c.current_escrow,
-  ((COALESCE(s.available_cents,0) + COALESCE(s.escrow_cents,0) + COALESCE(p.post_received,0) - COALESCE(p.post_sent,0)) - COALESCE(v.active_escrow,0)) - c.current_available AS available_delta,
-  (COALESCE(v.active_escrow,0) - c.current_escrow)                       AS escrow_delta,
-  c.negative_rows,
-  c.post_poi_cents,
-  (s.pid IS NULL)                                                        AS missing_snapshot
-FROM cur c
-JOIN affected a ON a.pid = c.pid
-LEFT JOIN recon_snapshot s ON s.pid = c.pid
-LEFT JOIN post_tx p ON p.pid = c.pid
-LEFT JOIN vouch v ON v.pid = c.pid
-LEFT JOIN "ChangeMaker"     cm ON c.type = 'cm' AND cm.id = c.pid
-LEFT JOIN "ExchangePartner" ep ON c.type = 'ep' AND ep.id = c.pid
-LEFT JOIN "ServePartner"    sp ON c.type = 'sp' AND sp.id = c.pid
+  calc.type,
+  calc.pid,
+  COALESCE(cm."handleId", ep."handleId", sp."handleId") AS handle,
+  calc.snapshot_total, calc.post_received, calc.post_sent, calc.post_cutoff_pos, calc.inferred_mints,
+  calc.correct_total, calc.correct_escrow,
+  (calc.correct_total - calc.correct_escrow)                       AS correct_available,
+  calc.current_available, calc.current_escrow,
+  (calc.correct_total - calc.correct_escrow) - calc.current_available AS available_delta,
+  calc.negative_rows, calc.missing_snapshot, calc.review_mint_and_receive
+FROM calc
+LEFT JOIN "ChangeMaker"     cm ON calc.type = 'cm' AND cm.id = calc.pid
+LEFT JOIN "ExchangePartner" ep ON calc.type = 'ep' AND ep.id = calc.pid
+LEFT JOIN "ServePartner"    sp ON calc.type = 'sp' AND sp.id = calc.pid
 ORDER BY available_delta;
