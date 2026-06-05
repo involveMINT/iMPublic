@@ -122,7 +122,11 @@ payment, even when the sender was flush. Fixed in commit `578ec33`. (Reconciliat
 
 After repair, `Σ(all credits) − Σ(all creditDebt)` must equal the pre-deploy system total + all post-cutoff legit mints (POI + admin) − nothing (transfers net to zero). The repair script asserts each wallet's `coins − debt = correct_available` and `escrow = active vouchers`; the global identity is the final gate.
 
-## 5. Final targets (all 14 confirmed)
+## 5. Final targets (16 wallets — APPLIED 2026-06-05)
+
+> Two wallets were added after the original analysis (a 6/05 storefront purchase made on the
+> still-old code before the deploy): **LArnade** (sender, overdrew) and **BiddlesEscape** (receiver,
+> got duplicated value). recon-2/recon-3 picked them up automatically from live data.
 
 | handle | correct_available | correct_escrow | creditDebt |
 |---|--:|--:|--:|
@@ -140,12 +144,16 @@ After repair, `Σ(all credits) − Σ(all creditDebt)` must equal the pre-deploy
 | communitycultures | 16300 | 0 | 0 |
 | MonVoyage | 171805 | 0 | 0 |
 | QuinnNTonic | 1 | 0 | 0 |
+| LArnade | 1965 | 0 | 0 |
+| BiddlesEscape | 158364 | 0 | 0 |
 
-## 6. Status / open items
-- ✅ `recon-3-repair.sql` updated to timestamp-based mint detection.
-- ✅ Dry-run against prod passed (2026-06-05): 14 wallets reconcile to the §5 targets, verification
-  assertion passed, **0 negative credit rows remain**, transaction rolled back (nothing persisted).
-  `DELETE 133 → INSERT 13 available + 1 escrow → UPDATE 14 debt`.
-- ⬜ Align `recon-2-report.sql` to the same timestamp method (currently `max()` heuristic; report-only).
-- ⬜ Re-run dry-run on the day of the fix (in case of new transactions), then switch ROLLBACK → COMMIT.
-- ⬜ Drop the temporary `recon_snapshot` table from prod after the repair commits.
+## 6. Status — COMPLETE (2026-06-05)
+- ✅ Forward fix deployed to prod (**v0.20.1** — schema-drift gate passed, `Deploy → PROD` succeeded).
+- ✅ `recon-2-report.sql` and `recon-3-repair.sql` both use timestamp-based mint detection (aligned).
+- ✅ **Repair applied to prod (COMMIT):** 16 wallets reconciled, verification asserted, and a fresh
+  post-commit re-query confirms **0 negative credit rows system-wide**. Spot-checks matched targets
+  (Jrw740 41.00 + 12.00 escrow; Marenlc 94.77; wild-indigo 113.00; bigpeople80099 debt 9.00;
+  LArnade 19.65). `DELETE 190 → INSERT 15 available + 1 escrow → UPDATE 16 debt`.
+- ✅ Temporary `recon_snapshot` table dropped from prod.
+- ⬜ Light monitoring: confirm system negative coins stays 0 as new transactions flow through v0.20.1.
+- ⬜ Notify the members who reported (Marenlc, Jrw740).
