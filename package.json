@@ -128,7 +128,7 @@
     "twilio": "3.63.1",
     "typeorm": "0.2.37",
     "typeorm-transactional-cls-hooked": "0.1.21",
-    "uuid": "8.3.2",
+    "uuid": "14.0.1",
     "zone.js": "~0.11.4"
   },
   "devDependencies": {
