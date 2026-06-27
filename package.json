@@ -122,7 +122,7 @@
     "reflect-metadata": "0.1.13",
     "rxjs": "6.6.7",
     "socket.io": "4.1.2",
-    "socket.io-client": "4.1.2",
+    "socket.io-client": "4.8.3",
     "swiper": "6.7.0",
     "tslib": "2.2.0",
     "twilio": "3.63.1",
