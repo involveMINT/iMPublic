@@ -37,7 +37,7 @@ jobs:
     outputs:
       pending-migrations: ${{ steps.check-pending.outputs.pending-migrations }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       
       - name: Use Node.js ${{ env.NODE_VERSION }}
         uses: actions/setup-node@v4
@@ -119,7 +119,7 @@ jobs:
     outputs:
       backup-id: ${{ steps.create-backup-pending.outputs.backup-id }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       
       - name: Use Node.js ${{ env.NODE_VERSION }}
         uses: actions/setup-node@v4
@@ -254,7 +254,7 @@ jobs:
     outputs:
       migration-needed: ${{ steps.check-drift.outputs.migration-needed }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       
       - name: Use Node.js ${{ env.NODE_VERSION }}
         uses: actions/setup-node@v4
@@ -366,7 +366,7 @@ jobs:
       DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
       DB_NAME: ${{ secrets.DB_NAME }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - name: Use Node.js ${{ env.NODE_VERSION }}
         uses: actions/setup-node@v4
         with:
@@ -553,7 +553,7 @@ jobs:
       # allow only one "waiting for approval" + "running" job in that group
       cancel-in-progress: false
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Use Node.js ${{ env.NODE_VERSION }}
         uses: actions/setup-node@v4
