@@ -1,0 +1,22 @@
+name: Dependency audit
+
+# Recurring vulnerability scan of npm dependencies. Report-only — never blocks merges.
+on:
+  schedule:
+    - cron: "0 6 * * 1" # weekly, Mondays 06:00 UTC
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - "package.json"
+      - "package-lock.json"
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - name: npm audit (production deps, report only)
+        run: npm audit --omit=dev || true
