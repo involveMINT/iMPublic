@@ -62,22 +62,25 @@ chore/210-update-dependencies
 - The issue’s requirements must be fully addressed.
 - The branch must be in a state where merging to `main` keeps `main` deployable.
 
-2. **CI/CD Workflow**:  
-- Opening the PR triggers a GitHub Actions workflow that runs:
-  1. Automated tests (unit/integration).  
-  2. A **deploy-to-test** job (you’ll need to request a manual “deploy to test” when the PR is ready for validation).  
+2. **Local verification (no PR CI)**:  
+- The hosted test environment was retired in October 2026, and PRs no longer run a workflow.  
+- Before opening a PR, run `npm run build`, `npm run test` and `npm run lint`, and validate the change against the issue’s acceptance criteria on the local stack (`docker compose up`, see the README).
 
-3. **Deploy to Test Environment**:  
-- Once the PR’s automated checks pass, contact the release manager (or project lead) to deploy the PR branch to the test environment.  
-- Validate functionality against the issue’s acceptance criteria in the test environment.
+3. **Database migrations**:  
+- If you change an entity, generate the migration against your local Postgres and commit it in the PR:
+  ```
+  DB_PORT=5433 DB_USER=postgres DB_PASSWORD=postgres DB_NAME=involvemint \
+    npx ts-node --project ./util/tsconfig.json ./node_modules/typeorm/cli.js migration:generate -n <Name> -f util/ormconfig.js
+  ```
+- The production deploy applies committed migrations and fails if the schema still drifts from the entities.
 
 4. **PR Settings**:  
 - **Squash and merge**: All commits in the PR will be squashed into a single commit when merging.  
 - **Delete source branch**: After merge, the PR’s source branch will be automatically deleted.  
 
 5. **Approval & Merge**:  
-- After successful validation on the test environment, reviewers (including QA or a designated approver) approve the PR.  
-- Merging to `main` should happen **only after** test validation confirms that everything works as expected.
+- After local validation, reviewers (including QA or a designated approver) approve the PR.  
+- Merging to `main` should happen **only after** validation confirms that everything works as expected.
 
 ---
 
@@ -114,7 +117,7 @@ git pull origin main
 git checkout -b hotfix/789
 ```
 2. **Implement and test** the fix locally, then open a PR against `main` following the same PR guidelines (squash, delete source).
-3. **Deploy to Test** (if time allows) or use a shortened test cycle.
+3. **Validate locally** on the docker stack before merging.
 4. **Merge and Tag**:
 - Once approved, merge into `main`, then immediately create a tag (e.g., `v1.2.3-hotfix.1`) to trigger production deployment.
 - If additional patch releases are needed, create subsequent hotfix branches from the updated `main`.
@@ -123,7 +126,7 @@ git checkout -b hotfix/789
 
 ### 7. Post-Deployment
 
-- After a PR is merged into `main` and any test deployments are validated, the branch is deleted automatically.  
+- After a PR is merged into `main`, the branch is deleted automatically.  
 - Tags created on `main` will trigger production deployments; no additional work is needed beyond tagging and pushing.
 
 ---
@@ -132,8 +135,7 @@ git checkout -b hotfix/789
 
 - [ ] **Branch off `main`** with the correct naming convention (`feature/`, `bugfix/`, `chore/`, or `hotfix/`), including the GitHub issue ID.  
 - [ ] **Complete all issue requirements** and verify locally before opening a PR.  
-- [ ] **Open a PR** into `main` to trigger tests and a deploy-to-test job.  
-- [ ] **Request deployment** to the test environment for validation.  
+- [ ] **Build, test and lint locally**, and commit any new migration, before opening a PR into `main`.  
 - [ ] **Squash and merge**, deleting the source branch automatically.  
 - [ ] **Tag `main`** for production when ready (only from validated commits).  
 
